@@ -2,16 +2,22 @@
   "name": "greenlogix-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "GreenLogix — B2B Urban Logistics Optimization & ISO 14083 Carbon Accounting Platform",
+  "description": "EcoMiles — B2B Urban Logistics Optimization & GLEC-aligned Carbon Estimation Platform (not certified)",
   "packageManager": "pnpm@10.5.2",
   "scripts": {
     "dev:landing": "pnpm --filter @greenlogix/landing dev",
+    "dev:api": "cd apps/api && uv run uvicorn greenlogix_api.main:app --port 8000 --reload",
     "build:landing": "pnpm --filter @greenlogix/landing build",
     "preview:landing": "pnpm --filter @greenlogix/landing preview",
-    "deploy:landing": "wrangler pages deploy apps/landing/dist --project-name=greenlogix --branch=main --commit-dirty=true",
+    "test:api": "cd apps/api && uv run pytest",
+    "test:worker": "pnpm --filter @greenlogix/worker test",
+    "test": "pnpm test:worker && pnpm test:api",
+    "deploy:landing": "pnpm --filter @greenlogix/landing exec wrangler pages deploy dist --project-name=greenlogix --branch=main --commit-dirty=true",
+    "deploy:ecomiles": "pnpm --filter @greenlogix/landing exec wrangler pages deploy dist --project-name=ecomiles --branch=main --commit-dirty=true",
     "build": "pnpm --filter \"./apps/*\" build"
   },
   "devDependencies": {
+    "tsrs": "^0.18.0-ts7.1.0-dev.20260929",
     "typescript": "^5.7.2",
     "wrangler": "^4.126.0"
   }

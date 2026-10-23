@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Solutions } from './components/Solutions';
@@ -10,11 +10,61 @@ import { PricingAndPilot } from './components/PricingAndPilot';
 import { Footer } from './components/Footer';
 import { PilotModal } from './components/PilotModal';
 import { RolePortalModal } from './components/RolePortalModal';
+import { PitchDeckVoiceoverPage } from './components/PitchDeckVoiceoverPage';
 
 export function App() {
   const [pilotModalOpen, setPilotModalOpen] = useState<boolean>(false);
   const [rolePortalOpen, setRolePortalOpen] = useState<boolean>(false);
   const [selectedInterest, setSelectedInterest] = useState<string>('Dùng thử miễn phí 4–6 tuần');
+
+  const checkIsPitchDeck = () => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    const search = window.location.search.toLowerCase();
+    return path.includes('pitch-deck') || path.includes('kich-ban') || hash.includes('pitch-deck') || hash.includes('kich-ban') || search.includes('pitch-deck');
+  };
+
+  const [showPitchDeck, setShowPitchDeck] = useState<boolean>(checkIsPitchDeck());
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname.toLowerCase();
+      if (p === '/app') {
+        window.location.replace('/app/');
+        return;
+      }
+      if (p === '/driver') {
+        window.location.replace('/driver/' + window.location.search);
+        return;
+      }
+      if (p === '/dispatcher') {
+        window.location.replace('/dispatcher/' + window.location.search);
+        return;
+      }
+    }
+
+    const handleLocationChange = () => {
+      setShowPitchDeck(checkIsPitchDeck());
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  if (showPitchDeck) {
+    return (
+      <PitchDeckVoiceoverPage
+        onBackToHome={() => {
+          setShowPitchDeck(false);
+          window.history.pushState(null, '', '/');
+        }}
+      />
+    );
+  }
 
   const handleOpenPilotModal = (interest?: string) => {
     if (interest) {
@@ -24,10 +74,10 @@ export function App() {
   };
 
   return (
-    <div className="site-shell min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-greenlogix-lime selection:text-slate-950">
+    <div className="site-shell min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-ecomiles-lime selection:text-slate-950">
       <a
         href="#main-content"
-        className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-full bg-greenlogix-lime px-4 py-2 text-sm font-bold text-slate-950 shadow-xl transition-transform focus:translate-y-0"
+        className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-full bg-ecomiles-lime px-4 py-2 text-sm font-bold text-slate-950 shadow-xl transition-transform focus:translate-y-0"
       >
         Bỏ qua điều hướng
       </a>

@@ -56,14 +56,14 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
           {!submitted ? (
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-2xl bg-greenlogix-lime/10 border border-greenlogix-lime/20 text-greenlogix-lime flex items-center justify-center font-bold">
-                  <Sparkles className="w-5 h-5 text-greenlogix-lime" />
+                <div className="w-10 h-10 rounded-2xl bg-ecomiles-lime/10 border border-ecomiles-lime/20 text-ecomiles-lime flex items-center justify-center font-bold">
+                  <Sparkles className="w-5 h-5 text-ecomiles-lime" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold tracking-wider text-greenlogix-lime uppercase bg-greenlogix-lime/10 px-2.5 py-0.5 rounded-full border border-greenlogix-lime/20">
+                  <span className="text-[10px] font-bold tracking-wider text-ecomiles-lime uppercase bg-ecomiles-lime/10 px-2.5 py-0.5 rounded-full border border-ecomiles-lime/20">
                     TƯ VẤN GIẢI PHÁP &amp; DÙNG THỬ
                   </span>
-                  <h3 className="text-xl font-bold text-white mt-1">Đăng Ký Nhu Cầu Với GreenLogix</h3>
+                  <h3 className="text-xl font-bold text-white mt-1">Đăng Ký Nhu Cầu Với EcoMiles</h3>
                 </div>
               </div>
 
@@ -82,7 +82,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                       id="interest"
                       value={formData.interest}
                       onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
-                      className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-greenlogix-lime"
+                      className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                     >
                       <option>Dùng thử miễn phí 4–6 tuần</option>
                       <option>Đăng ký gói thuê bao</option>
@@ -108,7 +108,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                         placeholder="VD: Nguyễn Văn A"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-greenlogix-lime"
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                       />
                     </div>
                   </div>
@@ -127,7 +127,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                         placeholder="VD: Bưu cục GHN Q. Bình Thạnh"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-greenlogix-lime"
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                       />
                     </div>
                   </div>
@@ -148,7 +148,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                         placeholder="09xx xxx xxx"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-greenlogix-lime"
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                       />
                     </div>
                   </div>
@@ -167,7 +167,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                         placeholder="name@company.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-greenlogix-lime"
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                       />
                     </div>
                   </div>
@@ -184,7 +184,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                         id="fleet-size"
                         value={formData.fleetSize}
                         onChange={(e) => setFormData({ ...formData, fleetSize: e.target.value })}
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-greenlogix-lime"
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                       >
                         <option value="Dưới 5 xe">Dưới 5 xe</option>
                         <option value="5-15 xe">5–15 xe (Phù hợp để dùng thử)</option>
@@ -202,7 +202,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                       id="operation-area"
                       value={formData.area}
                       onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-greenlogix-lime"
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                     >
                       <option value="TP. Hồ Chí Minh (Ưu tiên đợt 1)">TP. Hồ Chí Minh (Đợt 1)</option>
                       <option value="Hà Nội (Đợt 2)">Hà Nội (Đợt 2)</option>
@@ -214,7 +214,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
 
                 <button
                   type="submit"
-                  className="w-full mt-2 py-3 rounded-xl font-bold text-xs sm:text-sm text-slate-950 bg-greenlogix-lime hover:bg-yellow-300 shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full mt-2 py-3 rounded-xl font-bold text-xs sm:text-sm text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Gửi Thông Tin Đăng Ký</span>
                 </button>
@@ -232,14 +232,14 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Đã Gửi Thông Tin Thành Công!</h3>
               <p className="text-xs text-slate-300 mb-6 leading-relaxed max-w-sm mx-auto">
-                Cảm ơn bạn. Đội ngũ GreenLogix sẽ liên hệ trực tiếp trong vòng 24h để trao đổi nhu cầu và đề xuất phương án phù hợp.
+                Cảm ơn bạn. Đội ngũ EcoMiles sẽ liên hệ trực tiếp trong vòng 24h để trao đổi nhu cầu và đề xuất phương án phù hợp.
               </p>
               <button
                 onClick={() => {
                   setSubmitted(false);
                   onClose();
                 }}
-                className="px-6 py-2.5 rounded-xl font-bold text-xs text-slate-950 bg-greenlogix-lime hover:bg-yellow-300 transition-all cursor-pointer"
+                className="px-6 py-2.5 rounded-xl font-bold text-xs text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 transition-all cursor-pointer"
               >
                 Hoàn Tất &amp; Đóng
               </button>

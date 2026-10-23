@@ -1,8 +1,8 @@
 /**
- * Seed data generator for GreenLogix HCMC 80 orders and 10 vehicles.
+ * Seed data generator for EcoMiles HCMC 80 orders and 10 vehicles.
  */
 
-import { OrderRow, VehicleRow } from "./solver";
+import type { OrderRow, VehicleRow } from "./solver.ts";
 
 export const DEPOT_LAT = 10.801;
 export const DEPOT_LNG = 106.661;

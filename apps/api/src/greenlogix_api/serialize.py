@@ -24,6 +24,11 @@ def order_out(order: Order) -> OrderOut:
         excel_row=order.excel_row,
         status=order.status,
         late_risk=late_risk(order.lat, order.lng, order.window_end),
+        # T-LOOP-GOFA: additive provenance passthrough (all nullable).
+        place_id=order.place_id,
+        place_provider=order.place_provider,
+        place_confidence=order.place_confidence,
+        geocode_at=order.geocode_at,
     )
 
 
@@ -36,6 +41,14 @@ def vehicle_out(vehicle: Vehicle) -> VehicleOut:
         fuel=vehicle.fuel,
         l_per_100km=vehicle.l_per_100km,
         status=vehicle.status,
+        # T-02 C-02: additive envelope passthrough (None = not recorded).
+        height_m=getattr(vehicle, "height_m", None),
+        width_m=getattr(vehicle, "width_m", None),
+        length_m=getattr(vehicle, "length_m", None),
+        gvw_kg=getattr(vehicle, "gvw_kg", None),
+        axle_load_t=getattr(vehicle, "axle_load_t", None),
+        frontal_area_m2=getattr(vehicle, "frontal_area_m2", None),
+        cd=getattr(vehicle, "cd", None),
     )
 
 

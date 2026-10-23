@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>EcoMiles — Dashboard phân tích</title>
+  <!-- Vendored locally: works offline, no remote script. See static/vendor/echarts.LICENSE.txt
+       (Apache ECharts 5.5.1, Apache-2.0, sha256 e84270bd0cd5...73a3cf). -->
+  <script src="/static/vendor/echarts.min.js"></script>
+  <!--
+    Data sources (live, same origin, same dispatcher bearer as /dispatcher).
+    Every key below is read verbatim from the frozen CR-20261018-001 §4 payloads;
+    nothing is invented, nothing is hardcoded.
+
+      GET /analytics/kpis      §4.2: dataset.{label,kind,seed,generated_at,orders,vehicles}
+                                    period.{from,to}
+                                    distance.{km_total,km_empty,empty_running_pct,km_per_stop,stops_per_hour}
+                                    load.{kg_delivered,capacity_kg_used,payload_utilisation_pct,vehicle_fill_pct}
+                                    service.{orders,delivered,failed,on_time,otif_pct,late_orders}
+                                    cost.{fuel_litres,fuel_cost_vnd,cost_per_order_vnd,cost_per_km_vnd}
+                                    carbon.{kg_co2e_ttw,kg_co2e_wtw,g_co2e_per_tkm,g_co2e_per_order,
+                                            boundary,factor_set,confidence,model_version}
+                                    labels.{simulated,modelled_fuel,routing_quality}
+      GET /analytics/timeseries §4.3: bucket, points[].{date,km,litres,kg_co2e,orders,otif_pct}
+      GET /analytics/fleet      §4.4: vehicles[].{plate,km,litres,kg_co2e,orders,kg_delivered,
+                                    payload_utilisation_pct,capacity_kg,fuel,l_per_100km_spec}
+      GET /routes               (existing frozen path): [].{id,plate,color,km,litres,kg_co2,
+                                    stops[].{seq,kind,lat,lng}} — the §4.5 map chart is the only
+                                    chart /analytics/* cannot feed: no route geometry exists in
+                                    §4.2–§4.4, so it is drawn from /routes, the same live
+                                    endpoint the dispatcher page draws its map from.
+  -->
+  <style>
+    :root {
+      --ink: #07110c; --panel: #0f1a16; --line: #1f3d32; --text: #e8f0e4;
+      --mut: #9bb5a8; --lime: #ffd400; --mint: #36d9a5; --warn: #ff8a8a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--ink); color: var(--text); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
+    header {
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+      padding: 12px 18px; border-bottom: 1px solid var(--line); background: #0b1612;
+    }
+    h1 { margin: 0; font-size: 1.1rem; letter-spacing: .02em; }
+    h1 span { color: var(--lime); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    button {
+      background: var(--lime); color: #07110c; border: 0; border-radius: 999px;
+      padding: 7px 13px; font-weight: 700; cursor: pointer;
+    }
+    button.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+    #status { margin: 8px 18px 0; color: var(--mut); min-height: 1.2em; }
+    #status.error { color: var(--warn); }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 10px 18px; }
+    .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; }
+    .kpi b { display: block; font-size: 1.05rem; color: var(--lime); }
+    .kpi b.na { color: var(--mut); font-size: .95rem; }
+    .kpi span { color: var(--mut); font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; }
+    .kpi i { display: block; color: var(--mut); font-size: 10px; font-style: normal; margin-top: 3px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); gap: 12px; margin: 0 18px 12px; }
+    @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px 6px; position: relative; }
+    .card h2 { margin: 0 0 2px; font-size: .92rem; }
+    .card p.unit { margin: 0 0 6px; color: var(--mut); font-size: 11px; }
+    .chart { width: 100%; height: 260px; }
+    .kpi-strip .chart, .wide { grid-column: 1 / -1; }
+    .chart-note { margin: 4px 0 4px; color: var(--lime); font-size: 11px; }
+    .null-state {
+      position: absolute; inset: 46px 12px 12px; display: flex; align-items: center; justify-content: center;
+      text-align: center; color: var(--mut); font-size: 12px; background: #0b1612;
+      border: 1px dashed var(--line); border-radius: 10px; padding: 10px;
+    }
+    footer {
+      margin: 6px 18px 24px; padding: 12px 14px; border: 1px solid var(--line);
+      border-radius: 12px; background: #0b1612; color: var(--mut); font-size: 12px; line-height: 1.7;
+    }
+    footer b { color: var(--text); }
+    footer .badge { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; margin: 0 4px 4px 0; color: var(--text); }
+    footer .must { color: var(--lime); font-weight: 700; }
+    .rq-VERIFIED_GRAPH { color: var(--mint); font-weight: 700; }
+    .rq-DEGRADED { color: var(--lime); font-weight: 700; }
+    .rq-UNAVAILABLE { color: var(--warn); font-weight: 700; }
+    @media print {
+      header, #status, .grid .card p.unit { color: #000; }
+      body { background: #fff; color: #000; }
+      button { display: none; }
+      .card, footer, .kpi { background: #fff; border-color: #999; }
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ECO<span>MILES</span> dashboard phân tích</h1>
+    <div class="row">
+      <button id="btn-reload" type="button">Làm mới</button>
+      <button id="btn-csv" class="ghost" type="button">Tải CSV (đội xe)</button>
+      <button id="btn-print" class="ghost" type="button" title="In / lưu PDF">In</button>
+    </div>
+  </header>
+
+  <p id="status"></p>
+
+  <section class="kpis" id="kpis" aria-label="KPI"></section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>1. Diện tích — km / lít / kg CO₂e theo ngày</h2>
+      <p class="unit">Đơn vị: km · L · kg CO₂e (trục phải). Nguồn: <code>/analytics/timeseries</code> (km, litres, kg_co2e). Lít là <b>modelled</b> (định mức l/100km), không phải đo.</p>
+      <div id="c-area" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>2. Cột — km + lít theo từng xe</h2>
+      <p class="unit">Đơn vị: km (trái) · L (phải). Nguồn: <code>/analytics/fleet</code> (plate, km, litres).</p>
+      <div id="c-bar" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>3. Donut — cơ cấu nhiên liệu (lít theo loại nhiên liệu)</h2>
+      <p class="unit">Đơn vị: L. Nguồn: <code>/analytics/fleet</code> (fuel, litres) — lít <b>modelled</b>, không phải đo từ OBD.</p>
+      <div id="c-donut" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>4. Đường — tỉ lệ đúng hạn (on-time %)</h2>
+      <p class="unit">Đơn vị: %. Nguồn: <code>/analytics/timeseries</code> (otif_pct).</p>
+      <div id="c-line" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>5. Bản đồ — hình học tuyến (lng/lat) + vùng cấm</h2>
+      <p class="unit">Đơn vị: độ (lng/lat). Nguồn: <code>/routes</code> (stops[].lat, stops[].lng). Vùng cấm Decision 23/2018 là lớp phủ thời gian phía solver, <b>không có polygon trong repo</b> → không vẽ vùng giả.</p>
+      <div id="c-map" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>6. Phân tán — tải sử dụng vs km/đơn</h2>
+      <p class="unit">Đơn vị: % (trục X) · km/đơn (trục Y). Nguồn: <code>/analytics/fleet</code> (payload_utilisation_pct, km, orders). cost/order chỉ tồn tại ở cấp tập dữ liệu (<code>kpis.cost.cost_per_order_vnd</code>), không có theo xe.</p>
+      <div id="c-scatter" class="chart"></div>
+      <p class="chart-note" id="note-scatter"></p>
+    </div>
+
+    <div class="card">
+      <h2>7. Chồng — TTW vs WTW</h2>
+      <p class="unit">Đơn vị: kg CO₂e. Nguồn: <code>/analytics/kpis</code> (carbon.kg_co2e_ttw, carbon.kg_co2e_wtw).</p>
+      <div id="c-stacked" class="chart"></div>
+      <p class="chart-note" id="note-stacked"></p>
+    </div>
+  </section>
+
+  <footer id="labels" aria-label="Nhãn bắt buộc">
+    <div>
+      <span class="badge">dataset: <b id="lbl-dataset">…</b></span>
+      <span class="badge">kind: <b id="lbl-kind">…</b></span>
+      <span class="badge">seed: <b id="lbl-seed">…</b></span>
+      <span class="badge">generated_at: <b id="lbl-generated">…</b></span>
+      <span class="badge">period: <b id="lbl-period">…</b></span>
+      <span class="badge">factor set: <b id="lbl-factors">…</b></span>
+      <span class="badge">boundary: <b id="lbl-boundary">…</b></span>
+      <span class="badge">confidence: <b id="lbl-confidence">…</b></span>
+      <span class="badge">model: <b id="lbl-model">…</b></span>
+      <span class="badge">routing_quality: <b id="lbl-routing">…</b></span>
+    </div>
+    <div><span class="must">modelled fuel, not measured</span> — lít và kg CO₂e suy từ định mức l/100km + hệ số IPCC/GLEC, không phải đo từ telemetry nhiên liệu.</div>
+    <div id="lbl-nulls">…</div>
+  </footer>
+
+  <script>
+    const AUTH = { "Authorization": "Bearer DEMO" };   // same credential the dispatcher page sends
+    const MUT = "#9bb5a8";
+    const CHARTS = {};
+
+    async function api(path, opts) {
+      const res = await fetch(path, Object.assign(
+        { headers: Object.assign({ "Content-Type": "application/json" }, AUTH) }, opts || {}));
+      if (!res.ok) throw new Error(path + " -> HTTP " + res.status);
+      return res.json();
+    }
+
+    // A metric may be null (uncomputable) — it must never be drawn as 0.
+    const n = (v) => (typeof v === "number" && isFinite(v)) ? v : null;
+    const txt = (v) => (v === null || v === undefined || v === "" || (typeof v === "number" && !isFinite(v))) ? "n/a" : v;
+    const fixed = (v, d) => (n(v) === null ? "n/a" : Number(v).toFixed(d === undefined ? 1 : d));
+
+    function chart(id) {
+      if (!CHARTS[id]) CHARTS[id] = echarts.init(document.getElementById(id), null, { renderer: "canvas" });
+      return CHARTS[id];
+    }
+
+    function toolbox(name) {
+      // PNG export lives in the chart toolbox (saveAsImage) — no server round-trip.
+      return { right: 6, top: 2, feature: { saveAsImage: { title: "PNG", name: name, pixelRatio: 2 } } };
+    }
+
+    function nullState(id, reason) {
+      const host = document.getElementById(id).parentElement;
+      host.querySelectorAll(".null-state").forEach((el) => el.remove());
+      const p = document.createElement("div");
+      p.className = "null-state";
+      p.textContent = "n/a — " + reason;
+      host.appendChild(p);
+    }
+
+    function clearNull(id) {
+      document.getElementById(id).parentElement.querySelectorAll(".null-state").forEach((el) => el.remove());
+    }
+
+    function kpiTile(label, value, note, isNull) {
+      return '<div class="kpi"><span>' + label + '</span><b class="' + (isNull ? "na" : "") + '">'
+        + value + '</b>' + (note ? "<i>" + note + "</i>" : "") + "</div>";
+    }
+
+    // ---------- 1. area ----------
+    function drawArea(ts) {
+      const points = (ts && ts.points) || [];
+      if (!points.length) {
+        nullState("c-area", "không có điểm dữ liệu: dataset chưa có generated_at (CR §4.3)");
+        return;
+      }
+      clearNull("c-area");
+      chart("c-area").setOption({
+        tooltip: { trigger: "axis" },
+        legend: { data: ["km (km)", "Lít (L, modelled)", "kg CO₂e (kg)"], textStyle: { color: MUT }, bottom: 0 },
+        grid: { left: 56, right: 52, top: 34, bottom: 46 },
+        toolbox: toolbox("glx-area"),
+        xAxis: { type: "category", data: points.map((p) => p.date), axisLabel: { color: MUT } },
+        yAxis: [
+          { type: "value", name: "km / L", axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+          { type: "value", name: "kg CO₂e", axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        ],
+        series: [
+          { name: "km (km)", type: "line", smooth: true, areaStyle: {}, data: points.map((p) => n(p.km)) },
+          { name: "Lít (L, modelled)", type: "line", smooth: true, areaStyle: {}, data: points.map((p) => n(p.litres)) },
+          { name: "kg CO₂e (kg)", type: "line", smooth: true, areaStyle: {}, yAxisIndex: 1, data: points.map((p) => n(p.kg_co2e)) },
+        ],
+      });
+    }
+
+    // ---------- 2. bar ----------
+    function drawBar(fleet) {
+      const vehicles = (fleet && fleet.vehicles) || [];
+      if (!vehicles.length) {
+        nullState("c-bar", "chưa có xe trong dataset (CR §4.4 vehicles=[])");
+        return;
+      }
+      clearNull("c-bar");
+      chart("c-bar").setOption({
+        tooltip: { trigger: "axis" },
+        legend: { data: ["km (km)", "Lít (L, modelled)"], textStyle: { color: MUT }, bottom: 0 },
+        grid: { left: 56, right: 52, top: 34, bottom: 68 },
+        toolbox: toolbox("ecomiles-bar"),
+        xAxis: { type: "category", data: vehicles.map((v) => v.plate), axisLabel: { color: MUT, rotate: 30 } },
+        yAxis: [
+          { type: "value", name: "km", axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+          { type: "value", name: "L", axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        ],
+        series: [
+          { name: "km (km)", type: "bar", data: vehicles.map((v) => n(v.km)) },
+          { name: "Lít (L, modelled)", type: "bar", yAxisIndex: 1, data: vehicles.map((v) => n(v.litres)) },
+        ],
+      });
+    }
+
+    // ---------- 3. donut ----------
+    function drawDonut(fleet) {
+      const vehicles = (fleet && fleet.vehicles) || [];
+      const byFuel = new Map();
+      for (const v of vehicles) {
+        const litres = n(v.litres);
+        if (litres === null) continue;
+        const key = (v.fuel || "unknown");
+        byFuel.set(key, (byFuel.get(key) || 0) + litres);
+      }
+      if (!byFuel.size) {
+        nullState("c-donut", "không có lít theo loại nhiên liệu để chia (CR §4.4 fuel/litres)");
+        return;
+      }
+      clearNull("c-donut");
+      chart("c-donut").setOption({
+        tooltip: { trigger: "item", valueFormatter: (v) => fixed(v, 1) + " L" },
+        legend: { bottom: 0, textStyle: { color: MUT } },
+        toolbox: toolbox("glx-fuel-mix"),
+        series: [{
+          type: "pie", radius: ["42%", "68%"], center: ["50%", "46%"],
+          label: { color: MUT, formatter: "{b}\n{c} L" },
+          data: [...byFuel.entries()].map(([name, value]) => ({ name: name, value: Number(value.toFixed(1)) })),
+        }],
+      });
+    }
+
+    // ---------- 4. line (on-time) ----------
+    function drawLine(ts) {
+      const points = (ts && ts.points) || [];
+      const series = points.map((p) => n(p.otif_pct));
+      if (!series.length || series.every((v) => v === null)) {
+        nullState("c-line", "otif_pct = null: chưa lưu timestamp giao hàng (delivered-at) nên không đo được % đúng hạn; "
+          + "service.late_orders chỉ là rủi ro trễ mô hình hoá, không phải OTIF");
+        return;
+      }
+      clearNull("c-line");
+      chart("c-line").setOption({
+        tooltip: { trigger: "axis", valueFormatter: (v) => (v === null ? "n/a" : fixed(v, 1) + " %") },
+        grid: { left: 56, right: 22, top: 34, bottom: 34 },
+        toolbox: toolbox("glx-on-time"),
+        xAxis: { type: "category", data: points.map((p) => p.date), axisLabel: { color: MUT } },
+        yAxis: { type: "value", name: "%", min: 0, max: 100, axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        series: [{ name: "on-time (%)", type: "line", connectNulls: false, data: series }],
+      });
+    }
+
+    // ---------- 5. map ----------
+    function drawMap(routes) {
+      const lines = [];
+      const depotNodes = [];
+      const stopNodes = [];
+      for (const r of routes || []) {
+        const stops = r.stops || [];
+        const coords = stops.map((s) => [n(s.lng), n(s.lat)]).filter((c) => c[0] !== null && c[1] !== null);
+        if (coords.length < 2) continue;
+        lines.push({ coords: coords, lineStyle: { color: r.color || "#36d9a5", width: 2, opacity: .85 }, name: r.plate });
+        for (const s of stops) {
+          const lng = n(s.lng);
+          const lat = n(s.lat);
+          if (lng === null || lat === null) continue;
+          if (s.kind === "depot") {
+            depotNodes.push({ value: [lng, lat, r.plate], name: r.plate });
+          } else {
+            stopNodes.push({ value: [lng, lat, s.address || r.plate], name: s.address || r.plate });
+          }
+        }
+      }
+      if (!lines.length) {
+        nullState("c-map", "chưa có tuyến để vẽ (GET /routes trả về rỗng) — chạy /seed rồi /optimize trên trang điều hành");
+        return;
+      }
+      clearNull("c-map");
+      chart("c-map").setOption({
+        tooltip: { trigger: "item" },
+        grid: { left: 56, right: 22, top: 34, bottom: 34 },
+        toolbox: toolbox("ecomiles-routes"),
+        xAxis: { type: "value", name: "lng (°)", min: "dataMin", max: "dataMax", scale: true, axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        yAxis: { type: "value", name: "lat (°)", min: "dataMin", max: "dataMax", scale: true, axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        series: [
+          { type: "lines", coordinateSystem: "cartesian2d", polyline: true, data: lines, silent: false },
+          { type: "scatter", symbolSize: 11, data: depotNodes, itemStyle: { color: "#ffd400" }, name: "depot" },
+          { type: "scatter", symbolSize: 5, data: stopNodes, itemStyle: { color: "#36d9a5", opacity: 0.8 }, name: "stops" },
+        ],
+      });
+    }
+
+    // ---------- 6. scatter ----------
+    function drawScatter(fleet, kpis) {
+      const vehicles = (fleet && fleet.vehicles) || [];
+      const rows = vehicles
+        .map((v) => {
+          const fill = n(v.payload_utilisation_pct);
+          const km = n(v.km);
+          const orders = n(v.orders);
+          const perOrder = (km !== null && orders) ? km / orders : null;
+          return { plate: v.plate, fill: fill, perOrder: perOrder, kg: n(v.kg_delivered) };
+        })
+        .filter((r) => r.fill !== null && r.perOrder !== null);
+      if (!rows.length) {
+        nullState("c-scatter", "cần payload_utilisation_pct và km/đơn theo xe — payload_utilisation_pct = null khi capacity_kg = 0 (CR §4.1)");
+        return;
+      }
+      clearNull("c-scatter");
+      const cost = ((kpis || {}).cost) || {};
+      document.getElementById("note-scatter").textContent = n(cost.cost_per_order_vnd) === null
+        ? "cost_per_order_vnd = n/a (chưa đặt ECOMILES_FUEL_PRICE_VND_PER_L) → trục Y dùng km/đơn theo xe; không suy diễn giá nhiên liệu."
+        : "cost_per_order_vnd (toàn tập dữ liệu): " + fixed(cost.cost_per_order_vnd, 1) + " VND/đơn — chỉ có ở cấp tập dữ liệu, không theo xe.";
+      chart("c-scatter").setOption({
+        tooltip: {
+          trigger: "item",
+          formatter: (p) => p.data[3] + "<br/>tải sử dụng: " + fixed(p.data[0], 1) + " %<br/>km/đơn: " + fixed(p.data[1], 2)
+            + " km<br/>kg giao: " + fixed(p.data[2], 1) + " kg",
+        },
+        grid: { left: 56, right: 22, top: 34, bottom: 40 },
+        toolbox: toolbox("glx-fill-vs-km-per-order"),
+        xAxis: { type: "value", name: "payload fill (%)", min: 0, max: 100, axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        yAxis: { type: "value", name: "km/đơn", axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        series: [{
+          type: "scatter",
+          symbolSize: (d) => Math.max(8, Math.min(28, (d[2] || 0) / 120)),
+          data: rows.map((r) => [r.fill, Number(r.perOrder.toFixed(3)), r.kg || 0, r.plate]),
+        }],
+      });
+    }
+
+    // ---------- 7. stacked ----------
+    function drawStacked(kpis) {
+      const carbon = (kpis && kpis.carbon) || {};
+      const ttw = n(carbon.kg_co2e_ttw);
+      const wtw = n(carbon.kg_co2e_wtw);
+      if (ttw === null && wtw === null) {
+        nullState("c-stacked", "carbon.kg_co2e_ttw và kg_co2e_wtw đều null");
+        return;
+      }
+      clearNull("c-stacked");
+      const note = document.getElementById("note-stacked");
+      let decompText = "";
+      if (carbon.decomposition) {
+        const dec = carbon.decomposition;
+        decompText = " · Phân rã PVM/ASI (modelled): Cơ sở=" + fixed(dec.baseline_kg_co2e, 1) + " kg, Tối ưu=" + fixed(dec.optimized_kg_co2e, 1)
+          + " kg (Δ " + fixed(dec.delta_kg_co2e, 1) + " kg), Hiệu ứng cự ly=" + fixed(dec.distance_effect_kg, 1)
+          + " kg, Cường độ đội xe=" + fixed(dec.fleet_intensity_effect_kg, 1) + " kg.";
+      }
+      note.textContent = (wtw === null
+        ? "WTW = n/a — emission_factors.json chỉ có hệ số TTW (không có tỉ lệ WTW/TTW); cột WTW không được vẽ thành 0. "
+          + "Boundary hiển thị: " + txt(carbon.boundary) + "."
+        : "Boundary: TTW (" + fixed(ttw, 1) + " kg CO₂e) · WTW (" + fixed(wtw, 1) + " kg CO₂e, GLEC v3.2 / ISO 14083)."
+      ) + decompText;
+      chart("c-stacked").setOption({
+        tooltip: { trigger: "axis", valueFormatter: (v) => (v === null ? "n/a" : fixed(v, 1) + " kg CO₂e") },
+        legend: { data: ["TTW (kg CO₂e)", "WTW (kg CO₂e)"], textStyle: { color: MUT }, bottom: 0 },
+        grid: { left: 66, right: 22, top: 34, bottom: 46 },
+        toolbox: toolbox("ecomiles-ttw-wtw"),
+        xAxis: { type: "category", data: ["Phát thải CO₂e"], axisLabel: { color: MUT } },
+        yAxis: { type: "value", name: "kg CO₂e", axisLabel: { color: MUT }, nameTextStyle: { color: MUT } },
+        series: [
+          { name: "TTW (kg CO₂e)", type: "bar", barWidth: "28%", data: [ttw] },
+          { name: "WTW (kg CO₂e)", type: "bar", barWidth: "28%", data: [wtw] },
+        ],
+      });
+    }
+
+    function drawKpis(kpis) {
+      const d = kpis.distance || {}, l = kpis.load || {}, s = kpis.service || {}, c = kpis.cost || {}, car = kpis.carbon || {};
+      const tiles = [
+        kpiTile("km_total", fixed(d.km_total, 1) + " km", "", false),
+        kpiTile("km_empty", n(d.km_empty) === null ? "n/a" : fixed(d.km_empty, 1) + " km", "không ghi nhận chặng rỗng (vòng khép kín depot)", n(d.km_empty) === null),
+        kpiTile("empty_running_pct", n(d.empty_running_pct) === null ? "n/a" : fixed(d.empty_running_pct, 1) + " %", "% km rỗng — không đo được", n(d.empty_running_pct) === null),
+        kpiTile("km_per_stop", n(d.km_per_stop) === null ? "n/a" : fixed(d.km_per_stop, 2) + " km", "km/điểm", n(d.km_per_stop) === null),
+        kpiTile("stops_per_hour", n(d.stops_per_hour) === null ? "n/a" : fixed(d.stops_per_hour, 1), "không có thời lượng tuyến trong schema", n(d.stops_per_hour) === null),
+        kpiTile("payload_utilisation_pct", n(l.payload_utilisation_pct) === null ? "n/a" : fixed(l.payload_utilisation_pct, 1) + " %", "% kg giao ÷ capacity_kg xe đã dùng", n(l.payload_utilisation_pct) === null),
+        kpiTile("vehicle_fill_pct", n(l.vehicle_fill_pct) === null ? "n/a" : fixed(l.vehicle_fill_pct, 1) + " %", "% điểm so với xe đầy nhất", n(l.vehicle_fill_pct) === null),
+        kpiTile("orders", txt(s.orders), "đơn", false),
+        kpiTile("otif_pct", n(s.otif_pct) === null ? "n/a" : fixed(s.otif_pct, 1) + " %", "không có timestamp giao hàng", n(s.otif_pct) === null),
+        kpiTile("late_orders (modelled)", txt(s.late_orders), "rủi ro trễ mô hình hoá, không phải OTIF đo được", false),
+        kpiTile("fuel_litres (modelled)", fixed(c.fuel_litres, 1) + " L", "từ định mức l/100km", false),
+        kpiTile("fuel_cost_vnd", n(c.fuel_cost_vnd) === null ? "n/a" : fixed(c.fuel_cost_vnd, 0) + " VND", "cần ECOMILES_FUEL_PRICE_VND_PER_L", n(c.fuel_cost_vnd) === null),
+        kpiTile("cost_per_order_vnd", n(c.cost_per_order_vnd) === null ? "n/a" : fixed(c.cost_per_order_vnd, 0) + " VND/đơn", "VND/đơn", n(c.cost_per_order_vnd) === null),
+        kpiTile("cost_per_km_vnd", n(c.cost_per_km_vnd) === null ? "n/a" : fixed(c.cost_per_km_vnd, 0) + " VND/km", "VND/km", n(c.cost_per_km_vnd) === null),
+        kpiTile("g_co2e_per_tkm", n(car.g_co2e_per_tkm) === null ? "n/a" : fixed(car.g_co2e_per_tkm, 1) + " g/t·km", "g CO₂e/(tấn·km) — GLEC v3.2 / ISO 14083", n(car.g_co2e_per_tkm) === null),
+        kpiTile("g_co2e_per_order", n(car.g_co2e_per_order) === null ? "n/a" : fixed(car.g_co2e_per_order, 1) + " g/đơn", "g CO₂e/đơn", n(car.g_co2e_per_order) === null),
+        kpiTile("kg_co2e_ttw", fixed(car.kg_co2e_ttw, 1) + " kg", "Tank-to-Wheel", false),
+        kpiTile("kg_co2e_wtw", n(car.kg_co2e_wtw) === null ? "n/a" : fixed(car.kg_co2e_wtw, 1) + " kg", n(car.kg_co2e_wtw) === null ? "thiếu hệ số WTW" : "Well-to-Wheel (GLEC v3.2)", n(car.kg_co2e_wtw) === null),
+      ];
+      document.getElementById("kpis").innerHTML = tiles.join("");
+    }
+
+    function drawLabels(kpis) {
+      const ds = kpis.dataset || {}, carbon = kpis.carbon || {}, labels = kpis.labels || {}, period = kpis.period || {};
+      const set = (id, value) => { document.getElementById(id).textContent = txt(value); };
+      set("lbl-dataset", ds.label);
+      set("lbl-kind", ds.kind);
+      set("lbl-seed", ds.seed);
+      set("lbl-generated", ds.generated_at);
+      set("lbl-period", (period.from || "n/a") + " → " + (period.to || "n/a"));
+      set("lbl-factors", carbon.factor_set);
+      set("lbl-boundary", carbon.boundary);
+      set("lbl-confidence", carbon.confidence);
+      set("lbl-model", carbon.model_version);
+      const rq = txt(labels.routing_quality);
+      const rqEl = document.getElementById("lbl-routing");
+      rqEl.textContent = rq + (labels.routing_quality ? "" : " (chưa có nhãn)");
+      rqEl.className = "rq-" + String(rq);
+      const modelled = labels.modelled_fuel === true ? "modelled fuel, not measured" : "fuel source unlabelled by the API";
+      document.getElementById("lbl-nulls").textContent =
+        "Nhãn §4.5 — dataset: " + txt(ds.label) + " · seed: " + txt(ds.seed)
+        + " · factor set: " + txt(carbon.factor_set) + " · boundary: " + txt(carbon.boundary)
+        + " · " + modelled + " · routing_quality: " + rq
+        + " · confidence: " + txt(carbon.confidence) + " · model: " + txt(carbon.model_version)
+        + " · khoá null không bao giờ vẽ thành 0.";
+    }
+
+    function buildCsv(fleet, kpis) {
+      const cols = ["plate", "km", "litres", "kg_co2e", "orders", "kg_delivered", "payload_utilisation_pct", "capacity_kg", "fuel", "l_per_100km_spec"];
+      const ds = kpis.dataset || {}, carbon = kpis.carbon || {};
+      const head = "# dataset=" + txt(ds.label) + " seed=" + txt(ds.seed) + " boundary=" + txt(carbon.boundary)
+        + " factor_set=" + txt(carbon.factor_set) + " routing_quality=" + txt((kpis.labels || {}).routing_quality)
+        + " | litres & kg CO2e = modelled fuel, not measured; empty cells = null metric\n";
+      const rows = (((fleet || {}).vehicles) || []).map((v) => cols.map((c) => (v[c] === null || v[c] === undefined ? "" : v[c])).join(","));
+      return head + cols.join(",") + "\n" + rows.join("\n") + "\n";
+    }
+
+    function download(name, text, mime) {
+      const blob = new Blob([text], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function setStatus(message, isError) {
+      const el = document.getElementById("status");
+      el.textContent = message;
+      el.className = isError ? "error" : "";
+    }
+
+    let LAST = { kpis: null, fleet: null };
+
+    async function loadAll() {
+      setStatus("Đang tải /analytics/* …");
+      // Independent reads → one parallel batch, same origin, dispatcher bearer.
+      const [kpis, timeseries, fleet, routes] = await Promise.all([
+        api("/analytics/kpis"),
+        api("/analytics/timeseries?metric=km&bucket=day"),
+        api("/analytics/fleet"),
+        api("/routes"),
+      ]);
+      LAST = { kpis: kpis, fleet: fleet };
+      drawKpis(kpis);
+      drawLabels(kpis);
+      let ts = timeseries;
+      if ((ts.points || []).length <= 1) {
+        try {
+          const hourly = await api("/analytics/timeseries?metric=km&bucket=hour");
+          if (hourly && hourly.points && hourly.points.length > 1) {
+            ts = hourly;
+            const caption = document.querySelector("#c-area").parentElement.querySelector("p.unit");
+            if (caption) {
+              caption.innerHTML = "Đơn vị: km · L · kg CO₂e (trục phải). Phân bố theo khung giờ (08:00–17:00) cho tập dữ liệu đơn ngày. Lít là <b>modelled</b> (định mức l/100km).";
+            }
+          }
+        } catch (e) {
+          console.warn("Could not fetch hourly timeseries", e);
+        }
+      }
+      drawArea(ts);
+      drawBar(fleet);
+      drawDonut(fleet);
+      drawLine(timeseries);
+      drawMap(routes);
+      drawScatter(fleet, kpis);
+      drawStacked(kpis);
+      const nulls = [];
+      if (kpis.service && kpis.service.otif_pct === null) nulls.push("otif_pct");
+      if (kpis.carbon && kpis.carbon.kg_co2e_wtw === null) nulls.push("kg_co2e_wtw");
+      if (kpis.cost && kpis.cost.cost_per_order_vnd === null) nulls.push("cost_per_order_vnd");
+      setStatus("Tải xong " + (routes || []).length + " tuyến · " + ((fleet.vehicles || []).length) + " xe · "
+        + "không vẽ khoá null (" + (nulls.join(", ") || "không có") + ").");
+    }
+
+    document.getElementById("btn-reload").addEventListener("click", () => {
+      Object.keys(CHARTS).forEach((k) => { CHARTS[k].dispose(); delete CHARTS[k]; });
+      loadAll().catch((err) => setStatus("Lỗi tải dữ liệu: " + err.message, true));
+    });
+    document.getElementById("btn-csv").addEventListener("click", () => {
+      if (!LAST.fleet || !LAST.kpis) { setStatus("CSV: chưa có dữ liệu — bấm Làm mới trước.", true); return; }
+      download("ecomiles-fleet.csv", buildCsv(LAST.fleet, LAST.kpis), "text/csv;charset=utf-8");
+    });
+    document.getElementById("btn-print").addEventListener("click", () => window.print());
+    window.addEventListener("resize", () => Object.values(CHARTS).forEach((c) => c.resize()));
+
+    if (window.echarts === undefined) {
+      setStatus("Không nạp được /static/vendor/echarts.min.js (ECharts 5.5.1 vendored) — biểu đồ không vẽ.", true);
+    } else {
+      loadAll().catch((err) => setStatus("Lỗi tải dữ liệu: " + err.message, true));
+    }
+  </script>
+</body>
+</html>

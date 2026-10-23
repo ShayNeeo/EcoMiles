@@ -1,9 +1,12 @@
 import 'package:url_launcher/url_launcher.dart';
 
 Uri googleMapsDirUri(double lat, double lng) {
-  return Uri.parse(
-    'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng',
-  );
+  return Uri.https('www.google.com', '/maps/dir/', {
+    'api': '1',
+    'destination': '$lat,$lng',
+    'travelmode': 'driving',
+    'dir_action': 'navigate',
+  });
 }
 
 Uri appleMapsDaddrUri(double lat, double lng) {

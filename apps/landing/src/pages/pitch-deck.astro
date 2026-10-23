@@ -1,0 +1,17 @@
+---
+export const prerender = true;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PitchDeckVoiceoverPage } from '../components/PitchDeckVoiceoverPage';
+---
+
+<BaseLayout
+  title="EcoMiles — Pitch Deck & Kịch Bản Thuyết Trình (SO 2026)"
+  description="Kịch bản thuyết trình đề án EcoMiles tham dự Olympic Khởi Nghiệp Sinh Viên SO 2026."
+>
+  <PitchDeckVoiceoverPage
+    client:load
+    onBackToHome={() => {
+      if (typeof window !== 'undefined') window.location.href = '/';
+    }}
+  />
+</BaseLayout>

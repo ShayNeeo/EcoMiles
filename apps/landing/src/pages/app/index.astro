@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EcoMilesPortal } from '../../islands/EcoMilesPortal';
+---
+
+<BaseLayout
+  title="EcoMiles — Ứng Dụng Điều Hành Vận Tải Đô Thị"
+  description="Hệ sinh thái điều phối vận tải B2B EcoMiles: tối ưu lộ trình, cắt giảm chi phí và kiểm kê phát thải."
+>
+  <EcoMilesPortal client:load initialRoute="/dispatcher" />
+</BaseLayout>

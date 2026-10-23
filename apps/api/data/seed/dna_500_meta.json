@@ -1,0 +1,27 @@
+{
+  "label": "dn-a-enterprise-sim-500",
+  "kind": "simulated",
+  "seed": 20261018,
+  "days": 7,
+  "date_range": [
+    "2026-10-18",
+    "2026-10-24"
+  ],
+  "generated_at": "2026-10-23T18:29:02+00:00",
+  "rows": 500,
+  "columns": [
+    "external_id",
+    "address",
+    "lat",
+    "lng",
+    "receiver",
+    "phone",
+    "kg",
+    "window_start",
+    "window_end",
+    "cargo_type",
+    "notes"
+  ],
+  "xlsx": "dna_500_orders.xlsx",
+  "sha256": "503bb30d5b95245eb08a53b4acaed8b38b3f163e5f6d843564713b0d35646af7"
+}

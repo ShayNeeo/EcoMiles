@@ -1,4 +1,4 @@
-# 🚛 GreenLogix Platform (Powered by CargoX Engine)
+# 🚛 EcoMiles Platform
 
 > **B2B SaaS Urban Logistics Optimization & ISO 14083 / GLEC Carbon Accounting**  
 > Giải pháp tối ưu tuyến đường giao nhận đa ràng buộc (VRPTW) kết hợp kiểm kê và báo cáo phát thải CO₂ tự động cho bưu cục và doanh nghiệp vận tải đô thị.
@@ -94,15 +94,15 @@ Từ nay, mọi commit hoặc pull request merge vào `main` sẽ tự động c
 
 ---
 
-## GreenLogix 72h contest demo
+## EcoMiles 72h contest demo
 
-Contest loop on the HCMC 80/10 sample. Cold start needs **only** `GREENLOGIX_DEMO=1` (optional `TZ=Asia/Ho_Chi_Minh`). No Mapbox, Goong, Google Maps, HERE, or OpenRouteService keys. Nominatim is **not** on this path — `apps/api/data/seed/hcmc_80_orders.xlsx` already has lat/lng.
+Contest loop on the HCMC 80/10 sample. Cold start needs **only** `ECOMILES_DEMO=1` (or `GREENLOGIX_DEMO=1`, optional `TZ=Asia/Ho_Chi_Minh`). No Mapbox, Goong, Google Maps, HERE, or OpenRouteService keys. Nominatim is **not** on this path — `apps/api/data/seed/hcmc_80_orders.xlsx` already has lat/lng.
 
 **Auth (localhost-only, D-19):** dispatcher `Authorization: Bearer DEMO`, driver PIN `0000`. Do not expose this process on the public internet.
 
 **Depot:** Tân Bình DC `10.801, 106.661`.
 
-**Distance:** road km = haversine × named constant `HCMC_CIRCUITY=1.35`. The spreadsheet-order baseline and the clustered NN+2-opt plan use the same factor.
+**Distance:** Google-class road km uses the `RoadBaseline` interface. Production default is Valhalla **truck** (xe_tai_nho envelope) → OSRM `driving` → haversine × `HCMC_CIRCUITY=1.35`, with retries and a 5-minute matrix cache. Spreadsheet-order baseline and clustered NN+2-opt share the same provider (that comparison is **not** Google). A Google Directions key can plug in later behind the same interface; `ROAD_BASELINE=google` without a key stays on OSM. Do not scrape Google. `ECOMILES_ECO_WEIGHT` in `[0,1]` (live worker: `1`) assigns lower-TTW trucks first and blends kg CO₂ into NN+2-opt; reported totals stay physical TTW km.
 
 **CO₂ (TTW estimate, not an ISO 14083 pack):** `kg_co2 = road_km × (l_per_100km/100) × kg_co2_per_litre` from `apps/api/data/emission_factors.json` — petrol **2.31**, diesel **2.68** (IPCC 2006 Vol.2 Table 1.4 × Table 1.2 NCV; GLEC v3.2 Europe TTW cross-check).
 
@@ -114,10 +114,10 @@ cd apps/api
 uv python pin 3.12 && uv sync
 
 # 2. Seed 80 orders + 10 trucks into SQLite
-GREENLOGIX_DEMO=1 uv run python -m greenlogix_api.seed
+ECOMILES_DEMO=1 uv run python -m greenlogix_api.seed
 
 # 3. Bind 0.0.0.0 so emulator 10.0.2.2 and phones on LAN can reach the API
-GREENLOGIX_DEMO=1 uv run uvicorn greenlogix_api.main:app --host 0.0.0.0 --port 8000
+ECOMILES_DEMO=1 uv run uvicorn greenlogix_api.main:app --host 0.0.0.0 --port 8000
 ```
 
 4. Open http://127.0.0.1:8000/dispatcher — Seed (if needed), Optimize, see Leaflet OSM routes, Publish.

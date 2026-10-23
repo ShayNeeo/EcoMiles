@@ -9,6 +9,7 @@ from sqlmodel import Session
 
 from greenlogix_api import db as dbmod
 from greenlogix_api.models import Order
+from greenlogix_api.routers.driver import MAX_PHOTO_BYTES
 
 AUTH = {"Authorization": "Bearer DEMO"}
 PIN = {"X-Driver-Pin": "0000"}
@@ -170,3 +171,23 @@ def test_photo_rejects_non_image(demo_client) -> None:
         files={"photo": ("notes.txt", b"not an image", "text/plain")},
     )
     assert res.status_code == 400
+
+
+def test_photo_rejects_oversize_before_storing(demo_client, tmp_path, monkeypatch) -> None:
+    """F2: the POD cap is checked before the body is pulled into RAM/disk."""
+    uploads = tmp_path / "uploads"
+    uploads.mkdir()
+    monkeypatch.setattr(dbmod, "UPLOADS_DIR", uploads)
+    _seed_optimize(demo_client)
+    demo_client.post("/routes/publish", headers=AUTH, json={"route_ids": []})
+    routes = demo_client.get("/routes", headers=AUTH).json()
+    stop = next(s for r in routes for s in r["stops"] if s.get("kind") == "stop")
+    oversize = JPEG + b"\x00" * MAX_PHOTO_BYTES
+    res = demo_client.post(
+        f"/stops/{stop['id']}/photo",
+        headers=PIN,
+        files={"photo": ("pod.jpg", oversize, "image/jpeg")},
+    )
+    assert res.status_code == 400
+    assert res.json()["detail"] == "invalid_image"
+    assert list(uploads.iterdir()) == []

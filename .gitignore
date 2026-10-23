@@ -5,6 +5,7 @@ node_modules/
 # Production Build Outputs
 dist/
 build/
+.build/
 .output/
 
 # Logs & Environment
@@ -23,12 +24,13 @@ build/
 Thumbs.db
 
 # Agentic scratch & temp
+.agents/
 .serena/
 .loop-state/
 graphify-out/
 .graphify/
 .graphifyrc
-thanh.jpeg
+/thanh.jpeg
 .worktrees/
 
 # Python / Flutter local
@@ -43,3 +45,9 @@ apps/api/data/last_report.json
 apps/api/data/uploads/
 apps/mobile-driver/.dart_tool/
 apps/mobile-driver/build/
+
+# Transient sessions & state
+.opencode-state/
+omp-session-*.html
+slides/.comments/
+.~lock.*#

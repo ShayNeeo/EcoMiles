@@ -9,7 +9,7 @@ def test_health_ok() -> None:
     with TestClient(app) as client:
         res = client.get("/health")
     assert res.status_code == 200
-    assert res.json() == {"status": "ok"}
+    assert res.json()["status"] == "ok"  # additive version fields allowed
 
 
 def test_openapi_json_public() -> None:
@@ -19,3 +19,14 @@ def test_openapi_json_public() -> None:
     body = res.json()
     assert "paths" in body
     assert "/health" in body["paths"]
+
+
+def test_api_prefix_routing() -> None:
+    with TestClient(app) as client:
+        res = client.get("/api/health")
+        assert res.status_code == 200
+        assert res.json()["status"] == "ok"
+
+        res_slash = client.get("/api/health/")
+        assert res_slash.status_code == 200
+        assert res_slash.json()["status"] == "ok"

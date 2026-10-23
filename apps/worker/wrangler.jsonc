@@ -18,6 +18,9 @@
     }
   ],
   "vars": {
-    "ENVIRONMENT": "production"
+    "ENVIRONMENT": "production",
+    "ROAD_BASELINE": "auto",
+    "ROAD_BASELINE_COSTING": "truck",
+    "GREENLOGIX_ECO_WEIGHT": "1"
   }
 }

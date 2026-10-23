@@ -60,7 +60,13 @@ def test_protected_operations(
     with TestClient(app) as client:
         response = client.request(method, path, json=body, files=files, headers=headers)
     assert response.status_code == (
-        success if demo == "1" and credential == "valid" else 401
+        success
+        if demo == "1"
+        and (
+            credential == "valid"
+            or (credential == "other_role" and role == "driver")
+        )
+        else 401
     )
 
 

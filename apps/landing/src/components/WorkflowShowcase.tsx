@@ -48,7 +48,7 @@ export const WorkflowShowcase: React.FC = () => {
     {
       num: '01',
       title: 'Tiếp Nhận Đơn Hàng',
-      icon: <FileSpreadsheet className="w-5 h-5 text-greenlogix-lime" />,
+      icon: <FileSpreadsheet className="w-5 h-5 text-ecomiles-lime" />,
       summary: 'Nhập nhanh danh sách hơn 80 đơn hàng từ bảng tính hoặc hệ thống đang sử dụng.',
       details:
         'Hệ thống tự động đọc và chuẩn hóa địa chỉ, khối lượng hàng, khung giờ cam kết (Time Windows) và yêu cầu bảo quản hàng hóa.',
@@ -75,7 +75,7 @@ export const WorkflowShowcase: React.FC = () => {
     {
       num: '04',
       title: 'Tối Ưu Tuyến & Phân Bổ Xe',
-      icon: <Route className="w-5 h-5 text-greenlogix-lime" />,
+      icon: <Route className="w-5 h-5 text-ecomiles-lime" />,
       summary: 'Tính tuyến đường phù hợp cho toàn bộ đơn hàng chỉ trong vài giây.',
       details:
         'Tự động phân xe phù hợp nhất cho từng cụm, tối ưu thứ tự điểm giao để không chạy lặp vòng và ưu tiên đơn có khung giờ giao gấp.',
@@ -102,7 +102,7 @@ export const WorkflowShowcase: React.FC = () => {
     {
       num: '07',
       title: 'Theo Dõi Vị Trí & Tránh Kẹt Xe',
-      icon: <Navigation className="w-5 h-5 text-greenlogix-lime" />,
+      icon: <Navigation className="w-5 h-5 text-ecomiles-lime" />,
       summary: 'Người quản lý theo dõi toàn bộ đội xe trên màn hình bản đồ.',
       details:
         'Theo dõi xe đang ở đâu, tiến độ giao bao nhiêu đơn, xe nào trễ hẹn. Nếu tuyến phía trước ùn tắc, hệ thống gợi ý tuyến thay thế ngay.',
@@ -127,7 +127,7 @@ export const WorkflowShowcase: React.FC = () => {
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-white/5" aria-hidden="true">
         <motion.div
-          className="h-full origin-left bg-gradient-to-r from-greenlogix-mint via-greenlogix-lime to-greenlogix-sage will-change-transform"
+          className="h-full origin-left bg-gradient-to-r from-ecomiles-mint via-ecomiles-lime to-ecomiles-sage will-change-transform"
           style={{ scaleX: shouldReduceMotion ? 1 : smoothProgress }}
         />
       </div>
@@ -140,17 +140,17 @@ export const WorkflowShowcase: React.FC = () => {
           variants={revealItem}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-bold text-greenlogix-lime mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-bold text-ecomiles-lime mb-4">
             <Layers className="w-3.5 h-3.5" />
             <span>QUY TRÌNH VẬN HÀNH 8 BƯỚC KHÉP KÍN</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Từ Nhận Đơn Đến <span className="text-greenlogix-lime">Báo Cáo CO₂ Chuẩn Hóa</span>
+            Từ Nhận Đơn Đến <span className="text-ecomiles-lime">Báo Cáo CO₂ Chuẩn Hóa</span>
           </h2>
 
           <p className="mt-4 text-sm sm:text-base text-slate-300">
-            Tình huống thực tế: Doanh nghiệp phân phối thực phẩm tại TP.HCM xử lý 80 đơn hàng mỗi ngày với 10 phương tiện qua hệ thống GreenLogix.
+            Tình huống thực tế: Doanh nghiệp phân phối thực phẩm tại TP.HCM xử lý 80 đơn hàng mỗi ngày với 10 phương tiện qua hệ thống EcoMiles.
           </p>
         </motion.div>
 
@@ -171,14 +171,14 @@ export const WorkflowShowcase: React.FC = () => {
               whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
               className={`relative overflow-hidden p-3.5 sm:p-4 rounded-2xl text-left transition-colors duration-200 border flex flex-col justify-between cursor-pointer ${
                 activeStep === idx
-                  ? 'bg-slate-900 border-greenlogix-lime shadow-lg shadow-greenlogix-lime/10'
+                  ? 'bg-slate-900 border-ecomiles-lime shadow-lg shadow-ecomiles-lime/10'
                   : 'bg-slate-900/40 border-white/5 hover:bg-slate-900/70 text-slate-400 hover:text-slate-200'
               }`}
             >
               {activeStep === idx && (
                 <motion.span
                   layoutId="active-workflow-step"
-                  className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-inset ring-greenlogix-lime/80"
+                  className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-inset ring-ecomiles-lime/80"
                   transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                   aria-hidden="true"
                 />
@@ -186,7 +186,7 @@ export const WorkflowShowcase: React.FC = () => {
               <div className="flex items-center justify-between mb-2">
                 <span
                   className={`font-barlow font-bold text-lg ${
-                    activeStep === idx ? 'text-greenlogix-lime' : 'text-slate-500'
+                    activeStep === idx ? 'text-ecomiles-lime' : 'text-slate-500'
                   }`}
                 >
                   {item.num}
@@ -225,7 +225,7 @@ export const WorkflowShowcase: React.FC = () => {
                 {steps[activeStep].icon}
               </div>
               <div>
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-greenlogix-lime bg-greenlogix-lime/10 px-2.5 py-0.5 rounded-full border border-greenlogix-lime/20">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-ecomiles-lime bg-ecomiles-lime/10 px-2.5 py-0.5 rounded-full border border-ecomiles-lime/20">
                   Bước {steps[activeStep].num} • {steps[activeStep].badge}
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold text-white mt-1">
@@ -254,7 +254,7 @@ export const WorkflowShowcase: React.FC = () => {
             </div>
 
             <div className="p-5 rounded-2xl bg-slate-950/90 border border-white/10 space-y-3 text-xs">
-              <div className="font-bold text-greenlogix-lime uppercase tracking-wider text-[11px]">
+              <div className="font-bold text-ecomiles-lime uppercase tracking-wider text-[11px]">
                 Giá Trị Đạt Được Tại Bước Này
               </div>
               <div className="flex items-center gap-2 text-slate-200">
@@ -283,7 +283,7 @@ export const WorkflowShowcase: React.FC = () => {
           className="bg-slate-900/60 rounded-3xl p-6 sm:p-9 border border-white/10"
         >
           <h3 className="text-xl font-bold text-white text-center mb-6">
-            So Sánh Hiệu Quả: <span className="text-slate-400">Phương Án Cũ</span> và <span className="text-greenlogix-lime">GreenLogix</span>
+            So Sánh Hiệu Quả: <span className="text-slate-400">Phương Án Cũ</span> và <span className="text-ecomiles-lime">EcoMiles</span>
           </h3>
 
           <div className="overflow-x-auto">
@@ -292,7 +292,7 @@ export const WorkflowShowcase: React.FC = () => {
                 <tr className="border-b border-white/10 text-slate-400">
                   <th className="py-3 px-4">Hạng Mục</th>
                   <th className="py-3 px-4">Phương Án Cũ (Làm thủ công trên bảng tính)</th>
-                  <th className="py-3 px-4 text-greenlogix-lime">Phương Án Tối Ưu GreenLogix</th>
+                  <th className="py-3 px-4 text-ecomiles-lime">Phương Án Tối Ưu EcoMiles</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 text-slate-300">

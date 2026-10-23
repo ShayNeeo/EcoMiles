@@ -1,6 +1,6 @@
 # AGENTS.md
 
-GreenLogix / CargoX — pnpm monorepo for a Vietnam urban-logistics MVP (landing + dispatcher API + Flutter driver).
+EcoMiles — pnpm monorepo for a Vietnam urban-logistics MVP (landing + dispatcher API + Flutter driver).
 
 ## Before any edit
 
@@ -37,7 +37,7 @@ Production deploys from **`stable`**.
 - `apps/mobile-driver` — Flutter (Phase 1)
 - `apps/web-portal` — placeholder; do not invent a Next.js app unless a CR says so
 - `docs/planning` — strategy, MVP, finance
-- `docs/contest` — contest packet
+- `docs/contests` — contest packets (SO 2026, RND 2026)
 - `rules/` — this team's process (source of truth)
 - `.planning/` — GSD plans; do not parallel-edit PLAN.md
 

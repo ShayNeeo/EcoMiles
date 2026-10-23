@@ -3,7 +3,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>GreenLogix — Điều hành tuyến (Cloudflare 24/7)</title>
+  <title>EcoMiles — Điều hành tuyến (Cloudflare 24/7)</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
@@ -154,7 +154,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
   <header>
     <div class="brand">
       <i data-lucide="layers" style="width:20px;height:20px;color:var(--lime)"></i>
-      <h1>GREEN<span>LOGIX</span></h1>
+      <h1>ECO<span>MILES</span></h1>
       <span class="badge-edge">Cloudflare 24/7</span>
     </div>
     <div class="row">
@@ -203,10 +203,15 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
         </thead>
         <tbody>
           <tr><th>Zig-zag cơ sở</th><td id="base-km">0</td><td id="base-litres">0</td><td id="base-co2">0</td></tr>
-          <tr><th>GreenLogix</th><td id="opt-km">0</td><td id="opt-litres">0</td><td id="opt-co2">0</td></tr>
+          <tr><th>EcoMiles</th><td id="opt-km">0</td><td id="opt-litres">0</td><td id="opt-co2">0</td></tr>
           <tr><th>Hiệu quả Δ %</th><td id="pct-km" class="delta">0%</td><td id="pct-litres" class="delta">0%</td><td id="pct-co2" class="delta">0%</td></tr>
         </tbody>
       </table>
+      <p class="note" id="road-baseline-note" style="font-size:11px;color:var(--mut);line-height:1.45;margin:8px 0 4px">
+        Google-class road km = OSM network (Valhalla auto/truck, else OSRM driving) for now — not a Google key.
+        Zig-zag cơ sở is Excel stop order vs NN+2-opt, not Google. Fallback: haversine × 1.35.
+        CO₂ TTW: km × (L/100km) × kg/L. Optional eco-cost: ECOMILES_ECO_WEIGHT.
+      </p>
 
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('routes')">
@@ -289,6 +294,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
       safeCreateIcons();
     }
     function num(v) { return Number(v || 0).toFixed(2); }
+    function esc(v) { return (v == null ? "" : String(v)).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
 
     function switchTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -395,11 +401,11 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
             ? '<span style="color:#f59e0b;font-weight:700">⚠️ Giờ cấm tải TP.HCM (06-09h / 16-20h)</span><br/>'
             : '';
           const m = L.marker([stop.lat, stop.lng], { icon })
-            .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + stop.address) + '</b><br/>' +
-                       'Xe: ' + route.plate + '<br/>' +
-                       'Tải: ' + stop.kg + ' kg (' + (stop.window_start || '') + ' - ' + (stop.window_end || '') + ')<br/>' +
+            .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + esc(stop.address)) + '</b><br/>' +
+                       'Xe: ' + esc(route.plate) + '<br/>' +
+                       'Tải: ' + stop.kg + ' kg (' + esc(stop.window_start || '') + ' - ' + esc(stop.window_end || '') + ')<br/>' +
                        banNotice +
-                       'Trạng thái: <b>' + (stop.status || 'pending') + '</b>')
+                       'Trạng thái: <b>' + esc(stop.status || 'pending') + '</b>')
             .addTo(map);
           markers.push(m);
         });
@@ -414,7 +420,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
       for (const r of routes || []) {
         const div = document.createElement("div");
         div.className = "chip" + (String(activeVehicleId) === String(r.vehicle_id) ? " active" : "");
-        div.innerHTML = '<span class="chip-dot" style="background:' + r.color + '"></span>' + r.plate;
+        div.innerHTML = '<span class="chip-dot" style="background:' + r.color + '"></span>' + esc(r.plate);
         div.onclick = () => filterVehicle(r.vehicle_id);
         c.appendChild(div);
       }
@@ -445,7 +451,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
         card.className = "route-card";
         card.innerHTML =
           '<div class="route-header">' +
-            '<span class="route-plate"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + r.color + '"></span>' + r.plate + '</span>' +
+            '<span class="route-plate"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + r.color + '"></span>' + esc(r.plate) + '</span>' +
             '<span class="badge-status ' + (r.published ? 'badge-delivered' : 'badge-pending') + '">' + (r.published ? 'ĐÃ PHÁT' : 'CHỜ DUYỆT') + '</span>' +
           '</div>' +
           '<div class="route-meta">' +
@@ -477,6 +483,16 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
       document.getElementById("km").textContent = num(o.km);
       document.getElementById("litres").textContent = num(o.litres);
       document.getElementById("kg_co2").textContent = num(o.kg_co2);
+      const note = document.getElementById("road-baseline-note");
+      if (note) {
+        const provider = r.distance_provider || "circuity";
+        const eco = r.eco_weight == null ? "0" : String(r.eco_weight);
+        note.textContent =
+          "Live road km: " + provider +
+          " (Valhalla truck / OSRM driving, circuity fallback). Google Directions key later, same RoadBaseline." +
+          " Zig-zag cơ sở is Excel order vs NN+2-opt, not Google. Eco-weight " + eco +
+          " (TTW kg CO₂).";
+      }
     }
 
     async function refreshRoutes() {
@@ -502,11 +518,11 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
             '<div class="stop-left">' +
               '<span class="stop-seq" style="background:' + r.color + ';color:#000">' + s.seq + '</span>' +
               '<div style="display:flex;flex-direction:column">' +
-                '<span class="stop-address" title="' + s.address + '">' + s.address + '</span>' +
-                '<span style="font-size:10px;color:var(--mut)">' + r.plate + ' · ' + (s.window_start || '') + '-' + (s.window_end || '') + (hasBan ? '<span class="badge-ban"><i data-lucide="shield-alert" style="width:10px;height:10px"></i> Cấm tải</span>' : '') + '</span>' +
+                '<span class="stop-address" title="' + esc(s.address) + '">' + esc(s.address) + '</span>' +
+                '<span style="font-size:10px;color:var(--mut)">' + esc(r.plate) + ' · ' + esc(s.window_start || '') + '-' + esc(s.window_end || '') + (hasBan ? '<span class="badge-ban"><i data-lucide="shield-alert" style="width:10px;height:10px"></i> Cấm tải</span>' : '') + '</span>' +
               '</div>' +
             '</div>' +
-            '<span class="badge-status badge-' + (s.status || 'pending') + '">' + (s.status || 'pending') + '</span>';
+            '<span class="badge-status badge-' + esc(s.status || 'pending') + '">' + esc(s.status || 'pending') + '</span>';
           ul.appendChild(li);
         }
       }
@@ -522,8 +538,8 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
         const item = document.createElement("div");
         item.className = "stop-item";
         item.innerHTML =
-          '<div><b>' + v.plate + '</b> <span style="color:var(--mut)">(' + v.capacity_kg + ' kg)</span></div>' +
-          '<span class="badge-status ' + (v.status === 'ready' ? 'badge-delivered' : 'badge-failed') + '">' + v.status + '</span>';
+          '<div><b>' + esc(v.plate) + '</b> <span style="color:var(--mut)">(' + v.capacity_kg + ' kg' + (v.type ? ' · ' + esc(v.type) : '') + ')</span></div>' +
+          '<span class="badge-status ' + (v.status === 'ready' ? 'badge-delivered' : 'badge-failed') + '">' + esc(v.status) + '</span>';
         c.appendChild(item);
       }
     }
@@ -531,17 +547,19 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
     // Action handlers
     document.getElementById("btn-seed").onclick = async () => {
       try {
+        setStatus("Đang nạp 80 đơn hàng chuẩn & tối ưu tuyến trên Cloudflare D1...");
         const body = await api("/seed", { method: "POST" });
-        setStatus("Đã nạp dữ liệu chuẩn 80 đơn hàng & 10 xe tải");
         await Promise.all([refreshRoutes(), refreshReport(), refreshVehicles()]);
+        setStatus("Đã nạp dữ liệu & tối ưu thành công " + (body.orders || 80) + " đơn hàng trên " + (body.routes || 5) + " tuyến xe tải!");
       } catch (err) { setStatus(String(err)); }
     };
 
     document.getElementById("btn-optimize").onclick = async () => {
       try {
+        setStatus("Đang chạy thuật toán VRPTW 2-Opt...");
         const body = await api("/optimize", { method: "POST", body: JSON.stringify({ cluster_radius_km: 3.0 }) });
-        setStatus("Đã hoàn thành tối ưu " + (body.routes || []).length + " tuyến với VRPTW 2-Opt");
         await Promise.all([refreshRoutes(), refreshReport()]);
+        setStatus("Đã hoàn thành tối ưu " + (body.routes || []).length + " tuyến với VRPTW 2-Opt");
       } catch (err) { setStatus(String(err)); }
     };
 
@@ -568,15 +586,25 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "greenlogix_co2_report.csv";
+        a.download = "ecomiles_co2_report.csv";
         a.click();
         URL.revokeObjectURL(url);
-        setStatus("Đã tải tệp báo cáo phát thải greenlogix_co2_report.csv");
+        setStatus("Đã tải tệp báo cáo phát thải ecomiles_co2_report.csv");
       } catch (err) { setStatus(String(err)); }
     };
 
     // Initial load
-    Promise.all([refreshRoutes(), refreshReport(), refreshVehicles()]).then(() => {
+    Promise.all([refreshRoutes(), refreshReport(), refreshVehicles()]).then(async () => {
+      const countEl = document.getElementById("route-count");
+      if (countEl && (countEl.textContent === "0" || countEl.textContent === "")) {
+        setStatus("Đang tự động nạp 80 đơn hàng & tối ưu tuyến ban đầu...");
+        try {
+          const body = await api("/seed", { method: "POST" });
+          await Promise.all([refreshRoutes(), refreshReport(), refreshVehicles()]);
+        } catch (e) {
+          console.warn("Auto-seed error:", e);
+        }
+      }
       setStatus("Hệ thống sẵn sàng trên Cloudflare Edge 24/7");
       safeCreateIcons();
     }).catch(err => {

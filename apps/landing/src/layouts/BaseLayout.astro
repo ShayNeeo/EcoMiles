@@ -1,0 +1,50 @@
+---
+import '../index.css';
+import '../App.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'EcoMiles — Giao Hàng Đúng Hẹn, Tiết Kiệm Chi Phí & Giảm Phát Thải',
+  description = 'EcoMiles giúp doanh nghiệp tự động sắp xếp tuyến giao hàng, giảm chi phí nhiên liệu, theo dõi đội xe và tính lượng CO₂ phát thải chuẩn GLEC v3.2 / ISO 14083.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffd400'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/></svg>"
+    />
+
+    <!-- Google Fonts: Inter, JetBrains Mono, Plus Jakarta Sans, Barlow Condensed -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- SEO Meta Tags in Vietnamese -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#030817" />
+    <!-- Vendored Apache ECharts 5.5.1 (offline-ready, Apache-2.0) -->
+    <script is:inline src="/vendor/echarts.min.js"></script>
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-ecomiles-lime selection:text-slate-950 overflow-x-hidden min-h-screen">
+    <slot />
+  </body>
+</html>

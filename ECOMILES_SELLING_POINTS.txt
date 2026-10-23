@@ -1,0 +1,22 @@
+ECOMILES / GREENLOGIX – ĐIỂM NỔI BẬT (COPY-PASTE)
+
+1. Thuật toán tối ưu riêng, không phụ thuộc Google Maps.
+Heuristic VRP + EcoALNS do GreenLogix phát triển: chia cụm, Nearest-Neighbor, 2-opt, tối ưu sinh thái. Google chỉ dùng để hiển thị dẫn đường cuối, không dùng để tính tuyến.
+
+2. Tối ưu kép: chi phí + CO₂.
+Mỗi tuyến được chấm điểm theo km, tải trọng, tốc độ, dừng/đỗ. Trả về tập phương án Pareto để điều phối viên chọn: rẻ nhất, xanh nhất, cân bằng nhất.
+
+3. Hiểu xe tải TP.HCM.
+Hồ sơ theo từng xe: cao, rộng, dài, tổng tải. Áp lớp cấm tải theo QĐ 23/2018 TP.HCM, loại tuyến vi phạm trước khi giao việc.
+
+4. Đo CO₂ tới từng đơn hàng.
+Mỗi đơn, mỗi chuyến có số km, nhiên liệu ước tính, CO₂ ước tính. Phục vụ báo cáo ESG, hướng tới tương thích GLEC/ISO 14083.
+
+5. Chạy đầu–cuối cho SME.
+Điều phối viên giao việc 1 click. Tài xế mở PWA thấy tuyến, điểm dừng, bấm dẫn đường. Không cần đầu tư phần cứng.
+
+6. Địa chỉ Việt Nam thực tế.
+Chuẩn hoá địa chỉ, toạ độ, phường/xã TP.HCM. Giảm giao sai, giao lặp, xe chạy rỗng.
+
+7. Triển khai nhẹ, chi phí thấp.
+PWA + Cloud, không app native, không thiết bị định vị. Pilot 4–6 tuần cho đội xe 30–100 xe.

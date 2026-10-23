@@ -12,7 +12,7 @@ One primary editor per path **during a CR**. GitHub CODEOWNERS (`.github/CODEOWN
 | `apps/web-portal/**` | Thanh | Placeholder until Phase 2 |
 | `packages/shared-types/**` | Chiến | Contracts; freeze before Flutter consumes |
 | `docs/planning/**` | Phúc + Khang | Finance / strategy; engineers don't rewrite numbers |
-| `docs/contest/**` | Khang | Contest packet |
+| `docs/contests/**` | Khang | Contest packet |
 | `rules/**` `.github/**` `AGENTS.md` | Thanh | Process |
 | `.planning/**` | whoever opened the GSD phase | Don't parallel-edit PLAN.md |
 

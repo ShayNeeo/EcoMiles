@@ -3,7 +3,7 @@ export const DRIVER_HTML = `<!DOCTYPE html>
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>GreenLogix — Ứng dụng tài xế (Driver PWA)</title>
+  <title>EcoMiles — Ứng dụng tài xế (Driver PWA)</title>
   <script src="https://unpkg.com/lucide@0.475.0/dist/umd/lucide.min.js"></script>
   <style>
     :root {
@@ -109,6 +109,7 @@ export const DRIVER_HTML = `<!DOCTYPE html>
     .btn-failed { background: #450a0a; color: #fca5a5; border: 1px solid #991b1b; }
     .btn-act:hover { filter: brightness(1.2); }
     .btn-act:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-navig { background: #0f2744; color: #60a5fa; border: 1px solid #1e40af; text-decoration: none; width: 100%; box-sizing: border-box; }
 
     /* Empty state */
     .empty-card {
@@ -134,7 +135,7 @@ export const DRIVER_HTML = `<!DOCTYPE html>
   <header>
     <div class="brand">
       <i data-lucide="truck" style="width:18px;height:18px;color:var(--lime)"></i>
-      <h1>GREEN<span>LOGIX</span></h1>
+      <h1>ECO<span>MILES</span></h1>
       <span class="badge-driver">Tài xế</span>
     </div>
     <select class="vehicle-selector" id="plate-select" onchange="loadDriverRoute()">
@@ -199,6 +200,7 @@ export const DRIVER_HTML = `<!DOCTYPE html>
         }
       }
     }
+    function esc(v) { return (v == null ? "" : String(v)).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
 
     function safeCreateIcons() {
       if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -247,7 +249,7 @@ export const DRIVER_HTML = `<!DOCTYPE html>
         const route = (data.routes || [])[0] || null;
         
         if (!route || !route.stops || !route.stops.length) {
-          container.innerHTML = '<div class="empty-card"><i data-lucide="inbox" style="width:32px;height:32px;margin-bottom:8px"></i><div>Chưa có lộ trình được xuất bản cho xe <b>' + plate + '</b>.<br/>Vui lòng liên hệ điều hành viên hoặc vào Bàn điều hành bấm <b>Publish tài xế</b>.</div></div>';
+          container.innerHTML = '<div class="empty-card"><i data-lucide="inbox" style="width:32px;height:32px;margin-bottom:8px"></i><div>Chưa có lộ trình được xuất bản cho xe <b>' + esc(plate) + '</b>.<br/>Vui lòng liên hệ điều hành viên hoặc vào Bàn điều hành bấm <b>Publish tài xế</b>.</div></div>';
           document.getElementById("stat-total").textContent = "0";
           document.getElementById("stat-done").textContent = "0";
           document.getElementById("stat-kg").textContent = "0 kg";
@@ -282,12 +284,17 @@ export const DRIVER_HTML = `<!DOCTYPE html>
             failed: "Thất bại"
           }[s.status || "pending"] || s.status;
 
+          const mapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(s.lat + ',' + s.lng) + '&travelmode=driving&dir_action=navigate';
           const actionsHtml = isDepot
             ? '<div style="font-size:12px;color:var(--mut)">Điểm xuất phát trung tâm / Depot Tân Bình</div>'
-            : '<div class="stop-actions">' +
-                '<button class="btn-act btn-arrived" onclick="updateStop(' + s.id + ', \\'arrived\\')" ' + (s.status === "delivered" ? "disabled" : "") + '><i data-lucide="map-pin" style="width:13px;height:13px"></i>Đến nơi</button>' +
-                '<button class="btn-act btn-delivered" onclick="updateStop(' + s.id + ', \\'delivered\\')"><i data-lucide="check-circle" style="width:13px;height:13px"></i>Đã giao</button>' +
-                '<button class="btn-act btn-failed" onclick="onFailClick(' + s.id + ')"><i data-lucide="x-circle" style="width:13px;height:13px"></i>Báo hoãn</button>' +
+            : '<div style="display:flex;flex-direction:column;gap:6px">' +
+                '<a href="' + mapsUrl + '" target="_blank" rel="noopener noreferrer" title="Google sẽ tính lại tuyến khi mở — không phải tuyến xe tải đã duyệt" class="btn-act btn-navig" style="padding:9px;font-size:12px;font-weight:700"><i data-lucide="navigation" style="width:13px;height:13px"></i>Chỉ đường (Google Maps · Ô tô)</a>' +
+                '<div style="font-size:11px;color:var(--mut)">Google sẽ tính lại tuyến khi mở — đây là dẫn đường ô tô ngoài, không phải tuyến xe tải đã duyệt.</div>' +
+                '<div class="stop-actions">' +
+                  '<button class="btn-act btn-arrived" onclick="updateStop(' + s.id + ', \\'arrived\\')" ' + (s.status === "delivered" ? "disabled" : "") + '><i data-lucide="map-pin" style="width:13px;height:13px"></i>Đến nơi</button>' +
+                  '<button class="btn-act btn-delivered" onclick="updateStop(' + s.id + ', \\'delivered\\')"><i data-lucide="check-circle" style="width:13px;height:13px"></i>Đã giao</button>' +
+                  '<button class="btn-act btn-failed" onclick="onFailClick(' + s.id + ')"><i data-lucide="x-circle" style="width:13px;height:13px"></i>Báo hoãn</button>' +
+                '</div>' +
               '</div>';
 
           card.innerHTML =
@@ -296,12 +303,12 @@ export const DRIVER_HTML = `<!DOCTYPE html>
                 '<span class="seq-num">' + (isDepot ? '<i data-lucide="building-2" style="width:12px;height:12px"></i>' : idx) + '</span>' +
                 '<span>' + (isDepot ? 'Kho xuất phát' : 'Điểm giao #' + idx) + '</span>' +
               '</div>' +
-              '<span class="status-tag tag-' + (s.status || "pending") + '">' + statusText + '</span>' +
+              '<span class="status-tag tag-' + (s.status || "pending") + '">' + esc(statusText) + '</span>' +
             '</div>' +
-            '<div class="stop-address">' + s.address + '</div>' +
+            '<div class="stop-address">' + esc(s.address) + '</div>' +
             '<div class="stop-meta">' +
-              (s.phone ? '<span class="meta-item"><i data-lucide="phone" style="width:13px;height:13px"></i><a href="tel:' + s.phone + '">' + s.phone + '</a></span>' : '') +
-              (s.window_start ? '<span class="meta-item"><i data-lucide="clock" style="width:13px;height:13px"></i>' + s.window_start + ' - ' + s.window_end + '</span>' : '') +
+              (s.phone ? '<span class="meta-item"><i data-lucide="phone" style="width:13px;height:13px"></i><a href="tel:' + encodeURIComponent(s.phone) + '">' + esc(s.phone) + '</a></span>' : '') +
+              (s.window_start ? '<span class="meta-item"><i data-lucide="clock" style="width:13px;height:13px"></i>' + esc(s.window_start) + ' - ' + esc(s.window_end) + '</span>' : '') +
               (s.kg ? '<span class="meta-item"><i data-lucide="package" style="width:13px;height:13px"></i>' + s.kg + ' kg</span>' : '') +
             '</div>' +
             banHtml +
