@@ -610,14 +610,14 @@ export const store = new MemoryStore();
 
 // Upstream proxy attempt
 async function forwardToUpstream(req: Request): Promise<Response | null> {
+  const reqUrl = new URL(req.url);
+  const isEdgeHost = reqUrl.hostname.endsWith('.pages.dev') || reqUrl.hostname.endsWith('.w9.nu');
   const upstreamBase =
-    process.env.ECOMILES_API_URL ||
-    (typeof process !== 'undefined' && process.env.GREENLOGIX_API_URL) ||
-    'http://127.0.0.1:8000';
+    (typeof process !== 'undefined' && (process.env.ECOMILES_API_URL || process.env.GREENLOGIX_API_URL)) ||
+    (isEdgeHost ? 'https://greenlogix-api.9ez.workers.dev' : 'http://127.0.0.1:8000');
 
   try {
-    const url = new URL(req.url);
-    const targetUrl = new URL(url.pathname + url.search, upstreamBase);
+    const targetUrl = new URL(reqUrl.pathname + reqUrl.search, upstreamBase);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 1000);
     const headers = new Headers(req.headers);

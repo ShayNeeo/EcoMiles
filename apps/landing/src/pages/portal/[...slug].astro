@@ -2,6 +2,16 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { EcoMilesPortal } from '../../islands/EcoMilesPortal';
 
+export const prerender = true;
+export function getStaticPaths() {
+  return [
+    { params: { slug: undefined } },
+    { params: { slug: 'dashboard' } },
+    { params: { slug: 'dispatcher' } },
+    { params: { slug: 'driver' } },
+    { params: { slug: 'audit' } },
+  ];
+}
 const { slug } = Astro.params;
 const initialRoute = slug ? `/${slug}` : '/dashboard';
 ---
