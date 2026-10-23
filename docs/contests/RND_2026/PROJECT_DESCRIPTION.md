@@ -3,11 +3,11 @@
 **CUỘC THI KHỞI NGHIỆP SÁNG TẠO ĐẠI HỌC QUỐC GIA HÀ NỘI**  
 **RND TO STARTUP 2026**
 
-**Tên dự án: GREENLOGIX:** Phần mềm tối ưu hóa tuyến đường vận tải đô thị và đo lường phát thải CO₂ ứng dụng thuật toán VRP.
+**Tên dự án: ECOMILES:** Phần mềm tối ưu hóa tuyến đường vận tải đô thị và đo lường phát thải CO₂ ứng dụng thuật toán VRP.
 
 **Thuộc lĩnh vực: Môi trường & phát triển bền vững** 
 
-**NHÓM THỰC HIỆN: GREENLOGIX**
+**NHÓM THỰC HIỆN: ECOMILES**
 
 1. Tống Ngọc Khang  
 2. Phạm Quốc Thanh  
@@ -33,7 +33,7 @@
 **Tóm tắt dự án**  
 Sự bùng nổ của thương mại điện tử đang đặt ra áp lực ngày càng lớn lên hệ thống vận tải đô thị. Theo Cục Thương mại điện tử và Kinh tế số (Bộ Công Thương), quy mô thị trường thương mại điện tử Việt Nam năm 2024 đã vượt 25 tỷ USD, tăng khoảng 20% so với năm 2023 và chiếm gần 9% tổng mức bán lẻ hàng hóa cả nước. Riêng hai sàn lớn nhất là Shopee và TikTok Shop đã đạt tổng giá trị giao dịch (GMV) 13,82 tỷ USD trong năm 2024, tăng 40% so với năm trước \- kéo theo hàng triệu đơn hàng cần được giao mỗi ngày tại các đô thị lớn.  
 Tuy nhiên, đằng sau mỗi đơn hàng được giao thành công là một bài toán vận hành chưa được giải quyết triệt để. Nhiều doanh nghiệp vận tải và giao hàng, đặc biệt là doanh nghiệp vừa và nhỏ, vẫn lập tuyến dựa trên kinh nghiệm cá nhân, điện thoại hoặc bảng tính Excel. Khi số lượng đơn hàng tăng, việc điều phối thủ công dễ dẫn đến tuyến đường chồng chéo, phương tiện chạy qua các đoạn đường ùn tắc, xe không sử dụng hết tải trọng hoặc phải quay về rỗng. Mỗi kilômét di chuyển không cần thiết đồng nghĩa với nhiên liệu bị lãng phí, chi phí vận hành tăng và lượng khí CO₂ phát thải vào môi trường nhiều hơn.  
-Về quy mô vấn đề: theo tính toán của Hiệp hội Doanh nghiệp dịch vụ logistics Việt Nam (VLA), chi phí logistics của Việt Nam hiện ở mức 16,8-17% GDP, cao hơn đáng kể so với mức bình quân chung của thế giới là 10,6% \- và cao hơn nhiều so với các nước trong khu vực (Nhật Bản 11%, Singapore 8%, Malaysia và Indonesia khoảng 13%). Về phát thải, ngành giao thông vận tải Việt Nam năm 2023 được ước tính phát thải khoảng 57 triệu tấn CO₂, chiếm khoảng 18–21% tổng phát thải quốc gia tùy phương pháp tính (số liệu dao động giữa các nguồn: Bộ GTVT, World Bank, Hiệp hội các đô thị Việt Nam), và có nguy cơ tăng lên gần 89 triệu tấn vào năm 2030 nếu không có hành động quyết liệt về giảm phát thải, theo dự báo được Bộ GTVT và World Bank công bố. Vận tải đường bộ chiếm phần lớn nhất trong cơ cấu phát thải này, khoảng 80%.  
+Về quy mô vấn đề: theo tính toán của Hiệp hội Doanh nghiệp dịch vụ logistics Việt Nam (VLA), chi phí logistics của Việt Nam hiện ở mức 16,8-17% GDP, cao hơn đáng kể so với mức bình quân chung của thế giới là 10,6% \- và cao hơn nhiều so với các nước trong khu vực (Nhật Bản 11%, Singapore 8%, Malaysia và Indonesia khoảng 13%). Về phát thải, ngành giao thông vận tải Việt Nam giai đoạn 2014–2023 được ghi nhận phát thải khoảng 33,2 – 39,3 triệu tấn CO₂/năm (tương đương ~11% tổng phát thải quốc gia theo Viện Chiến lược, Chính sách NN&MT / Bộ GTVT & World Bank), và có nguy cơ tăng lên 89,1 triệu tấn vào năm 2030 theo kịch bản thông thường (BAU) do Bộ GTVT và World Bank công bố. Vận tải đường bộ chiếm phần lớn nhất trong cơ cấu phát thải này, khoảng 80–85%.  
 Những con số này cho thấy tối ưu hóa hoạt động vận tải không chỉ là nhu cầu riêng của doanh nghiệp mà còn là yêu cầu cấp thiết đối với mục tiêu tăng trưởng xanh và năng lực cạnh tranh quốc gia \- đặc biệt trong bối cảnh Chính phủ vừa ban hành Quyết định số 2229/QĐ-TTg (9/10/2025) phê duyệt Chiến lược phát triển dịch vụ logistics Việt Nam thời kỳ 2025–2035, tầm nhìn 2050, đánh dấu bước chuyển chính thức sang mô hình "hệ sinh thái logistics số" và xác định chuyển đổi số là trụ cột chiến lược của ngành.  
 Từ đó, dự án đề xuất xây dựng một nền tảng công nghệ giúp doanh nghiệp tối ưu tuyến đường, phân bổ đơn hàng hợp lý, giảm xe chạy rỗng và đo lường lượng CO₂ phát thải. Giải pháp góp phần giúp doanh nghiệp vận chuyển ít lãng phí hơn, tiết kiệm nhiều hơn và phát triển xanh hơn \- đúng thời điểm ngành logistics Việt Nam đang chuyển mình sang mô hình số hóa toàn diện.
 
@@ -342,7 +342,7 @@ bổ sung hình ảnh, video, số liệu,... liên quan.
 
 **Slide 1: Trang bìa (Giới thiệu dự án)**
 
-**Tiêu đề chính**: GREENLOGIX: Phần mềm tối ưu hóa tuyến đường vận tải đô thị và đo lường phát thải CO₂ ứng dụng thuật toán VRP.
+**Tiêu đề chính**: ECOMILES: Phần mềm tối ưu hóa tuyến đường vận tải đô thị và đo lường phát thải CO₂ ứng dụng thuật toán VRP.
 
 **Slogan / Thông điệp**: Vận chuyển ít lãng phí hơn, tiết kiệm nhiều hơn và phát triển xanh hơn.
 
@@ -360,7 +360,7 @@ Thị trường thương mại điện tử Việt Nam năm 2024 vượt 25 tỷ
 
 Chi phí logistics Việt Nam đang duy trì ở mức cao 16,8–17% GDP, vượt trội so với mức bình quân toàn cầu (10,6%) và các nước trong khu vực.
 
-Ngành giao thông vận tải phát thải khoảng 57 triệu tấn CO\_2 năm 2023 (vận tải đường bộ chiếm khoảng 80%).
+Ngành giao thông vận tải phát thải khoảng 33,2 – 39,3 triệu tấn CO\_2/năm giai đoạn 2014–2023 và dự báo chạm 89,1 triệu tấn vào năm 2030 theo kịch bản BAU (vận tải đường bộ chiếm khoảng 80–85%).
 
 **Điểm nhấn**: Trích dẫn Quyết định số 2229/QĐ-TTg (9/10/2025) đánh dấu bước chuyển chiến lược sang mô hình hệ sinh thái logistics số.
 

@@ -1,6 +1,6 @@
-import pytest
-from greenlogix_api.routing.pareto import evaluate_pareto_policies
 from greenlogix_api.geo.truck_profile import XE_TAI_NHO_1T5
+from greenlogix_api.routing.pareto import evaluate_pareto_policies
+
 
 def test_evaluate_pareto_policies_structure():
     candidates = evaluate_pareto_policies(base_km=30.0, profile=XE_TAI_NHO_1T5, payload_kg=600.0)

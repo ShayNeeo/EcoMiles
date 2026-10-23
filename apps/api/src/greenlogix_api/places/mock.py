@@ -3,7 +3,13 @@
 from __future__ import annotations
 
 import unicodedata
-from greenlogix_api.places.base import GeoPoint, PlaceDetail, PlaceProvider, PlaceSuggestion
+
+from greenlogix_api.places.base import (
+    GeoPoint,
+    PlaceDetail,
+    PlaceProvider,
+    PlaceSuggestion,
+)
 
 # Canonical reference locations across HCMC and Hanoi
 CANONICAL_PLACES: list[PlaceDetail] = [

@@ -332,8 +332,8 @@ export function ecoLegCost(km: number, lPer100km: number, fuel: string, ecoWeigh
 }
 
 export function ecoWeightFromEnv(raw?: string): number {
-  const fromProcess = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
-    ?.env?.GREENLOGIX_ECO_WEIGHT;
+  const envObj = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env;
+  const fromProcess = envObj?.ECOMILES_ECO_WEIGHT ?? envObj?.GREENLOGIX_ECO_WEIGHT;
   const text = (raw ?? fromProcess ?? "").trim();
   if (!text) return 0;
   const n = Number(text);

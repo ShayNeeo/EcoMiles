@@ -14,7 +14,6 @@ import json
 import logging
 
 import pytest
-from fastapi.testclient import TestClient
 
 from greenlogix_api.models import Order, Vehicle
 from greenlogix_api.seed import DEPOT_LAT, DEPOT_LNG, DEPOT_NAME

@@ -27,13 +27,13 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border border-white/10 text-xs font-bold text-greenlogix-lime mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border border-white/10 text-xs font-bold text-ecomiles-lime mb-4">
             <Calculator className="w-3.5 h-3.5" />
             <span>MÔ HÌNH DỰ PHÓNG HIỆU QUẢ TÀI CHÍNH &amp; MÔI TRƯỜNG</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Ước Tính Mức Tiết Kiệm Chi Phí &amp; <span className="text-greenlogix-lime">Cắt Giảm CO₂</span>
+            Ước Tính Mức Tiết Kiệm Chi Phí &amp; <span className="text-ecomiles-lime">Cắt Giảm CO₂</span>
           </h2>
 
           <p className="mt-4 text-sm sm:text-base text-slate-300">
@@ -54,7 +54,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               <div>
                 <div className="mb-2 flex flex-col items-start gap-2 text-sm font-semibold sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-slate-300">Quy mô đội xe giao hàng:</span>
-                  <span className="text-lg font-extrabold text-greenlogix-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
+                  <span className="text-lg font-extrabold text-ecomiles-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
                     {fleetSize} xe
                   </span>
                 </div>
@@ -66,7 +66,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   step="1"
                   value={fleetSize}
                   onChange={(e) => setFleetSize(Number(e.target.value))}
-                  className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-greenlogix-lime"
+                  className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ecomiles-lime"
                 />
                 <div className="flex justify-between text-[11px] text-slate-500 mt-1">
                   <span>3 xe</span>
@@ -79,7 +79,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               <div>
                 <div className="mb-2 flex flex-col items-start gap-2 text-sm font-semibold sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-slate-300">Quãng đường bình quân/xe/ngày:</span>
-                  <span className="text-lg font-extrabold text-greenlogix-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
+                  <span className="text-lg font-extrabold text-ecomiles-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
                     {dailyKm} km
                   </span>
                 </div>
@@ -91,7 +91,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   step="5"
                   value={dailyKm}
                   onChange={(e) => setDailyKm(Number(e.target.value))}
-                  className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-greenlogix-lime"
+                  className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ecomiles-lime"
                 />
                 <div className="flex justify-between text-[11px] text-slate-500 mt-1">
                   <span>30 km</span>
@@ -104,7 +104,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               <div>
                 <div className="mb-2 flex flex-col items-start gap-2 text-sm font-semibold sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-slate-300">Định mức tiêu hao nhiên liệu:</span>
-                  <span className="text-lg font-extrabold text-greenlogix-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
+                  <span className="text-lg font-extrabold text-ecomiles-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
                     {fuelConsumption} L / 100km
                   </span>
                 </div>
@@ -116,7 +116,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   step="0.5"
                   value={fuelConsumption}
                   onChange={(e) => setFuelConsumption(Number(e.target.value))}
-                  className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-greenlogix-lime"
+                  className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ecomiles-lime"
                 />
                 <div className="flex justify-between text-[11px] text-slate-500 mt-1">
                   <span>6L (Xe máy/Van nhỏ)</span>
@@ -157,13 +157,13 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
           </div>
 
           {/* Results Metric Panel (Right 5 Cols) */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-slate-950 to-slate-900 rounded-3xl p-6 sm:p-9 border border-greenlogix-lime/30 shadow-2xl flex flex-col justify-between">
+          <div className="lg:col-span-5 bg-gradient-to-br from-slate-950 to-slate-900 rounded-3xl p-6 sm:p-9 border border-ecomiles-lime/30 shadow-2xl flex flex-col justify-between">
             <div>
               <div className="mb-6 flex flex-col items-start gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
                   DỰ TOÁN TIẾT KIỆM MỖI THÁNG
                 </span>
-                <span className="text-xs font-bold text-greenlogix-lime bg-greenlogix-lime/10 border border-greenlogix-lime/20 px-2.5 py-1 rounded-full">
+                <span className="text-xs font-bold text-ecomiles-lime bg-ecomiles-lime/10 border border-ecomiles-lime/20 px-2.5 py-1 rounded-full">
                   Mô hình 26 ngày làm việc
                 </span>
               </div>
@@ -174,7 +174,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   <DollarSign className="w-4 h-4 text-emerald-400" />
                   <span>Chi phí nhiên liệu tiết kiệm ròng:</span>
                 </div>
-                <div className="text-3xl sm:text-4xl font-extrabold text-greenlogix-lime tracking-tight">
+                <div className="text-3xl sm:text-4xl font-extrabold text-ecomiles-lime tracking-tight">
                   {Math.round(moneySavedVND).toLocaleString('vi-VN')}{' '}
                   <span className="text-sm font-bold text-white">VNĐ/tháng</span>
                 </div>
@@ -218,7 +218,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
             {/* CTA Trigger Button */}
             <button
               onClick={onOpenPilotModal}
-              className="w-full py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm text-slate-950 bg-greenlogix-lime hover:bg-yellow-300 shadow-xl shadow-greenlogix-lime/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 shadow-xl shadow-ecomiles-lime/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Đăng Ký Dùng Thử Miễn Phí 4–6 Tuần</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />

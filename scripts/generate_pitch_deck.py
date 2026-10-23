@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GreenLogix Pitch Deck Generator for Olympic Khoi Nghiep 2026 (SO 2026)
+EcoMiles Pitch Deck Generator for Olympic Khoi Nghiep 2026 (SO 2026)
 Hosts: Dai hoc Kinh te Quoc dan (NEU) & Trung tam CICN
 
 Strictly follows the visual styling principles, vibrant colors, cards, glows,
@@ -64,16 +64,16 @@ FONT_MAIN = "Montserrat"
 # Verbatim Presenter Notes Catalog (Draft_1 Timing & Voiceover Synchronization)
 # -----------------------------------------------------------------------------
 PRESENTER_NOTES = {
-    1: '[~20s] “80 đơn hàng cần giao. 10 chiếc xe tải. Và công cụ điều phối duy nhất… là một file Excel. Bạn có thấy quen không? Đó là buổi sáng bình thường của rất nhiều doanh nghiệp vận tải Việt Nam — tuyến chồng chéo, xe chạy vòng, cuối ngày gần một phần ba số xe quay về tay không. Và đó chính là lý do GreenLogix ra đời — tối ưu vận chuyển, tiết kiệm chi phí, kiến tạo tương lai xanh!”',
+    1: '[~20s] “80 đơn hàng cần giao. 10 chiếc xe tải. Và công cụ điều phối duy nhất… là một file Excel. Bạn có thấy quen không? Đó là buổi sáng bình thường của rất nhiều doanh nghiệp vận tải Việt Nam — tuyến chồng chéo, xe chạy vòng, cuối ngày gần một phần ba số xe quay về tay không. Và đó chính là lý do EcoMiles ra đời — tối ưu vận chuyển, tiết kiệm chi phí, kiến tạo tương lai xanh!”',
     2: '[~12s] “Câu chuyện đó không phải cá biệt. Logistics Việt Nam đang tiêu tốn tới 17% GDP — gấp rưỡi mức bình quân thế giới — trong khi 80% phát thải CO2 ngành giao thông đến từ đường bộ, và có tới 30-35% xe chạy rỗng mỗi ngày.”',
     3: '[~10s] “Đứng sau bài toán đó là 5 sinh viên đa ngành — công nghệ, tài chính, kinh doanh — cùng chung một mục tiêu: xanh hoá logistics Việt Nam.”',
-    4: '[~15s] “Với chúng tôi, logistics xanh không phải một lựa chọn xa xỉ, mà là con đường tất yếu để doanh nghiệp Việt Nam phát triển bền vững. Đó cũng là lý do GreenLogix hướng tới trở thành nền tảng quản trị vận tải và phát thải hàng đầu Việt Nam, đồng hành cùng mục tiêu Net Zero 2050.”',
-    5: '[~20s] “Vậy GreenLogix giải quyết bài toán đó như thế nào? Nền tảng tự động sắp tuyến, chủ động cảnh báo lệch tuyến, ghép đơn chiều về để giảm xe chạy rỗng, và tự động đo lường — báo cáo CO2 theo chuẩn quốc tế GLEC và GHG Protocol — tất cả trên cùng một hệ thống.”',
+    4: '[~15s] “Với chúng tôi, logistics xanh không phải một lựa chọn xa xỉ, mà là con đường tất yếu để doanh nghiệp Việt Nam phát triển bền vững. Đó cũng là lý do EcoMiles hướng tới trở thành nền tảng quản trị vận tải và phát thải hàng đầu Việt Nam, đồng hành cùng mục tiêu Net Zero 2050.”',
+    5: '[~20s] “Vậy EcoMiles giải quyết bài toán đó như thế nào? Nền tảng tự động sắp tuyến, chủ động cảnh báo lệch tuyến, ghép đơn chiều về để giảm xe chạy rỗng, và tự động đo lường — báo cáo CO2 theo chuẩn quốc tế GLEC và GHG Protocol — tất cả trên cùng một hệ thống.”',
     6: '[~15s] “Toàn bộ được quản lý qua một giao diện trực quan: người quản lý tải đơn hàng lên, hệ thống tự nhóm tuyến, theo dõi vị trí xe theo thời gian thực, và xuất báo cáo phát thải chỉ trong vài cú nhấp chuột.”',
-    7: '[~15s] “Không chỉ vậy, khác với cách làm cũ vốn thủ công và không đo lường được phát thải, GreenLogix là nền tảng duy nhất kết hợp đồng thời tối ưu vận hành và đo lường CO2 minh bạch, truy vết đến từng đơn hàng cụ thể.”',
-    8: '[~20s] “Quay lại với kho hàng 80 đơn hàng, 10 xe tải ở đầu video — đó chính là kịch bản thực tế mà GreenLogix đã mô phỏng thành công trên MVP tại greenlogix.w9.nu. Với thời gian hoàn vốn khoảng 1,68 năm, IRR 28%, và lợi nhuận dương từ năm thứ hai, đây là mô hình vừa khả thi, vừa bền vững.”',
+    7: '[~15s] “Không chỉ vậy, khác với cách làm cũ vốn thủ công và không đo lường được phát thải, EcoMiles là nền tảng duy nhất kết hợp đồng thời tối ưu vận hành và đo lường CO2 minh bạch, truy vết đến từng đơn hàng cụ thể.”',
+    8: '[~20s] “Quay lại với kho hàng 80 đơn hàng, 10 xe tải ở đầu video — đó chính là kịch bản thực tế mà EcoMiles đã mô phỏng thành công trên MVP tại ecomiles.w9.nu. Với thời gian hoàn vốn khoảng 1,68 năm, IRR 28%, và lợi nhuận dương từ năm thứ hai, đây là mô hình vừa khả thi, vừa bền vững.”',
     9: '[~20s] “Và hơn cả những con số, chúng tôi tin một tuyến đường không chạy rỗng cũng là một hơi thở trong lành hơn cho thành phố, một ngày làm việc nhẹ nhàng hơn cho người tài xế — nơi phát triển kinh tế và bảo vệ môi trường có thể song hành.”',
-    10: '[~10s] “Tối ưu vận chuyển, tiết kiệm chi phí, kiến tạo tương lai xanh — đó là những gì GreenLogix mang lại. Cảm ơn bạn đã dành thời gian đồng hành cùng chúng tôi.”'
+    10: '[~10s] “Tối ưu vận chuyển, tiết kiệm chi phí, kiến tạo tương lai xanh — đó là những gì EcoMiles mang lại. Cảm ơn bạn đã dành thời gian đồng hành cùng chúng tôi.”'
 }
 
 # -----------------------------------------------------------------------------
@@ -195,7 +195,7 @@ def pre_process_assets():
 
         res_phone.save(phone_mockup_path, "PNG")
 
-    # 4. GreenLogix Leaf Emblem
+    # 4. EcoMiles Leaf Emblem
     emblem_path = "docs/assets/logo_greenlogix_badge.png"
     if not os.path.exists(emblem_path):
         res = 512
@@ -457,7 +457,7 @@ def build_slide_1_cover(prs):
     add_para(tf_hero, "Phần mềm tối ưu tuyến đường vận tải đô thị & đo lường phát thải CO₂ theo chuẩn quốc tế", 15, False, COLOR_TEXT_SECONDARY, space_after=Pt(14))
 
     # Live MVP Pill
-    add_pill(slide, right_x + 40, 430, 320, 38, "● LIVE DEMO: greenlogix.w9.nu", bg_color=COLOR_EMERALD_BG, border_color=COLOR_EMERALD, text_color=COLOR_TEXT_PRIMARY, font_size=13)
+    add_pill(slide, right_x + 40, 430, 320, 38, "● LIVE DEMO: ecomiles.w9.nu", bg_color=COLOR_EMERALD_BG, border_color=COLOR_EMERALD, text_color=COLOR_TEXT_PRIMARY, font_size=13)
 
     # Team Member Capsules
     member_capsules = [
@@ -590,7 +590,7 @@ def build_slide_2_problem(prs):
 
     # Bottom Signature Conclusion Card (Example_Slides style with glowing gold border)
     add_conclusion_card(slide, 80, 565, 1280, 145, title="KẾT LUẬN & SỨ MỆNH", runs=[
-        ("GreenLogix sinh ra để giải quyết triệt để bài toán này: ", 15, False, COLOR_TEXT_PRIMARY, False),
+        ("EcoMiles sinh ra để giải quyết triệt để bài toán này: ", 15, False, COLOR_TEXT_PRIMARY, False),
         ("Tự động sắp tuyến (Smart VRP)", 15.5, True, COLOR_EMERALD, False),
         (" — ", 15, False, COLOR_TEXT_PRIMARY, False),
         ("Ghép đơn chiều về thông minh", 15.5, True, COLOR_CYAN, False),
@@ -700,7 +700,7 @@ def build_slide_4_vision(prs):
         ("• Việt Nam cam kết đạt ", 13.5, False, COLOR_TEXT_SECONDARY, False),
         ("phát thải ròng bằng 0 vào năm 2050", 13.5, True, COLOR_CYAN, False),
         (".\n", 13.5, False, COLOR_TEXT_SECONDARY, False),
-        ("• GreenLogix giúp xanh hóa ngay trên ", 13.5, False, COLOR_TEXT_SECONDARY, False),
+        ("• EcoMiles giúp xanh hóa ngay trên ", 13.5, False, COLOR_TEXT_SECONDARY, False),
         ("đội xe hiện hữu", 13.5, True, COLOR_EMERALD, False),
         (" mà không cần vốn đầu tư xe điện đắt đỏ.\n", 13.5, False, COLOR_TEXT_SECONDARY, False),
         ("• Biến từng chuyến đi thành ", 13.5, False, COLOR_TEXT_SECONDARY, False),
@@ -746,7 +746,7 @@ def build_slide_5_product(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     add_solid_background(slide)
     add_ambient_glows(slide, top_right="amber", bottom_right="emerald", top_left="cyan")
-    add_header(slide, subhead="GIẢI PHÁP CÔNG NGHỆ · NỀN TẢNG CARGOX ENGINE", title="4 CÁCH GREENLOGIX GIÚP VẬN HÀNH HIỆU QUẢ HƠN", subhead_color=COLOR_CYAN, title_color=COLOR_AMBER)
+    add_header(slide, subhead="GIẢI PHÁP CÔNG NGHỆ · NỀN TẢNG CARGOX ENGINE", title="4 CÁCH ECOMILES GIÚP VẬN HÀNH HIỆU QUẢ HƠN", subhead_color=COLOR_CYAN, title_color=COLOR_AMBER)
     set_slide_notes(slide, 5)
 
     card_w = 625
@@ -835,7 +835,7 @@ def build_slide_6_demo(prs):
     tf_win = create_text_box(slide, desk_x + 18, desk_y + 8, desk_w - 36, 24)
     add_para_runs(tf_win, [
         ("● ● ●   ", 11, True, COLOR_AMBER, False),
-        ("console.greenlogix.vn/dispatcher — Bản đồ điều phối & mạng lưới đường bộ OSRM thực tế TP.HCM (80 đơn / 5 tuyến)", 11.5, False, COLOR_TEXT_MUTED, False)
+        ("console.ecomiles.vn/dispatcher — Bản đồ điều phối & mạng lưới đường bộ OSRM thực tế TP.HCM (80 đơn / 5 tuyến)", 11.5, False, COLOR_TEXT_MUTED, False)
     ])
 
     dispatcher_img = "docs/assets/app_screenshots/dispatcher_real_latest.png"
@@ -860,7 +860,7 @@ def build_slide_7_advantage(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     add_solid_background(slide)
     add_ambient_glows(slide, top_right="emerald", bottom_right="cyan", top_left="amber")
-    add_header(slide, subhead="LỢI THẾ CẠNH TRANH VƯỢT TRỘI · BẢO VỆ THỊ PHẦN", title="SO SÁNH HIỆU QUẢ: CÁCH LÀM CŨ VS. GREENLOGIX", subhead_color=COLOR_EMERALD, title_color=COLOR_AMBER)
+    add_header(slide, subhead="LỢI THẾ CẠNH TRANH VƯỢT TRỘI · BẢO VỆ THỊ PHẦN", title="SO SÁNH HIỆU QUẢ: CÁCH LÀM CŨ VS. ECOMILES", subhead_color=COLOR_EMERALD, title_color=COLOR_AMBER)
     set_slide_notes(slide, 7)
 
     t_x = 80
@@ -881,7 +881,7 @@ def build_slide_7_advantage(prs):
     add_para(tf_h2, "CÁCH LÀM CŨ (THỦ CÔNG / ERP TRUYỀN THỐNG)", 13.5, True, COLOR_RED)
 
     tf_h3 = create_text_box(slide, col3_x + 24, header_y, col3_w - 48, 36)
-    add_para(tf_h3, "★ NỀN TẢNG GREENLOGIX (VƯỢT TRỘI)", 15, True, COLOR_EMERALD)
+    add_para(tf_h3, "★ NỀN TẢNG ECOMILES (VƯỢT TRỘI)", 15, True, COLOR_EMERALD)
 
     rule_h = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Pt(t_x + 16), Pt(header_y + 38), Pt(t_w - 32), Pt(1.2))
     rule_h.fill.solid()
@@ -946,7 +946,7 @@ def build_slide_7_advantage(prs):
     tf_sum = create_text_box(slide, t_x + 24, bot_y, t_w - 48, 44)
     add_para_runs(tf_sum, [
         ("🏆 KẾT LUẬN: ", 13.5, True, COLOR_GOLD, False),
-        ("Khác với cách làm cũ vốn thủ công và không đo lường được phát thải, GreenLogix là ", 13.5, False, COLOR_TEXT_SECONDARY, False),
+        ("Khác với cách làm cũ vốn thủ công và không đo lường được phát thải, EcoMiles là ", 13.5, False, COLOR_TEXT_SECONDARY, False),
         ("nền tảng duy nhất kết hợp đồng thời tối ưu vận hành và đo lường CO₂ minh bạch", 13.5, True, COLOR_CYAN, False),
         (", truy vết đến từng đơn hàng cụ thể.", 13.5, False, COLOR_TEXT_SECONDARY, False)
     ], align=PP_ALIGN.CENTER)
@@ -960,7 +960,7 @@ def build_slide_8_financials(prs):
     add_header(slide, subhead="TÍNH KHẢ THI & KẾ HOẠCH TÀI CHÍNH · B2B SAAS", title="KHÔNG CHỈ LÀ Ý TƯỞNG — ĐÃ CÓ SẢN PHẨM THẬT & TÀI CHÍNH VỮNG CHẮC", subhead_color=COLOR_CYAN, title_color=COLOR_EMERALD)
     set_slide_notes(slide, 8)
 
-    add_pill(slide, 80, 118, 460, 36, "● MVP ĐANG HOẠT ĐỘNG — greenlogix.w9.nu", bg_color=COLOR_EMERALD_BG, border_color=COLOR_EMERALD, text_color=COLOR_TEXT_PRIMARY, font_size=12.5)
+    add_pill(slide, 80, 118, 460, 36, "● MVP ĐANG HOẠT ĐỘNG — ecomiles.w9.nu", bg_color=COLOR_EMERALD_BG, border_color=COLOR_EMERALD, text_color=COLOR_TEXT_PRIMARY, font_size=12.5)
 
     card_w = 305
     gap = 20
@@ -1020,7 +1020,7 @@ def build_slide_8_financials(prs):
         ("300.000 – 500.000 ₫/xe/tháng", 14, True, COLOR_EMERALD, False),
         (") mang lại dòng tiền đăng ký định kỳ ổn định, ", 14, False, COLOR_TEXT_PRIMARY, False),
         ("chi phí biên gần như bằng 0", 14, True, COLOR_CYAN, False),
-        (" khi mở rộng quy mô đội xe, giúp GreenLogix vừa khả thi vừa bền vững.", 14, False, COLOR_TEXT_PRIMARY, False)
+        (" khi mở rộng quy mô đội xe, giúp EcoMiles vừa khả thi vừa bền vững.", 14, False, COLOR_TEXT_PRIMARY, False)
     ])
 
 
@@ -1134,7 +1134,7 @@ def build_slide_10_outro(prs):
     tf_slogan = create_text_box(slide, 180, 356, 1080, 35)
     add_para(tf_slogan, "TỐI ƯU VẬN CHUYỂN · TIẾT KIỆM CHI PHÍ · KIẾN TẠO TƯƠNG LAI XANH", 18, True, COLOR_EMERALD, PP_ALIGN.CENTER)
 
-    add_pill(slide, 430, 405, 580, 52, "🚀 TRẢI NGHIỆM TRỰC TIẾP DEMO: greenlogix.w9.nu", bg_color=COLOR_EMERALD_BG, border_color=COLOR_EMERALD, text_color=COLOR_TEXT_PRIMARY, font_size=16)
+    add_pill(slide, 430, 405, 580, 52, "🚀 TRẢI NGHIỆM TRỰC TIẾP DEMO: ecomiles.w9.nu", bg_color=COLOR_EMERALD_BG, border_color=COLOR_EMERALD, text_color=COLOR_TEXT_PRIMARY, font_size=16)
 
     tf_thanks = create_text_box(slide, 180, 478, 1080, 35)
     add_para(tf_thanks, "“ Cảm ơn Ban Giám Khảo và Quý Khán Giả đã dành thời gian đồng hành cùng EcoMiles! ”", 16.5, True, COLOR_CYAN, PP_ALIGN.CENTER, italic=True)
@@ -1156,7 +1156,7 @@ def build_slide_10_outro(prs):
 # -----------------------------------------------------------------------------
 def main():
     print("=" * 70)
-    print("GreenLogix Pitch Deck Programmatic Builder (SO 2026)")
+    print("EcoMiles Pitch Deck Programmatic Builder (SO 2026)")
     print("=" * 70)
 
     print("\n[Step 1/4] Pre-processing assets with Pillow...")
@@ -1184,7 +1184,7 @@ def main():
         print(f"  -> Generating {title}...")
         builder(prs)
 
-    output_pptx = "slides/GreenLogix_Pitch_Deck_SO2026.pptx"
+    output_pptx = "slides/EcoMiles_Pitch_Deck_SO2026.pptx"
     os.makedirs(os.path.dirname(output_pptx), exist_ok=True)
     prs.save(output_pptx)
     print(f"\nSuccessfully generated presentation: {output_pptx}")
@@ -1196,14 +1196,14 @@ def main():
     if res_pdf.returncode != 0:
         print(f"Error during PDF export: {res_pdf.stderr}")
     else:
-        output_pdf = "slides/GreenLogix_Pitch_Deck_SO2026.pdf"
+        output_pdf = "slides/EcoMiles_Pitch_Deck_SO2026.pdf"
         print(f"Successfully converted to PDF: {output_pdf}")
         if os.path.exists(output_pdf):
             print(f"PDF file size: {os.path.getsize(output_pdf):,} bytes")
 
     print("\n[Step 4/4] Rendering high-res slide preview images with pdftoppm...")
     os.makedirs("slides/previews", exist_ok=True)
-    output_pdf = "slides/GreenLogix_Pitch_Deck_SO2026.pdf"
+    output_pdf = "slides/EcoMiles_Pitch_Deck_SO2026.pdf"
     if os.path.exists(output_pdf):
         cmd_png = ["pdftoppm", "-png", "-r", "150", output_pdf, "slides/previews/slide"]
         res_png = subprocess.run(cmd_png, capture_output=True, text=True)
@@ -1215,7 +1215,7 @@ def main():
             print(f"pdftoppm error: {res_png.stderr}")
 
     print("\n" + "=" * 70)
-    print("GreenLogix Deck Generation Complete!")
+    print("EcoMiles Deck Generation Complete!")
     print("=" * 70)
 
 if __name__ == "__main__":

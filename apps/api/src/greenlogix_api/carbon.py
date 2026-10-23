@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -58,8 +59,36 @@ def kg_co2_per_litre(fuel: str, path: Path | None = None) -> float:
     raise ValueError(f"unknown fuel {fuel!r}")
 
 
+def wtw_kg_co2_per_litre(fuel: str, path: Path | None = None) -> float | None:
+    data = load_factors(path)
+    key = (fuel or "").strip().lower()
+    fuels = data.get("fuels") or {}
+    for name, spec in fuels.items():
+        aliases = [str(name).lower()]
+        aliases.extend(str(a).lower() for a in (spec.get("aliases") or []))
+        if key in aliases:
+            factor = spec.get("wtw_kg_co2_per_litre")
+            return float(factor) if factor is not None else None
+    return None
+
 def litres_used(km: float, l_per_100km: float) -> float:
     return km * (l_per_100km / 100.0)
+
+
+def factor_citation_year(path: Path | None = None) -> int | None:
+    """Publication year the factor set cites for itself (C-04).
+
+    Read out of the ``source`` strings in ``emission_factors.json`` rather than
+    hard-coded — today the first year named is IPCC 2006 Vol.2, the origin of
+    the TTW kg CO₂/litre values. ``None`` when the file names no year, so a
+    report prints "n/a" instead of inventing a vintage.
+    """
+    fuels = load_factors(path).get("fuels") or {}
+    for spec in fuels.values():
+        match = re.search(r"\b(?:19|20)\d{2}\b", str(spec.get("source") or ""))
+        if match:
+            return int(match.group(0))
+    return None
 
 
 def kg_co2(km: float, l_per_100km: float, fuel: str, path: Path | None = None) -> float:
@@ -95,7 +124,7 @@ def save_report(
 
         for _k, _v in road_graph_audit_extra().items():
             payload.setdefault(_k, _v)
-    except Exception:
+    except Exception:  # noqa: S110
         pass
     # T-LOOP-EVIDENCE: honest confidence/ISO wording, additively.
     # Caller values win (setdefault); never fails the report write.

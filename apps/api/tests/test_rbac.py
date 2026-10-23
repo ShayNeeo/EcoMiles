@@ -1,11 +1,13 @@
 import pytest
 from fastapi import HTTPException
-from greenlogix_api.auth.models import AuthContext, UserRole
+
 from greenlogix_api.auth.dependencies import (
-    require_manager_role,
     require_driver_role,
+    require_manager_role,
     verify_driver_plate_access,
 )
+from greenlogix_api.auth.models import AuthContext, UserRole
+
 
 def test_manager_role_access():
     mgr = AuthContext(user_id="u1", role=UserRole.MANAGER)

@@ -1,0 +1,12 @@
+---
+export const prerender = true;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { App } from '../App';
+---
+
+<BaseLayout
+  title="EcoMiles — Giao Hàng Đúng Hẹn, Tiết Kiệm Chi Phí & Giảm Phát Thải"
+  description="EcoMiles giúp doanh nghiệp tự động sắp xếp tuyến giao hàng, giảm chi phí nhiên liệu, theo dõi đội xe và tính lượng CO₂ phát thải."
+>
+  <App client:load />
+</BaseLayout>

@@ -18,7 +18,11 @@ OPTIMIZER_ECOALNS = "ecoalns"
 
 
 def optimizer_from_env() -> str:
-    raw = (os.environ.get("GREENLOGIX_OPTIMIZER") or OPTIMIZER_LEGACY).strip().lower()
+    raw = (
+        os.environ.get("ECOMILES_OPTIMIZER")
+        or os.environ.get("GREENLOGIX_OPTIMIZER")
+        or OPTIMIZER_LEGACY
+    ).strip().lower()
     if raw in {OPTIMIZER_LEGACY, "heuristic", "nn2opt", ""}:
         return OPTIMIZER_LEGACY
     if raw in {OPTIMIZER_ECOALNS, "eco_alns", "alns"}:

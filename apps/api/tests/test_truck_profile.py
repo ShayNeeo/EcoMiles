@@ -1,9 +1,7 @@
-import json
-import pytest
 from greenlogix_api.geo.truck_profile import (
+    XE_TAI_NANG_8T,
     XE_TAI_NHO_1T5,
     XE_TAI_TRUNG_3T5,
-    XE_TAI_NANG_8T,
     get_profile_for_vehicle,
 )
 from greenlogix_api.solver.road_baseline import (
@@ -11,6 +9,7 @@ from greenlogix_api.solver.road_baseline import (
     materialize_matrix,
     valhalla_matrix_body,
 )
+
 
 def test_truck_profile_presets():
     assert XE_TAI_NHO_1T5.height_m == 2.1

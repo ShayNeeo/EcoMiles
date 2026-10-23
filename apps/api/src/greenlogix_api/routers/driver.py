@@ -123,7 +123,9 @@ def stop_photo(
     if route is None or not route.published:
         raise HTTPException(status_code=404, detail="not_found")
     verify_driver_plate_access(auth, route.plate)
-    raw = photo.file.read()
+    if photo.size is not None and photo.size > MAX_PHOTO_BYTES:
+        raise HTTPException(status_code=400, detail="invalid_image")
+    raw = photo.file.read(MAX_PHOTO_BYTES + 1)
     if not raw or len(raw) > MAX_PHOTO_BYTES:
         raise HTTPException(status_code=400, detail="invalid_image")
     suffix = _photo_suffix(photo.content_type, raw[:16])
@@ -199,5 +201,5 @@ def restriction_feedback_verify(
     try:
         entry = geomod.verify_feedback(feedback_id, approved=body.approved)
     except ValueError:
-        raise HTTPException(status_code=404, detail="unknown_feedback_id")
+        raise HTTPException(status_code=404, detail="unknown_feedback_id") from None
     return FeedbackOut(id=entry.id, status=entry.status)

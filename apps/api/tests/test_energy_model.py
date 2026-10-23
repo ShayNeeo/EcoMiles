@@ -1,6 +1,6 @@
-import pytest
 from greenlogix_api.energy.hdt_v1 import HdtEnergyModelV1
 from greenlogix_api.geo.truck_profile import XE_TAI_NHO_1T5, XE_TAI_TRUNG_3T5
+
 
 def test_energy_zero_distance():
     model = HdtEnergyModelV1()

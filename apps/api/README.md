@@ -1,6 +1,6 @@
-# GreenLogix API
+# EcoMiles API
 
-Python **3.12** FastAPI backend for the GreenLogix Web MVP. No commercial map, routing, traffic, or carbon API keys required.
+Python **3.12** FastAPI backend for the EcoMiles Web MVP. No commercial map, routing, traffic, or carbon API keys required.
 
 ## Run
 

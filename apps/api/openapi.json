@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "GreenLogix API",
+    "title": "EcoMiles API",
     "version": "0.1.0"
   },
   "paths": {
@@ -36,6 +36,65 @@
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/Body_import_orders_orders_import_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ingest/events": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Ingest Events",
+        "operationId": "ingest_events_ingest_events_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngestEventsIn"
               }
             }
           }
@@ -690,6 +749,67 @@
         }
       }
     },
+    "/routes/{id}/audit": {
+      "get": {
+        "tags": [
+          "optimize"
+        ],
+        "summary": "Route Audit",
+        "description": "Route audit drawer (C-06, CR \u00a74.6).\n\nEvidence only \u2014 no metric is recomputed and no key is invented:\n\n* ``routing_quality`` / ``distance_provider`` come from the stored report\n  (the run that produced these routes); with no report they fall back to\n  ``quality_for_provider`` on the circuity default, which is DEGRADED \u2014\n  never VERIFIED_GRAPH.\n* ``solver`` is ``optimizer_name_for_audit()``, ``model_version`` the\n  carbon evidence constant, both versions the manifest helpers.\n* ``seed`` is ``None``: ``/optimize`` runs the deterministic heuristic and\n  carries no seed, so there is no run seed to report (inventing one would\n  be a fabricated provenance claim). ``dataset``-level provenance lives in\n  ``/analytics/kpis``.\n* ``created_at`` is the stored report's mtime \u2014 see ``_run_created_at``.",
+        "operationId": "route_audit_routes__id__audit_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Route Audit Routes  Id  Audit Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/driver/route": {
       "get": {
         "tags": [
@@ -1170,6 +1290,56 @@
         }
       }
     },
+    "/report.pdf": {
+      "get": {
+        "tags": [
+          "report"
+        ],
+        "summary": "Report Pdf Route",
+        "operationId": "report_pdf_route_report_pdf_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "501": {
+            "description": "PDF rendering needs the optional 'pdf' extra (WeasyPrint + system pango/cairo), which is not installed. Install it with: uv sync --extra pdf"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/places/autocomplete": {
       "get": {
         "tags": [
@@ -1295,6 +1465,193 @@
         }
       }
     },
+    "/analytics/kpis": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Kpis",
+        "description": "KPI roll-up for the whole dataset (CR \u00a74.2).\n\nMetrics that cannot be measured from stored data are ``null`` (never 0) \u2014\nsee ``metrics.py`` for the per-metric reason and its standard.\n\n``service.late_orders`` is the *modelled* late-risk count from ``late.py``\n(depot\u2192stop ETA at 30 km/h vs ``window_end``), NOT a measured OTIF\nnumerator: no delivered-at timestamp is stored, which is why\n``service.on_time`` and ``service.otif_pct`` are ``null``. Charts must label\nit \"modelled\".",
+        "operationId": "kpis_analytics_kpis_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Kpis Analytics Kpis Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/timeseries": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Timeseries",
+        "description": "Bucketed series (CR \u00a74.3). ``metric`` names the series of interest; the\npayload keeps the frozen 5-metric point shape, ``otif_pct`` stays null\nbecause no delivered-at timestamp is stored.",
+        "operationId": "timeseries_analytics_timeseries_get",
+        "parameters": [
+          {
+            "name": "metric",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "km",
+                "litres",
+                "kg_co2e",
+                "orders",
+                "otif_pct"
+              ],
+              "type": "string",
+              "default": "km",
+              "title": "Metric"
+            }
+          },
+          {
+            "name": "bucket",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "day",
+                "hour"
+              ],
+              "type": "string",
+              "default": "day",
+              "title": "Bucket"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Timeseries Analytics Timeseries Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/fleet": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Fleet",
+        "description": "Per-vehicle km, fuel, CO2e, load and utilisation (CR \u00a74.4).",
+        "operationId": "fleet_analytics_fleet_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Fleet Analytics Fleet Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -1333,6 +1690,52 @@
       "get": {
         "summary": "Dispatcher",
         "operationId": "dispatcher_dispatcher_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Dashboard",
+        "operationId": "dashboard_dashboard_get",
         "parameters": [
           {
             "name": "authorization",
@@ -1816,6 +2219,25 @@
         ],
         "title": "ImportErrorItem"
       },
+      "ImportLimits": {
+        "properties": {
+          "max_upload_bytes": {
+            "type": "integer",
+            "title": "Max Upload Bytes"
+          },
+          "max_data_rows": {
+            "type": "integer",
+            "title": "Max Data Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "max_upload_bytes",
+          "max_data_rows"
+        ],
+        "title": "ImportLimits",
+        "description": "Caps in force for one import request (env-overridable, echoed back)."
+      },
       "ImportResult": {
         "properties": {
           "imported": {
@@ -1828,14 +2250,131 @@
             },
             "type": "array",
             "title": "Errors"
+          },
+          "rows_seen": {
+            "type": "integer",
+            "title": "Rows Seen",
+            "default": 0
+          },
+          "rows_imported": {
+            "type": "integer",
+            "title": "Rows Imported",
+            "default": 0
+          },
+          "skipped_duplicates": {
+            "type": "integer",
+            "title": "Skipped Duplicates",
+            "default": 0
+          },
+          "rows_rejected": {
+            "type": "integer",
+            "title": "Rows Rejected",
+            "default": 0
+          },
+          "dedupe": {
+            "type": "boolean",
+            "title": "Dedupe",
+            "default": false
+          },
+          "limits": {
+            "$ref": "#/components/schemas/ImportLimits"
           }
         },
         "type": "object",
         "required": [
           "imported",
-          "errors"
+          "errors",
+          "limits"
         ],
         "title": "ImportResult"
+      },
+      "IngestEventOrder": {
+        "properties": {
+          "external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Id"
+          },
+          "address": {
+            "type": "string",
+            "title": "Address",
+            "default": ""
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "lng": {
+            "type": "number",
+            "title": "Lng"
+          },
+          "receiver": {
+            "type": "string",
+            "title": "Receiver",
+            "default": ""
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone",
+            "default": ""
+          },
+          "kg": {
+            "type": "number",
+            "title": "Kg",
+            "default": 0.0
+          },
+          "window_start": {
+            "type": "string",
+            "title": "Window Start",
+            "default": "08:00"
+          },
+          "window_end": {
+            "type": "string",
+            "title": "Window End",
+            "default": "18:00"
+          },
+          "cargo_type": {
+            "type": "string",
+            "title": "Cargo Type",
+            "default": "thuong"
+          },
+          "notes": {
+            "type": "string",
+            "title": "Notes",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "title": "IngestEventOrder"
+      },
+      "IngestEventsIn": {
+        "properties": {
+          "dataset_label": {
+            "type": "string",
+            "maxLength": 128,
+            "title": "Dataset Label",
+            "default": "erp-push"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/IngestEventOrder"
+            },
+            "type": "array",
+            "title": "Orders"
+          }
+        },
+        "type": "object",
+        "title": "IngestEventsIn"
       },
       "OptimizeIn": {
         "properties": {
@@ -1844,6 +2383,31 @@
             "exclusiveMinimum": 0.0,
             "title": "Cluster Radius Km",
             "default": 3.0
+          },
+          "optimizer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "legacy",
+                  "ecoalns"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Optimizer"
+          },
+          "enforce_time_windows": {
+            "type": "boolean",
+            "title": "Enforce Time Windows",
+            "default": false
+          },
+          "enforce_truck_ban": {
+            "type": "boolean",
+            "title": "Enforce Truck Ban",
+            "default": false
           }
         },
         "type": "object",
@@ -1885,6 +2449,26 @@
             "type": "number",
             "title": "Eco Weight",
             "default": 0.0
+          },
+          "optimizer_used": {
+            "type": "string",
+            "title": "Optimizer Used",
+            "default": "legacy"
+          },
+          "restriction_coverage": {
+            "type": "string",
+            "title": "Restriction Coverage",
+            "default": "decision23-2018-v1:unchecked"
+          },
+          "ban_conflicts": {
+            "type": "integer",
+            "title": "Ban Conflicts",
+            "default": 0
+          },
+          "time_window_conflicts": {
+            "type": "integer",
+            "title": "Time Window Conflicts",
+            "default": 0
           }
         },
         "type": "object",
@@ -2218,6 +2802,122 @@
         ],
         "title": "ReportDelta"
       },
+      "ReportMetrics": {
+        "properties": {
+          "g_co2e_per_order": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "G Co2E Per Order"
+          },
+          "g_co2e_per_tkm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "G Co2E Per Tkm"
+          },
+          "payload_utilisation_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payload Utilisation Pct"
+          },
+          "empty_running_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Empty Running Pct"
+          },
+          "otif_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Otif Pct"
+          },
+          "kg_co2e_wtw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kg Co2E Wtw"
+          },
+          "decomposition": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decomposition"
+          },
+          "boundary": {
+            "type": "string",
+            "title": "Boundary",
+            "default": "TTW"
+          },
+          "factor_set": {
+            "type": "string",
+            "title": "Factor Set",
+            "default": ""
+          },
+          "factor_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Factor Year"
+          },
+          "confidence": {
+            "type": "string",
+            "title": "Confidence",
+            "default": ""
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "ReportMetrics",
+        "description": "Standard-based metric dictionary carried by /report (C-04, CR \u00a74.1).\n\nEvery formula comes from ``analytics.metrics`` \u2014 never re-implemented here.\nThe block describes the **optimized** plan; its denominators (orders,\ndelivered kg, capacity of the used vehicles) are the same DB aggregates\n``/analytics/kpis`` publishes, so the two endpoints reconcile for one\ndataset. ``None`` = not computable from stored data, never a fabricated\ndefault."
+      },
       "ReportOut": {
         "properties": {
           "baseline": {
@@ -2243,6 +2943,16 @@
             "type": "number",
             "title": "Eco Weight",
             "default": 0.0
+          },
+          "metrics": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReportMetrics"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",

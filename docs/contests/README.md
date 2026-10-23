@@ -1,6 +1,6 @@
-# GreenLogix — Contest Packets
+# EcoMiles — Contest Packets
 
-This directory consolidates official registration documents, project proposals, financial workbooks, and submission materials for the startup competitions GreenLogix is participating in.
+This directory consolidates official registration documents, project proposals, financial workbooks, and submission materials for the startup competitions EcoMiles is participating in.
 
 ---
 

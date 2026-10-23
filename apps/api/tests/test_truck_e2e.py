@@ -7,8 +7,8 @@ import logging
 
 from greenlogix_api.geo.truck_profile import (
     DEFAULT_TRUCK_PROFILE,
-    XE_TAI_NHO_1T5,
     XE_TAI_NANG_8T,
+    XE_TAI_NHO_1T5,
     get_profile_for_vehicle,
     profile_for_vehicle_model,
 )

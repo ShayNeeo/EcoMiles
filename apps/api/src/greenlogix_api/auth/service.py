@@ -18,6 +18,7 @@ from __future__ import annotations
 import os
 import re
 import time
+
 from fastapi import Header, HTTPException, Request
 
 from greenlogix_api.auth.models import AuthContext, UserRole
@@ -38,7 +39,7 @@ def _client_ip(request: Request | None) -> str:
     try:
         if request is not None and request.client is not None:
             return request.client.host or "unknown"
-    except Exception:
+    except Exception:  # noqa: S110
         pass
     return "unknown"
 

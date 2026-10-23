@@ -1,5 +1,5 @@
 /**
- * GreenLogix Native VRPTW Optimizer for Cloudflare Workers
+ * EcoMiles Native VRPTW Optimizer for Cloudflare Workers
  * Clustered Nearest-Neighbor + 2-Opt. Tour km uses RoadBaseline
  * (OSM Valhalla/OSRM when available, otherwise haversine × 1.35).
  */
@@ -55,6 +55,8 @@ export interface RoutePlanned {
   km: number;
   litres: number;
   kg_co2: number;
+  kg_co2e_wtw: number;
+  transport_work_tkm: number;
   overload: boolean;
   stops: StopPlanned[];
 }
@@ -63,6 +65,8 @@ export interface MetricTotals {
   km: number;
   litres: number;
   kg_co2: number;
+  kg_co2e_wtw?: number;
+  transport_work_tkm?: number;
 }
 
 export interface MetricDelta {
@@ -72,6 +76,17 @@ export interface MetricDelta {
   km_pct: number;
   litres_pct: number;
   kg_co2_pct: number;
+  kg_co2e_wtw?: number;
+  kg_co2e_wtw_pct?: number;
+}
+
+export interface CarbonDecomposition {
+  baseline_kg_co2e: number;
+  optimized_kg_co2e: number;
+  delta_kg_co2e: number;
+  distance_effect_kg: number;
+  fleet_intensity_effect_kg: number;
+  methodology: string;
 }
 
 export interface VrpResult {
@@ -80,11 +95,14 @@ export interface VrpResult {
   totals: MetricTotals;
   baseline: MetricTotals;
   delta: MetricDelta;
+  decomposition?: CarbonDecomposition;
 }
 
 export const HCMC_CIRCUITY = 1.35;
 export const PETROL_FACTOR = 2.31;
 export const DIESEL_FACTOR = 2.68;
+export const PETROL_WTW_FACTOR = 2.82;
+export const DIESEL_WTW_FACTOR = 3.24;
 export const ROUTE_COLORS = ["#36d9a5", "#ffd400", "#38bdf8", "#f472b6", "#a78bfa", "#fb923c"];
 
 export function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -212,9 +230,61 @@ export function greedyClusters(orders: OrderRow[], radiusKm = 3.0): OrderRow[][]
     remaining.push(...kept);
     clusters.push(cluster);
   }
-
   return clusters;
 }
+export function baselineFill(
+  orders: OrderRow[],
+  vehicles: VehicleRow[]
+): { vehicle: VehicleRow; orders: OrderRow[] }[] {
+  const ready = vehicles.filter((v) => v.status === "ready");
+  const ordered = [...orders].sort((a, b) => {
+    const aRow = a.excel_row != null ? a.excel_row : 999999;
+    const bRow = b.excel_row != null ? b.excel_row : 999999;
+    return aRow - bRow || a.id - b.id;
+  });
+  const assigned: { vehicle: VehicleRow; orders: OrderRow[] }[] = [];
+  let idx = 0;
+  for (const vehicle of ready) {
+    const load: OrderRow[] = [];
+    let kg = 0;
+    while (idx < ordered.length) {
+      const order = ordered[idx];
+      if (kg + order.kg <= vehicle.capacity_kg) {
+        load.push(order);
+        kg += order.kg;
+        idx++;
+      } else {
+        break;
+      }
+    }
+    if (load.length > 0) {
+      assigned.push({ vehicle, orders: load });
+    }
+  }
+  return assigned;
+}
+
+export function computeCarbonDecomposition(
+  baselineKg: number,
+  optimizedKg: number,
+  baselineKm: number,
+  optimizedKm: number
+): CarbonDecomposition {
+  const deltaCo2 = optimizedKg - baselineKg;
+  const deltaKm = optimizedKm - baselineKm;
+  const baseIntensity = baselineKm > 0 ? baselineKg / baselineKm : 0;
+  const distanceEffect = baseIntensity * deltaKm;
+  const intensityEffect = deltaCo2 - distanceEffect;
+  return {
+    baseline_kg_co2e: Number(baselineKg.toFixed(2)),
+    optimized_kg_co2e: Number(optimizedKg.toFixed(2)),
+    delta_kg_co2e: Number(deltaCo2.toFixed(2)),
+    distance_effect_kg: Number(distanceEffect.toFixed(2)),
+    fleet_intensity_effect_kg: Number(intensityEffect.toFixed(2)),
+    methodology: "GLEC v3.2 ASI / PVM decomposition (modelled)",
+  };
+}
+
 
 export function runVrp(
   orders: OrderRow[],
@@ -266,10 +336,13 @@ export function runVrp(
             }
           : pairKm;
       const sequenced = twoOpt(nearestNeighbor(cluster, depot, costFn), depot, costFn);
+      const wtwFactor = v.fuel === "diesel" ? DIESEL_WTW_FACTOR : PETROL_WTW_FACTOR;
       const km = tourKm(sequenced, depot, pairKm);
       const litres = (km * v.l_per_100km) / 100.0;
       const kgCo2 = litres * factor;
+      const kgCo2eWtw = litres * wtwFactor;
       const totalKg = cluster.reduce((sum, o) => sum + o.kg, 0);
+      const transportWorkTkm = (totalKg / 1000.0) * km;
       const overload = totalKg > v.capacity_kg;
 
       const stops: StopPlanned[] = [
@@ -318,6 +391,8 @@ export function runVrp(
         km,
         litres,
         kg_co2: kgCo2,
+        kg_co2e_wtw: kgCo2eWtw,
+        transport_work_tkm: transportWorkTkm,
         overload,
         stops,
       });
@@ -333,23 +408,53 @@ export function runVrp(
     km: plannedRoutes.reduce((sum, r) => sum + r.km, 0),
     litres: plannedRoutes.reduce((sum, r) => sum + r.litres, 0),
     kg_co2: plannedRoutes.reduce((sum, r) => sum + r.kg_co2, 0),
+    kg_co2e_wtw: plannedRoutes.reduce((sum, r) => sum + r.kg_co2e_wtw, 0),
+    transport_work_tkm: plannedRoutes.reduce((sum, r) => sum + r.transport_work_tkm, 0),
   };
 
   // Compute unoptimized spreadsheet baseline
-  const baseKm = tourKm(orders, depot, pairKm);
-  const avgLpk = readyVehicles.length > 0 ? readyVehicles.reduce((s, v) => s + v.l_per_100km, 0) / readyVehicles.length : 10.0;
-  const baseLitres = (baseKm * avgLpk) / 100.0;
-  const baseCo2 = baseLitres * PETROL_FACTOR;
+  const baseAssign = baselineFill(orders, vehicles);
+  let baseKm = 0;
+  let baseLitres = 0;
+  let baseCo2 = 0;
+  let baseWtw = 0;
+  let baseWorkTkm = 0;
+
+  if (baseAssign.length > 0) {
+    for (const b of baseAssign) {
+      const bKm = tourKm(b.orders, depot, pairKm);
+      const bLitres = (bKm * b.vehicle.l_per_100km) / 100.0;
+      const bFactor = b.vehicle.fuel === "diesel" ? DIESEL_FACTOR : PETROL_FACTOR;
+      const bWtwFactor = b.vehicle.fuel === "diesel" ? DIESEL_WTW_FACTOR : PETROL_WTW_FACTOR;
+      const bKg = b.orders.reduce((sum, o) => sum + o.kg, 0);
+      baseKm += bKm;
+      baseLitres += bLitres;
+      baseCo2 += bLitres * bFactor;
+      baseWtw += bLitres * bWtwFactor;
+      baseWorkTkm += (bKg / 1000.0) * bKm;
+    }
+  } else {
+    baseKm = tourKm(orders, depot, pairKm);
+    const avgLpk = readyVehicles.length > 0 ? readyVehicles.reduce((s, v) => s + v.l_per_100km, 0) / readyVehicles.length : 10.0;
+    baseLitres = (baseKm * avgLpk) / 100.0;
+    baseCo2 = baseLitres * PETROL_FACTOR;
+    baseWtw = baseLitres * PETROL_WTW_FACTOR;
+    const allKg = orders.reduce((sum, o) => sum + o.kg, 0);
+    baseWorkTkm = (allKg / 1000.0) * baseKm;
+  }
 
   const baseTotals: MetricTotals = {
     km: baseKm,
     litres: baseLitres,
     kg_co2: baseCo2,
+    kg_co2e_wtw: baseWtw,
+    transport_work_tkm: baseWorkTkm,
   };
 
   const deltaKm = optTotals.km - baseTotals.km;
   const deltaLitres = optTotals.litres - baseTotals.litres;
   const deltaCo2 = optTotals.kg_co2 - baseTotals.kg_co2;
+  const deltaWtw = (optTotals.kg_co2e_wtw ?? 0) - (baseTotals.kg_co2e_wtw ?? 0);
 
   const delta: MetricDelta = {
     km: deltaKm,
@@ -358,7 +463,11 @@ export function runVrp(
     km_pct: baseTotals.km > 0 ? (deltaKm / baseTotals.km) * 100.0 : 0.0,
     litres_pct: baseTotals.litres > 0 ? (deltaLitres / baseTotals.litres) * 100.0 : 0.0,
     kg_co2_pct: baseTotals.kg_co2 > 0 ? (deltaCo2 / baseTotals.kg_co2) * 100.0 : 0.0,
+    kg_co2e_wtw: deltaWtw,
+    kg_co2e_wtw_pct: (baseTotals.kg_co2e_wtw ?? 0) > 0 ? (deltaWtw / (baseTotals.kg_co2e_wtw ?? 1)) * 100.0 : 0.0,
   };
+
+  const decomposition = computeCarbonDecomposition(baseTotals.kg_co2, optTotals.kg_co2, baseTotals.km, optTotals.km);
 
   return {
     routes: plannedRoutes,
@@ -366,5 +475,6 @@ export function runVrp(
     totals: optTotals,
     baseline: baseTotals,
     delta,
+    decomposition,
   };
 }

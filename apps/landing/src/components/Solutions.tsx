@@ -5,7 +5,7 @@ export const Solutions: React.FC = () => {
   const solutions = [
     {
       id: '01',
-      icon: <Route className="w-6 h-6 text-greenlogix-lime" />,
+      icon: <Route className="w-6 h-6 text-ecomiles-lime" />,
       badge: 'Tự Động Sắp Tuyến',
       title: 'Sắp Xếp Tuyến Giao Hàng Hiệu Quả',
       description:
@@ -43,7 +43,7 @@ export const Solutions: React.FC = () => {
     },
     {
       id: '04',
-      icon: <BarChart3 className="w-6 h-6 text-greenlogix-lime" />,
+      icon: <BarChart3 className="w-6 h-6 text-ecomiles-lime" />,
       badge: 'Theo Dõi Phát Thải',
       title: 'Biết Mỗi Chuyến Xe Phát Thải Bao Nhiêu CO₂',
       description:
@@ -55,17 +55,17 @@ export const Solutions: React.FC = () => {
 
   return (
     <section id="solutions" className="relative overflow-hidden py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-950/80 border-t border-white/5 scroll-mt-24">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[min(600px,100vw)] h-[300px] bg-greenlogix-lime/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[min(600px,100vw)] h-[300px] bg-ecomiles-lime/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-bold text-greenlogix-lime mb-4 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-bold text-ecomiles-lime mb-4 shadow-sm">
             <Cpu className="w-3.5 h-3.5" />
             <span>GIẢI PHÁP DÀNH CHO DOANH NGHIỆP GIAO NHẬN</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            4 Cách EcoMiles Giúp <span className="text-greenlogix-lime">Vận Hành Hiệu Quả Hơn</span>
+            4 Cách EcoMiles Giúp <span className="text-ecomiles-lime">Vận Hành Hiệu Quả Hơn</span>
           </h2>
 
           <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">
@@ -77,7 +77,7 @@ export const Solutions: React.FC = () => {
           {solutions.map((item) => (
             <div
               key={item.id}
-              className={`relative rounded-3xl p-8 sm:p-9 bg-gradient-to-br ${item.gradient} bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-greenlogix-lime/40 transition-all duration-300 group hover:-translate-y-1 shadow-xl shadow-black/30 flex flex-col justify-between`}
+              className={`relative rounded-3xl p-8 sm:p-9 bg-gradient-to-br ${item.gradient} bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-ecomiles-lime/40 transition-all duration-300 group hover:-translate-y-1 shadow-xl shadow-black/30 flex flex-col justify-between`}
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -89,7 +89,7 @@ export const Solutions: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 group-hover:text-greenlogix-lime transition-colors leading-snug">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 group-hover:text-ecomiles-lime transition-colors leading-snug">
                   {item.title}
                 </h3>
                 <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6">
@@ -100,7 +100,7 @@ export const Solutions: React.FC = () => {
               <div className="pt-5 border-t border-white/10 space-y-2.5">
                 {item.metrics.map((metric, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-200">
-                    <CheckCircle className="w-4 h-4 text-greenlogix-lime shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-ecomiles-lime shrink-0" />
                     <span>{metric}</span>
                   </div>
                 ))}

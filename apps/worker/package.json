@@ -2,15 +2,21 @@
   "name": "@greenlogix/worker",
   "version": "1.0.0",
   "description": "EcoMiles Cloudflare Edge Worker API Gateway and Proxy",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
+    "typecheck:tsrs": "tsrs -p tsconfig.json --noEmit",
     "test": "node --experimental-strip-types --test src/*.test.ts"
+  },
+  "dependencies": {
+    "hono": "^4.13.13"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250224.0",
+    "tsrs": "^0.18.0-ts7.1.0-dev.20260929",
     "typescript": "^5.9.3",
     "wrangler": "^4.127.1"
   }

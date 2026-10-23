@@ -210,7 +210,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
       <p class="note" id="road-baseline-note" style="font-size:11px;color:var(--mut);line-height:1.45;margin:8px 0 4px">
         Google-class road km = OSM network (Valhalla auto/truck, else OSRM driving) for now — not a Google key.
         Zig-zag cơ sở is Excel stop order vs NN+2-opt, not Google. Fallback: haversine × 1.35.
-        CO₂ TTW: km × (L/100km) × kg/L. Optional eco-cost: GREENLOGIX_ECO_WEIGHT.
+        CO₂ TTW: km × (L/100km) × kg/L. Optional eco-cost: ECOMILES_ECO_WEIGHT.
       </p>
 
       <div class="tabs">
@@ -294,6 +294,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
       safeCreateIcons();
     }
     function num(v) { return Number(v || 0).toFixed(2); }
+    function esc(v) { return (v == null ? "" : String(v)).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
 
     function switchTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -400,11 +401,11 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
             ? '<span style="color:#f59e0b;font-weight:700">⚠️ Giờ cấm tải TP.HCM (06-09h / 16-20h)</span><br/>'
             : '';
           const m = L.marker([stop.lat, stop.lng], { icon })
-            .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + stop.address) + '</b><br/>' +
-                       'Xe: ' + route.plate + '<br/>' +
-                       'Tải: ' + stop.kg + ' kg (' + (stop.window_start || '') + ' - ' + (stop.window_end || '') + ')<br/>' +
+            .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + esc(stop.address)) + '</b><br/>' +
+                       'Xe: ' + esc(route.plate) + '<br/>' +
+                       'Tải: ' + stop.kg + ' kg (' + esc(stop.window_start || '') + ' - ' + esc(stop.window_end || '') + ')<br/>' +
                        banNotice +
-                       'Trạng thái: <b>' + (stop.status || 'pending') + '</b>')
+                       'Trạng thái: <b>' + esc(stop.status || 'pending') + '</b>')
             .addTo(map);
           markers.push(m);
         });
@@ -419,7 +420,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
       for (const r of routes || []) {
         const div = document.createElement("div");
         div.className = "chip" + (String(activeVehicleId) === String(r.vehicle_id) ? " active" : "");
-        div.innerHTML = '<span class="chip-dot" style="background:' + r.color + '"></span>' + r.plate;
+        div.innerHTML = '<span class="chip-dot" style="background:' + r.color + '"></span>' + esc(r.plate);
         div.onclick = () => filterVehicle(r.vehicle_id);
         c.appendChild(div);
       }
@@ -450,7 +451,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
         card.className = "route-card";
         card.innerHTML =
           '<div class="route-header">' +
-            '<span class="route-plate"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + r.color + '"></span>' + r.plate + '</span>' +
+            '<span class="route-plate"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + r.color + '"></span>' + esc(r.plate) + '</span>' +
             '<span class="badge-status ' + (r.published ? 'badge-delivered' : 'badge-pending') + '">' + (r.published ? 'ĐÃ PHÁT' : 'CHỜ DUYỆT') + '</span>' +
           '</div>' +
           '<div class="route-meta">' +
@@ -517,11 +518,11 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
             '<div class="stop-left">' +
               '<span class="stop-seq" style="background:' + r.color + ';color:#000">' + s.seq + '</span>' +
               '<div style="display:flex;flex-direction:column">' +
-                '<span class="stop-address" title="' + s.address + '">' + s.address + '</span>' +
-                '<span style="font-size:10px;color:var(--mut)">' + r.plate + ' · ' + (s.window_start || '') + '-' + (s.window_end || '') + (hasBan ? '<span class="badge-ban"><i data-lucide="shield-alert" style="width:10px;height:10px"></i> Cấm tải</span>' : '') + '</span>' +
+                '<span class="stop-address" title="' + esc(s.address) + '">' + esc(s.address) + '</span>' +
+                '<span style="font-size:10px;color:var(--mut)">' + esc(r.plate) + ' · ' + esc(s.window_start || '') + '-' + esc(s.window_end || '') + (hasBan ? '<span class="badge-ban"><i data-lucide="shield-alert" style="width:10px;height:10px"></i> Cấm tải</span>' : '') + '</span>' +
               '</div>' +
             '</div>' +
-            '<span class="badge-status badge-' + (s.status || 'pending') + '">' + (s.status || 'pending') + '</span>';
+            '<span class="badge-status badge-' + esc(s.status || 'pending') + '">' + esc(s.status || 'pending') + '</span>';
           ul.appendChild(li);
         }
       }
@@ -537,8 +538,8 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
         const item = document.createElement("div");
         item.className = "stop-item";
         item.innerHTML =
-          '<div><b>' + v.plate + '</b> <span style="color:var(--mut)">(' + v.capacity_kg + ' kg)</span></div>' +
-          '<span class="badge-status ' + (v.status === 'ready' ? 'badge-delivered' : 'badge-failed') + '">' + v.status + '</span>';
+          '<div><b>' + esc(v.plate) + '</b> <span style="color:var(--mut)">(' + v.capacity_kg + ' kg' + (v.type ? ' · ' + esc(v.type) : '') + ')</span></div>' +
+          '<span class="badge-status ' + (v.status === 'ready' ? 'badge-delivered' : 'badge-failed') + '">' + esc(v.status) + '</span>';
         c.appendChild(item);
       }
     }

@@ -1,0 +1,16 @@
+Apache ECharts (incubating) — vendored runtime
+==============================================
+
+File:     apps/api/static/vendor/echarts.min.js
+Version:  5.5.1
+License:  Apache License 2.0 (see the banner inside echarts.min.js)
+Source:   https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js
+SHA-256:  e84270bd0cd5bdf60fefc26d00c2a391cb2e81f4d26a7a9ee16185a54773a3cf
+Size:     1030855 bytes
+
+Cross-check: the same sha256 was computed over https://unpkg.com/echarts@5.5.1/dist/echarts.min.js
+(downloaded 2026-10-18) — the two CDN copies are byte-identical.
+
+Fetched once, 2026-10-18, with curl. Runtime is served from /static/vendor/ by the API's
+StaticFiles mount: the dashboard page and its tests work with the network cable pulled,
+no CDN <script src> at runtime.

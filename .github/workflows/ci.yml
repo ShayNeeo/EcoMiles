@@ -58,4 +58,37 @@ jobs:
       - name: Run ruff
         working-directory: apps/api
         run: uv run --locked ruff check src tests
+  mobile-driver:
+    name: Test Flutter driver app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Run flutter test
+        working-directory: apps/mobile-driver
+        run: flutter test
+
+  worker:
+    name: Typecheck (tsrs + tsc) and test edge worker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile
+      - name: Typecheck shared-types with tsrs
+        run: pnpm --filter @ecomiles/shared-types run typecheck:tsrs
+      - name: Typecheck worker with tsrs and tsc
+        run: pnpm --filter @greenlogix/worker run typecheck:tsrs && pnpm --filter @greenlogix/worker run typecheck
+      - name: Run worker tests
+        working-directory: apps/worker
+        run: node --experimental-strip-types --test src/*.test.ts
 

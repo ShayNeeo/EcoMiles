@@ -28,6 +28,9 @@ class Order(SQLModel, table=True):
     place_provider: str | None = Field(default=None)
     place_confidence: float | None = Field(default=None)
     geocode_at: str | None = Field(default=None)
+    # C-03 (additive, nullable): caller-supplied external key. Re-uploads of the
+    # same file skip rows whose external_id already exists instead of duplicating.
+    external_id: str | None = Field(default=None, index=True)
 
 
 class Vehicle(SQLModel, table=True):

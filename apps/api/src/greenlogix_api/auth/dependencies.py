@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from fastapi import Depends, HTTPException
-from greenlogix_api.auth.models import AuthContext, UserRole
+
+from greenlogix_api.auth.models import AuthContext
 from greenlogix_api.auth.service import resolve_auth_context
 
 

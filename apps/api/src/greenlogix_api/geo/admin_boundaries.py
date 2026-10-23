@@ -7,7 +7,6 @@ administrative wards/communes conforming to the latest national administrative d
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-import math
 
 from greenlogix_api.solver.distance import haversine_km
 

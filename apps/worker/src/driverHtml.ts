@@ -200,6 +200,7 @@ export const DRIVER_HTML = `<!DOCTYPE html>
         }
       }
     }
+    function esc(v) { return (v == null ? "" : String(v)).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
 
     function safeCreateIcons() {
       if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -248,7 +249,7 @@ export const DRIVER_HTML = `<!DOCTYPE html>
         const route = (data.routes || [])[0] || null;
         
         if (!route || !route.stops || !route.stops.length) {
-          container.innerHTML = '<div class="empty-card"><i data-lucide="inbox" style="width:32px;height:32px;margin-bottom:8px"></i><div>Chưa có lộ trình được xuất bản cho xe <b>' + plate + '</b>.<br/>Vui lòng liên hệ điều hành viên hoặc vào Bàn điều hành bấm <b>Publish tài xế</b>.</div></div>';
+          container.innerHTML = '<div class="empty-card"><i data-lucide="inbox" style="width:32px;height:32px;margin-bottom:8px"></i><div>Chưa có lộ trình được xuất bản cho xe <b>' + esc(plate) + '</b>.<br/>Vui lòng liên hệ điều hành viên hoặc vào Bàn điều hành bấm <b>Publish tài xế</b>.</div></div>';
           document.getElementById("stat-total").textContent = "0";
           document.getElementById("stat-done").textContent = "0";
           document.getElementById("stat-kg").textContent = "0 kg";
@@ -302,12 +303,12 @@ export const DRIVER_HTML = `<!DOCTYPE html>
                 '<span class="seq-num">' + (isDepot ? '<i data-lucide="building-2" style="width:12px;height:12px"></i>' : idx) + '</span>' +
                 '<span>' + (isDepot ? 'Kho xuất phát' : 'Điểm giao #' + idx) + '</span>' +
               '</div>' +
-              '<span class="status-tag tag-' + (s.status || "pending") + '">' + statusText + '</span>' +
+              '<span class="status-tag tag-' + (s.status || "pending") + '">' + esc(statusText) + '</span>' +
             '</div>' +
-            '<div class="stop-address">' + s.address + '</div>' +
+            '<div class="stop-address">' + esc(s.address) + '</div>' +
             '<div class="stop-meta">' +
-              (s.phone ? '<span class="meta-item"><i data-lucide="phone" style="width:13px;height:13px"></i><a href="tel:' + s.phone + '">' + s.phone + '</a></span>' : '') +
-              (s.window_start ? '<span class="meta-item"><i data-lucide="clock" style="width:13px;height:13px"></i>' + s.window_start + ' - ' + s.window_end + '</span>' : '') +
+              (s.phone ? '<span class="meta-item"><i data-lucide="phone" style="width:13px;height:13px"></i><a href="tel:' + encodeURIComponent(s.phone) + '">' + esc(s.phone) + '</a></span>' : '') +
+              (s.window_start ? '<span class="meta-item"><i data-lucide="clock" style="width:13px;height:13px"></i>' + esc(s.window_start) + ' - ' + esc(s.window_end) + '</span>' : '') +
               (s.kg ? '<span class="meta-item"><i data-lucide="package" style="width:13px;height:13px"></i>' + s.kg + ' kg</span>' : '') +
             '</div>' +
             banHtml +

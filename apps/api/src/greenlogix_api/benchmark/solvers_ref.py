@@ -52,6 +52,29 @@ def solve_baseline_greedy(
     return {"objective": float(total), "feasible": bool(feasible)}
 
 
+
+def solve_eco_alns(
+    orders: list[Order],
+    vehicles: list[Vehicle],
+    depot: tuple[float, float],
+    seed: int = 0,
+) -> dict[str, object]:
+    """Reference C: EcoALNS heuristic."""
+    from greenlogix_api.solver import run_vrp
+
+    _ = seed
+    result = run_vrp(
+        orders,
+        vehicles,
+        depot=depot,
+        depot_name="benchmark",
+        pair_km=road_km,
+        eco_weight=0.0,
+        optimizer="ecoalns",
+    )
+    feasible = not result.unassigned_ids and not any(r.overload for r in result.routes)
+    return {"objective": float(result.totals.km), "feasible": bool(feasible)}
+
 REF_SOLVERS = {
     "refA_nn_two_opt": solve_nn_two_opt,
     "refB_baseline_greedy": solve_baseline_greedy,

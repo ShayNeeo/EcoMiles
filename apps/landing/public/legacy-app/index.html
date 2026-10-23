@@ -429,9 +429,19 @@
       const urlParams = new URLSearchParams(window.location.search);
       const customApi = urlParams.get("api");
       if (customApi) {
-        if (customApi === "local" || customApi === "fastapi" || customApi === "py") return "http://localhost:8000";
-        if (customApi === "worker") return "http://localhost:8787";
-        return customApi.replace(/\/+$/, "");
+        if (customApi === "local" || customApi === "fastapi" || customApi === "py") return "http://127.0.0.1:8000";
+        if (customApi === "worker") return "http://127.0.0.1:8787";
+        const clean = customApi.replace(/\/+$/, "");
+        const allowedOrigins = [
+          "http://127.0.0.1:8000",
+          "http://localhost:8000",
+          "http://127.0.0.1:8787",
+          "http://localhost:8787",
+          "https://greenlogix-api.9ez.workers.dev",
+        ];
+        if (allowedOrigins.includes(clean) || clean === window.location.origin) {
+          return clean;
+        }
       }
       if (window.location.port === "8787" || window.location.hostname.includes("workers.dev")) return "";
       if (window.location.port === "8000") return "";
@@ -720,11 +730,11 @@
             ? '<span style="color:#f59e0b;font-weight:700">⚠️ Giờ cấm tải TP.HCM (06-09h / 16-20h)</span><br/>'
             : '';
           const m = L.marker([stop.lat, stop.lng], { icon })
-            .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + stop.address) + '</b><br/>' +
-                       'Xe: ' + route.plate + '<br/>' +
-                       'Tải: ' + stop.kg + ' kg (' + (stop.window_start || '') + ' - ' + (stop.window_end || '') + ')<br/>' +
+            .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + esc(stop.address)) + '</b><br/>' +
+                       'Xe: ' + esc(route.plate) + '<br/>' +
+                       'Tải: ' + stop.kg + ' kg (' + esc(stop.window_start || '') + ' - ' + esc(stop.window_end || '') + ')<br/>' +
                        banNotice +
-                       'Trạng thái: <b>' + (stop.status || 'pending') + '</b>')
+                       'Trạng thái: <b>' + esc(stop.status || 'pending') + '</b>')
             .addTo(map);
           markers.push(m);
         });
@@ -739,7 +749,7 @@
       for (const r of routes || []) {
         const div = document.createElement("div");
         div.className = "chip" + (String(activeVehicleId) === String(r.vehicle_id) ? " active" : "");
-        div.innerHTML = '<span class="chip-dot" style="background:' + r.color + '"></span>' + r.plate;
+        div.innerHTML = '<span class="chip-dot" style="background:' + esc(r.color) + '"></span>' + esc(r.plate);
         div.onclick = () => filterVehicle(r.vehicle_id);
         c.appendChild(div);
       }
@@ -770,7 +780,7 @@
         card.className = "route-card";
         card.innerHTML =
           '<div class="route-header">' +
-            '<span class="route-plate"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + r.color + '"></span>' + r.plate + '</span>' +
+            '<span class="route-plate"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + esc(r.color) + '"></span>' + esc(r.plate) + '</span>' +
             '<span class="badge-status ' + (r.published ? 'badge-delivered' : 'badge-pending') + '">' + (r.published ? 'ĐÃ PHÁT' : 'CHỜ DUYỆT') + '</span>' +
           '</div>' +
           '<div class="route-meta">' +
@@ -835,13 +845,13 @@
           li.className = "stop-item";
           li.innerHTML =
             '<div class="stop-left">' +
-              '<span class="stop-seq" style="background:' + r.color + ';color:#000">' + s.seq + '</span>' +
+              '<span class="stop-seq" style="background:' + esc(r.color) + ';color:#000">' + s.seq + '</span>' +
               '<div style="display:flex;flex-direction:column">' +
                 '<span class="stop-address" title="' + esc(s.address) + '">' + esc(s.address) + '</span>' +
-                '<span style="font-size:10px;color:var(--mut)">' + r.plate + ' · ' + (s.window_start || '') + '-' + (s.window_end || '') + (hasBan ? '<span class="badge-ban"><i data-lucide="shield-alert" style="width:10px;height:10px"></i> Cấm tải</span>' : '') + '</span>' +
+                '<span style="font-size:10px;color:var(--mut)">' + esc(r.plate) + ' · ' + esc(s.window_start || '') + '-' + esc(s.window_end || '') + (hasBan ? '<span class="badge-ban"><i data-lucide="shield-alert" style="width:10px;height:10px"></i> Cấm tải</span>' : '') + '</span>' +
               '</div>' +
             '</div>' +
-            '<span class="badge-status badge-' + (s.status || 'pending') + '">' + (s.status || 'pending') + '</span>';
+            '<span class="badge-status badge-' + esc(s.status || 'pending') + '">' + esc(s.status || 'pending') + '</span>';
           ul.appendChild(li);
         }
       }
@@ -978,8 +988,8 @@
         item.style.padding = "8px 10px";
         item.innerHTML =
           '<div style="display:flex;justify-content:space-between;width:100%;align-items:center;">' +
-            '<div><b>' + v.plate + '</b> <span style="color:var(--lime);font-weight:700">(' + v.type + ')</span></div>' +
-            '<span class="badge-status ' + (v.status === 'ready' ? 'badge-delivered' : 'badge-failed') + '">' + v.status + '</span>' +
+            '<div><b>' + esc(v.plate) + '</b> <span style="color:var(--lime);font-weight:700">(' + esc(v.type) + ')</span></div>' +
+            '<span class="badge-status ' + (v.status === 'ready' ? 'badge-delivered' : 'badge-failed') + '">' + esc(v.status) + '</span>' +
           '</div>' +
           '<div style="font-size:11px;color:var(--mut);line-height:1.4;">' +
             'Tải trọng: <b>' + v.capacity_kg + ' kg</b> · Nhiên liệu: <b>' + (v.fuel === 'diesel' ? 'Dầu Diesel' : 'Xăng Petrol') + '</b> (' + v.l_per_100km + ' L/100km)<br/>' +

@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from greenlogix_api.energy import hdt_v1
-from greenlogix_api.energy.hdt_v1 import HdtEnergyModelV1, P_AUX_WATTS
+from greenlogix_api.energy.hdt_v1 import P_AUX_WATTS, HdtEnergyModelV1
 from greenlogix_api.geo.truck_profile import XE_TAI_NHO_1T5
 from greenlogix_api.routing import pareto
 from greenlogix_api.routing.pareto import evaluate_pareto_policies

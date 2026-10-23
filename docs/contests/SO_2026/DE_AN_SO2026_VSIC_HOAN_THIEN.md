@@ -9,7 +9,7 @@
 # TÊN DỰ ÁN: ECOMILES
 ### Nền tảng điều phối tuyến vận tải đô thị thông minh và kiểm kê phát thải CO₂ tự động cho doanh nghiệp vừa và nhỏ (SME)
 
-* **Tên thương hiệu:** EcoMiles (GreenLogix Platform)
+* **Tên thương hiệu:** EcoMiles
 * **Website / MVP Trực tuyến:** [https://ecomiles.pages.dev](https://ecomiles.pages.dev)
 * **Bàn điều hành Dispatcher Console:** [https://ecomiles.pages.dev/app/](https://ecomiles.pages.dev/app/)
 * **Ứng dụng Tài xế PWA (Driver App):** [https://ecomiles.pages.dev/driver/?plate=51C-000.01](https://ecomiles.pages.dev/driver/?plate=51C-000.01)
@@ -31,7 +31,7 @@
 
 # TÓM TẮT DỰ ÁN (EXECUTIVE SUMMARY)
 
-Sự bùng nổ của thương mại điện tử tại Việt Nam với tốc độ tăng trưởng hơn 20%/năm đã kéo theo hàng triệu đơn hàng cần giao nhận mỗi ngày tại các đô thị đặc biệt như TP.HCM và Hà Nội. Tuy nhiên, hoạt động vận tải hàng hóa chặng cuối (urban last-mile delivery) đang tồn tại một nghịch lý nghiêm trọng: **85% doanh nghiệp vận tải vừa và nhỏ (SME) vẫn điều phối tuyến đường hoàn toàn thủ công bằng kinh nghiệm và file Excel**. Hậu quả là tuyến đường bị chồng chéo, phương tiện di chuyển zig-zag, tỷ lệ xe chạy rỗng chiều về lên tới **30% – 35%** `[BENCHMARK NGÀNH]`, tiêu tốn chi phí logistics quốc gia chiếm **16.8% – 17% GDP** `[BENCHMARK NGÀNH]` và xả ra hàng triệu tấn $\text{CO}_2$ vào bầu khí quyển (vận tải đường bộ chiếm tới 80% phát thải giao thông).
+Sự bùng nổ của thương mại điện tử tại Việt Nam với tốc độ tăng trưởng hơn 20%/năm đã kéo theo hàng triệu đơn hàng cần giao nhận mỗi ngày tại các đô thị đặc biệt như TP.HCM và Hà Nội. Tuy nhiên, hoạt động vận tải hàng hóa chặng cuối (urban last-mile delivery) đang tồn tại một nghịch lý nghiêm trọng: **85% doanh nghiệp vận tải vừa và nhỏ (SME) vẫn điều phối tuyến đường hoàn toàn thủ công bằng kinh nghiệm và file Excel**. Hậu quả là tuyến đường bị chồng chéo, phương tiện di chuyển zig-zag, tỷ lệ xe-km chạy rỗng nội địa từ **21.8% – 26.0%** *(Eurostat 2025)* và tỷ lệ chuyến chiều về rỗng lên tới **50% – 70%** *(World Bank 2019)* `[BENCHMARK NGÀNH]`, tiêu tốn chi phí logistics quốc gia chiếm **16.8% – 17% GDP** *(VLA / Bộ Công Thương)* `[BENCHMARK NGÀNH]` và phát thải **33.2 – 39.3 triệu tấn $\text{CO}_2$/năm** toàn ngành GTVT giai đoạn 2014–2023 (dự báo kịch bản BAU chạm 89.1 triệu tấn vào 2030; vận tải đường bộ chiếm ~80–85% phát thải giao thông) `[BENCHMARK NGÀNH]`.
 
 **EcoMiles** ra đời như một giải pháp công nghệ tạo tác động xã hội kép:
 1. **Về Kinh tế:** Giúp các doanh nghiệp vận tải SME tối ưu hóa lộ trình xe tải thông qua thuật toán phân cụm K-Means và giải thuật VRPTW 2-Opt (Vehicle Routing Problem with Time Windows), tích hợp tự động **khung giờ cấm tải nội đô TP.HCM (Quyết định 23/2018/QĐ-UBND)**, giúp cắt giảm quãng đường di chuyển và chi phí nhiên liệu.
@@ -84,8 +84,8 @@ Hệ sinh thái EcoMiles được xây dựng trên nền tảng **Serverless Ed
 
 ### 2.1.1. Thực trạng vĩ mô & Bối cảnh ngành
 * **Chi phí logistics đè nặng nền kinh tế:** Theo Báo cáo Logistics Việt Nam 2023–2024 của Bộ Công Thương, chi phí logistics tại Việt Nam đang chiếm khoảng **16.8% – 17% GDP** `[BENCHMARK NGÀNH]`, cao hơn nhiều so với mức trung bình thế giới (10.6%) và các nước trong khu vực (Singapore ~8%, Malaysia ~13%). Cơ cấu chi phí này chủ yếu đến từ chi phí vận tải đường bộ (chiếm tới 60–65% tổng chi phí logistics).
-* **Phát thải khí nhà kính từ giao thông đô thị:** Ngành giao thông vận tải phát thải hơn 57 triệu tấn $\text{CO}_2$/năm, trong đó **vận tải đường bộ chiếm trên 80% tổng phát thải** `[BENCHMARK NGÀNH]`. Chính phủ đã cam kết phát thải ròng bằng "0" (Net Zero 2050) tại COP26 và ban hành **Quyết định 876/QĐ-TTg** về chuyển đổi năng lượng xanh, giảm phát thải khí carbon. Tuy nhiên, các doanh nghiệp vận tải vừa và nhỏ (SME) — lực lượng vận chuyển hơn 70% khối lượng hàng hóa nội đô — hoàn toàn chưa có công cụ để thực hiện kiểm kê khí nhà kính theo **Nghị định 06/2022/NĐ-CP**.
-* **Nghịch lý vận hành nội đô:** Tỷ lệ xe tải chạy rỗng (empty running rate) tại các đô thị lớn tại Việt Nam đạt mức báo động **30% – 35%** `[BENCHMARK NGÀNH]` do xe sau khi giao hết hàng tại điểm đích thường quay về kho rỗng không có hàng chiều về.
+* **Phát thải khí nhà kính từ giao thông đô thị:** Ngành giao thông vận tải phát thải khoảng **33.2 – 39.3 triệu tấn $\text{CO}_2$/năm** giai đoạn 2014–2023 (dự báo kịch bản BAU lên tới 89.1 triệu tấn vào năm 2030 theo World Bank & Bộ GTVT), trong đó **vận tải đường bộ chiếm khoảng 80% – 85% tổng phát thải** `[BENCHMARK NGÀNH]`. Chính phủ đã cam kết phát thải ròng bằng "0" (Net Zero 2050) tại COP26 và ban hành **Quyết định 876/QĐ-TTg** về chuyển đổi năng lượng xanh, giảm phát thải khí carbon. Tuy nhiên, các doanh nghiệp vận tải vừa và nhỏ (SME) — lực lượng vận chuyển hơn 70% khối lượng hàng hóa nội đô — hoàn toàn chưa có công cụ để thực hiện kiểm kê khí nhà kính theo **Nghị định 06/2022/NĐ-CP**.
+* **Nghịch lý vận hành nội đô:** Tỷ lệ xe-km chạy rỗng nội địa ở mức **21.8% – 26.0%** *(Eurostat 2025)* và tỷ lệ xe tải chạy rỗng chiều về (empty backhaul) tại Việt Nam lên tới **50% – 70%** *(World Bank 2019, Strengthening Vietnam's Trucking Sector)* `[BENCHMARK NGÀNH]` do thiếu công cụ gom cụm và điều phối tuyến tối ưu.
 
 ### 2.1.2. Phân tích nguyên nhân gốc rễ — Mô hình 5 Whys (Why It Persists)
 Tại sao vấn đề lãng phí km và ô nhiễm phát thải này vẫn dai dẳng tồn tại qua nhiều năm mà chưa được giải quyết?
@@ -278,7 +278,7 @@ Sản phẩm không dừng lại ở ý tưởng trên giấy mà **đã đượ
                               Khả năng Đo lường Xanh & Tối ưu phát thải CO2 (Cao)
                                                     ▲
                                                     │
-                                                    │           ★ ECOMILES (GreenLogix)
+                                                    │           ★ ECOMILES
                            Route4Me, LogiNext       │           [Vị thế Dẫn đầu Ngách]
                            (Phần mềm ngoại đắt đỏ)   │           • Tinh gọn cho SME Việt Nam
                                                     │           • Tối ưu VRP + Cấm tải TP.HCM
@@ -354,13 +354,13 @@ Toàn bộ các số liệu trong đề án được phân loại nghiêm ngặt
 2. Lộ trình thực nghiệm tại TP.HCM rút ngắn từ **791.35 km** (zig-zag cơ sở) xuống **94.74 km** (sau tối ưu), giúp giảm lượng tiêu thụ dầu từ **83.53 lít** xuống **9.05 lít** và giảm phát thải từ **192.96 kg $\text{CO}_2$** xuống **22.56 kg $\text{CO}_2$** `[ĐÃ KIỂM CHỨNG]`.
 3. Hệ thống tự động phát hiện và cảnh báo 100% các đơn hàng có khung giờ giao rơi vào giờ cấm tải TP.HCM (6h–9h và 16h–20h) `[ĐÃ KIỂM CHỨNG]`.
 4. Tính năng ghi nhận trạng thái từ Driver PWA ("Đã giao", "Đến nơi") cập nhật dữ liệu 2 chiều về Cloudflare D1 trong **< 200 ms** `[ĐÃ KIỂM CHỨNG]`.
-5. 100% bài kiểm thử kỹ thuật (268 unit tests Python API và 16 integration tests Cloudflare Edge Worker) đều đạt trạng thái PASSED `[ĐÃ KIỂM CHỨNG]`.
+5. 100% bài kiểm thử kỹ thuật (hơn 700 automated tests trên Python API, Cloudflare Edge Worker và Flutter Mobile Driver) đều đạt trạng thái PASSED `[ĐÃ KIỂM CHỨNG]`.
 
 ### Nhóm 2: `[BENCHMARK NGÀNH]` (Trích xuất từ các báo cáo chính thống của Bộ ban ngành và tổ chức quốc tế):
 1. Chi phí logistics chiếm **16.8% – 17% GDP Việt Nam** *(Báo cáo Logistics Việt Nam 2023, Bộ Công Thương)* `[BENCHMARK NGÀNH]`.
 2. Vận tải đường bộ chiếm **trên 80% tổng lượng phát thải $\text{CO}_2$** toàn ngành giao thông vận tải *(Bộ GTVT & World Bank)* `[BENCHMARK NGÀNH]`.
-3. Tỷ lệ xe tải chạy rỗng nội đô và liên tỉnh tại Việt Nam dao động từ **30% đến 35%** *(World Bank & Hiệp hội VLA)* `[BENCHMARK NGÀNH]`.
-4. Hệ số phát thải Well-to-Wheel (WTW) và Tank-to-Wheel (TTW) theo GLEC Framework v3.0 / IPCC: **2.68 kg $\text{CO}_2$ / lít dầu Diesel**; **2.31 kg $\text{CO}_2$ / lít xăng** `[BENCHMARK NGÀNH]`.
+3. Tỷ lệ xe-km chạy rỗng nội địa đạt **21.8% – 26.0%** *(Eurostat 2025)* và tỷ lệ chuyến chiều về rỗng tại Việt Nam dao động từ **50% đến 70%** *(World Bank 2019, Strengthening Vietnam's Trucking Sector)* `[BENCHMARK NGÀNH]`.
+4. Hệ số phát thải Tank-to-Wheel (TTW) và Well-to-Wheel (WTW) theo IPCC 2006 & GLEC Framework v3.2 / ISO 14083:2023: **2.68 kg $\text{CO}_2$ / lít dầu Diesel (TTW)** (**3.24 kg WTW**); **2.31 kg $\text{CO}_2$ / lít xăng (TTW)** (**2.82 kg WTW**) `[BENCHMARK NGÀNH]`.
 5. Quy mô thị trường TMĐT Việt Nam năm 2024 vượt **25 tỷ USD**, tăng trưởng **20%/năm** *(Cục TMĐT và Kinh tế số)* `[BENCHMARK NGÀNH]`.
 
 ### Nhóm 3: `[GIẢ ĐỊNH – CẦN PILOT]` (Các mục tiêu và dự phóng cần kiểm chứng thực địa trong giai đoạn tiếp theo):
@@ -423,7 +423,7 @@ Toàn bộ hệ thống kỹ thuật của EcoMiles đã sẵn sàng kiểm ch�
   uv run uvicorn greenlogix_api.main:app --port 8000 --reload
   # Truy cập Bàn điều hành cục bộ: http://localhost:8000/dispatcher
   ```
-* **Chạy kiểm thử toàn diện Backend (268 unit tests):**
+* **Chạy kiểm thử toàn diện Backend (700+ automated tests):**
   ```bash
   cd apps/api && uv run pytest
   ```

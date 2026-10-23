@@ -7,6 +7,7 @@ convex diesel model, and Scora et al. (2015) truck eco-routing.
 from __future__ import annotations
 
 import math
+
 from greenlogix_api.energy.base import EnergyEstimate, EnergyModel
 from greenlogix_api.geo.truck_profile import TruckProfile
 

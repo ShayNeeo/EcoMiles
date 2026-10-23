@@ -1,6 +1,6 @@
 # AGENTS.md
 
-GreenLogix / CargoX — pnpm monorepo for a Vietnam urban-logistics MVP (landing + dispatcher API + Flutter driver).
+EcoMiles — pnpm monorepo for a Vietnam urban-logistics MVP (landing + dispatcher API + Flutter driver).
 
 ## Before any edit
 

@@ -1,5 +1,5 @@
-import pytest
 from greenlogix_api.geo.restrictions import check_truck_ban
+
 
 def test_light_truck_morning_ban_violation():
     res = check_truck_ban(

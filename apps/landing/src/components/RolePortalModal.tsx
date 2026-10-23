@@ -20,7 +20,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
     >
       <div className="relative w-full max-w-4xl bg-slate-900/95 border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80 overflow-hidden">
         {/* Background Ambient Glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-greenlogix-lime/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-ecomiles-lime/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
 
@@ -35,12 +35,12 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
 
         {/* Header */}
         <div className="mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-greenlogix-lime/10 border border-greenlogix-lime/25 text-greenlogix-lime text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ecomiles-lime/10 border border-ecomiles-lime/25 text-ecomiles-lime text-xs font-bold uppercase tracking-wider mb-2">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Trải nghiệm trực tiếp không cần đăng ký</span>
           </div>
           <h2 id="portal-modal-title" className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            Chọn vai trò truy cập <span className="text-greenlogix-lime">EcoMiles</span>
+            Chọn vai trò truy cập <span className="text-ecomiles-lime">EcoMiles</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
             Hệ thống chạy 24/7 trên Cloudflare Serverless Edge. Phiên demo được tự động cấp quyền mà không cần tạo tài khoản.
@@ -50,17 +50,17 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
         {/* Three Role Options */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Role 1: Central Dispatcher */}
-          <div className="relative flex flex-col justify-between p-5 rounded-2xl bg-slate-950/80 border border-white/10 hover:border-greenlogix-lime/50 transition-all group">
+          <div className="relative flex flex-col justify-between p-5 rounded-2xl bg-slate-950/80 border border-white/10 hover:border-ecomiles-lime/50 transition-all group">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-greenlogix-lime/15 border border-greenlogix-lime/30 flex items-center justify-center text-greenlogix-lime">
+                <div className="w-10 h-10 rounded-xl bg-ecomiles-lime/15 border border-ecomiles-lime/30 flex items-center justify-center text-ecomiles-lime">
                   <LayoutDashboard className="w-5 h-5" />
                 </div>
-                <span className="text-[10.5px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-greenlogix-lime/10 text-greenlogix-lime border border-greenlogix-lime/20">
+                <span className="text-[10.5px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-ecomiles-lime/10 text-ecomiles-lime border border-ecomiles-lime/20">
                   Quản lý
                 </span>
               </div>
-              <h3 className="text-base font-bold text-white mb-1.5 group-hover:text-greenlogix-lime transition-colors">
+              <h3 className="text-base font-bold text-white mb-1.5 group-hover:text-ecomiles-lime transition-colors">
                 Bàn điều hành trung tâm
               </h3>
               <p className="text-xs text-slate-400 mb-4 leading-relaxed">
@@ -86,7 +86,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
               href="/app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-2.5 px-4 rounded-xl bg-greenlogix-lime hover:bg-yellow-300 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-md shadow-greenlogix-lime/20 group-hover:shadow-lg group-hover:shadow-greenlogix-lime/30"
+              className="w-full py-2.5 px-4 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-md shadow-ecomiles-lime/20 group-hover:shadow-lg group-hover:shadow-ecomiles-lime/30"
             >
               <span>Vào Bàn điều hành</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />

@@ -91,7 +91,7 @@ def load_obs(path: str | Path) -> int:
     """Load observations from a JSON file into the store. Returns rows added."""
     raw = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(raw, list):
-        raise ValueError("telemetry JSON must be a list of observations")
+        raise ValueError("telemetry JSON must be a list of observations")  # noqa: TRY004
     count = 0
     for item in raw:
         append_obs(FuelObs.from_dict(item))

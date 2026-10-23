@@ -89,3 +89,29 @@ def test_persist_plan_propagates_optimizer_audit(monkeypatch) -> None:
     payload = _read_report_json()
     assert payload["optimizer"] == "legacy"
     assert payload["pareto_source"] == "illustrative"
+
+
+def test_ecomiles_optimizer_env_takes_precedence(monkeypatch) -> None:
+    monkeypatch.setenv("ECOMILES_OPTIMIZER", "ecoalns")
+    monkeypatch.setenv("GREENLOGIX_OPTIMIZER", "legacy")
+    assert optimizer_name_for_audit() == "ecoalns"
+
+
+def test_optimize_endpoint_with_constraints_and_ecoalns(demo_client) -> None:
+    auth = {"Authorization": "Bearer DEMO"}
+    assert demo_client.post("/seed", headers=auth).status_code == 200
+    res = demo_client.post(
+        "/optimize",
+        headers=auth,
+        json={
+            "optimizer": "ecoalns",
+            "enforce_time_windows": True,
+            "enforce_truck_ban": True,
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["optimizer_used"] == "ecoalns"
+    assert data["ban_conflicts"] == 0
+    assert data["time_window_conflicts"] == 0
+    assert "decision23-2018-v1:checked" in data["restriction_coverage"]

@@ -658,3 +658,193 @@ Self-hosted extract: `VALHALLA_URL` or `OSRM_URL`. FastAPI without env uses `aut
    grep -rni "truck-safe\|ISO.*certified" apps/api/src apps/landing/src
    ```
    *Result*: 0 occurrences in `apps/landing/src`. Only compliant negation/contract strings in `apps/api/src` (`carbon.py:16`, `carbon.py:19`, `optimize.py:176`, `flags.py:9`, `road_baseline.py:30`).
+
+## 2026-10-10 — Complete eradication of GreenLogix branding in User Guide screenshots & PDF
+
+### What changed
+- `scripts/build_user_guide_pdf.py`:
+  - `annotate_fig1_role_portal()`: Patched modal title by replacing "GreenLogix" pixel region with "EcoMiles" in `#ffd400` bold font (`/usr/share/fonts/noto/NotoSans-Bold.ttf`, 31pt) over `#0f172a` modal background.
+  - Repositioned Callout 3 to cleanly highlight the Zero-Setup Cloudflare Edge badge (`TRẢI NGHIỆM TRỰC TIẾP KHÔNG CẦN ĐĂNG KÝ`) at `[665, 208, 1165, 252]`.
+  - Repositioned Callout 4 to accurately highlight the close modal `X` button at `[1540, 195, 1588, 238]`.
+  - `annotate_fig3_dispatcher_stops_bans()`: Patched top-left header logo (`GREENLOGIX` -> `ECOMILES`) and benchmark table row (`GreenLogix` -> `EcoMiles`).
+  - Updated Table 1 Row 3 in HTML template to describe "Trải nghiệm tức thì (Zero-Setup Edge)".
+  - Re-rendered HTML and PDF via WeasyPrint to `docs/ECOMILES_HUONG_DAN_SU_DUNG.pdf`, `ECOMILES_HUONG_DAN_SU_DUNG.pdf`, `ECOMILES_HUONG_DAN_SU_DUNG_PANASONIC.pdf`, `docs/contests/PANASONIC_2026/ECOMILES_HUONG_DAN_SU_DUNG_PANASONIC.pdf`.
+- `docs/README.md`: Replaced `(NEU, GreenLogix)` with `(NEU, EcoMiles)`.
+
+### Decisions / tradeoffs
+- Kept raw source screenshots pristine in `ARTIFACTS_DIR` while deterministically applying programmatic PIL pixel patches during figure compilation. This ensures repeatable, pixel-perfect rebranding without introducing compression artifacts or manual editing discrepancies.
+- Callout 3 in Fig 1 was originally colliding with the title text; realigned it to the top Cloudflare Edge direct-access badge and updated the documentation table accordingly.
+
+### Verification
+- `pdftoppm -png -r 150 docs/ECOMILES_HUONG_DAN_SU_DUNG_PANASONIC.pdf /tmp/pdf_previews_ecomiles/page`
+- Visual inspection via `view_file` on `/tmp/pdf_previews_ecomiles/page-3.png` (Fig 1), `page-4.png` (Fig 2), `page-6.png` (Fig 3), and `page-7.png` (Fig 4). Confirmed zero visual instances of "GreenLogix".
+- Text extraction check: `pdftotext ECOMILES_HUONG_DAN_SU_DUNG_PANASONIC.pdf - | grep -i "greenlogix"` returned 0 matches.
+- Updated running page footer `@bottom-left` in `scripts/build_user_guide_pdf.py` from `"EcoMiles — Green Logistics Platform (Panasonic 2026)"` to `"EcoMiles"` only (verified via `/tmp/footer_check.png`).
+
+
+---
+
+**Date:** 2026-10-18T20:40:00+07:00
+**Scope:** Tech-owner briefing document for the MVP-development training session (no code change).
+
+### What changed
+- `MVP_TRAINING_BRIEFING_2026-10-18.md` (new, repo root): Vietnamese briefing covering (1) project plan at three layers (product / `.planning` 4 phases / frontier CR-01..16 / business 7 stages); (2) real architecture — FastAPI 23 paths + Cloudflare Worker demo parity, SQLite 4 tables, Leaflet OSM, Flutter 3 screens; (3) real optimizer path (`run_vrp` cluster → capacity split → NN+2-opt) and which constraints are hard (capacity only) vs labels (time window, QĐ 23/2018 ban); (4) both emission models (accounting TTW vs GLX-HDT-v1 physics, ALNS/Pareto library-only); (5) benchmark reality (791.35 → 94.74 km, 83.53 → 9.05 L, 192.96 → 22.56 kg CO₂ on the 80/10 seed, baseline = zig-zag) plus the 7-layer benchmark ladder and harness invariants; (6) 10 remaining gaps; (7) verbatim VSIC judge feedback + a ready answer to the rejection question; (8) a 20-question Q&A bank; (9) honesty rules.
+- Consolidated contest timeline from the user's Google Sheet (HITC Innostar 22/10; RnD workshop 11/10–31/10, round 2 1–8/11, semis 16–22/11, finals 7–13/12; VSIC TOP 12 miền Bắc, submit 05/11, pitching 07/11; national startup program 31/10; Panasonic 11/10 submitted; Tuổi trẻ Startup 30/09 submitted).
+
+### Decisions / tradeoffs
+- One file instead of a doc set: the reader is a single tech owner answering live questions, so a single searchable briefing beats scattered notes.
+- Kept every claim tagged `[ĐO]` / `[CAM KẾT]` / `[MỤC TIÊU]` and cited `file:line`, because the failure mode in training Q&A is over-claiming (ISO 14083, 88% savings, backhaul) — the repo already has a self-audit listing those banned claims.
+- Documented the document conflicts rather than silently picking one: test count (268 / 442 / 526), OpenAPI paths (21 / 23), KPI bands (8–15% vs 15–25%).
+- Did not delete or rewrite the outdated numbers in contest DOCX/PDF — that is a separate, user-owned decision.
+
+### Verification
+- `cd apps/api && uv run --locked pytest -q` → **526 passed in 9.94s** (2026-10-18).
+- `cd apps/mobile-driver && flutter test` → **15 passed** (18.30s).
+- `cd apps/worker && node --experimental-strip-types --test 'src/*.test.ts'` → **16/16 pass** (3 suites).
+- Source reads backing every figure: `apps/api/src/greenlogix_api/**`, `apps/api/openapi.json`, `apps/api/data/road_graph.json`, `apps/worker/src/*`, `apps/mobile-driver/lib/**`, `.planning/{PROJECT,ROADMAP,REQUIREMENTS,STATE}.md`, `.planning/phases/**`, `docs/{adr,research,audit,contests}/**`, `FRONTIER_GAP_AUDIT_2026-09-28.md`, `TEST_READY.md`.
+- External: Google Sheet `17O-V3fve35xHTNYRQUx1VtxA9bz9a7sIN2L9kdytxgY` exported as XLSX (7 sheets, all tabs read) and the VSIC judge-feedback PDF (`drive.google.com/file/d/1_bXV3KiLETaaqz3329jebGVCL9-lwyGR`) text-extracted.
+
+---
+
+**Date:** 2026-10-18T21:05:00+07:00
+**Scope:** Provenance + claim audit of every public document and published figure across the 6 competitions (no code change).
+
+### What changed
+- `CLAIM_AUDIT_VA_NGUON_DU_LIEU_2026-10-18.md` (new, repo root): (A) inventory of all project versions per competition with what was fetched — 9/9 public links downloaded and read, plus the master sheet (7 tabs) and VSIC Tracking Performance (4 tabs); (B) data provenance table — the 80/10 dataset is generated by `seed.py`, not customer data; (C) verification-confidence table separating reproducible evidence (526/15/16 tests, 23 frozen paths, build sizes, deploy version IDs) from self-authored claims; (D) 12 wrong claims with the contradicting evidence; (E) four repetition patterns behind the hallucinations; (F) the actual judging criteria read from the rulebooks (RnD weights 20/25/20/15/10/10; Panasonic 30/25/20/25; VSIC "số liệu có nguồn và thời điểm"; national pitch item 4 = problem validation); (G) repair list + verified replacement wording; (H) how to answer "where does that number come from".
+- Third-party re-verification of industry figures: World Bank 2019 *Strengthening Vietnam's Trucking Sector* says empty backhauls are **50–70%**, not the 30–35% the proposals cite; published transport emissions are 33.2 Mt (2014) / 39.3 Mt (2023), not ">57 Mt"; VLA's 2019 member directory states "over 400 members", not ">30,000"; Google Large Vehicle Routing is "limited set of customers" while VIETMAP/Openmap do offer truck profiles in Vietnam; the IPCC-derived 2.68 / 2.31 kgCO2/L factors check out arithmetically.
+- Fetched and read the previously unread competition files: HITC Mẫu 01 (filled, declares stage = "Ý tưởng"), HITC Mẫu 02 (still an empty template — deadline 22/10), national-program registration form, national pitch format, RnD handbook + personal-data commitment form, VSIC Pitch Deck Handbook, Panasonic rules, VSIC judge feedback.
+
+### Decisions / tradeoffs
+- Treated the repo's own audits (`FRONTIER_GAP_AUDIT_*`, `TEST_READY`, `PROPOSAL_ECOMILES_TECH_AUDIT`) as **self-review, not independent audit**, and said so explicitly — they were produced by the same agent pipeline that wrote the code.
+- Did not edit any submitted document or slide; the audit only lists the required replacement wording, because changing filed contest material is the owner's decision.
+- Flagged the public Google Doc containing all five members' citizen-ID numbers as a Nghị định 13/2023 exposure rather than silently ignoring it.
+
+### Verification
+- Downloads verified by HTTP 200 + `file` type + size for all 9 links; text extracted with `pdftotext` / Google Docs `export?format=txt`.
+- External claims checked against primary documents, not secondary summaries (World Bank PDF grepped directly for "empty backhaul"; VLA 2019 directory PDF; IPCC 2006 Vol.2 structure; Google Routes API docs; VIETMAP API docs).
+- Test counts re-measured the same day: API 526 passed, Flutter 15 passed, worker 16/16.
+
+---
+
+**Date:** 2026-10-18T22:05:00+07:00
+**Scope:** CR-20261018-001 wave 1 (C-01 analytics core, C-03 ingest at scale, C-05 solver benchmark) + C-08 schema healing discovered during integration smoke.
+
+### What changed
+- `apps/api/src/greenlogix_api/analytics/` (new): `metrics.py` (11 pure metric functions, each docstring citing its standard — Eurostat empty-running, GLEC v3.2 / ISO 14083 tonne-km, OTIF/SCOR, last-mile productivity, transport cost), `queries.py` (DuckDB `sqlite_scan` over the live SQLite file with a documented session fallback), `router.py` (`GET /analytics/kpis`, `/analytics/timeseries`, `/analytics/fleet`, all `require_dispatcher`). `duckdb>=1.5.6` added to `apps/api/pyproject.toml` + `uv.lock`. `main.py` gained exactly two lines (import + include_router).
+- `apps/api/src/greenlogix_api/ingest_xlsx.py` + `routers/orders.py` (rewritten): streaming `openpyxl(read_only=True)`, env-overridable limits (`ECOMILES_MAX_DATA_ROWS` 50,000 / `ECOMILES_MAX_UPLOAD_BYTES` 32 MB), 500-row batched inserts in one transaction, additivity preserved; idempotent re-upload keyed on the new nullable `orders.external_id` (aliases `external_id` / `mã đơn` / `order_id`); response gains `rows_seen`, `rows_imported`, `skipped_duplicates`, `rows_rejected`, `dedupe`, `limits`.
+- `apps/api/src/greenlogix_api/generate_synthetic.py` (new): deterministic (seeded) generator emitting `lat`/`lng` at real HCMC district centroids so geocoding stays off the critical path, plus `data/seed/dataset_meta.json` carrying `kind: "simulated"`, seed, `generated_at`, `sha256`. Byte-reproducible across processes.
+- `apps/api/src/greenlogix_api/benchmark/` (extended): `instances.py` (Solomon + CVRPLIB parsers, Euclidean metric documented, `ValueError` naming the offending line), `runner.py` (repeats → `runtime_p50_ms`/`p95`/min/max/CV, CSV always, Parquet via DuckDB when importable), `scorer.py` (DIMACS-style leaderboard — gap vs best-known when supplied else best-of-refs, never "optimal"), `solvers_instances.py` (two reference solvers), self-authored fixtures in `apps/api/data/instances/`.
+- `apps/api/src/greenlogix_api/db.py` (C-08): the three per-column ALTER helpers (`_ensure_stop_route_id`, `_ensure_vehicle_envelope`, `_ensure_order_external_id`) are replaced by one generic `_ensure_missing_columns()` that diffs `SQLModel.metadata` against `PRAGMA table_info` per table and adds every missing **nullable** column; NOT NULL columns are logged (`db.migration.skip`) and skipped.
+- New tests: `test_analytics_metrics.py` (14), `test_analytics_api.py` (23), `test_ingest_scale.py` (9), `test_benchmark_{instances,runner,scorer}.py` (43), `test_db_migrations.py` (3). `tests/test_ingest.py` now drives the caps through env while keeping both original assertions.
+- Contract: `apps/api/openapi.json` regenerated (23 → 26 paths), `FROZEN_METHODS` gained the 3 additive `/analytics/*` entries.
+
+### Decisions / tradeoffs
+- **Integration by file copy, not `git merge`:** the main checkout already carried unrelated local edits (EcoMiles rebrand inside `main.py`, landing components, README). Every overwritten file was verified byte-identical to `HEAD` (SHA-256 vs `git show HEAD:<path>`) before copying, and `main.py` was patched by hand so the rebrand survived. Worktree branches stay empty; the integrator owns history.
+- **Contract single-writer:** `openapi.json` and `test_contract.py` are integrator-only. Three workstreams would otherwise have collided on the same two files; each slice gates with `--deselect test_frozen_openapi` and reports its path/key deltas instead.
+- **Metrics return `null` rather than 0** where the schema cannot support them: no empty-leg data (`km_empty`, `empty_running_pct`), no delivery timestamps (`otif_pct`), no route durations (`stops_per_hour`). A fabricated zero is worse than an honest gap — this is the same posture as the `routing_quality` label.
+- **DuckDB reads SQLite in place** (verified working: `INSTALL sqlite; LOAD sqlite; sqlite_scan(...)`) instead of a second warehouse; `duckdb` is the only new runtime dependency, and the Parquet writer reuses it rather than adding pyarrow.
+- **Generic schema healing over a fourth ad-hoc helper:** the per-column pattern had already failed once in production form (`no such column: orders.place_id` → HTTP 500 on `/seed` and `/optimize` while `/health` stayed green). One metadata-vs-PRAGMA diff removes the class, and `test_migrations` locks the behaviour in.
+- **Baseline corrections:** `ruff check src tests` carries **58 pre-existing errors** in untouched files (reproduced on a pristine checkout) — the "ruff clean" assumption in the first CR draft was wrong; and the suite is environment-sensitive (a missing gitignored `apps/api/.env` makes one CORS test fail), so `.env` is now copied into every worktree.
+
+### Verification
+- `cd apps/api && uv run --locked pytest -q` → **618 passed in 12.24s** (526 baseline + 37 analytics + 9 ingest-scale + 43 benchmark + 3 migration).
+- `uv run --locked ruff check` on every new/changed file → `All checks passed!`; full-tree count unchanged at 58 pre-existing.
+- `uv run --locked python -c "from greenlogix_api.main import dump_openapi; dump_openapi()"` then `test_contract.py` → green at 26 paths.
+- Live smoke (uvicorn on 127.0.0.1:8099, `GREENLOGIX_DEMO=1`, real DB): `/health` 200 · `POST /seed` 200 (80 orders, 10 vehicles) · `POST /optimize` 200 · `GET /report` 200 (baseline 816.49 km → optimized 99.19 km, kg CO₂e 25.43) · `/analytics/kpis` 200 (payload utilisation 47.4%, `km_empty`/`empty_running_pct`/`otif_pct` null) · `/analytics/timeseries` 200 · `/analytics/fleet` 200.
+- Regression proof for C-08: before the fix the same smoke returned 500 on `/seed` and `/optimize` with `sqlite3.OperationalError: no such column: orders.place_id`; after the fix all endpoints return 200 on the *same* pre-existing database file, and `test_db_migrations.py` reproduces the legacy schema in a temp file and asserts the ORM read succeeds.
+- Wave 2 (dashboard, CO₂/PDF report, CI + route audit) and the two independent verifiers were dispatched after this integration; their verdicts are appended when they land.
+
+---
+
+**Date:** 2026-10-18T23:40:00+07:00
+**Scope:** CR-20261018-001 wave 2 (C-02 dashboard, C-04 CO₂/KPI report, C-06 hardening + request ceiling) and every finding raised by the two independent verifiers, integrated and re-gated.
+
+### What changed
+- **C-02 dashboard** — vendored **Apache ECharts 5.5.1** (`apps/api/static/vendor/echarts.min.js`, 1,030,855 B, `sha256=e84270bd0cd5…73a3cf`, byte-identical on two independent CDNs, license + provenance in `echarts.LICENSE.txt`); `apps/api/templates/dashboard.html` (7 charts, per-chart unit captions, PNG/CSV/print, honest `n/a` overlays instead of fake zeros, footer carrying dataset label + seed + factor set + boundary + `routing_quality`); `GET /dashboard` (`require_dispatcher`, same gate as `/dispatcher`); `/static` mount in `main.py`.
+- **C-04 CO₂ / KPI report** — `/report` gained the standard metric block (`ReportMetrics`: per-order, per-tonne-km, payload utilisation, empty-running, OTIF, boundary, factor set + year, confidence, model version) sourced from `analytics.metrics` (no second formula); `GET /report.pdf` renders via WeasyPrint behind an **optional** `pdf` extra — 501 naming `uv sync --extra pdf` when absent, so CI needs no pango/cairo.
+- **C-06 hardening** — `GET /routes/{id}/audit` (quality, provider, solver, model + graph + restriction versions, seed, created_at, all read from the existing single sources); CI gains a Flutter job (`flutter test`), a worker job (node test runner) and an informational `ruff --statistics` step recording the 58 pre-existing errors; `tests/test_logging_pii.py` guards logs against phone/address leakage.
+- **Request ceiling (security F2)** — new `apps/api/src/greenlogix_api/http_limits.py`: pure-ASGI `MaxRequestBodyMiddleware`, `ECOMILES_MAX_REQUEST_BYTES` default 64 MB (2 × the ingest cap so a legitimate 32 MB import still passes). Two layers: declared `Content-Length` over the ceiling → 413 before a byte is read; an under-declared/chunked body → 413 as the stream crosses the ceiling. Verified on real uvicorn with a raw socket.
+- **Verifier-driven fixes (all with regression tests)**
+  - ingest (F1): window/cargo values are now validated against the same `LocalTime` pattern and `CargoType` values the response model uses (`8:00` → `08:00`, blank/unknown → per-row rejection). Before this, one blank window cell made `GET /orders` return 500 for every user until the row was deleted.
+  - ingest (F2/F3/M-7/M-12): bounded read (`file.read(max_bytes + 1)`, `file.size` pre-check, same for photos), `SQLAlchemyError` no longer misreported as `400 "invalid xlsx"`, the free-text order query is redacted in logs, `orders.external_id` is indexed and the known-ids query runs only when the workbook actually has the column, exact-cap boundary covered.
+  - analytics (B-2): `g_co2e_per_tkm` now takes **transport work** (Σ kg_r × km_r) instead of `(Σ kg) × (Σ km)` — the old denominator was N× too large, so live intensity read 77.24 g/t·km when the true value is 388.67 (5 routes). The work value is published as `load.transport_work_tkm` so `/report` reuses it rather than recomputing.
+  - analytics (M-3/M-4/M-5): per-order metrics use routed orders and return `null` when nothing is routed; `vehicle_fill_pct` counts only deployed vehicles (16.67% → 83.33% on the fixture); capacity is summed per dispatch, so utilisation agrees with `routes.overload` instead of inflating; `empty_running_pct`/`otif_pct` return `null` rather than a physically impossible percentage.
+  - analytics (M-6): an in-memory session no longer trips the process-wide DuckDB flag, and only a genuine extension-load failure disables DuckDB; a transient read error falls back for that request only.
+  - analytics (M-8): a `dataset_meta.json` whose declared row count no longer matches the DB is treated as stale and dropped (label/seed/generated_at revert to the DB), and the ingest path deletes it on reseed/customer import.
+  - benchmark (B-1/M-9/M-11/N-13): the scorer recomputes the gap against an explicit `best_known` instead of reusing the stale best-of-refs value, adds `beats_reference`; the runner takes the objective from **feasible** repeats only and publishes objective spread; `vehicle_count=0` is no longer treated as absent; CVRPLIB without `DEMAND_SECTION` fails loudly; the tautological determinism test and the wall-clock percentile test were replaced with injected-duration ones.
+  - migration (reviewer M-10/N-12, integrator): a `NOT NULL` column with a scalar default is now added as `NOT NULL DEFAULT <literal>`, and declared indexes are created on pre-existing tables (`ix_orders_external_id` exists on the real DB after one `init_db()`).
+  - tests (hardening finding): `tests/conftest.py` now patches `SEED_DIR`, so `/seed`-running tests no longer rewrite the tracked demo workbooks.
+- Frozen contract regenerated: **29 paths** (`/analytics/kpis`, `/analytics/timeseries`, `/analytics/fleet`, `/dashboard`, `/report.pdf`, `/routes/{id}/audit` added); `FROZEN_METHODS` updated in one pass; one new key documented (`load.transport_work_tkm`).
+
+### Decisions / tradeoffs
+- **Independent verification was worth the wall-clock cost.** Three of the fixes changed numbers a dashboard would have displayed as fact: the tonne-km intensity (5× understated), per-order emissions (16× understated on a partial plan), and payload utilisation (inflated, and 120% is not credible). None of these were caught by the authors' own tests, and all three were caught by a reviewer reading the formula against its denominator.
+- **Waves 1 and 2 integrated by file copy from isolated worktrees**, with the integrator resolving the three real collisions (`main.py`, `schemas.py`, `db.py`). Where two slices edited the same file, the union was taken deliberately: `db.py` keeps the generic column/index healing and gained the ingest slice's `DATASET_META_NAME`; `schemas.py` keeps `ReportMetrics` and gained the ingest slice's `LOCAL_TIME_PATTERN`/`CARGO_TYPES`.
+- **Report/analytics metric single-sourcing:** `/report` reads `load.transport_work_tkm` from the analytics payload rather than recomputing the work, so the two endpoints cannot drift.
+- **PDF stays optional.** WeasyPrint needs system pango/cairo; making it a default dependency would turn a documentation-and-charts feature into a CI prerequisite. 501-with-instruction is the honest failure mode, and the contract documents it.
+- **`capacity_kg_used` keeps its name** even though the value is now per-dispatch: the key is frozen, the dashboard and tests read it, and the semantic change is documented in the CR and the metric docstring. (A genuine rename would be a contract break for no functional gain.)
+- **Declared-and-verified limits:** 64 MB request ceiling (2 × the 32 MB import cap), 50,000 rows, 5 MB photo — asserted against each other by a test so they cannot drift.
+
+### Verification
+- `cd apps/api && uv run --locked pytest -q` → **691 passed, 2 skipped** (the 2 skips are the PDF tests, skipped because the optional `pdf` extra is not installed in this environment; the slice ran them locally with `uv sync --extra pdf`: `/report.pdf` → 200, 13,114 B, body starts `%PDF`).
+- `uv run --locked ruff check` on every added/changed path → `All checks passed!`; tree-wide count unchanged at the 58 pre-existing errors.
+- `python -c "from greenlogix_api.main import dump_openapi; dump_openapi()"` → 29 paths; `tests/test_contract.py` green (87 tests).
+- Live smoke on real uvicorn + real SQLite (`GREENLOGIX_DEMO=1`): `/seed` 200 · `/optimize` 200 · `/analytics/kpis` 200 (`transport_work_tkm` 65.44, `g_co2e_per_tkm` 388.67, `payload_utilisation_pct` 47.43, `vehicle_fill_pct` 59.26) · `/dashboard` 200 28,736 B referencing the vendored library · `/static/vendor/echarts.min.js` 200 1,030,855 B · `/report.pdf` 501 with the install hint · `/routes/1/audit` 200 (`routing_quality` VERIFIED_GRAPH, provider `osrm` on the real network) · raw-socket `Content-Length: 1 GB` → **413 before the body is read**.
+- Independent review artefacts: `reviewer` produced 13 findings (2 blockers, 3 majors, 6 minors/nits), `security-reviewer` produced F1–F4. All are fixed or explicitly dispositioned; the only residual is Starlette's own 1 MB per-non-file-part cap sitting in front of the ceiling (documented by the hardening slice), and the manager-surface `esc()` gap in `apps/landing/public/app/index.html` which is outside this CR's fence and needs a landing CR.
+- Cleanup: the GOFA key copy that made it into the six worktrees during environment setup was removed (`.env` remains only in the main tree and is gitignored); `__pycache__` removed; the tracked demo workbooks restored after the smoke run regenerated them.
+
+## 2026-10-19 — HITC INNOSTAR 2026 Competition Edition
+
+### What changed
+- Created dedicated contest packet under `docs/contests/HITC_INNOSTAR_2026/`:
+  - `ECOMILES_HUONG_DAN_SU_DUNG_HITC_INNOSTAR.pdf`: Complete user manual compiled via WeasyPrint with contest title set to `CUỘC THI KHỞI NGHIỆP ĐỔI MỚI SÁNG TẠO HITC INNOSTAR 2026` and footer clean as `EcoMiles`. Also mirrored to workspace root as `ECOMILES_HUONG_DAN_SU_DUNG_HITC_INNOSTAR.pdf`.
+  - `GOI_Y_TECH_CHO_PLAN_HITC_INNOSTAR.docx`: Technical brief and rationale for strategic questions adjusted for HITC INNOSTAR 2026. Also mirrored to workspace root.
+  - `DE_AN_HITC_INNOSTAR_2026.md`: Detailed startup project proposal adapted to HITC INNOSTAR 2026.
+  - `HITC INNOSTAR 2026 _ ECOMILES _ Tracking Performance.xlsx`: Performance tracking workbook updated for HITC INNOSTAR 2026. Also mirrored to workspace root.
+- Created reusable build scripts:
+  - `scripts/build_user_guide_pdf_hitc.py`: Automated generator for the HITC INNOSTAR PDF user guide.
+  - `scripts/create_tech_inputs_hitc_docx.py`: Automated generator for the HITC INNOSTAR DOCX tech inputs guide.
+
+### Decisions / tradeoffs
+- Kept previous contest packs intact (`PANASONIC_2026`, `SO_2026`, `RND_2026`) and established a clean, standalone directory `docs/contests/HITC_INNOSTAR_2026` to avoid cross-competition regressions.
+- Mirrored all primary deliverables (`.pdf`, `.docx`, `.xlsx`) to root for quick access while keeping canonical copies organized in `docs/contests/HITC_INNOSTAR_2026/`.
+
+### Verification
+- `pdftotext ECOMILES_HUONG_DAN_SU_DUNG_HITC_INNOSTAR.pdf - | grep -i "HITC"` → Confirmed presence of `CUỘC THI KHỞI NGHIỆP ĐỔI MỚI SÁNG TẠO HITC INNOSTAR 2026`.
+- `pdftotext ECOMILES_HUONG_DAN_SU_DUNG_HITC_INNOSTAR.pdf - | grep -i "panasonic"` → 0 matches found.
+- Verification of `.docx`, `.xlsx`, and `.md` generated without errors.
+
+
+---
+
+## 2026-10-24 — CR-20261024-001: EcoMiles Production Readiness & Full-Stack Refactor (Astro 5 + React 19 Islands + TanStack Router + Hono + Astro Server Actions + `tsrs`)
+
+### What changed
+- **W-01 (`apps/api/**`) — Frontier Python API & EcoMiles P0/P1/P2 Completion**:
+  - `apps/api/data/emission_factors.json`, `carbon.py`, `analytics/metrics.py`, `analytics/queries.py`, `routers/report.py`: Added GLEC Framework v3.2 / ISO 14083:2023 Well-to-Wheel (`wtw_kg_co2_per_litre`) factors (`3.24` diesel, `2.82` petrol) and wired `kg_co2e_wtw` and **PVM / ASI (Activity–Structure–Intensity) CO₂ decomposition** (`carbon.decomposition`) into `/analytics/kpis` and `/report`.
+  - `apps/api/src/greenlogix_api/analytics/{router.py,queries.py}`: Added `bucket=hour` to `GET /analytics/timeseries`, grouping routed stops by `window_start` hour (`08:00`..`17:00`) and allocating route distance/fuel/CO₂ proportionally.
+  - `apps/api/src/greenlogix_api/solver/{flags.py,__init__.py}`, `optimizer/eco_alns.py`, `schemas.py`, `routers/optimize.py`: Wired `solve_eco_alns` behind `ECOMILES_OPTIMIZER=ecoalns` / `GREENLOGIX_OPTIMIZER=ecoalns` and `OptimizeIn.optimizer == "ecoalns"`; enforced hard Time Window (`enforce_time_windows`) and Decision 23/2018 truck-ban (`enforce_truck_ban`) constraints inside both `eco_alns.py` (`_insertion_fuel_delta`, `eco_greedy_repair`, `eco_regret_repair`) and `solver/__init__.py:run_vrp()`.
+  - `apps/api/src/greenlogix_api/routers/orders.py`, `generate_synthetic.py`, `data/seed/dna_500_orders.xlsx`: Added `POST /ingest/events` (JSON batch order push API with `external_id` idempotency, coordinate bounds `[-90, 90]` / `[-180, 180]`, `LOCAL_TIME_PATTERN`, and `CARGO_TYPES` validation) and generated the 500-order 7-day HCMC simulated enterprise dataset (`dna_500_orders.xlsx` + `dna_500_meta.json`).
+  - `apps/api/templates/dashboard.html`: Fixed all 6 visual/data defects caught by Vision QA (EcoMiles branding, KPI tile float formatting, `c-bar` bottom margin `68`, `c-map` `dataMin`/`dataMax` bounds + stop scatter points, `c-area` automatic `bucket=hour` fallback on single-day datasets, and `c-stacked` TTW + WTW bars with PVM/ASI decomposition summary).
+  - `apps/api/src/greenlogix_api/benchmark/{runner.py,solvers_ref.py}`, `data/benchmark_results.{json,csv}`: Added `solve_eco_alns` alongside `solve_nn_two_opt` and `solve_baseline_greedy` and persisted real measured p50/p95 runtimes (`solve_nn_two_opt`: `94.74 km` / `20.34 ms` p50 / `20.40 ms` p95; `solve_eco_alns`: `251.46 km` / `1620.99 ms` p50; `solve_baseline_greedy`: `810.58 km` / `0.27 ms` p50).
+  - Fixed all 57 pre-existing `ruff` lint errors across `apps/api/src` and `apps/api/tests` and regenerated `apps/api/openapi.json` (`30` paths).
+- **W-02 (`packages/shared-types/**`, `apps/worker/**`) — Shared Types + Hono + `tsrs` Refactor & Parity**:
+  - `packages/shared-types/`: Created `@ecomiles/shared-types` exporting strict TypeScript contracts for all API payloads, verified with `tsrs -p tsconfig.json --noEmit`.
+  - `apps/worker/`: Refactored to **Hono** (`hono` v4.13) + `cors()`, added `/analytics/kpis`, `/analytics/timeseries`, `/analytics/fleet`, `/routes/:id/audit`, `/ingest/events`, and `/dashboard`, fixed P-06 emission & `transport_work_tkm` drift to match FastAPI 100%, escaped all HTML sinks in `dispatcherHtml.ts` and `driverHtml.ts`, and configured `tsconfig.json` for dual `tsrs` + `tsc` compilation.
+- **W-03 (`apps/landing/**`) — Astro 5 + React 19 Islands + TanStack Router + Hono + Astro Server Actions + `tsrs` Refactor**:
+  - Converted `apps/landing` to **Astro 5** (`astro@5.18.2`, `@astrojs/react`, `@astrojs/cloudflare`) with React 19 Islands (`src/pages/index.astro`, `src/pages/pitch-deck.astro`), **Astro Server Actions** (`src/actions/index.ts`), **Hono** API Gateway (`src/pages/api/[...path].ts` & `src/server/honoEngine.ts`), and **TanStack Router** Operations & Analytics Portal Island (`src/islands/EcoMilesPortal.tsx` mounted on `/dashboard`, `/dispatcher`, `/app`, `/driver`, `/portal/*`) rendering 7 vendored **Apache ECharts 5.5.1** canvases (`public/vendor/echarts.min.js`).
+  - Remediated stored XSS (`F1` / `F-05`) and restricted `?api=` origins in `public/legacy-app/index.html` and `public/legacy-driver/index.html`.
+- **W-04 — Contest Claims Alignment & CI Hardening**:
+  - Updated `.github/workflows/ci.yml` to run strict `ruff check src tests`, `pytest`, `flutter test`, `tsrs` typechecks, and `worker` tests.
+  - Updated primary-source citations in `docs/contests/**` and `docs/user_guide*.html` (`33.2–39.3 Mt CO₂/yr` 2014–2023 transport emissions, `21.8%–26.0%` Eurostat empty vehicle-km / `50%–70%` World Bank 2019 empty backhaul, `700+` automated tests).
+
+### Decisions / tradeoffs
+- **Empirically probed before applying:** Tested `tsrs` (`0.18.0-ts7.1.0-dev.20260929`), `astro@5.18.2`, `@astrojs/react`, `@astrojs/cloudflare`, `@tanstack/react-router`, and `hono` in an isolated `/tmp/astro-probe` sandbox first, discovering the exact `pnpm-workspace.yaml` `allowBuilds` config (`sharp: false`) and `typeRoots` setting for `@cloudflare/workers-types` under `tsrs`.
+- **Zero self-certification (Maker/Checker + Vision QA + Judge):** Dispatched 3 isolated worktree `worker` agents, then audited the integrated tree with independent `auditor` and `security-reviewer` agents plus live `browser` Vision QA screenshots and `judge` rubric scoring, fixing all 9 auditor/security findings before promotion.
+
+### Verification
+- `cd apps/api && uv run --locked pytest -q && uv run --locked ruff check src tests` → **696 passed, 2 skipped in 20.46s**; `All checks passed!` (0 ruff errors across the entire tree; 30 OpenAPI paths verified).
+- `pnpm --filter @ecomiles/shared-types run typecheck:tsrs` → **0 errors**.
+- `pnpm --filter @greenlogix/worker run typecheck:tsrs && pnpm --filter @greenlogix/worker run typecheck && pnpm --filter @greenlogix/worker test` → **0 errors (`tsrs` + `tsc`), 25/25 tests pass across 5 suites**.
+- `pnpm --filter @greenlogix/landing run build && pnpm --filter @greenlogix/landing run lint` → **`astro sync && tsrs -p tsconfig.json --noEmit && astro build` succeeded in 5.95s (0 errors); `oxlint` 0 errors**.
+- Live Vision QA (`browser`): Verified 7 ECharts 5.5.1 canvases on both `http://127.0.0.1:8000/dashboard?token=DEMO` and `http://127.0.0.1:4321/dashboard`, plus `/dispatcher`, `/driver`, and `/portal/audit`.
+- Independent `Cr20261024Security` verdict: **PASS (0 surviving blockers)**; Independent `Cr20261024Auditor` verdict: **PASS**.

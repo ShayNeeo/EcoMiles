@@ -233,9 +233,19 @@
       const urlParams = new URLSearchParams(window.location.search);
       const customApi = urlParams.get("api");
       if (customApi) {
-        if (customApi === "local" || customApi === "fastapi" || customApi === "py") return "http://localhost:8000";
-        if (customApi === "worker") return "http://localhost:8787";
-        return customApi.replace(/\/+$/, "");
+        if (customApi === "local" || customApi === "fastapi" || customApi === "py") return "http://127.0.0.1:8000";
+        if (customApi === "worker") return "http://127.0.0.1:8787";
+        const clean = customApi.replace(/\/+$/, "");
+        const allowedOrigins = [
+          "http://127.0.0.1:8000",
+          "http://localhost:8000",
+          "http://127.0.0.1:8787",
+          "http://localhost:8787",
+          "https://greenlogix-api.9ez.workers.dev",
+        ];
+        if (allowedOrigins.includes(clean) || clean === window.location.origin) {
+          return clean;
+        }
       }
       if (window.location.port === "8787" || window.location.hostname.includes("workers.dev")) return "";
       if (window.location.port === "8000") return "";

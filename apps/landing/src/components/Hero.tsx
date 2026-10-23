@@ -89,7 +89,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                     initial={{ x: 900, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.85, delay: 0.13, ease: EXPO_OUT }}
-                    className="block text-greenlogix-lime drop-shadow-[0_4px_18px_rgba(7,17,12,0.55)] sm:whitespace-nowrap"
+                    className="block text-ecomiles-lime drop-shadow-[0_4px_18px_rgba(7,17,12,0.55)] sm:whitespace-nowrap"
                   >
                     Tiết kiệm chi phí
                   </motion.span>
@@ -193,7 +193,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       delay: 2.1,
                     }}
                     whileHover={{ scale: 1.15, y: -4 }}
-                    className="absolute bg-white rounded-full flex items-center justify-center shadow-[0_6px_16px_rgba(0,0,0,0.3)] ring-2 ring-greenlogix-lime/50 cursor-pointer"
+                    className="absolute bg-white rounded-full flex items-center justify-center shadow-[0_6px_16px_rgba(0,0,0,0.3)] ring-2 ring-ecomiles-lime/50 cursor-pointer"
                     style={{
                       left: '26.0%',
                       top: '28.9%',
@@ -218,7 +218,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       delay: 2.2,
                     }}
                     whileHover={{ scale: 1.15, y: -4 }}
-                    className="absolute bg-white rounded-full flex items-center justify-center shadow-[0_6px_16px_rgba(0,0,0,0.3)] ring-2 ring-greenlogix-lime/50 cursor-pointer"
+                    className="absolute bg-white rounded-full flex items-center justify-center shadow-[0_6px_16px_rgba(0,0,0,0.3)] ring-2 ring-ecomiles-lime/50 cursor-pointer"
                     style={{
                       left: '70.8%',
                       top: '15.6%',
@@ -244,7 +244,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       delay: 2.3,
                     }}
                     whileHover={{ scale: 1.15, y: -4 }}
-                    className="absolute bg-white rounded-full flex items-center justify-center shadow-[0_6px_16px_rgba(0,0,0,0.3)] ring-2 ring-greenlogix-lime/50 cursor-pointer"
+                    className="absolute bg-white rounded-full flex items-center justify-center shadow-[0_6px_16px_rgba(0,0,0,0.3)] ring-2 ring-ecomiles-lime/50 cursor-pointer"
                     style={{
                       left: '55.2%',
                       top: '52.1%',
@@ -273,7 +273,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       fontSize: 'clamp(11px, min(1.5vh, 1.1vw), 14px)',
                     }}
                   >
-                    <span className="w-2 h-2 rounded-full bg-greenlogix-lime shrink-0 animate-pulse"></span>
+                    <span className="w-2 h-2 rounded-full bg-ecomiles-lime shrink-0 animate-pulse"></span>
                     <span className="text-white/95">
                       Tự động sắp xếp tuyến giao hàng và đo lượng CO₂ theo <strong>chuẩn quốc tế</strong>.
                     </span>
@@ -297,7 +297,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 className="flex items-center gap-3 sm:gap-4 text-left bg-black/40 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/15 shadow-xl"
               >
                 <div
-                  className="font-barlow font-extrabold uppercase text-greenlogix-lime leading-none drop-shadow-[0_2px_8px_rgba(214,246,90,0.28)]"
+                  className="font-barlow font-extrabold uppercase text-ecomiles-lime leading-none drop-shadow-[0_2px_8px_rgba(214,246,90,0.28)]"
                   style={{
                     fontSize: 'clamp(50px, min(7.5vh, 5.5vw), 92px)',
                   }}
@@ -363,7 +363,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 </svg>
 
                 <div
-                  className="absolute left-0 right-[20%] inset-y-0 flex items-center justify-center font-sans font-extrabold text-greenlogix-ink tracking-tight whitespace-nowrap"
+                  className="absolute left-0 right-[20%] inset-y-0 flex items-center justify-center font-sans font-extrabold text-ecomiles-ink tracking-tight whitespace-nowrap"
                   style={{
                     fontSize: 'clamp(13px, min(1.5vh, 1.15vw), 18px)',
                   }}

@@ -33,6 +33,13 @@ FROZEN_METHODS = {
     "/stops/{id}/photo": {"post"},
     "/places/autocomplete": {"get"},
     "/places/detail/{place_id}": {"get"},
+    "/analytics/kpis": {"get"},
+    "/analytics/timeseries": {"get"},
+    "/analytics/fleet": {"get"},
+    "/dashboard": {"get"},
+    "/report.pdf": {"get"},
+    "/routes/{id}/audit": {"get"},
+    "/ingest/events": {"post"},
 }
 
 

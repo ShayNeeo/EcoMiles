@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import hashlib
 import logging
+from dataclasses import dataclass
 from typing import Any, Literal
 
 log = logging.getLogger("greenlogix")
@@ -130,9 +130,7 @@ def get_profile_for_vehicle(
         base = XE_TAI_NANG_8T
     elif "trung" in v_norm or "medium" in v_norm or (capacity_kg or 0) > 2000:
         base = XE_TAI_TRUNG_3T5
-    elif "van" in v_norm:
-        base = XE_TAI_NHO_1T5
-    elif "nho" in v_norm or "light" in v_norm or "small" in v_norm or known:
+    elif "van" in v_norm or "nho" in v_norm or "light" in v_norm or "small" in v_norm or known:
         base = XE_TAI_NHO_1T5
     else:
         log.warning(

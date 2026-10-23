@@ -7,11 +7,11 @@ with load-dependent and uphill-payload considerations (Lai et al. 2024).
 from __future__ import annotations
 
 import copy
-from dataclasses import dataclass, field
 import math
 import random
 import time
-from typing import Callable
+from collections.abc import Callable
+from dataclasses import dataclass, field
 
 from greenlogix_api.energy.base import EnergyModel
 from greenlogix_api.energy.hdt_v1 import HdtEnergyModelV1
@@ -126,16 +126,38 @@ def _insertion_fuel_delta(
     pos: int,
     depot_lat: float,
     depot_lng: float,
+    *,
+    enforce_time_windows: bool = False,
+    enforce_truck_ban: bool = False,
 ) -> float:
-    """Fuel delta of inserting customer at pos. Inf if capacity violated."""
+    """Fuel delta of inserting customer at pos. Inf if constraints violated."""
     if sum(s.kg for s in tour.stops) + customer.kg > tour.capacity_kg:
         return float("inf")
-    old_km, old_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
+
+    if enforce_truck_ban:
+        v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+        w_start = f"{int(customer.window_start_min) // 60:02d}:{int(customer.window_start_min) % 60:02d}"
+        w_end = f"{int(customer.window_end_min) // 60:02d}:{int(customer.window_end_min) % 60:02d}"
+        if check_truck_ban(w_start, w_end, v_class).is_restricted:
+            return float("inf")
+
+    if enforce_time_windows:
+        candidate_stops = [*tour.stops[:pos], customer, *tour.stops[pos:]]
+        cur_lat, cur_lng = depot_lat, depot_lng
+        cur_time = 480.0  # 08:00
+        for s in candidate_stops:
+            leg_km = haversine_km(cur_lat, cur_lng, s.lat, s.lng) * 1.35
+            arr_time = cur_time + (leg_km / 30.0 * 60.0)
+            if arr_time > s.window_end_min:
+                return float("inf")
+            cur_time = max(arr_time, float(s.window_start_min))
+            cur_lat, cur_lng = s.lat, s.lng
+
+    _, old_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
     tour.stops.insert(pos, customer)
     _, new_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
     tour.stops.pop(pos)
     return new_fuel - old_fuel
-
 
 def single_random_destroy(
     tours: list[VehicleTour],
@@ -197,7 +219,7 @@ def worst_fuel_removal_destroy(
         if not tour.stops:
             continue
         _, base_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
-        for si, stop in enumerate(tour.stops):
+        for si, _stop in enumerate(tour.stops):
             removed_stop = tour.stops.pop(si)
             _, rest_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
             tour.stops.insert(si, removed_stop)
@@ -339,6 +361,9 @@ def eco_greedy_repair(
     tours: list[VehicleTour],
     depot_lat: float,
     depot_lng: float,
+    *,
+    enforce_time_windows: bool = False,
+    enforce_truck_ban: bool = False,
 ) -> list[CustomerNode]:
     """Repair op 1 (legacy): eco-marginal cheapest-fuel insertion per customer."""
     still_out: list[CustomerNode] = []
@@ -347,9 +372,16 @@ def eco_greedy_repair(
         best_pos = -1
         best_delta = float("inf")
         for tour in tours:
-            old_km, old_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
             for pos in range(len(tour.stops) + 1):
-                delta = _insertion_fuel_delta(tour, c, pos, depot_lat, depot_lng)
+                delta = _insertion_fuel_delta(
+                    tour,
+                    c,
+                    pos,
+                    depot_lat,
+                    depot_lng,
+                    enforce_time_windows=enforce_time_windows,
+                    enforce_truck_ban=enforce_truck_ban,
+                )
                 if delta < best_delta:
                     best_delta = delta
                     best_tour = tour
@@ -360,12 +392,14 @@ def eco_greedy_repair(
             still_out.append(c)
     return still_out
 
-
 def eco_regret_repair(
     removed: list[CustomerNode],
     tours: list[VehicleTour],
     depot_lat: float,
     depot_lng: float,
+    *,
+    enforce_time_windows: bool = False,
+    enforce_truck_ban: bool = False,
 ) -> list[CustomerNode]:
     """Repair op 2: regret-2 insertion with time-window-aware tie-break.
 
@@ -388,7 +422,15 @@ def eco_regret_repair(
             first_pos = -1
             for tour in tours:
                 for pos in range(len(tour.stops) + 1):
-                    delta = _insertion_fuel_delta(tour, c, pos, depot_lat, depot_lng)
+                    delta = _insertion_fuel_delta(
+                        tour,
+                        c,
+                        pos,
+                        depot_lat,
+                        depot_lng,
+                        enforce_time_windows=enforce_time_windows,
+                        enforce_truck_ban=enforce_truck_ban,
+                    )
                     if delta < first:
                         second = first
                         first = delta
@@ -463,6 +505,8 @@ def solve_eco_alns(
     sa_temp0: float = 1.0,
     sa_cooling: float = 0.995,
     time_budget_s: float | None = None,
+    enforce_time_windows: bool = False,
+    enforce_truck_ban: bool = False,
 ) -> EcoSolution:
     """Solve green VRP using Adaptive Large Neighborhood Search.
 
@@ -500,12 +544,32 @@ def solve_eco_alns(
         for tour in solution.tours:
             current_kg = sum(s.kg for s in tour.stops)
             if current_kg + c.kg <= tour.capacity_kg:
+                if enforce_truck_ban:
+                    v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+                    w_start = f"{int(c.window_start_min) // 60:02d}:{int(c.window_start_min) % 60:02d}"
+                    w_end = f"{int(c.window_end_min) // 60:02d}:{int(c.window_end_min) % 60:02d}"
+                    if check_truck_ban(w_start, w_end, v_class).is_restricted:
+                        continue
+                if enforce_time_windows:
+                    candidate = [*tour.stops, c]
+                    cur_lat, cur_lng = depot_lat, depot_lng
+                    cur_time = 480.0
+                    violates = False
+                    for s in candidate:
+                        leg_km = haversine_km(cur_lat, cur_lng, s.lat, s.lng) * 1.35
+                        arr_time = cur_time + (leg_km / 30.0 * 60.0)
+                        if arr_time > s.window_end_min:
+                            violates = True
+                            break
+                        cur_time = max(arr_time, float(s.window_start_min))
+                        cur_lat, cur_lng = s.lat, s.lng
+                    if violates:
+                        continue
                 tour.stops.append(c)
                 assigned = True
                 break
         if not assigned:
             solution.unassigned.append(c)
-
     # Evaluate baseline
     tot_km, tot_fuel, tot_co2 = 0.0, 0.0, 0.0
     for t in solution.tours:
@@ -560,9 +624,18 @@ def solve_eco_alns(
         # 2. Repair step
         if removed:
             repair_fn = REPAIR_OPS[r_name]
-            failed = repair_fn(removed, current.tours, depot_lat, depot_lng)
+            try:
+                failed = repair_fn(
+                    removed,
+                    current.tours,
+                    depot_lat,
+                    depot_lng,
+                    enforce_time_windows=enforce_time_windows,
+                    enforce_truck_ban=enforce_truck_ban,
+                )
+            except TypeError:
+                failed = repair_fn(removed, current.tours, depot_lat, depot_lng)
             current.unassigned.extend(failed)
-
         # 3. Acceptance evaluation (hill-climb)
         cur_km, cur_fuel, cur_co2 = 0.0, 0.0, 0.0
         for t in current.tours:

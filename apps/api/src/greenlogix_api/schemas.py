@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Literal, Self
+from typing import Annotated, Any, Literal, Self, get_args
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -12,7 +12,11 @@ VehicleStatus = Literal["ready", "maintenance"]
 StopStatus = Literal["pending", "arrived", "delivered", "failed"]
 DeliveryStatus = Literal["arrived", "delivered", "failed"]
 FailureReason = Literal["khach_vang", "sai_dia_chi", "hang_hong", "tu_choi"]
-LocalTime = Annotated[str, Field(pattern=r"^(?:[01][0-9]|2[0-3]):[0-5][0-9]$")]
+# Single source of truth for the ingest path too: a stored value the response
+# model would reject turns GET /orders into a permanent 500 (F1).
+LOCAL_TIME_PATTERN = r"^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+LocalTime = Annotated[str, Field(pattern=LOCAL_TIME_PATTERN)]
+CARGO_TYPES: frozenset[str] = frozenset(get_args(CargoType))
 
 
 class HealthOut(BaseModel):
@@ -68,9 +72,24 @@ class ImportErrorItem(BaseModel):
     message: str
 
 
+class ImportLimits(BaseModel):
+    """Caps in force for one import request (env-overridable, echoed back)."""
+
+    max_upload_bytes: int
+    max_data_rows: int
+
+
 class ImportResult(BaseModel):
+    # Existing keys, unchanged (row-cap-free clients keep working).
     imported: int
     errors: list[ImportErrorItem]
+    # C-03 (additive): progress counters + dedupe outcome + the limits in force.
+    rows_seen: int = 0
+    rows_imported: int = 0
+    skipped_duplicates: int = 0
+    rows_rejected: int = 0
+    dedupe: bool = False
+    limits: ImportLimits
 
 
 class VehicleOut(BaseModel):
@@ -110,7 +129,9 @@ class VehiclePatch(BaseModel):
 
 class OptimizeIn(BaseModel):
     cluster_radius_km: float = Field(default=3.0, gt=0, allow_inf_nan=False)
-
+    optimizer: Literal["legacy", "ecoalns"] | None = None
+    enforce_time_windows: bool = False
+    enforce_truck_ban: bool = False
 
 class StopOut(BaseModel):
     id: int
@@ -157,7 +178,10 @@ class OptimizeOut(BaseModel):
     distance_provider: str = "circuity"
     routing_quality: str = "DEGRADED"
     eco_weight: float = 0.0
-
+    optimizer_used: str = "legacy"
+    restriction_coverage: str = "decision23-2018-v1:unchecked"
+    ban_conflicts: int = 0
+    time_window_conflicts: int = 0
 
 class PublishIn(BaseModel):
     route_ids: list[int] = Field(default_factory=list)
@@ -226,6 +250,25 @@ class FeedbackVerifyIn(BaseModel):
     approved: bool
 
 
+class IngestEventOrder(BaseModel):
+    external_id: str | None = None
+    address: str = ""
+    lat: float
+    lng: float
+    receiver: str = ""
+    phone: str = ""
+    kg: float = 0.0
+    window_start: str = "08:00"
+    window_end: str = "18:00"
+    cargo_type: str = "thuong"
+    notes: str = ""
+
+
+class IngestEventsIn(BaseModel):
+    dataset_label: str = Field(default="erp-push", max_length=128)
+    orders: list[IngestEventOrder] = Field(default_factory=list)
+
+
 class ReportTotals(BaseModel):
     km: float
     litres: float
@@ -241,6 +284,30 @@ class ReportDelta(BaseModel):
     kg_co2_pct: float
 
 
+class ReportMetrics(BaseModel):
+    """Standard-based metric dictionary carried by /report (C-04, CR §4.1).
+
+    Every formula comes from ``analytics.metrics`` — never re-implemented here.
+    The block describes the **optimized** plan; its denominators (orders,
+    delivered kg, capacity of the used vehicles) are the same DB aggregates
+    ``/analytics/kpis`` publishes, so the two endpoints reconcile for one
+    dataset. ``None`` = not computable from stored data, never a fabricated
+    default.
+    """
+
+    g_co2e_per_order: float | None = None
+    g_co2e_per_tkm: float | None = None
+    payload_utilisation_pct: float | None = None
+    empty_running_pct: float | None = None
+    otif_pct: float | None = None
+    kg_co2e_wtw: float | None = None
+    decomposition: dict[str, Any] | None = None
+    boundary: str = "TTW"
+    factor_set: str = ""
+    factor_year: int | None = None
+    confidence: str = ""
+    model_version: str = ""
+
 class ReportOut(BaseModel):
     baseline: ReportTotals
     optimized: ReportTotals
@@ -248,6 +315,9 @@ class ReportOut(BaseModel):
     distance_provider: str = "circuity"
     routing_quality: str = "DEGRADED"
     eco_weight: float = 0.0
+    # C-04 (additive): §4.1 dictionary + factor provenance; None until a plan
+    # is stored (baseline/optimized/delta are untouched by this addition).
+    metrics: ReportMetrics | None = None
 
 
 class DepotOut(BaseModel):

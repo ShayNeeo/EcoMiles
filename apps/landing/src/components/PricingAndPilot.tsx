@@ -76,13 +76,13 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-bold text-greenlogix-lime mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-bold text-ecomiles-lime mb-4">
             <Tag className="w-3.5 h-3.5" />
             <span>BẢNG GIÁ MINH BẠCH &amp; LINH HOẠT</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Đầu Tư Thông Minh, <span className="text-greenlogix-lime">Thu Hồi Vốn Nhanh Chóng</span>
+            Đầu Tư Thông Minh, <span className="text-ecomiles-lime">Thu Hồi Vốn Nhanh Chóng</span>
           </h2>
 
           <p className="mt-4 text-sm sm:text-base text-slate-300">
@@ -97,12 +97,12 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
               key={tier.name}
               className={`rounded-3xl p-6 sm:p-8 xl:p-6 flex flex-col justify-between transition-all duration-300 ${
                 tier.highlight
-                  ? 'bg-slate-900 border-2 border-greenlogix-lime shadow-2xl shadow-greenlogix-lime/10 relative'
+                  ? 'bg-slate-900 border-2 border-ecomiles-lime shadow-2xl shadow-ecomiles-lime/10 relative'
                   : 'bg-slate-900/60 border border-white/10 hover:border-white/20'
               }`}
             >
               {tier.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-greenlogix-lime text-slate-950 font-extrabold text-[10px] tracking-wider rounded-full shadow-md uppercase">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-ecomiles-lime text-slate-950 font-extrabold text-[10px] tracking-wider rounded-full shadow-md uppercase">
                   {tier.badge}
                 </div>
               )}
@@ -117,7 +117,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                     <span className="text-2xl sm:text-3xl font-extrabold text-white">{tier.price}</span>
                     <span className="text-xs text-slate-400 font-semibold">{tier.unit}</span>
                   </div>
-                  <div className="text-xs font-bold text-greenlogix-lime mt-1.5">{tier.vehicles}</div>
+                  <div className="text-xs font-bold text-ecomiles-lime mt-1.5">{tier.vehicles}</div>
                 </div>
 
                 {/* Features List */}
@@ -135,7 +135,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 onClick={() => onOpenPilotModal(`Đăng ký gói thuê bao - ${tier.name}`)}
                 className={`w-full py-3 rounded-2xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   tier.highlight
-                    ? 'bg-greenlogix-lime hover:bg-yellow-300 text-slate-950 shadow-lg'
+                    ? 'bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 shadow-lg'
                     : 'bg-slate-800 hover:bg-slate-700 text-white border border-white/10'
                 }`}
               >
@@ -148,7 +148,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
 
         <div className="mb-16">
           <div className="mx-auto mb-8 max-w-3xl text-center">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-greenlogix-lime">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-ecomiles-lime">
               <Sparkles className="h-3.5 w-3.5" />
               <span>DỊCH VỤ BỔ SUNG THEO NHU CẦU</span>
             </div>
@@ -199,12 +199,12 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
               </button>
             </article>
 
-            <article className="rounded-3xl border border-greenlogix-lime/30 bg-slate-900 p-6 shadow-xl sm:p-8">
+            <article className="rounded-3xl border border-ecomiles-lime/30 bg-slate-900 p-6 shadow-xl sm:p-8">
               <div className="mb-5 flex items-start justify-between gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-greenlogix-lime/20 bg-greenlogix-lime/10 text-greenlogix-lime">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-ecomiles-lime/20 bg-ecomiles-lime/10 text-ecomiles-lime">
                   <RefreshCw className="h-6 w-6" />
                 </div>
-                <span className="rounded-full border border-greenlogix-lime/20 bg-greenlogix-lime/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-greenlogix-lime">
+                <span className="rounded-full border border-ecomiles-lime/20 bg-ecomiles-lime/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-ecomiles-lime">
                   Tính theo mức sử dụng
                 </span>
               </div>
@@ -225,7 +225,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                     min="1"
                     value={monthlyOrders}
                     onChange={(event) => setMonthlyOrders(Math.max(1, Number(event.target.value)))}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-greenlogix-lime"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-ecomiles-lime"
                   />
                 </div>
                 <div>
@@ -238,7 +238,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                     min="1"
                     value={averageWeight}
                     onChange={(event) => setAverageWeight(Math.max(1, Number(event.target.value)))}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-greenlogix-lime"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-ecomiles-lime"
                   />
                 </div>
                 <div>
@@ -251,17 +251,17 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                     min="1"
                     value={averageDistance}
                     onChange={(event) => setAverageDistance(Math.max(1, Number(event.target.value)))}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-greenlogix-lime"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-ecomiles-lime"
                   />
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-greenlogix-lime/20 bg-slate-950 p-5">
+              <div className="rounded-2xl border border-ecomiles-lime/20 bg-slate-950 p-5">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                  <Calculator className="h-4 w-4 text-greenlogix-lime" />
+                  <Calculator className="h-4 w-4 text-ecomiles-lime" />
                   <span>Dự toán phí module mỗi tháng</span>
                 </div>
-                <div className="mt-2 text-3xl font-extrabold tracking-tight text-greenlogix-lime">
+                <div className="mt-2 text-3xl font-extrabold tracking-tight text-ecomiles-lime">
                   {backhaulFeeEstimate.toLocaleString('vi-VN')}đ
                 </div>
                 <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
@@ -271,7 +271,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
 
               <button
                 onClick={() => onOpenPilotModal('Kết nối đơn chiều về')}
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-greenlogix-lime py-3 text-xs font-bold text-slate-950 transition-colors hover:bg-yellow-300 cursor-pointer"
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-ecomiles-lime py-3 text-xs font-bold text-slate-950 transition-colors hover:bg-yellow-300 cursor-pointer"
               >
                 <span>Đăng Ký Kết Nối Đơn Chiều Về</span>
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -284,7 +284,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_1.6fr]">
             <div>
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-300">
-                <Plug className="h-3.5 w-3.5 text-greenlogix-lime" />
+                <Plug className="h-3.5 w-3.5 text-ecomiles-lime" />
                 <span>Chính sách khách hàng mới</span>
               </div>
               <h3 className="text-2xl font-extrabold text-white">Phí Triển Khai &amp; Tích Hợp Một Lần</h3>
@@ -294,7 +294,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
               <div className="mt-5">
                 <button
                   onClick={() => onOpenPilotModal('Triển khai & tích hợp hệ thống')}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-greenlogix-lime px-5 py-3 text-xs font-bold text-slate-950 shadow-lg shadow-greenlogix-lime/10 transition-all hover:bg-yellow-300 cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-ecomiles-lime px-5 py-3 text-xs font-bold text-slate-950 shadow-lg shadow-ecomiles-lime/10 transition-all hover:bg-yellow-300 cursor-pointer"
                 >
                   <span>Đăng Ký Tư Vấn &amp; Nhận Báo Giá Triển Khai</span>
                   <ArrowRight className="h-3.5 w-3.5 text-slate-950" />
@@ -310,7 +310,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 'Kết nối API hoặc phần mềm doanh nghiệp đang dùng',
               ].map((item) => (
                 <div key={item} className="flex items-start gap-2.5 rounded-2xl border border-white/5 bg-slate-950/70 p-3 text-xs text-slate-200">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-greenlogix-lime" />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-ecomiles-lime" />
                   <span>{item}</span>
                 </div>
               ))}
@@ -323,9 +323,9 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         </div>
 
         {/* Free Pilot Callout Banner */}
-        <div className="rounded-3xl p-8 sm:p-10 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 border border-greenlogix-lime/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="rounded-3xl p-8 sm:p-10 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 border border-ecomiles-lime/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-greenlogix-lime/10 border border-greenlogix-lime/30 text-xs font-bold text-greenlogix-lime">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ecomiles-lime/10 border border-ecomiles-lime/30 text-xs font-bold text-ecomiles-lime">
               <Sparkles className="w-3.5 h-3.5" />
               <span>CHƯƠNG TRÌNH DÙNG THỬ MIỄN PHÍ 4–6 TUẦN</span>
             </div>
@@ -339,7 +339,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
 
           <button
             onClick={() => onOpenPilotModal('Dùng thử miễn phí 4–6 tuần')}
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-greenlogix-lime px-6 py-3.5 text-xs font-extrabold text-slate-950 shadow-xl transition-all hover:bg-yellow-300 sm:w-auto sm:px-8 sm:text-sm md:shrink-0"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-ecomiles-lime px-6 py-3.5 text-xs font-extrabold text-slate-950 shadow-xl transition-all hover:bg-yellow-300 sm:w-auto sm:px-8 sm:text-sm md:shrink-0"
           >
             <span>Đăng Ký Dùng Thử Miễn Phí</span>
             <ArrowRight className="w-4 h-4 text-slate-950" />

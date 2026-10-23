@@ -4,8 +4,8 @@ from greenlogix_api.geo.truck_profile import XE_TAI_NHO_1T5
 from greenlogix_api.optimizer.eco_alns import (
     DESTROY_OPS,
     CustomerNode,
-    ban_window_removal_destroy,
     VehicleTour,
+    ban_window_removal_destroy,
     eco_regret_repair,
     random_removal_destroy,
     solve_eco_alns,

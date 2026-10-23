@@ -14,8 +14,9 @@ when the baseline is Valhalla/VERIFIED_GRAPH). Circuity baselines MUST stay
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Callable, Literal, Sequence
+from typing import Literal
 
 from greenlogix_api.energy.base import EnergyEstimate, EnergyModel
 from greenlogix_api.energy.hdt_v1 import HdtEnergyModelV1
@@ -347,7 +348,7 @@ def select_policy_path(
     # epsilon >= 0 always admits fastest itself; guard anyway.
     if not feasible:
         feasible = [fastest]
-    selected = sorted(feasible, key=lambda c: (c.fuel_litres, c.duration_seconds, c.policy))[0]
+    selected = min(feasible, key=lambda c: (c.fuel_litres, c.duration_seconds, c.policy))
     return fastest, selected
 
 
@@ -362,16 +363,16 @@ def why_facts(
     renders as Route Policy Cards (§16.1) with deltas vs fastest legal.
     """
     fuel_delta = round(selected.fuel_litres - fastest.fuel_litres, 4)
-    time_delta_s = int(round(selected.duration_seconds - fastest.duration_seconds))
+    time_delta_s = round(selected.duration_seconds - fastest.duration_seconds)
     facts = [
-        f"policy={selected.policy} within epsilon SLA "
-        f"(time_penalty={selected.time_penalty_pct}%)",
-        f"fuel_delta_litres={fuel_delta} "
-        f"(savings={selected.fuel_savings_pct}% vs fastest legal)",
-        f"time_delta_seconds={time_delta_s} "
-        f"(fastest={int(round(fastest.duration_seconds))}s)",
-        f"source={selected.source} confidence={selected.confidence_tier} "
-        f"— illustrative estimate until Valhalla rerank, not a certified saving",
+        (f"policy={selected.policy} within epsilon SLA "
+        f"(time_penalty={selected.time_penalty_pct}%)"),
+        (f"fuel_delta_litres={fuel_delta} "
+        f"(savings={selected.fuel_savings_pct}% vs fastest legal)"),
+        (f"time_delta_seconds={time_delta_s} "
+        f"(fastest={round(fastest.duration_seconds)}s)"),
+        (f"source={selected.source} confidence={selected.confidence_tier} "
+        f"— illustrative estimate until Valhalla rerank, not a certified saving"),
     ]
     if selected.policy == fastest.policy:
         facts.append("selected_is_fastest=true — eco budget admits no leaner path")

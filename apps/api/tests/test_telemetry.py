@@ -9,7 +9,14 @@ import pytest
 
 from greenlogix_api.benchmark import google_drive
 from greenlogix_api.telemetry.calibration import mae_mape
-from greenlogix_api.telemetry.ingest import FuelObs, append_obs, clear_obs, list_obs, load_obs, save_obs
+from greenlogix_api.telemetry.ingest import (
+    FuelObs,
+    append_obs,
+    clear_obs,
+    list_obs,
+    load_obs,
+    save_obs,
+)
 
 
 @pytest.fixture(autouse=True)

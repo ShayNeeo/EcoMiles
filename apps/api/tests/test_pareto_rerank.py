@@ -182,7 +182,7 @@ def test_sla_selection_min_fuel_within_budget():
         select_policy_path(cands, "NO_SUCH_MODE")
     with _pytest.raises(ValueError):
         select_policy_path([], "ECO_BALANCED")
-    f2, s2 = select_policy_path(cands, "ECO_BALANCED", custom_epsilon_pct=0.0)
+    _f2, s2 = select_policy_path(cands, "ECO_BALANCED", custom_epsilon_pct=0.0)
     assert s2.policy == "FASTEST_LEGAL"
 
 

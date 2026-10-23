@@ -36,6 +36,9 @@ def isolated_database(tmp_path, monkeypatch):
     monkeypatch.setattr(dbmod, "UPLOADS_DIR", uploads_dir)
     monkeypatch.setattr(dbmod, "DB_PATH", db_path)
     monkeypatch.setattr(dbmod, "REPORT_PATH", report_path)
+    # Without this, /seed-running tests rewrite the tracked demo workbooks in
+    # apps/api/data/seed/ (found during CR-20261018-001 hardening).
+    monkeypatch.setattr(dbmod, "SEED_DIR", data_dir / "seed")
     dbmod.set_engine(f"sqlite:///{db_path}", recreate=True)
     carbon._cache = None
     yield

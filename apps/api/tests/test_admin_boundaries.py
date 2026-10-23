@@ -1,8 +1,8 @@
-import pytest
 from greenlogix_api.geo.admin_boundaries import (
-    resolve_nearest_ward,
     compute_route_admin_traversal,
+    resolve_nearest_ward,
 )
+
 
 def test_resolve_nearest_ward():
     # Near Tan Binh Depot

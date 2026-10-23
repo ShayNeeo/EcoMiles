@@ -621,7 +621,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             <span>OLYMPIC KHỞI NGHIỆP 2026 · SO 2026</span>
                           </div>
                           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-                            ECO<span className="text-greenlogix-lime">MILES</span>
+                            ECO<span className="text-ecomiles-lime">MILES</span>
                           </h1>
                           <p className="text-base sm:text-xl font-bold text-slate-200 mt-2">
                             Nền Tảng Điều Phối Vận Tải Thông Minh &amp; Giảm Phát Thải CO₂
@@ -711,7 +711,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             className={`px-5 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-lg ${
                               simStep === 'running'
                                 ? 'bg-slate-800 text-slate-400 cursor-wait'
-                                : 'bg-greenlogix-lime hover:bg-yellow-300 text-slate-950 shadow-greenlogix-lime/20'
+                                : 'bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 shadow-ecomiles-lime/20'
                             }`}
                           >
                             <RotateCcw className={`w-4 h-4 ${simStep === 'running' ? 'animate-spin' : ''}`} />
@@ -1797,7 +1797,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 window.location.href = '/#pilot';
                               }
                             }}
-                            className="p-4 rounded-2xl bg-greenlogix-lime hover:bg-yellow-300 text-slate-950 font-bold text-xs sm:text-sm flex flex-col items-center justify-center gap-2 transition shadow-lg shadow-greenlogix-lime/20"
+                            className="p-4 rounded-2xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-bold text-xs sm:text-sm flex flex-col items-center justify-center gap-2 transition shadow-lg shadow-ecomiles-lime/20"
                           >
                             <Zap className="w-5 h-5" />
                             <span>Đăng Ký Pilot 4–6 Tuần</span>
@@ -1859,7 +1859,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
           <div className="flex-1 max-w-md hidden md:block">
             <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-emerald-500 to-greenlogix-lime transition-all duration-300"
+                className="h-full bg-gradient-to-r from-emerald-500 to-ecomiles-lime transition-all duration-300"
                 style={{ width: `${(activeSlide / SLIDES.length) * 100}%` }}
               />
             </div>

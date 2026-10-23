@@ -26,11 +26,11 @@ def mae_mape(predicted: Sequence[float], observed: Sequence[float]) -> dict[str,
     if len(pred) != len(obs):
         raise ValueError(f"length mismatch: {len(pred)} predicted vs {len(obs)} observed")
     for v in pred + obs:
-        if v != v or v in (float("inf"), float("-inf")):  # NaN / Inf guard
+        if v != v or v in (float("inf"), float("-inf")):  # noqa: PLR0124 - NaN / Inf guard
             raise ValueError("non-finite value in calibration input")
     if any(v == 0.0 for v in obs):
         raise ValueError("observed value is zero; MAPE undefined")
     n = len(pred)
-    mae = sum(abs(p - o) for p, o in zip(pred, obs)) / n
-    mape_pct = sum(abs(o - p) / abs(o) for p, o in zip(pred, obs)) / n * 100.0
+    mae = sum(abs(p - o) for p, o in zip(pred, obs, strict=False)) / n
+    mape_pct = sum(abs(o - p) / abs(o) for p, o in zip(pred, obs, strict=False)) / n * 100.0
     return {"mae": mae, "mape_pct": mape_pct, "n": float(n)}

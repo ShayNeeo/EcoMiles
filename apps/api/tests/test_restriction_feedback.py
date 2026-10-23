@@ -69,7 +69,7 @@ def test_unverified_does_not_alter_check_truck_ban(demo_client) -> None:
     assert res.status_code == 201
     after = geomod.check_truck_ban("10:00", "12:00", vehicle_class="xe_tai_nho")
     assert after.is_restricted is False
-    assert geomod.ACTIVE_RULES == before_rules
+    assert before_rules == geomod.ACTIVE_RULES
 
 
 def test_verify_queue_transition() -> None:
@@ -138,7 +138,7 @@ def test_admin_verify_flow_empties_queue(demo_client) -> None:
     assert res.status_code == 200
     assert res.json() == {"id": fid, "status": "verified"}
     assert geomod.list_pending() == []
-    assert geomod.ACTIVE_RULES == before_rules
+    assert before_rules == geomod.ACTIVE_RULES
 
 
 def test_admin_endpoints_reject_scoped_driver(demo_client) -> None:
