@@ -156,3 +156,47 @@ main > section:not(:first-child)::after {
 ::-webkit-scrollbar-thumb:hover {
   background: #3b4b68;
 }
+
+/* 16:9 Landscape Presentation Print Styles (Without Subtitles) */
+@media print {
+  @page {
+    size: 1920px 1080px;
+    margin: 0;
+  }
+  html, body {
+    background-color: #030817 !important;
+    color: #f8fafc !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  header, footer, nav, .print-hidden, [data-print-hide], .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  section[id^="slide-"] {
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    height: 1080px !important;
+    max-height: 1080px !important;
+    box-sizing: border-box !important;
+    padding: 2.5rem 4rem !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+  section#slide-1 {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+  }
+}
+

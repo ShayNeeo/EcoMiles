@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EcoMilesPortal } from '../../islands/EcoMilesPortal';
+---
+
+<BaseLayout
+  title="EcoMiles — Ứng Dụng Dành Cho Tài Xế (Driver PWA)"
+  description="Ứng dụng tài xế EcoMiles: dẫn đường chế độ Ô tô, tuân thủ giờ cấm tải, cập nhật trạng thái điểm dừng theo thời gian thực."
+>
+  <EcoMilesPortal client:load initialRoute="/driver" />
+</BaseLayout>

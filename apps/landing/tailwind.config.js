@@ -2,7 +2,7 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx}",
   ],
   theme: {
     extend: {
@@ -21,6 +21,15 @@ export default {
           950: '#030817',
         },
         greenlogix: {
+          ink: '#030817',
+          surface: '#08101f',
+          panel: '#111a2c',
+          lime: '#ffd400',
+          mint: '#36d9a5',
+          sage: '#83c5a8',
+          ivory: '#f8fafc',
+        },
+        ecomiles: {
           ink: '#030817',
           surface: '#08101f',
           panel: '#111a2c',

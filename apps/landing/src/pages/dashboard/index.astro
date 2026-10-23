@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EcoMilesPortal } from '../../islands/EcoMilesPortal';
+---
+
+<BaseLayout
+  title="EcoMiles — Báo Cáo Hiệu Quả & Phát Thải CO₂ (Dashboard)"
+  description="Bảng điều khiển đo lường phát thải TTW/WTW chuẩn GLEC v3.2 / ISO 14083 và hiệu quả logistics đô thị."
+>
+  <EcoMilesPortal client:load initialRoute="/dashboard" />
+</BaseLayout>

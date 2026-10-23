@@ -128,6 +128,9 @@ def _clear(session: Session) -> None:
 
 def seed_database(session: Session) -> SeedOut:
     write_seed_xlsx()
+    # M-8: the demo seed replaces the dataset, so any synthetic label written by
+    # generate_synthetic no longer describes what is in the database.
+    (dbmod.SEED_DIR / dbmod.DATASET_META_NAME).unlink(missing_ok=True)
     _clear(session)
     n_orders = 0
     for row in order_rows():

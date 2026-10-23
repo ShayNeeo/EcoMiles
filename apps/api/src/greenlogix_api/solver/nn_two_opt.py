@@ -2,26 +2,38 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from greenlogix_api.models import Order
 from greenlogix_api.solver.distance import road_km
 
 MAX_TWO_OPT_ITERS = 500
 MAX_TWO_OPT_SWAPS = 2000
 
+PairKm = Callable[[float, float, float, float], float]
 
-def tour_km(orders: list[Order], depot: tuple[float, float]) -> float:
+
+def tour_km(
+    orders: list[Order],
+    depot: tuple[float, float],
+    pair_km: PairKm = road_km,
+) -> float:
     if not orders:
         return 0.0
     lat, lng = depot
     total = 0.0
     for order in orders:
-        total += road_km(lat, lng, order.lat, order.lng)
+        total += pair_km(lat, lng, order.lat, order.lng)
         lat, lng = order.lat, order.lng
-    total += road_km(lat, lng, depot[0], depot[1])
+    total += pair_km(lat, lng, depot[0], depot[1])
     return total
 
 
-def nearest_neighbor(orders: list[Order], depot: tuple[float, float]) -> list[Order]:
+def nearest_neighbor(
+    orders: list[Order],
+    depot: tuple[float, float],
+    pair_km: PairKm = road_km,
+) -> list[Order]:
     remaining = list(orders)
     route: list[Order] = []
     lat, lng = depot
@@ -29,7 +41,7 @@ def nearest_neighbor(orders: list[Order], depot: tuple[float, float]) -> list[Or
         best: Order | None = None
         best_d = 0.0
         for order in remaining:
-            dist = road_km(lat, lng, order.lat, order.lng)
+            dist = pair_km(lat, lng, order.lat, order.lng)
             if best is None:
                 best, best_d = order, dist
                 continue
@@ -42,7 +54,11 @@ def nearest_neighbor(orders: list[Order], depot: tuple[float, float]) -> list[Or
     return route
 
 
-def two_opt(orders: list[Order], depot: tuple[float, float]) -> list[Order]:
+def two_opt(
+    orders: list[Order],
+    depot: tuple[float, float],
+    pair_km: PairKm = road_km,
+) -> list[Order]:
     route = list(orders)
     n = len(route)
     if n < 4:
@@ -52,13 +68,13 @@ def two_opt(orders: list[Order], depot: tuple[float, float]) -> list[Order]:
     while iterations < MAX_TWO_OPT_ITERS and swaps < MAX_TWO_OPT_SWAPS:
         iterations += 1
         improved = False
-        current = tour_km(route, depot)
+        current = tour_km(route, depot, pair_km=pair_km)
         for i in range(n - 1):
             for k in range(i + 2, n):
                 if swaps >= MAX_TWO_OPT_SWAPS:
                     return route
                 candidate = route[: i + 1] + list(reversed(route[i + 1 : k + 1])) + route[k + 1 :]
-                new_km = tour_km(candidate, depot)
+                new_km = tour_km(candidate, depot, pair_km=pair_km)
                 if new_km < current - 1e-12:
                     route = candidate
                     current = new_km
@@ -72,5 +88,11 @@ def two_opt(orders: list[Order], depot: tuple[float, float]) -> list[Order]:
     return route
 
 
-def sequence_orders(orders: list[Order], depot: tuple[float, float]) -> list[Order]:
-    return two_opt(nearest_neighbor(orders, depot), depot)
+def sequence_orders(
+    orders: list[Order],
+    depot: tuple[float, float],
+    pair_km: PairKm = road_km,
+    cost_fn: PairKm | None = None,
+) -> list[Order]:
+    use = cost_fn or pair_km
+    return two_opt(nearest_neighbor(orders, depot, pair_km=use), depot, pair_km=use)

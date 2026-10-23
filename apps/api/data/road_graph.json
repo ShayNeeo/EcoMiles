@@ -1,0 +1,9 @@
+{
+  "osm_snapshot_id": "unpinned-dev",
+  "osm_timestamp": "dev-2026-09-21",
+  "valhalla_version": "unpinned-dev",
+  "tile_build_hash": "unpinned-dev",
+  "elevation_dataset_version": "unpinned-dev",
+  "restriction_overlay_version": "decision23-2018-v1",
+  "cost_model_version": "GLX-HDT-v1.0"
+}

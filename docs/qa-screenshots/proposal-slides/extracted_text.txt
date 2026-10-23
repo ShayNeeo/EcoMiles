@@ -1,0 +1,703 @@
+DỰ ÁN: ECOMILES
+Phần mềm tối ưu tuyến
+đường vận tải đô thị và đo
+lường phát thải CO₂
+
+NỀN TẢNG ĐIỀU HÀNH VẬN TẢI XANH THÔNG MINH · CARGOX ENGINE
+
+ECOMILES
+
+TỐI ƯU VẬN CHUYỂN
+TIẾT KIỆM CHI PHÍ
+KIẾN TẠO TƯƠNG LAI XANH
+“Phần mềm tối ưu tuyến đường vận tải đô thị & đo lường phát thải CO₂
+theo chuẩn quốc tế”
+● LIVE DEMO: ecomiles.pages.dev
+Nguyễn Hồng Phúc
+
+Phạm Quốc Thanh
+
+Nguyễn N. K. Phương
+
+Nguyễn Thu Thuỷ
+
+Lê Thị Hoàng Ngân
+
+ĐỘI THI ĐA NGÀNH
+
+THỰC NGHIỆM ĐÃ XÁC THỰC
+
+CHUẨN HÓA QUỐC TẾ
+
+5 thành viên liên ngành
+
+80 đơn hàng trên 10 xe
+
+GLEC Scope 3 & ISO 14064
+
+IU-VNU · FTU2 · FPT · NEU
+
+Cắt giảm 142,8 kg CO₂, rút ngắn 8090% thời gian điều phối và triệt tiêu
+30% xe chạy rỗng chiều về.
+
+Tự động hóa kiểm kê carbon sẵn sàng
+phục vụ Nghị định 06/2022/NĐ-CP và
+đáp ứng tiêu chuẩn báo cáo bền vững
+ESG / CBAM Châu Âu.
+
+VẤN ĐỀ THỰC TIỄN: NGHỊCH LÝ KÉP CỦA LOGISTICS ĐÔ THỊ VIỆT NAM
+MỖI NGÀY, HÀNG NGHÌN CHUYẾN XE… CHẠY RỖNG
+CHI PHÍ LOGISTICS VIỆT NAM
+
+PHÁT THẢI GIAO THÔNG ĐÔ THỊ
+
+LÃNG PHÍ HIỆU SUẤT ĐỘI XE
+
+GDP dành cho chi phí vận tải &
+logistics
+
+phát thải CO₂ giao thông đến
+từ đường bộ
+
+tỷ lệ xe tải chạy rỗng chiều về
+hiện nay
+
+17%
+
+=> Gấp rưỡi mức bình quân thế giới
+(thế giới chỉ khoảng 10-12% GDP).
+Làm suy giảm mạnh năng lực cạnh
+tranh quốc gia của hàng hoá xuất
+khẩu.
+Gánh nặng đè nặng lên 34.000+
+SME vận tải thiếu công cụ số hóa
+điều phối.
+
+80%
+
+=> Là tác nhân hàng đầu gây ô nhiễm
+không khí & bụi mịn PM2.5 tại các đô
+thị lớn.
+Sức ép pháp lý bắt buộc từ Nghị
+định 06/2022/NĐ-CP và cam kết
+COP26 Net Zero 2050.
+Doanh nghiệp mù mờ dữ liệu phát
+thải Scope 3, đối mặt rào cản thuế
+carbon CBAM.
+
+30-35%
+
+Cứ 3 chuyến xe giao hàng thì 1
+chuyến về không do thiếu công cụ
+ghép đơn ngược chiều.
+Lãng phí hàng nghìn tỷ đồng nhiên
+liệu và hao mòn phương tiện mỗi
+năm.
+Gia tăng ùn tắc giao thông giờ cao
+điểm khi xe di chuyển lòng vòng
+không mục đích.
+
+KẾT LUẬN & SỨ MỆNH
+ECOMILES sinh ra để giải quyết triệt để bài toán này: Tự động sắp tuyến (Smart VRP) - Ghép đơn chiều về thông minh - Tự động đo
+lường & xuất báo cáo CO₂ chuẩn quốc tế (GLEC / GHG Protocol Scope 3), tất cả trên một nền tảng điện toán đám mây duy nhất.
+
+ĐỘI NGŨ ECOMILES: SỨC MẠNH LIÊN NGÀNH
+
+01
+
+02
+
+Nguyễn Hồng Phúc
+
+Phạm Quốc Thanh
+
+Tài chính
+
+Công nghệ
+
+03
+
+04
+
+05
+
+Nguyễn Ngọc
+Khánh Phương
+
+Nguyễn Thu Thuỷ
+
+Lê Thị Hoàng Ngân
+
+Logistics
+
+Thương mại điện tử
+
+Kinh doanh
+
+Kế hoạch Vốn & Kiểm kê
+CO₂
+
+CTO & Hệ thống AI / OSRM
+
+Nghiên cứu Thị trường &
+ESG
+
+Nghiên cứu & cung cấp
+kiến thức chuyên môn về
+Logistics và Chuỗi cung
+ứng
+
+Nghiên cứu Thị trường &
+Thương mại điện tử
+
+FPT Hà Nội (Quản trị
+Kinh doanh)
+
+IU - VNU-HCM (Kinh tế &
+tài chính)
+
+FTU CS2 (Marketing &
+Kinh doanh)
+
+NEU (Quản trị Kinh
+doanh quốc tế)
+
+NEU (Thương mại
+điện tử)
+
+Ý NGHĨA DỰ ÁN & TẦM NHÌN CHIẾN LƯỢC
+LOGISTICS XANH: CON ĐƯỜNG TẤT YẾU CHO DOANH NGHIỆP VIỆT NAM
+
+“ Logistics xanh không phải một lựa chọn xa xỉ - mà là con đường tất yếu để
+doanh nghiệp Việt Nam phát triển bền vững. ”
+TẦM NHÌN CHIẾN LƯỢC ĐẾN NĂM 2030
+Trở thành nền tảng quản trị vận tải và phát thải hàng đầu cho doanh nghiệp logistics vừa và nhỏ (SME) tại
+Việt Nam, đóng góp cụ thể và có thể đo đếm được vào mục tiêu Net Zero 2050 của quốc gia.
+
+CAM KẾT COP26 & NET ZERO 2050
+
+NGHỊ ĐỊNH 06/2022/NĐ-CP
+
+ĐỒNG HÀNH CÙNG 34.000+ SME
+
+Tiên phong chuyển đổi xanh
+
+Tuân thủ lộ trình kiểm kê KNK
+
+Bình đẳng hóa công nghệ logistics
+
+Việt Nam cam kết đạt phát thải ròng
+bằng 0 vào năm 2050.
+ECOMILES giúp xanh hóa ngay trên đội
+xe hiện hữu mà không cần vốn đầu tư xe
+điện đắt đỏ.
+Biến từng chuyến đi thành ki-lô-mét
+xanh thực chất.
+
+Bắt buộc kiểm kê khí nhà kính bắt
+buộc từ năm 2026 đối với doanh
+nghiệp phát thải.
+Cung cấp báo cáo phát thải CO₂ tự
+động chuẩn GLEC Scope 3 cho thanh
+tra môi trường.
+Giảm 100% thời gian tính toán thủ
+công.
+
+Mang thuật toán điều phối thông
+minh (VRP) đến SME với chi phí SaaS
+cực thấp.
+Giúp SME đủ chuẩn tham gia chuỗi
+cung ứng xuất khẩu xanh toàn cầu
+(ESG, CBAM).
+Nâng cao năng lực cạnh tranh bền
+vững cho nền kinh tế.
+
+GIẢI PHÁP CÔNG NGHỆ: NỀN TẢNG CARGOX ENGINE
+4 CÁCH ECOMILES GIÚP VẬN HÀNH HIỆU QUẢ HƠN
+01. THUẬT TOÁN TỐI ƯU TUYẾN ĐƯỜNG
+Tự động sắp tuyến (Smart VRP)
+
+02. ĐIỀU HÀNH THỜI GIAN THỰC & GIỜ CẤM TẢI
+Chủ động tránh giờ cấm tải (QĐ 23/2018/QĐ-UBND)
+
+Gom điểm giao gần nhau theo cụm địa lý, tự động cân đối tải
+trọng xe và khung giờ nhận hàng. Tạo lộ trình giao tối ưu cho toàn
+bộ đội xe chỉ trong 3-5 giây thay vì mất 2-3 tiếng làm thủ công trên
+Excel.
+
+Tích hợp bản đồ OSRM mạng lưới đường bộ thực tế và bộ lọc giờ cấm
+tải nội đô TP.HCM. Cảnh báo lệch tuyến tức thì và tự động định tuyến
+lại để tránh các điểm nghẽn và khung giờ cấm xe tải.
+
+⚡ Rút ngắn 80-90% thời gian điều phối mỗi sáng
+
+⏱ Nâng tỷ lệ giao hàng đúng hẹn lên tới 98,8%
+
+03. MẠNG LƯỚI VẬN TẢI HAI CHIỀU
+
+04. KIỂM KÊ CARBON MINH BẠCH
+
+Ghép đơn chiều về (Backhaul Matching)
+
+Đo lường & báo cáo CO₂ (Carbon Accounting)
+
+Thuật toán tìm kiếm và ghép đơn hàng chiều về dọc theo hành
+trình xe quay lại kho xuất phát. Tận dụng tối đa tải trọng trống của
+phương tiện, biến chuyến xe chạy rỗng thành doanh thu thặng
+dư.
+
+Tự động tính toán lượng phát thải khí nhà kính dựa trên ki-lô-mét
+thực tế và tải trọng theo chuẩn quốc tế GLEC Framework và GHG
+Protocol Scope 3. Xuất chứng chỉ báo cáo ESG chỉ với 1 cú nhấp
+chuột.
+
+📉 Giảm tỷ lệ xe chạy rỗng từ 30-35% xuống chỉ còn 5-10%
+
+🌱 Chuẩn hóa quốc tế GLEC / GHG Protocol Scope 3
+
+SẢN PHẨM THỰC TẾ: THUẬT TOÁN ĐỊNH TUYẾN ĐƯỜNG BỘ OSRM THỜI GIAN THỰC
+GIAO DIỆN QUẢN LÝ TRỰC QUAN & ỨNG DỤNG DI ĐỘNG TÀI XẾ
+
+● ● ● https://ecomiles.pages.dev — Bản đồ điều phối & mạng lưới đường bộ OSRM thực tế TP.HCM (80 đơn / 5 tuyến)
+
+⚡5/5OSRM
+Road Pathfinding:
+xe theo đường phố thực
+
+🌱 -88.31% CO₂ TTW so với kịch bản chạy thủ công
+
+LỢI THẾ CẠNH TRANH
+SO SÁNH HIỆU QUẢ: CÁCH LÀM CŨ VỚI ECOMILES
+TIÊU CHÍ ĐÁNH GIÁ
+
+CÁCH LÀM CŨ (THỦ CÔNG / ERP
+TRUYỀN THỐNG)
+
+Tỷ lệ xe chạy rỗng chiều
+về
+
+✗ 30-35% xe chạy rỗng sau khi giao
+Hoàn toàn không có công cụ tìm đơn
+ngược lại, lãng phí nhiên liệu và khấu hao
+xe.
+
+Đo lường phát thải CO₂
+
+✗ Không có dữ liệu / không tính được
+Hoàn toàn mù mờ về phát thải, không thể
+cung cấp báo cáo ESG và kiểm kê khí nhà
+kính.
+
+Thời gian điều phối mỗi
+ngày
+
+✗ Thủ công trên bảng tính, mất 2-4 giờ
+Điều phối viên phải ngồi ghép tuyến trên
+Excel mỗi sáng, dễ sai sót và chồng chéo.
+
+Cách nhập dữ liệu & triển
+khai
+
+✗ Cần tích hợp hệ thống ERP phức tạp
+Tốn kém hàng trăm triệu đồng, mất 3-6
+tháng triển khai, rào cản quá lớn cho SME.
+
+NỀN TẢNG ECOMILES
+
+✓ Ghép đơn chiều về, giảm còn 5-10%
+
+Thuật toán tự động tìm và gợi ý đơn hàng
+chiều về, tận dụng tối đa tải trọng phương
+tiện.
+
+✓ Tự động theo chuẩn GLEC / GHG
+
+Protocol Scope 3
+Tự động tính toán lượng phát thải từng
+chuyến xe, xuất chứng chỉ báo cáo chuẩn
+quốc tế.
+
+✓ Tự động hoá OSRM, rút ngắn 80-90%
+
+thời gian
+Thuật toán VRP tự động phân bổ tuyến và
+giao việc xuống điện thoại tài xế trong vài
+giây.
+
+✓ Đơn giản qua Excel / Google Sheets
+
+Sẵn sàng sử dụng ngay sau 5 phút tải file
+đơn hàng, giao diện thân thiện không cần
+đào tạo.
+
+KẾT LUẬN: Khác với cách làm cũ vốn thủ công và không đo lường được phát thải, ECOMILES là nền tảng duy nhất kết hợp
+đồng thời tối ưu vận hành và đo lường CO₂ minh bạch, truy vết đến từng đơn hàng cụ thể.
+
+LỘ TRÌNH PHÁT TRIỂN
+
+NHIỆM VỤ
+MVP
+Pilot TP.HCM
+Tối ưu công nghệ
+Mở rộng địa bàn
+Mở rộng hệ sinh thái
+Logistics tuần hoàn
+Vận tải liên tỉnh & xuyên biên giới
+
+2026
+
+2027
+
+2028
+
+2029
+
+2030
+
+2031
+
+2032+
+
+NGÂN SÁCH ĐẦU TƯ BAN ĐẦU
+
+TỔNG ĐẦU TƯ BAN ĐẦU
+228,598,450 ₫
+
+Cấu trúc chi phí tập trung vào năng lực công nghệ, tài sản vận hành và nền tảng pháp lý.
+
+Phát triển sản
+97,000,000 ₫
+phẩm/công nghệ
+
+PHÂN BỔ NGÂN SÁCH
+
+01
+
+5 nhóm chi phí
+
+• Lập trình nền tảng (web + app tài
+xế)
+• Thiết kế UI/UX
+
+Phát triển sản phẩm/công
+nghệ
+
+42.4%
+
+• Thuật toán tối ưu tuyến (VRP) ban
+đầu
+
+97,000,000 ₫
+Hạ tầng kỹ thuật
+
+03
+4.4%
+
+10,000,000 ₫
+Pháp lý & hành chính
+21,408,450 ₫
+
+9.4%
+
+Thiết bị & tài sản cố định
+85,190,000 ₫
+
+37.3%
+
+Nghiên cứu & phát triển
+ban đầu
+15,000,000 ₫
+
+6.6%
+
+Sản phẩm/công nghệ là khoản đầu tư lớn
+nhất
+
+Pháp lý & hành
+chính
+
+21,408,450 ₫
+
+• Mở tài khoản ngân hàng doanh
+nghiệp
+
+02
+
+Hạ tầng kỹ thuật 10,000,000 ₫
+
+• Mua/thiết lập server
+• Thiết lập cơ sở dữ liệu ban đầu
+• Bảo mật, mã hóa dữ liệu
+
+04
+
+Thiết bị & tài sản 85,190,000 ₫
+cố định
+
+• Laptop, Máy in
+
+• Phần mềm hóa đơn điện tử
+
+• Chi phí đặt cọc thuê văn phòng,
+Thiết bị demo
+
+• Thông tin doanh nghiệp
+
+• Bàn/Ghế
+
+05
+•
+
+Nghiên cứu & phát triển ban đầu
+
+Khảo sát thị trường, phỏng vấn doanh nghiệp (trước khi build)
+
+• Thuê chuyên gia tư vấn thiết kế hệ thống (one-time)
+
+15,000,000 ₫
+
+CƠ CẤU NGUỒN THU
+5 nguồn thu theo vòng đời phát triển: từ SaaS cốt lõi đến hệ sinh thái xanh.
+
+REVENUE ENGINE
+
+01
+
+Nguồn thu theo vai trò
+01
+
+Phí thuê bao
+
+Cốt lõi
+
+02
+
+Phí triển khai
+
+Ứng dụng
+
+03
+
+Tư vấn & báo
+cáo ESG
+
+Bổ sung
+
+04
+
+05
+
+Phí kết nối đơn Dài hạn
+chiều về
+Hoa hồng đối
+tác xanh
+
+Dài hạn
+
+Phí thuê bao = nguồn thu
+cốt lõi
+
+PHÍ THUÊ BAO
+(SUBSCRIPTION)
+
+1.5-40 triệu/tháng
+
+02
+
+PHÍ TRIỂN KHAI &
+TÍCH HỢP
+
+10-80 triệu
+
+Doanh nghiệp vận tải, giao nhận, phân
+phối
+Sau pilot (GĐ 2-3)
+Cốt lõi của ngành
+
+Khách hàng mới
+
+• Gói Starter (≤10 driver): 1.5-2.5 triệu/tháng
+• Gói nhỏ (≤20 driver): 3-5 triệu/tháng
+• Gói vừa (21-100 driver): 8-15 triệu/tháng
+• Gói lớn (>100 driver): 20-40 triệu/tháng
+hoặc theo negotiate
+
+• Cơ bản (nhập data + đào tạo): 10-20 triệu
+• Có tích hợp API/ERP: 30-80 triệu tùy độ
+phức tạp
+• Có thể miễn phí / giảm 50% cho vài pilot
+đầu
+
+Cốt lõi cho ứng dụng
+
+DN có nhu cầu ESG
+
+PHÍ KẾT NỐI ĐƠN
+CHIỀU VỀ
+Mạng lưới logistics hoàn
+
+Mở rộng (GĐ 4-5)
+
+GĐ 6 (dài hạn)
+
+03
+
+TƯ VẤN & BÁO CÁO ESG
+
+Sau pilot (GĐ 2-3)
+
+15-300 triệu
+
+Bổ sung tùy doanh nghiệp
+
+• Báo cáo CO₂ đơn lẻ: 15-30 triệu/báo cáo
+• Gói tư vấn theo năm: 100-300 triệu/năm
+
+05
+
+04
+
+10-20% giá trị
+tiết kiệm
+
+Có thể phát triển thêm
+
+• Hoa hồng khi ghép đơn chiều về giữa các
+DN
+• Ưu tiên hơn do DN thích hơn, hoặc phí cố
+định 200-500k/đơn ghép thành công
+
+5-15% giá trị hợp đồng (referral fee),
+HOA HỒNG ĐỐI TÁC Đối tác sinh thái
+Mở rộng hệ sinh thái (dài hạn) hoặc 2-10 triệu/lead chuyển đổi
+XANH
+
+TÍNH KHẢ THI & KẾ HOẠCH TÀI CHÍNH
+TỪ Ý TƯỞNG ĐẾN THỰC THI: MÔ HÌNH KHẢ THI & SẴN SÀNG TRIỂN KHAI
+
+● MVP ĐANG HOẠT ĐỘNG - https://ecomiles.pages.dev
+THỜI GIAN HOÀN VỐN:
+1,68 năm
+Thu hồi toàn bộ chi phí
+đầu tư ban đầu trong
+chưa đầy 20 tháng nhờ
+chi phí SaaS tinh gọn và
+tối ưu chi phí hạ tầng
+Cloud.
+• Điểm hòa vốn đạt được
+vào Quý 3 năm thứ 2 vận
+hành.
+
+TỶ SUẤT NỘI BỘ: 28%
+Tỷ suất hoàn vốn nội bộ
+(IRR) hấp dẫn vượt trội
+so với lãi suất vốn vay
+ngân hàng (9-10%) và chi
+phí cơ hội bình quân
+(WACC 12%).
+• Dự phóng 5 năm với
+kịch bản tăng trưởng
+thận trọng.
+
+GIÁ TRỊ HIỆN TẠI RÒNG:
+185,5 tr ₫
+
+QUY MÔ PILOT: 3-5 DN |
+30-100 xe | 30-100 tài xế
+
+Giá trị hiện tại
+ròng(NPV) dương khẳng
+định dự án có tính khả
+thi kinh tế độc lập ngay
+cả khi áp dụng tỷ lệ
+chiết khấu thận trọng
+12%/năm.
+• Khẳng định hiệu quả
+đầu tư an toàn cho các
+quỹ khởi nghiệp.
+
+Giai đoạn thử nghiệm
+thực địa tập trung vào 35 doanh nghiệp vận tải
+đô thị tại TP.HCM để
+tinh chỉnh thuật toán và
+xác thực chỉ số.
+• Cam kết kiểm chứng
+thực tế trước khi thương
+mại hóa rộng rãi.
+
+ĐIỂM HÒA VỐN & HIỆU QUẢ TÀI CHÍNH
+LỢI NHUẬN TRƯỚC THUẾ CHUYỂN DƯƠNG TỪ NĂM THỨ 2 VẬN HÀNH: Mô hình định giá SaaS theo quy mô đầu xe
+(300.000 - 500.000 ₫/xe/tháng) mang lại dòng tiền đăng ký định kỳ ổn định, chi phí biên gần như bằng 0 khi mở rộng
+quy mô đội xe, giúp ECOMILES vừa khả thi vừa bền vững.
+
+THÔNG ĐIỆP CỘNG ĐỒNG & TÁC ĐỘNG BỀN VỮNG ESG
+THÔNG ĐIỆP CỘNG ĐỒNG: KHI KINH TẾ VÀ MÔI TRƯỜNG SONG HÀNH
+
+“ Một tuyến đường không chạy rỗng. ”
+“ Một đơn hàng được ghép tối ưu. ”
+“ Một hơi thở trong lành hơn cho thành phố. ”
+ENVIRONMENT - MÔI TRƯỜNG
+Giảm 20-30% CO₂
+Xanh hóa phương tiện hiện hữu
+
+SOCIAL - XÃ HỘI & CON NGƯỜI
++15-20% thu nhập
+Nâng cao thu nhập người tài xế
+
+GOVERNANCE - QUẢN TRỊ MINH
+BẠCH 100% tuân thủ NĐ 06
+Số hóa & Tuân thủ pháp lý
+
+• Cắt giảm trực tiếp lượng phát
+thải khí nhà kính mà không cần
+chờ đợi thay thế toàn bộ sang xe
+điện đắt đỏ.
+• Giảm áp lực ùn tắc giao thông đô
+thị giờ cao điểm bằng cách tối ưu
+hóa các cung đường ngắn nhất.
+• Đóng góp trực tiếp vào mục tiêu
+Net Zero 2050 và Kế hoạch hành
+động tăng trưởng xanh của
+TP.HCM.
+
+• Giảm thời gian lái xe căng thẳng
+lòng vòng tìm đơn, giúp người tài
+xế làm việc an toàn và nhẹ nhàng
+hơn.
+• Tăng thu nhập thực nhận thông
+qua cơ chế chia sẻ doanh thu từ
+các đơn hàng ghép chiều về.
+• Bảo vệ sức khỏe hô hấp cho cộng
+đồng đô thị nhờ giảm thiểu bụi
+mịn PM2.5 từ khói xe tải.
+
+• Minh bạch hóa toàn bộ dữ liệu
+tiêu thụ nhiên liệu và phát thải
+carbon đến từng chuyến hàng cụ
+thể.
+• Sẵn sàng đáp ứng đầy đủ lộ trình
+kiểm kê khí nhà kính bắt buộc
+theo Nghị định 06/2022/NĐ-CP.
+• Tạo lợi thế cạnh tranh bền vững
+để doanh nghiệp Việt Nam tự tin
+tham gia chuỗi cung ứng toàn
+cầu.
+
+“ Nơi phát triển kinh tế và bảo vệ môi trường có thể song hành trên từng ki-lô-mét vận chuyển. ”
+
+ECOMILES
+
+THANK YOU
+TỐI ƯU VẬN CHUYỂN · TIẾT KIỆM CHI PHÍ · KIẾN TẠO TƯƠNG LAI XANH
+
+🚀 TRẢI
+NGHIỆM TRỰC TIẾP DEMO:
+https://ecomiles.pages.dev
+“ Cảm ơn Ban Giám Khảo và Quý Khán Giả đã dành thời gian đồng hành cùng ECOMILES! ”
+ĐỘI NGŨ SÁNG LẬP DỰ THI ECOMILES
+· Nguyễn Hồng Phúc (FPT Hà Nội) · Phạm Quốc Thanh (IU - VNU)
+· Nguyễn Ngọc Khánh Phương (FTU2) · Nguyễn Thu Thủy (NEU)
+· Lê Thị Hoàng Ngân(NEU)
+ECOMILES - Nền tảng điều hành vận tải xanh & đo lường phát thải carbon đô thị · Powered by CargoX Engine
+
+

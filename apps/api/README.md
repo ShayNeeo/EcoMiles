@@ -1,6 +1,6 @@
-# GreenLogix API
+# EcoMiles API
 
-Python **3.12** FastAPI backend for the GreenLogix Web MVP. No commercial map, routing, traffic, or carbon API keys required.
+Python **3.12** FastAPI backend for the EcoMiles Web MVP. No commercial map, routing, traffic, or carbon API keys required.
 
 ## Run
 
@@ -47,7 +47,8 @@ uv run --locked python -c 'from greenlogix_api.main import dump_openapi; dump_op
 
 ## Distances & Emissions
 
-- Road km = haversine × `HCMC_CIRCUITY` **1.35** (`greenlogix_api.solver.distance`). Same factor on the spreadsheet-order baseline and the clustered NN+2-opt plan. Times are naive local `HH:MM` (`TZ=Asia/Ho_Chi_Minh`).
+- Road km goes through `RoadBaseline` (`greenlogix_api.solver.road_baseline`). Production default is Valhalla **truck** → OSRM driving → haversine × `HCMC_CIRCUITY` **1.35**, with two retries and a 5-minute matrix cache. Same provider on the spreadsheet-order baseline and the clustered NN+2-opt plan (not a Google comparison). `ROAD_BASELINE=google` without a key stays on OSM. Pytest pins `ROAD_BASELINE=circuity`. Times are naive local `HH:MM` (`TZ=Asia/Ho_Chi_Minh`).
+- Eco-cost: `GREENLOGIX_ECO_WEIGHT` in `[0,1]` (live worker defaults to `1`) assigns the lower-TTW `xe_tai_nho` first and blends kg CO₂ into NN+2-opt. Reported km / litres / kg CO₂ stay tank-to-wheel physical units.
 - CO₂ is tank-to-wheel: `kg_co2 = road_km * (l_per_100km/100) * kg_co2_per_litre` from `data/emission_factors.json` (petrol 2.31, diesel 2.68). This is a contest TTW estimate, not a full ISO 14083 audit report.
 
 ## Seed & Dispatcher

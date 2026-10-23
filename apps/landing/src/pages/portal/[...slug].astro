@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EcoMilesPortal } from '../../islands/EcoMilesPortal';
+
+const { slug } = Astro.params;
+const initialRoute = slug ? `/${slug}` : '/dashboard';
+---
+
+<BaseLayout
+  title="EcoMiles — Cổng Quản Trị & Vận Hành Doanh Nghiệp"
+  description="Cổng vận hành logistics đô thị EcoMiles: Dashboard, Dispatcher, Driver PWA, và Route Audit."
+>
+  <EcoMilesPortal client:load initialRoute={initialRoute} />
+</BaseLayout>

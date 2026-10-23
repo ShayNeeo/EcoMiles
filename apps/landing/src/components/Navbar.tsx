@@ -63,20 +63,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
             href="#main-content"
             onClick={() => setActiveSection('')}
             className="flex items-center gap-2.5 group shrink-0"
-            aria-label="GreenLogix — về đầu trang"
+            aria-label="EcoMiles — về đầu trang"
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-greenlogix-lime to-emerald-500 flex items-center justify-center text-slate-950 shadow-md group-hover:scale-105 transition-transform duration-300">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-ecomiles-lime to-emerald-500 flex items-center justify-center text-slate-950 shadow-md group-hover:scale-105 transition-transform duration-300">
               <Leaf className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-slate-950/20 stroke-slate-950" />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5 leading-none">
                 <span className="font-extrabold text-base sm:text-lg tracking-tight text-white">
-                  GREEN<span className="text-greenlogix-lime">LOGIX</span>
+                  ECO<span className="text-ecomiles-lime">MILES</span>
                 </span>
                 <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
               </div>
               <span className="text-[9px] sm:text-[10px] text-slate-400 font-medium tracking-wide">
-                Công nghệ từ <strong className="text-slate-200">CargoX</strong>
+                Logistics Xanh Thông Minh
               </span>
             </div>
           </a>
@@ -92,13 +92,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                   aria-current={isActive ? 'page' : undefined}
                   className={`relative whitespace-nowrap rounded-full px-2.5 py-2 text-xs font-semibold transition-all duration-300 xl:px-3 ${
                     isActive
-                      ? 'bg-greenlogix-lime text-slate-950 font-bold shadow-md shadow-greenlogix-lime/20'
-                      : 'text-slate-300 hover:text-greenlogix-lime hover:bg-white/5 active:bg-white/10'
+                      ? 'bg-ecomiles-lime text-slate-950 font-bold shadow-md shadow-ecomiles-lime/20'
+                      : 'text-slate-300 hover:text-ecomiles-lime hover:bg-white/5 active:bg-white/10'
                   }`}
                 >
                   {link.name}
                   {isActive && (
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-greenlogix-lime shadow-[0_0_8px_#ffd400]" />
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-ecomiles-lime shadow-[0_0_8px_#ffd400]" />
                   )}
                 </a>
               );
@@ -111,8 +111,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
               href="#calculator"
               className={`whitespace-nowrap px-3.5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                 activeSection === 'calculator'
-                  ? 'bg-greenlogix-lime text-slate-950 shadow-md'
-                  : 'text-greenlogix-lime bg-greenlogix-lime/10 border border-greenlogix-lime/20 hover:bg-greenlogix-lime/20'
+                  ? 'bg-ecomiles-lime text-slate-950 shadow-md'
+                  : 'text-ecomiles-lime bg-ecomiles-lime/10 border border-ecomiles-lime/20 hover:bg-ecomiles-lime/20'
               }`}
             >
               <Calculator className="w-3.5 h-3.5" />
@@ -124,13 +124,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
               onClick={onOpenPortalModal}
               className="whitespace-nowrap px-3.5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 text-slate-200 bg-white/10 hover:bg-white/15 border border-white/10 hover:border-white/20 active:scale-95 cursor-pointer"
             >
-              <LayoutDashboard className="w-3.5 h-3.5 text-greenlogix-lime" />
+              <LayoutDashboard className="w-3.5 h-3.5 text-ecomiles-lime" />
               <span>Vào ứng dụng</span>
             </button>
 
             <button
               onClick={onOpenPilotModal}
-              className="whitespace-nowrap px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-greenlogix-lime hover:bg-yellow-300 shadow-lg shadow-greenlogix-lime/20 hover:shadow-xl hover:shadow-greenlogix-lime/30 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+              className="whitespace-nowrap px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 shadow-lg shadow-ecomiles-lime/20 hover:shadow-xl hover:shadow-ecomiles-lime/30 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span>Đăng ký dùng thử</span>
               <ArrowRight className="w-3.5 h-3.5 text-slate-950" />
@@ -143,12 +143,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
               onClick={onOpenPortalModal}
               className="px-2.5 py-1.5 rounded-full text-xs font-bold text-slate-200 bg-white/10 hover:bg-white/15 border border-white/10 flex items-center gap-1 sm:hidden cursor-pointer"
             >
-              <LayoutDashboard className="w-3 h-3 text-greenlogix-lime" />
+              <LayoutDashboard className="w-3 h-3 text-ecomiles-lime" />
               <span>App</span>
             </button>
             <button
               onClick={onOpenPilotModal}
-              className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-greenlogix-lime hover:bg-yellow-300 shadow-sm sm:hidden"
+              className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 shadow-sm sm:hidden"
             >
               Dùng thử
             </button>
@@ -178,8 +178,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                     aria-current={isActive ? 'page' : undefined}
                     className={`whitespace-nowrap px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                       isActive
-                        ? 'bg-greenlogix-lime text-slate-950 font-bold'
-                        : 'text-slate-200 hover:text-greenlogix-lime hover:bg-white/5'
+                        ? 'bg-ecomiles-lime text-slate-950 font-bold'
+                        : 'text-slate-200 hover:text-ecomiles-lime hover:bg-white/5'
                     }`}
                   >
                     {link.name}
@@ -190,9 +190,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                 <a
                   href="#calculator"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-2.5 rounded-xl text-center text-xs font-bold text-greenlogix-lime bg-greenlogix-lime/10 flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-xl text-center text-xs font-bold text-ecomiles-lime bg-ecomiles-lime/10 flex items-center justify-center gap-1.5"
                 >
-                  <Calculator className="w-3.5 h-3.5 text-greenlogix-lime" />
+                  <Calculator className="w-3.5 h-3.5 text-ecomiles-lime" />
                   <span>Tính mức tiết kiệm và lượng CO₂ giảm</span>
                 </a>
                 <button
@@ -202,7 +202,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                   }}
                   className="w-full py-2.5 rounded-xl text-center text-xs font-bold text-slate-200 bg-white/10 hover:bg-white/15 border border-white/10 flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <LayoutDashboard className="w-3.5 h-3.5 text-greenlogix-lime" />
+                  <LayoutDashboard className="w-3.5 h-3.5 text-ecomiles-lime" />
                   <span>Vào ứng dụng (Chọn vai trò Quản lý / Tài xế)</span>
                 </button>
                 <button
@@ -210,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                     setMobileMenuOpen(false);
                     onOpenPilotModal();
                   }}
-                  className="w-full py-3 rounded-xl text-center text-xs font-bold text-slate-950 bg-greenlogix-lime hover:bg-yellow-300 shadow-md flex items-center justify-center gap-1.5"
+                  className="w-full py-3 rounded-xl text-center text-xs font-bold text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 shadow-md flex items-center justify-center gap-1.5"
                 >
                   <span>Đăng ký dùng thử miễn phí</span>
                   <ArrowRight className="w-4 h-4 text-slate-950" />
