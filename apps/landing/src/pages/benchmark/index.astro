@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EcoMilesPortal } from '../../islands/EcoMilesPortal';
+export const prerender = true;
+---
+
+<BaseLayout
+  title="EcoMiles — Phòng Thí Nghiệm Upload Excel (.xlsx) & Benchmark Thuật Toán"
+  description="Tải lên file Excel (.xlsx) điều phối thực tế của doanh nghiệp để đối chứng tức thì giữa Điều phối thủ công, Google Maps Proxy và EcoMiles EcoALNS (100% Ephemeral, không lưu trữ)."
+>
+  <EcoMilesPortal client:load initialRoute="/benchmark" />
+</BaseLayout>
