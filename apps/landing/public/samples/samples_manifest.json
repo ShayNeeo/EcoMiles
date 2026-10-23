@@ -1,0 +1,17 @@
+{
+  "EcoMiles_Mau_FMCG_80_Don_TPHCM.xlsx": {
+    "title": "FMCG 80 đơn nội đô TP.HCM (Kịch bản điều phối thủ công vs EcoMiles)",
+    "rows": 80,
+    "bytes": 71503
+  },
+  "EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx": {
+    "title": "Cold-Chain 120 đơn F&B (28 đơn vi phạm giờ cấm tải QĐ 23/2018)",
+    "rows": 120,
+    "bytes": 98339
+  },
+  "EcoMiles_Mau_ERP_500_Don_7_Ngay.xlsx": {
+    "title": "ERP Doanh Nghiệp A — 500 đơn hàng đa ngày (7 ngày vận hành)",
+    "rows": 500,
+    "bytes": 359960
+  }
+}

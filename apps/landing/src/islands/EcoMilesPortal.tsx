@@ -25,6 +25,7 @@ import {
   Navigation,
   KeyRound,
 } from 'lucide-react';
+import { BenchmarkAndStoryDeck } from './BenchmarkAndStoryDeck';
 
 
 interface EChartsInstance {
@@ -1634,7 +1635,13 @@ function RootComponent() {
                 to="/dashboard"
                 className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
               >
-                Bảng điều khiển &amp; CO₂
+                Story Dashboard &amp; CO₂
+              </Link>
+              <Link
+                to="/benchmark"
+                className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
+              >
+                Upload .XLSX &amp; Benchmark
               </Link>
               <Link
                 to="/dispatcher"
@@ -1676,6 +1683,9 @@ function RootComponent() {
           <Link to="/dashboard" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
             Dashboard
           </Link>
+          <Link to="/benchmark" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
+            Upload .XLSX
+          </Link>
           <Link to="/dispatcher" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
             Điều phối
           </Link>
@@ -1701,10 +1711,24 @@ const rootRoute = createRootRoute({
   component: RootComponent,
 });
 
+function StoryDashboardPage() {
+  return <BenchmarkAndStoryDeck initialAct="act1_executive" />;
+}
+
+function BenchmarkLabPage() {
+  return <BenchmarkAndStoryDeck initialAct="act4_benchmark_lab" />;
+}
+
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/dashboard',
-  component: DashboardView,
+  component: StoryDashboardPage,
+});
+
+const benchmarkRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/benchmark',
+  component: BenchmarkLabPage,
 });
 
 const dispatcherRoute = createRoute({
@@ -1734,11 +1758,12 @@ const auditRoute = createRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: DashboardView,
+  component: StoryDashboardPage,
 });
 
 const routeTree = rootRoute.addChildren([
   dashboardRoute,
+  benchmarkRoute,
   dispatcherRoute,
   appRoute,
   driverRoute,
@@ -1752,12 +1777,11 @@ export function EcoMilesPortal({ initialRoute = '/dashboard' }: PortalProps) {
     // Normalization: clean leading/trailing slashes
     let startPath = initialRoute || '/dashboard';
     if (typeof window !== 'undefined') {
-      const p = window.location.pathname.replace(/\/+$/, '') || '/';
-      if (['/dashboard', '/dispatcher', '/app', '/driver', '/audit'].includes(p)) {
+      const p = window.location.pathname.replace(/\/+$/, '').replace(/^\/portal/, '') || '/';
+      if (['/dashboard', '/benchmark', '/dispatcher', '/app', '/driver', '/audit'].includes(p)) {
         startPath = p;
       }
     }
-
     const history = createMemoryHistory({
       initialEntries: [startPath],
     });

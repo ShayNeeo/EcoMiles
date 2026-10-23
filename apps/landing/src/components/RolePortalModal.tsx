@@ -193,6 +193,34 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
           </div>
         </div>
 
+        {/* Story Dashboard & XLSX Upload Benchmark Lab Quick Launch */}
+        <div className="mb-5 p-4 rounded-2xl bg-slate-950/90 border border-ecomiles-lime/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <div className="text-xs font-black text-ecomiles-lime uppercase tracking-wider">
+              MỚI: Story Dashboard 4 Chương &amp; Phòng Lab Upload Excel (.xlsx)
+            </div>
+            <p className="text-xs text-slate-300">
+              Tải file <code className="text-ecomiles-lime">.xlsx</code> của doanh nghiệp để đối chứng tức thì với Điều phối thủ công + Google Maps (100% Ephemeral) và truy vết điểm nghẽn QĐ 23/2018.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href="/dashboard/"
+              className="py-2 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 border border-white/10"
+            >
+              <span>Story Dashboard</span>
+              <ArrowRight className="w-3.5 h-3.5 text-ecomiles-lime" />
+            </a>
+            <a
+              href="/benchmark/"
+              className="py-2 px-3.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md"
+            >
+              <span>Upload .XLSX Lab</span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-950" />
+            </a>
+          </div>
+        </div>
+
         {/* Footer Note */}
         <div className="flex items-center justify-between pt-3 border-t border-white/10 text-[11px] text-slate-400">
           <div className="flex items-center gap-1.5">
