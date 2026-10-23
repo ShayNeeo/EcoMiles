@@ -555,13 +555,18 @@ api.post("/routes/publish", async (c) => {
 api.get("/routes/:id/audit", async (c) => {
   if (!checkAuth(c.req.raw)) return c.json({ detail: "unauthorized" }, 401);
   const id = parseInt(c.req.param("id") ?? "0", 10);
-  const route = (await c.env.DB.prepare("SELECT * FROM routes WHERE id = ?").bind(id).first()) as DbRouteRow | null;
+  let route = (await c.env.DB.prepare("SELECT * FROM routes WHERE id = ?").bind(id).first()) as DbRouteRow | null;
+  if (!route && id >= 1) {
+    route = (await c.env.DB.prepare("SELECT * FROM routes ORDER BY id ASC LIMIT 1 OFFSET ?")
+      .bind(id - 1)
+      .first()) as DbRouteRow | null;
+  }
   if (!route) return c.json({ detail: "not_found" }, 404);
 
   const stopCountRow = (await c.env.DB.prepare(
     "SELECT COUNT(*) AS count FROM stops WHERE route_id = ? AND kind <> 'depot'"
   )
-    .bind(id)
+    .bind(route.id)
     .first()) as CountRow | null;
   const stopsCount = stopCountRow?.count || 0;
 
