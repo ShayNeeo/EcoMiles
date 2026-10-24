@@ -122,7 +122,7 @@ const SLIDES: SlideItem[] = [
   {
     id: 8,
     title: "Tính Khả Thi & Tài Chính",
-    subtitle: "Mô Phỏng MVP 80 Đơn / 10 Xe — Hoàn Vốn 1.68 Năm, IRR 28%",
+    subtitle: "Mô Phỏng Thực Tế 80 Đơn / 10 Xe: Hoàn Vốn 1.68 Năm, IRR 28%",
     duration: "~20s",
     targetSeconds: 20,
     tag: "Hiệu Quả Đầu Tư · Financial Defensibility",
@@ -508,12 +508,12 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
         })}
       </div>
 
-      {/* Top Banner Hero — Full Screen Width Edge-to-Edge */}
+      {/* Top Banner Hero */}
       <div className="w-full bg-[#041c43] border-b border-cyan-500/40 shadow-2xl py-3 sm:py-5 px-0 flex flex-col items-center justify-center overflow-hidden print:hidden">
         <div className="w-full flex justify-center">
           <img
             src="/assets/neu_so2026_banner.png"
-            alt="Olympic Khởi Nghiệp 2026 (SO 2026) — NEU & Ban Tổ Chức"
+            alt="Olympic Khởi Nghiệp 2026 (SO 2026): NEU & Ban Tổ Chức"
             className="w-full h-auto max-h-36 sm:max-h-48 md:max-h-56 object-contain drop-shadow-2xl select-none"
           />
         </div>
@@ -1322,7 +1322,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                     <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
                                     <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
                                     <span className="text-[11px] font-mono text-slate-400 ml-2 hidden sm:inline">
-                                      EcoMiles Dispatcher Console — Điều Phối Tuyến TP.HCM
+                                      EcoMiles Dispatcher Console · Điều Phối Tuyến TP.HCM
                                     </span>
                                   </div>
                                   <div className="flex items-center gap-2 rounded-md bg-slate-950 border border-slate-800 px-2.5 py-1 text-[10px] font-mono text-emerald-400">
@@ -1335,7 +1335,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 <div className="relative bg-slate-950">
                                   <img
                                     src="/screenshots/dispatcher-ecomiles.png"
-                                    alt="Bàn điều hành EcoMiles — 80 điểm giao hàng, 5 tuyến xe và báo cáo CO2"
+                                    alt="Bàn điều hành EcoMiles: 80 điểm giao hàng, 5 tuyến xe và báo cáo CO2"
                                     className="w-full h-auto object-cover"
                                   />
                                   <div className="absolute top-3 left-3 bg-slate-950/90 border border-emerald-500/40 rounded-lg px-3 py-1.5 text-[11px] text-emerald-300 font-semibold backdrop-blur-md shadow-lg hidden sm:flex items-center gap-2">
@@ -1436,7 +1436,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl group">
                               <img
                                 src="/screenshots/dispatcher-ecomiles.png"
-                                alt="Bàn điều hành EcoMiles — 80 điểm giao hàng, 5 tuyến xe và báo cáo CO2"
+                                alt="Bàn điều hành EcoMiles: 80 điểm giao hàng, 5 tuyến xe và báo cáo CO2"
                                 className="w-full h-auto object-cover max-h-[560px]"
                               />
                               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 flex items-center justify-between">

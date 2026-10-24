@@ -43,7 +43,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
             Chọn vai trò truy cập <span className="text-ecomiles-lime">EcoMiles</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Hệ thống chạy 24/7 trên Cloudflare Serverless Edge. Phiên demo được tự động cấp quyền mà không cần tạo tài khoản.
+            Hệ thống trực tuyến 24/7. Phiên trải nghiệm được cấp quyền sẵn để bạn thao tác ngay mà không cần đăng ký tài khoản.
           </p>
         </div>
 
@@ -197,10 +197,10 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
         <div className="mb-5 p-4 rounded-2xl bg-slate-950/90 border border-ecomiles-lime/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-0.5">
             <div className="text-xs font-black text-ecomiles-lime uppercase tracking-wider">
-              MỚI: Story Dashboard 4 Chương &amp; Phòng Lab Upload Excel (.xlsx)
+              MỚI: Trung Tâm Báo Cáo Tự Động, Giảm Xe Chạy Rỗng &amp; Thử File Excel (.xlsx)
             </div>
             <p className="text-xs text-slate-300">
-              Tải file <code className="text-ecomiles-lime">.xlsx</code> của doanh nghiệp để đối chứng tức thì với Điều phối thủ công + Google Maps (100% Ephemeral) và truy vết điểm nghẽn QĐ 23/2018.
+              Tải file <code className="text-ecomiles-lime">.xlsx</code> của doanh nghiệp bạn lên để đối chứng trực tiếp với cách chia tuyến thủ công, kiểm tra giờ cấm QĐ 23/2018 và xuất báo cáo Excel 3 bảng tự động.
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -208,14 +208,14 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
               href="/dashboard/"
               className="py-2 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 border border-white/10"
             >
-              <span>Story Dashboard</span>
+              <span>Tổng quan &amp; Báo cáo</span>
               <ArrowRight className="w-3.5 h-3.5 text-ecomiles-lime" />
             </a>
             <a
               href="/benchmark/"
               className="py-2 px-3.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md"
             >
-              <span>Upload .XLSX Lab</span>
+              <span>Thử File .XLSX</span>
               <ArrowRight className="w-3.5 h-3.5 text-slate-950" />
             </a>
           </div>

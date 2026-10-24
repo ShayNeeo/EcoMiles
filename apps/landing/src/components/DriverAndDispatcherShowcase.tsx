@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Monitor, Globe2, Check } from 'lucide-react';
+import { Monitor, Globe2, Check, ShieldCheck, FileSpreadsheet, RefreshCw, ArrowRight } from 'lucide-react';
 
 export const DriverAndDispatcherShowcase: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'dispatcher' | 'driver'>('dispatcher');
@@ -89,6 +89,23 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   <span>Tải báo cáo nhiên liệu và lượng CO₂ dưới dạng bảng hoặc tài liệu</span>
                 </div>
               </div>
+
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <a
+                  href="/dashboard/"
+                  className="px-4 py-2.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-md transition-all"
+                >
+                  <span>Mở Trung Tâm Báo Cáo &amp; Tối Ưu</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+                <a
+                  href="/benchmark/"
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-all"
+                >
+                  <span>Thử Tải File .XLSX Của Bạn</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-ecomiles-lime" />
+                </a>
+              </div>
             </div>
 
             {/* Right Mockup */}
@@ -168,6 +185,23 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   <span>Nhận thông báo nhận đơn ghép chiều về tăng thêm thu nhập mỗi chuyến</span>
                 </div>
               </div>
+
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <a
+                  href="/driver/"
+                  className="px-4 py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-md transition-all"
+                >
+                  <span>Mở Ứng Dụng Tài Xế Trực Tiếp</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+                <a
+                  href="/dispatcher/"
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-all"
+                >
+                  <span>Mở Bàn Điều Phối</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-ecomiles-lime" />
+                </a>
+              </div>
             </div>
 
             {/* Right Driver Web Mockup */}
@@ -208,6 +242,39 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* 3 Enterprise Pillars: Empty-Run Backhaul, Automated Reporting, and Multi-Tenant Data Security */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-5 rounded-2xl bg-slate-950/90 border border-white/10 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-extrabold text-ecomiles-lime uppercase">
+              <RefreshCw className="w-4 h-4" />
+              <span>1. Cắt Giảm Xe Chạy Rỗng Chiều Về</span>
+            </div>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Tự động khép vòng lộ trình về gần kho và ghép thêm đơn thu hồi hàng chiều về, kéo giảm tỷ lệ chạy rỗng từ mức trung bình ngành <strong>30–35% xuống còn ~10–12%</strong>.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-slate-950/90 border border-white/10 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-extrabold text-emerald-400 uppercase">
+              <FileSpreadsheet className="w-4 h-4" />
+              <span>2. Xuất Báo Cáo Kiểm Toán Tự Động</span>
+            </div>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Tự động kết xuất <strong>Báo cáo Excel 3 Sheet, CSV và Bản in PDF</strong> tính sẵn nhiên liệu, chi phí và phát thải CO₂e trực tiếp (TTW) lẫn vòng đời (WTW) chỉ với 1 cú nhấp chuột.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-slate-950/90 border border-white/10 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-extrabold text-sky-400 uppercase">
+              <ShieldCheck className="w-4 h-4" />
+              <span>3. Cách Ly Bảo Mật Đa Doanh Nghiệp</span>
+            </div>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Mỗi doanh nghiệp sở hữu phân vùng dữ liệu độc lập, tự động ẩn danh số điện thoại khách nhận theo <strong>Nghị định 13/2023/NĐ-CP</strong> và có bảng phê duyệt quyền truy cập theo từng vai trò.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
