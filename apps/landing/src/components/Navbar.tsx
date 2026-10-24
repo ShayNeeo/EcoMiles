@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
             href="#main-content"
             onClick={() => setActiveSection('')}
             className="flex items-center gap-2.5 group shrink-0"
-            aria-label="EcoMiles — về đầu trang"
+            aria-label="EcoMiles: về đầu trang"
           >
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-ecomiles-lime to-emerald-500 flex items-center justify-center text-slate-950 shadow-md group-hover:scale-105 transition-transform duration-300">
               <Leaf className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-slate-950/20 stroke-slate-950" />

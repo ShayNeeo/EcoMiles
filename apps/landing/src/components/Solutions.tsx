@@ -69,7 +69,7 @@ export const Solutions: React.FC = () => {
           </h2>
 
           <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">
-            Thay việc chia tuyến thủ công trên bảng tính bằng một quy trình tự động, dễ theo dõi và dễ sử dụng — giúp giao hàng đúng hẹn, giảm chi phí và giảm phát thải.
+            Thay việc chia tuyến thủ công trên bảng tính bằng một quy trình tự động, dễ theo dõi và dễ sử dụng, giúp giao hàng đúng hẹn, giảm xe chạy rỗng và xuất báo cáo phát thải tự động.
           </p>
         </div>
 
