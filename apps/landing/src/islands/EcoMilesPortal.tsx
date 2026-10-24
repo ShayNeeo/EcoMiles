@@ -961,33 +961,27 @@ function RootComponent() {
             <nav className="hidden md:flex items-center gap-1.5 text-xs font-bold">
               <Link
                 to="/dashboard"
-                className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
+                className="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
               >
-                Tổng quan &amp; Báo cáo
-              </Link>
-              <Link
-                to="/benchmark"
-                className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
-              >
-                Tải File .XLSX &amp; Đối chứng
+                1. Tải File .XLSX &amp; Báo Cáo
               </Link>
               <Link
                 to="/dispatcher"
-                className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
+                className="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
               >
-                Bàn điều phối
+                2. Bàn Điều Phối
               </Link>
               <Link
                 to="/driver"
-                className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
+                className="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
               >
-                Ứng dụng Tài xế
+                3. Ứng Dụng Tài Xế
               </Link>
               <Link
                 to="/audit"
-                className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
+                className="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all [&.active]:bg-ecomiles-lime [&.active]:text-slate-950 [&.active]:shadow-sm"
               >
-                Kiểm định lộ trình
+                4. Kiểm Định Thuật Toán
               </Link>
             </nav>
           </div>
@@ -1009,19 +1003,16 @@ function RootComponent() {
         {/* Mobile subnav */}
         <div className="flex md:hidden items-center justify-around py-2 border-t border-white/5 text-[11px] font-bold">
           <Link to="/dashboard" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
-            Tổng quan
-          </Link>
-          <Link to="/benchmark" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
-            Tải .XLSX
+            1. Báo cáo
           </Link>
           <Link to="/dispatcher" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
-            Điều phối
+            2. Điều phối
           </Link>
           <Link to="/driver" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
-            Tài xế
+            3. Tài xế
           </Link>
           <Link to="/audit" className="px-2 py-1 text-slate-400 [&.active]:text-ecomiles-lime">
-            Kiểm định
+            4. Kiểm định
           </Link>
         </div>
       </header>
