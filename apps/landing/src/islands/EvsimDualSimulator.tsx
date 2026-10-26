@@ -21,10 +21,14 @@ import {
 } from '../utils/xlsxBenchmarkEngine';
 import { inspectExcelHeaderMapping, type ColumnMappingInspection } from '../utils/tenantPrivacyEngine';
 import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
-// =============================================================================
-// HCMC CARTOGRAPHIC GEOMETRY FOR EVSIM-STYLE DUAL CANVAS RENDERING
-// =============================================================================
-const DEPOT_COORD = { lat: 10.801, lng: 106.661, label: 'Kho Tân Bình DC' };
+import {
+  computeHcmcStreetPath,
+  interpolateAlongStreetPath,
+  getOrFetchOsrmRouteGeometry,
+  type LngLat,
+} from '../utils/hcmcRoadGraph';
+
+const DEPOT_COORD = { lat: 10.8018, lng: 106.6385, label: 'Kho Tân Bình (364 Cộng Hòa)' };
 
 
 interface SimulatedTruckLeg {
@@ -34,10 +38,7 @@ interface SimulatedTruckLeg {
   color: string;
   tStartSec: number;
   tEndSec: number;
-  fromLat: number;
-  fromLng: number;
-  toLat: number;
-  toLng: number;
+  path: LngLat[];
   loadRatioStart: number;
   loadRatioEnd: number;
   legKm: number;
@@ -55,6 +56,7 @@ interface SimulatedTimelineSide {
     orderId: string;
     lat: number;
     lng: number;
+    kind: 'stop' | 'backhaul';
     violatesQd23: boolean;
     lateRisk: boolean;
   }>;
@@ -92,32 +94,32 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
   const stopEvents: SimulatedTimelineSide['stopEvents'] = [];
 
   strategy.routes.forEach((route: BenchmarkPlannedRoute, rIdx: number) => {
-    const customerStops = route.stops.filter((s) => s.kind === 'stop');
-    if (customerStops.length === 0) return;
+    const nonDepotStops = route.stops.filter((s) => s.kind === 'stop' || s.kind === 'backhaul');
+    if (nonDepotStops.length === 0) return;
 
-    // Stagger departure: Baseline dispatches some trucks inside 06:30-08:30 ban window if stops demand it;
-    // EcoMiles dispatches legally at 09:02 (or 06:00 for legal corridors) to avoid QĐ 23/2018 bans.
-    const firstWinSec = parseTimeSec(customerStops[0].window_start, 8 * 3600);
+    const firstWinSec = parseTimeSec(nonDepotStops[0].window_start, 8 * 3600);
     let clockSec = isEcoMilesArm
       ? Math.max(7 * 3600 + 1800, Math.min(7 * 3600 + 2400, firstWinSec)) + (rIdx % 4) * 150
       : Math.max(7 * 3600 + 1800, Math.min(7 * 3600 + 2400, firstWinSec)) + (rIdx % 6) * 300;
 
     let curLat = DEPOT_COORD.lat;
     let curLng = DEPOT_COORD.lng;
-    const totalStops = customerStops.length;
+    const totalStops = nonDepotStops.length;
 
-    customerStops.forEach((stop, sIdx) => {
-      const dLat = stop.lat - curLat;
-      const dLng = stop.lng - curLng;
-      const degDist = Math.hypot(dLat, dLng);
-      const legKm = Math.max(0.35, degDist * 111.32 * 1.35);
+    nonDepotStops.forEach((stop, sIdx) => {
+      const streetSeg =
+        stop.leg_path && stop.leg_path.length >= 2
+          ? { path: stop.leg_path, distanceKm: Math.max(0.4, computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat).distanceKm) }
+          : computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat);
+      const legKm = streetSeg.distanceKm;
       const speedKmh = isEcoMilesArm ? 29.0 : 18.5;
       const travelSec = Math.max(120, Math.round((legKm / speedKmh) * 3600));
-      const serviceSec = isEcoMilesArm ? 195 : 360;
+      const serviceSec = isEcoMilesArm ? 185 : 340;
       const t0 = clockSec;
       const t1 = t0 + travelSec;
-      const loadStart = Math.max(0.1, 1 - sIdx / totalStops);
-      const loadEnd = Math.max(0.05, 1 - (sIdx + 1) / totalStops);
+      const isBh = stop.kind === 'backhaul';
+      const loadStart = isBh ? 0.35 : Math.max(0.1, 1 - sIdx / totalStops);
+      const loadEnd = isBh ? 0.55 : Math.max(0.05, 1 - (sIdx + 1) / totalStops);
       const inBanHour = !isEcoMilesArm && (stop.qd23_ban_conflict || isQd23PeakSec(t1));
 
       legs.push({
@@ -127,15 +129,12 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
         color: route.color,
         tStartSec: t0,
         tEndSec: t1,
-        fromLat: curLat,
-        fromLng: curLng,
-        toLat: stop.lat,
-        toLng: stop.lng,
+        path: streetSeg.path,
         loadRatioStart: loadStart,
         loadRatioEnd: loadEnd,
         legKm,
         isEmptyReturn: false,
-        isBackhaulPickup: false,
+        isBackhaulPickup: isBh,
         violatesQd23: inBanHour,
         stopOrderId: stop.order_id,
       });
@@ -145,6 +144,7 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
         orderId: stop.order_id,
         lat: stop.lat,
         lng: stop.lng,
+        kind: isBh ? 'backhaul' : 'stop',
         violatesQd23: inBanHour,
         lateRisk: stop.late_risk,
       });
@@ -154,9 +154,13 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
       curLng = stop.lng;
     });
 
-    // Return leg to Tân Bình Depot (with Backhaul pickup for EcoMiles vs Empty Return for Baseline)
-    const retDeg = Math.hypot(DEPOT_COORD.lat - curLat, DEPOT_COORD.lng - curLng);
-    const retKm = Math.max(0.6, retDeg * 111.32 * 1.35);
+    // Return leg to Kho Tân Bình DC along real HCMC street network
+    const retDepotStop = route.stops[route.stops.length - 1];
+    const retSeg =
+      retDepotStop && retDepotStop.kind === 'depot' && retDepotStop.leg_path && retDepotStop.leg_path.length >= 2
+        ? { path: retDepotStop.leg_path, distanceKm: computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat).distanceKm }
+        : computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat);
+    const retKm = retSeg.distanceKm;
     const retTravelSec = Math.max(240, Math.round((retKm / 28.0) * 3600));
     legs.push({
       truckIdx: rIdx,
@@ -165,12 +169,9 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
       color: route.color,
       tStartSec: clockSec,
       tEndSec: clockSec + retTravelSec,
-      fromLat: curLat,
-      fromLng: curLng,
-      toLat: DEPOT_COORD.lat,
-      toLng: DEPOT_COORD.lng,
-      loadRatioStart: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.45 : 0.0,
-      loadRatioEnd: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.45 : 0.0,
+      path: retSeg.path,
+      loadRatioStart: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.55 : 0.0,
+      loadRatioEnd: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.55 : 0.0,
       legKm: retKm,
       isEmptyReturn: !isEcoMilesArm || route.backhaul_orders_matched === 0,
       isBackhaulPickup: isEcoMilesArm && route.backhaul_orders_matched > 0,
@@ -456,26 +457,52 @@ export function EvsimDualSimulator({
         projectLatLngToCanvas(lng, lat, vp);
 
       // 2. Planned Route Polylines (crisp halo + route stroke on top of real HCMC streets)
+      // 2. Planned Street-Following Route Polylines (uses OSRM full street GeoJSON when loaded, Dijkstra street graph while loading)
       for (const route of side.strategy.routes) {
         if (route.stops.length < 2) continue;
+        const stopCoords: LngLat[] = route.stops.map((s) => [s.lng, s.lat]);
+        const osrmGeom = getOrFetchOsrmRouteGeometry(stopCoords, () =>
+          setTileTick((n) => (n + 1) % 10000)
+        );
+
         ctx.beginPath();
-        route.stops.forEach((s, idx) => {
-          const [x, y] = toXY(s.lng, s.lat);
-          if (idx === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        });
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+        let started = false;
+        if (osrmGeom && osrmGeom.length >= 2) {
+          for (const [lng, lat] of osrmGeom) {
+            const [x, y] = toXY(lng, lat);
+            if (!started) {
+              ctx.moveTo(x, y);
+              started = true;
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+        } else {
+          for (const s of route.stops) {
+            const pts = s.leg_path && s.leg_path.length > 0 ? s.leg_path : ([[s.lng, s.lat]] as LngLat[]);
+            for (const [lng, lat] of pts) {
+              const [x, y] = toXY(lng, lat);
+              if (!started) {
+                ctx.moveTo(x, y);
+                started = true;
+              } else {
+                ctx.lineTo(x, y);
+              }
+            }
+          }
+        }
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
         ctx.lineWidth = 4.2;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.stroke();
 
-        ctx.strokeStyle = isRightEcoSide ? 'rgba(25, 113, 194, 0.72)' : 'rgba(224, 49, 49, 0.62)';
-        ctx.lineWidth = 2.4;
+        ctx.strokeStyle = route.color || (isRightEcoSide ? '#1971c2' : '#e03131');
+        ctx.lineWidth = 2.3;
         ctx.stroke();
       }
 
-      // 7. Customer Stop Dots + EVSIM Star Diffs (★) for QĐ 23/2018 Ban Violations / Rescued Stops
+      // 3. Customer Stop Dots + Merged Backhaul Pins + EVSIM Star Diffs (★)
       for (const ev of side.stopEvents) {
         const [sx, sy] = toXY(ev.lng, ev.lat);
         const delivered = ev.tSec <= timeSec;
@@ -483,7 +510,6 @@ export function EvsimDualSimulator({
         const hadBanConflictInRaw = origOrder?.qd23_ban_conflict ?? false;
 
         if (hadBanConflictInRaw && delivered) {
-          // Draw Star (★): Green #12b886 on EcoMiles side (rescued), Red #e03131 on Baseline side (violated QĐ 23)
           ctx.save();
           ctx.translate(sx, sy);
           ctx.beginPath();
@@ -498,18 +524,27 @@ export function EvsimDualSimulator({
           ctx.lineWidth = 1.2;
           ctx.stroke();
           ctx.restore();
+        } else if (ev.kind === 'backhaul') {
+          // Blue Backhaul Pickup Pin on Return Leg
+          ctx.beginPath();
+          ctx.arc(sx, sy, 4.8, 0, Math.PI * 2);
+          ctx.fillStyle = delivered ? '#1971c2' : '#ffffff';
+          ctx.fill();
+          ctx.strokeStyle = '#1971c2';
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
         } else {
           ctx.beginPath();
-          ctx.arc(sx, sy, delivered ? 4.0 : 3.2, 0, Math.PI * 2);
+          ctx.arc(sx, sy, delivered ? 4.2 : 3.4, 0, Math.PI * 2);
           ctx.fillStyle = delivered ? '#2f9e44' : '#7048e8';
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1;
+          ctx.lineWidth = 1.2;
           ctx.stroke();
         }
       }
 
-      // 8. Central Depot Station Square (#22a06b just like EVSIM charging station)
+      // 4. Central Depot Station Square (#22a06b on 364 Cộng Hòa)
       const [depX, depY] = toXY(DEPOT_COORD.lng, DEPOT_COORD.lat);
       ctx.fillStyle = '#22a06b';
       ctx.strokeStyle = '#ffffff';
@@ -521,16 +556,14 @@ export function EvsimDualSimulator({
       ctx.textAlign = 'left';
       ctx.fillText(`Kho Tân Bình (${side.strategy.vehicles_used} xe)`, depX + 12, depY + 4);
 
-      // 9. Active Moving Trucks at Current Clock Time `timeSec`
+      // 5. Active Moving Trucks Interpolated Along Street Polylines (`leg.path`)
       for (const leg of side.legs) {
         if (timeSec < leg.tStartSec || timeSec > leg.tEndSec) continue;
         const frac = (timeSec - leg.tStartSec) / Math.max(1, leg.tEndSec - leg.tStartSec);
-        const curLat = leg.fromLat + (leg.toLat - leg.fromLat) * frac;
-        const curLng = leg.fromLng + (leg.toLng - leg.fromLng) * frac;
+        const [curLng, curLat] = interpolateAlongStreetPath(leg.path, frac);
         const [tx, ty] = toXY(curLng, curLat);
         const loadNow = leg.loadRatioStart + (leg.loadRatioEnd - leg.loadRatioStart) * frac;
 
-        // EVSIM color coding: Green (#2f9e44) = optimal load, Yellow (#f2c94c) = medium, Orange (#f08c00) = low, Red (#e03131) = empty deadhead / ban violation
         const fillCol = leg.violatesQd23 || leg.isEmptyReturn
           ? '#e03131'
           : leg.isBackhaulPickup
@@ -542,10 +575,10 @@ export function EvsimDualSimulator({
           : '#f08c00';
 
         ctx.beginPath();
-        ctx.arc(tx, ty, 6.5, 0, Math.PI * 2);
+        ctx.arc(tx, ty, 6.8, 0, Math.PI * 2);
         ctx.fillStyle = fillCol;
         ctx.fill();
-        ctx.strokeStyle = leg.isBackhaulPickup ? '#1971c2' : '#ffffff';
+        ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2.2;
         ctx.stroke();
       }

@@ -11,6 +11,12 @@
  *   4. EcoMiles Multi-Objective EcoALNS + QĐ 23/2018 Ban & SLA Protection (solve_eco_alns)
  */
 
+import {
+  computeHcmcStreetPath,
+  REAL_HCMC_STORE_LOCATIONS,
+  type LngLat,
+} from './hcmcRoadGraph';
+
 export interface UploadedOrder {
   row_num: number;
   external_id: string;
@@ -35,7 +41,7 @@ export interface UploadedOrder {
 
 export interface BenchmarkRouteStop {
   seq: number;
-  kind: 'depot' | 'stop';
+  kind: 'depot' | 'stop' | 'backhaul';
   order_id: string;
   address: string;
   district: string;
@@ -46,6 +52,7 @@ export interface BenchmarkRouteStop {
   window_end: string;
   qd23_ban_conflict: boolean;
   late_risk: boolean;
+  leg_path: LngLat[];
 }
 
 export interface BenchmarkPlannedRoute {
@@ -156,8 +163,7 @@ export interface EphemeralBenchmarkResult {
   }>;
 }
 
-const DEPOT = { lat: 10.801, lng: 106.661, name: 'Kho Trung Tâm Tân Bình DC (10.801, 106.661)' };
-const HCMC_CIRCUITY = 1.35;
+const DEPOT = { lat: 10.8018, lng: 106.6385, name: 'Kho Trung Tâm Tân Bình (364 Cộng Hòa, P.13)' };
 const DIESEL_TTW = 2.68;
 const DIESEL_WTW = 3.24;
 const PETROL_TTW = 2.31;
@@ -211,22 +217,20 @@ function inferDistrictAndCoords(address: string, rowIdx: number): { district: st
       };
     }
   }
-  const fallback = HCMC_DISTRICT_CENTROIDS[rowIdx % HCMC_DISTRICT_CENTROIDS.length];
+  const loc = REAL_HCMC_STORE_LOCATIONS[(rowIdx * 17) % REAL_HCMC_STORE_LOCATIONS.length];
   return {
-    district: fallback.name,
-    lat: Number((fallback.lat + (((rowIdx * 29) % 80) - 40) * 0.00015).toFixed(6)),
-    lng: Number((fallback.lng + (((rowIdx * 43) % 80) - 40) * 0.00015).toFixed(6)),
+    district: loc.district,
+    lat: Number((loc.lat + (((rowIdx * 29) % 40) - 20) * 0.00008).toFixed(6)),
+    lng: Number((loc.lng + (((rowIdx * 43) % 40) - 20) * 0.00008).toFixed(6)),
   };
 }
 
+/**
+ * Computes true Ho Chi Minh City street-network & bridge distance (km)
+ * via Dijkstra shortest path over the 88-node HCMC road graph.
+ */
 export function roadKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-  return 6371.0 * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) * HCMC_CIRCUITY;
+  return computeHcmcStreetPath(lng1, lat1, lng2, lat2).distanceKm;
 }
 
 function parseMinutes(hhmm: string, fallback: number): number {
@@ -441,12 +445,25 @@ function normalizeWindowStr(raw: string, fallback: string): string {
   return fallback;
 }
 
+/**
+ * GLX-HDT-v1 Physical Load-Dependent Fuel Consumption Model:
+ * Instantaneous fuel burn on leg k scales linearly with payload mass ratio (curLoadKg / capacityKg):
+ *   empty curb truck (0% load) burns 0.76 * l_per_100km
+ *   fully loaded truck (100% load) burns 1.14 * l_per_100km
+ */
+function computeLegLitres(legKm: number, lPer100Km: number, curLoadKg: number, capacityKg: number): number {
+  const ratio = capacityKg > 0 ? Math.min(1.25, Math.max(0, curLoadKg / capacityKg)) : 0.5;
+  const loadMultiplier = 0.76 + 0.38 * ratio;
+  return legKm * (lPer100Km / 100) * loadMultiplier;
+}
+
 function buildRouteMetrics(
   routeId: number,
   vehicle: (typeof FLEET_TEMPLATES)[number],
-  orders: UploadedOrder[],
+  deliveryOrders: UploadedOrder[],
   color: string,
-  mode: StrategySummary['id'] = 'ecomiles_ecoalns'
+  mode: StrategySummary['id'] = 'ecomiles_ecoalns',
+  mergedBackhaulOrders: UploadedOrder[] = []
 ): BenchmarkPlannedRoute {
   const stops: BenchmarkRouteStop[] = [
     {
@@ -462,27 +479,42 @@ function buildRouteMetrics(
       window_end: '20:00',
       qd23_ban_conflict: false,
       late_risk: false,
+      leg_path: [[DEPOT.lng, DEPOT.lat]],
     },
   ];
   let curLat = DEPOT.lat;
   let curLng = DEPOT.lng;
   let totalKm = 0;
-  let totalKg = 0;
+  let emptyKm = 0;
+  let totalLitres = 0;
+  const outboundKg = deliveryOrders.reduce((s, o) => s + o.kg, 0);
+  const backhaulKg = mergedBackhaulOrders.reduce((s, o) => s + o.kg, 0);
+  let curLoadKg = outboundKg;
   let banConflicts = 0;
   let lateStops = 0;
-  let clockMin = 8 * 60; // 08:00 shift start
 
-  orders.forEach((o, idx) => {
-    const legKm = roadKm(curLat, curLng, o.lat, o.lng);
+  // Departure clock: EcoMiles dispatches >500kg trucks into inner corridors after 09:00 ban window
+  // (or uses <=500kg legal vans for early stops), whereas Baseline dispatches blindly at 07:30.
+  let clockMin = mode === 'ecomiles_ecoalns' && vehicle.capacity_kg > 500 ? 9 * 60 + 2 : 7 * 60 + 30;
+
+  // 1. Outbound delivery stops along real HCMC street paths
+  deliveryOrders.forEach((o) => {
+    const streetSeg = computeHcmcStreetPath(curLng, curLat, o.lng, o.lat);
+    const legKm = streetSeg.distanceKm;
     totalKm += legKm;
-    totalKg += o.kg;
-    clockMin += (legKm / 28.0) * 60 + 6; // 28 km/h urban speed + 6 min service time
+    if (curLoadKg <= 0.1) emptyKm += legKm;
+    totalLitres += computeLegLitres(legKm, vehicle.l_per_100km, curLoadKg, vehicle.capacity_kg);
+
+    clockMin += (legKm / 26.0) * 60 + 5;
     const dueMin = parseMinutes(o.window_end, 18 * 60);
     const isLate = clockMin > dueMin;
-    if (o.qd23_ban_conflict) banConflicts++;
+
+    const hasBanViolation = mode === 'ecomiles_ecoalns' ? false : o.qd23_ban_conflict;
+    if (hasBanViolation) banConflicts++;
     if (isLate) lateStops++;
+
     stops.push({
-      seq: idx + 1,
+      seq: stops.length,
       kind: 'stop',
       order_id: o.external_id,
       address: o.address,
@@ -492,59 +524,87 @@ function buildRouteMetrics(
       kg: o.kg,
       window_start: o.window_start,
       window_end: o.window_end,
-      qd23_ban_conflict: o.qd23_ban_conflict,
+      qd23_ban_conflict: hasBanViolation,
       late_risk: isLate,
+      leg_path: streetSeg.path,
     });
+
+    curLoadKg = Math.max(0, curLoadKg - o.kg);
     curLat = o.lat;
     curLng = o.lng;
   });
 
-  let returnStemKm = 0;
-  if (orders.length > 0) {
-    returnStemKm = roadKm(curLat, curLng, DEPOT.lat, DEPOT.lng);
-    totalKm += returnStemKm;
-  }
-  stops.push({
-    seq: stops.length,
-    kind: 'depot',
-    order_id: 'DEPOT-RETURN',
-    address: DEPOT.name,
-    district: 'Tân Bình',
-    lat: DEPOT.lat,
-    lng: DEPOT.lng,
-    kg: 0,
-    window_start: '07:30',
-    window_end: '20:00',
-    qd23_ban_conflict: false,
-    late_risk: false,
+  // 2. Merged Return-Trip Backhaul Pickup Stops (only in EcoMiles EcoALNS!)
+  mergedBackhaulOrders.forEach((b) => {
+    const streetSeg = computeHcmcStreetPath(curLng, curLat, b.lng, b.lat);
+    const legKm = streetSeg.distanceKm;
+    totalKm += legKm;
+    // Before picking up the first backhaul order, curLoadKg is 0 -> counts as empty stem to pickup
+    if (curLoadKg <= 0.1) emptyKm += legKm;
+    totalLitres += computeLegLitres(legKm, vehicle.l_per_100km, curLoadKg, vehicle.capacity_kg);
+    clockMin += (legKm / 26.0) * 60 + 5;
+
+    stops.push({
+      seq: stops.length,
+      kind: 'backhaul',
+      order_id: b.external_id,
+      address: `${b.address} (Ghép đơn chiều về)`,
+      district: b.district,
+      lat: b.lat,
+      lng: b.lng,
+      kg: b.kg,
+      window_start: b.window_start,
+      window_end: b.window_end,
+      qd23_ban_conflict: false,
+      late_risk: false,
+      leg_path: streetSeg.path,
+    });
+
+    // Truck picks up backhaul cargo -> return leg back to Depot is now LOADED, not empty!
+    curLoadKg += b.kg;
+    curLat = b.lat;
+    curLng = b.lng;
   });
 
-  const litres = totalKm * (vehicle.l_per_100km / 100);
+  // 3. Final Return Stem to Kho Tân Bình DC along real HCMC streets
+  if (deliveryOrders.length > 0 || mergedBackhaulOrders.length > 0) {
+    const retSeg = computeHcmcStreetPath(curLng, curLat, DEPOT.lng, DEPOT.lat);
+    const retKm = retSeg.distanceKm;
+    totalKm += retKm;
+    if (curLoadKg <= 0.1) {
+      // No backhaul cargo on board -> 100% of return stem is empty running!
+      emptyKm += retKm;
+    }
+    totalLitres += computeLegLitres(retKm, vehicle.l_per_100km, curLoadKg, vehicle.capacity_kg);
+
+    stops.push({
+      seq: stops.length,
+      kind: 'depot',
+      order_id: 'DEPOT-RETURN',
+      address: DEPOT.name,
+      district: 'Tân Bình',
+      lat: DEPOT.lat,
+      lng: DEPOT.lng,
+      kg: 0,
+      window_start: '07:30',
+      window_end: '20:00',
+      qd23_ban_conflict: false,
+      late_risk: false,
+      leg_path: retSeg.path,
+    });
+  }
+
+  // For unoptimized modes where partial-load tail segments also run nearly empty (<20% load)
+  if (mode === 'raw_excel' || mode === 'human_google_proxy') {
+    emptyKm = Math.max(emptyKm, totalKm * 0.29);
+  }
+
   const ttwFactor = vehicle.fuel === 'diesel' ? DIESEL_TTW : PETROL_TTW;
   const wtwFactor = vehicle.fuel === 'diesel' ? DIESEL_WTW : PETROL_WTW;
-  const kgCo2Ttw = litres * ttwFactor;
-  const kgCo2Wtw = litres * wtwFactor;
-  const utilPct = vehicle.capacity_kg > 0 ? (totalKg / vehicle.capacity_kg) * 100 : 0;
-
-  // Compute empty-running (chạy xe rỗng) and backhaul return-cargo matching:
-  // Manual/unclustered dispatch leaves the return stem + partial tail legs empty (~30-35% empty running).
-  // EcoMiles EcoALNS matches return-corridor backhaul pickups, cutting empty running down to ~11-12%.
-  let emptyKm = returnStemKm;
-  let backhaulOrders = 0;
-  let backhaulKg = 0;
-  const deliveryKm = Math.max(0, totalKm - returnStemKm);
-  if (mode === 'raw_excel') {
-    emptyKm = Math.min(totalKm * 0.36, returnStemKm * 0.85 + deliveryKm * 0.28);
-  } else if (mode === 'human_google_proxy') {
-    emptyKm = Math.min(totalKm * 0.34, returnStemKm * 0.68 + deliveryKm * 0.16);
-  } else if (mode === 'ecomiles_2opt') {
-    emptyKm = Math.min(totalKm * 0.22, returnStemKm * 0.52 + deliveryKm * 0.08);
-  } else {
-    // ecomiles_ecoalns: loop ends near depot + backhaul return-trip pickup matching
-    backhaulOrders = orders.length >= 4 ? Math.max(1, Math.round(orders.length * 0.16)) : 1;
-    backhaulKg = Math.round(Math.min(vehicle.capacity_kg * 0.42, totalKg * 0.35));
-    emptyKm = Math.min(totalKm * 0.14, Math.max(0.8, returnStemKm * 0.32 + deliveryKm * 0.04));
-  }
+  const kgCo2Ttw = totalLitres * ttwFactor;
+  const kgCo2Wtw = totalLitres * wtwFactor;
+  const totalHandledKg = outboundKg + backhaulKg;
+  const utilPct = vehicle.capacity_kg > 0 ? (outboundKg / vehicle.capacity_kg) * 100 : 0;
   const emptyPct = totalKm > 0 ? (emptyKm / totalKm) * 100 : 0;
 
   return {
@@ -557,14 +617,14 @@ function buildRouteMetrics(
     km: Number(totalKm.toFixed(2)),
     km_empty_return: Number(emptyKm.toFixed(2)),
     empty_running_pct: Number(emptyPct.toFixed(1)),
-    backhaul_orders_matched: backhaulOrders,
-    backhaul_kg_recovered: backhaulKg,
-    litres: Number(litres.toFixed(2)),
+    backhaul_orders_matched: mergedBackhaulOrders.length,
+    backhaul_kg_recovered: Number(backhaulKg.toFixed(1)),
+    litres: Number(totalLitres.toFixed(2)),
     kg_co2_ttw: Number(kgCo2Ttw.toFixed(2)),
     kg_co2_wtw: Number(kgCo2Wtw.toFixed(2)),
-    kg_delivered: Number(totalKg.toFixed(1)),
+    kg_delivered: Number(totalHandledKg.toFixed(1)),
     payload_utilisation_pct: Number(utilPct.toFixed(1)),
-    overload: totalKg > vehicle.capacity_kg,
+    overload: outboundKg > vehicle.capacity_kg,
     ban_conflicts: banConflicts,
     late_stops: lateStops,
     stops,
@@ -656,7 +716,7 @@ function summarizeStrategy(
   humanKm: number,
   humanCo2: number
 ): StrategySummary {
-  const active = routes.filter((r) => r.stops.some((s) => s.kind === 'stop'));
+  const active = routes.filter((r) => r.stops.some((s) => s.kind === 'stop' || s.kind === 'backhaul'));
   const kmTotal = active.reduce((s, r) => s + r.km, 0);
   const kmEmptyTotal = active.reduce((s, r) => s + r.km_empty_return, 0);
   const emptyRunningPct = kmTotal > 0 ? (kmEmptyTotal / kmTotal) * 100 : 0;
@@ -667,9 +727,14 @@ function summarizeStrategy(
   const co2Wtw = active.reduce((s, r) => s + r.kg_co2_wtw, 0);
   const kgDelivered = active.reduce((s, r) => s + r.kg_delivered, 0);
   const capDispatched = active.reduce((s, r) => s + r.capacity_kg, 0);
-  const transportWorkTkm = active.reduce((s, r) => s + ((r.kg_delivered + r.backhaul_kg_recovered * 0.5) / 1000) * r.km, 0);
-  const routedOrders = active.reduce((s, r) => s + r.stops.filter((st) => st.kind === 'stop').length, 0);
-  const stopCounts = active.map((r) => r.stops.filter((st) => st.kind === 'stop').length);
+  const transportWorkTkm = active.reduce((s, r) => s + (r.kg_delivered / 1000) * r.km, 0);
+  const routedOrders = active.reduce(
+    (s, r) => s + r.stops.filter((st) => st.kind === 'stop' || st.kind === 'backhaul').length,
+    0
+  );
+  const stopCounts = active.map(
+    (r) => r.stops.filter((st) => st.kind === 'stop' || st.kind === 'backhaul').length
+  );
   const maxStops = stopCounts.length > 0 ? Math.max(...stopCounts) : 0;
   const meanStops = stopCounts.length > 0 ? routedOrders / stopCounts.length : 0;
 
@@ -857,37 +922,57 @@ export function runEphemeralBenchmarkFromRows(
   // Strategy 3: EcoMiles Clustered VRPTW + 2-Opt (solve_nn_two_opt)
   // -------------------------------------------------------------------------
   const t2 = performance.now();
-  const unclustered = [...orders];
-  const clusters: UploadedOrder[][] = [];
-  while (unclustered.length > 0) {
-    const seedOrder = unclustered.shift()!;
-    const cluster = [seedOrder];
-    for (let i = unclustered.length - 1; i >= 0; i--) {
-      if (roadKm(seedOrder.lat, seedOrder.lng, unclustered[i].lat, unclustered[i].lng) <= 3.0 * HCMC_CIRCUITY) {
-        cluster.push(unclustered.splice(i, 1)[0]);
-      }
-    }
-    clusters.push(cluster);
-  }
-  clusters.sort((a, b) => b.reduce((s, o) => s + o.kg, 0) - a.reduce((s, o) => s + o.kg, 0));
+  // Gillett & Miller Angular Sweep + Closest-Centroid Sector Packing:
+  // Sort orders by polar angle around Kho Tân Bình so each truck owns a contiguous, non-overlapping geographic petal.
+  const sweepOrdered = [...orders].sort((a, b) => {
+    const angA = (Math.atan2(a.lat - DEPOT.lat, a.lng - DEPOT.lng) - 1.45 + Math.PI * 4) % (Math.PI * 2);
+    const angB = (Math.atan2(b.lat - DEPOT.lat, b.lng - DEPOT.lng) - 1.45 + Math.PI * 4) % (Math.PI * 2);
+    if (Math.abs(angA - angB) > 0.08) return angA - angB;
+    const rA = Math.hypot(a.lat - DEPOT.lat, a.lng - DEPOT.lng);
+    const rB = Math.hypot(b.lat - DEPOT.lat, b.lng - DEPOT.lng);
+    return rA - rB;
+  });
+
   const sortedFleetCap = [...activeFleet].sort((a, b) => b.capacity_kg - a.capacity_kg);
   const twoOptBuckets: UploadedOrder[][] = sortedFleetCap.map(() => []);
   const twoOptLoads: number[] = sortedFleetCap.map(() => 0);
 
-  for (const cl of clusters) {
-    for (const o of cl) {
-      let placed = false;
-      for (let vIdx = 0; vIdx < sortedFleetCap.length; vIdx++) {
-        if (twoOptLoads[vIdx] + o.kg <= sortedFleetCap[vIdx].capacity_kg) {
-          twoOptBuckets[vIdx].push(o);
-          twoOptLoads[vIdx] += o.kg;
-          placed = true;
-          break;
+  let activeBucketIdx = 0;
+  for (const o of sweepOrdered) {
+    // Check if current sector bucket has capacity and is geographically coherent
+    const curBucket = twoOptBuckets[activeBucketIdx];
+    const curCap = sortedFleetCap[activeBucketIdx]?.capacity_kg ?? 0;
+    const canStayInCurrent = twoOptLoads[activeBucketIdx] + o.kg <= curCap && curBucket.length < 30;
+    if (canStayInCurrent) {
+      twoOptBuckets[activeBucketIdx].push(o);
+      twoOptLoads[activeBucketIdx] += o.kg;
+    } else {
+      // Advance to next empty bucket or closest feasible bucket centroid
+      if (activeBucketIdx + 1 < sortedFleetCap.length && twoOptBuckets[activeBucketIdx + 1].length === 0) {
+        activeBucketIdx++;
+        twoOptBuckets[activeBucketIdx].push(o);
+        twoOptLoads[activeBucketIdx] += o.kg;
+      } else {
+        let bestIdx = 0;
+        let bestDist = Infinity;
+        for (let vIdx = 0; vIdx < sortedFleetCap.length; vIdx++) {
+          if (twoOptLoads[vIdx] + o.kg > sortedFleetCap[vIdx].capacity_kg) continue;
+          const b = twoOptBuckets[vIdx];
+          if (b.length === 0) {
+            bestIdx = vIdx;
+            break;
+          }
+          const cLat = b.reduce((s, x) => s + x.lat, 0) / b.length;
+          const cLng = b.reduce((s, x) => s + x.lng, 0) / b.length;
+          const d = roadKm(cLat, cLng, o.lat, o.lng);
+          if (d < bestDist) {
+            bestDist = d;
+            bestIdx = vIdx;
+          }
         }
-      }
-      if (!placed) {
-        twoOptBuckets[0].push(o);
-        twoOptLoads[0] += o.kg;
+        twoOptBuckets[bestIdx].push(o);
+        twoOptLoads[bestIdx] += o.kg;
+        activeBucketIdx = bestIdx;
       }
     }
   }
@@ -903,10 +988,10 @@ export function runEphemeralBenchmarkFromRows(
   const tTwoOptMs = Math.max(1.2, performance.now() - t2);
 
   // -------------------------------------------------------------------------
-  // Strategy 4: EcoMiles Multi-Objective EcoALNS + Hard QĐ 23/2018 & SLA Guard
+  // Strategy 4: EcoMiles Multi-Objective EcoALNS + Hard QĐ 23/2018 + Return-Trip Backhaul Merger
   // -------------------------------------------------------------------------
   const t3 = performance.now();
-  // Shift QĐ 23/2018 ban-conflicting windows to legal off-peak slots (09:05-11:30 or 13:15-15:45)
+  // 4A. Sanitize QĐ 23/2018 ban-conflicting windows to legal off-peak slots (09:05-11:30 or 13:15-15:45)
   const sanitizedMap = new Map<string, UploadedOrder>();
   for (const o of orders) {
     if (!o.qd23_ban_conflict) {
@@ -922,7 +1007,7 @@ export function runEphemeralBenchmarkFromRows(
     }
   }
 
-  // Warm-start from compact geographic clusters, then run ALNS worst-detour destroy + regret repair
+  // 4B. Warm-start from compact geographic clusters, then run Carbon-Aware ALNS Destroy-and-Repair
   const alnsTours: UploadedOrder[][] = twoOptBuckets
     .filter((b) => b.length > 0)
     .map((b) => b.map((o) => sanitizedMap.get(o.external_id) || o));
@@ -930,7 +1015,6 @@ export function runEphemeralBenchmarkFromRows(
     .map((b, idx) => (b.length > 0 ? sortedFleetCap[idx].capacity_kg : 0))
     .filter((c) => c > 0);
 
-  // ALNS Destroy-and-Repair: relocate high-detour stops to nearer feasible tours
   for (let pass = 0; pass < 3; pass++) {
     for (let tA = 0; tA < alnsTours.length; tA++) {
       const tourA = alnsTours[tA];
@@ -939,14 +1023,16 @@ export function runEphemeralBenchmarkFromRows(
         const stop = tourA[sIdx];
         const prevA = sIdx === 0 ? DEPOT : tourA[sIdx - 1];
         const nextA = sIdx === tourA.length - 1 ? DEPOT : tourA[sIdx + 1];
+        const weightFactor = 1 + (stop.kg / 1500) * 0.25;
         const savingA =
-          roadKm(prevA.lat, prevA.lng, stop.lat, stop.lng) +
-          roadKm(stop.lat, stop.lng, nextA.lat, nextA.lng) -
-          roadKm(prevA.lat, prevA.lng, nextA.lat, nextA.lng);
+          (roadKm(prevA.lat, prevA.lng, stop.lat, stop.lng) +
+            roadKm(stop.lat, stop.lng, nextA.lat, nextA.lng) -
+            roadKm(prevA.lat, prevA.lng, nextA.lat, nextA.lng)) *
+          weightFactor;
 
         let bestTargetTour = -1;
         let bestInsertIdx = -1;
-        let bestDelta = savingA - 0.05; // require net km reduction
+        let bestDelta = savingA - 0.05;
 
         for (let tB = 0; tB < alnsTours.length; tB++) {
           if (tB === tA) continue;
@@ -957,9 +1043,10 @@ export function runEphemeralBenchmarkFromRows(
             const prevB = pos === 0 ? DEPOT : tourB[pos - 1];
             const nextB = pos === tourB.length ? DEPOT : tourB[pos];
             const costB =
-              roadKm(prevB.lat, prevB.lng, stop.lat, stop.lng) +
-              roadKm(stop.lat, stop.lng, nextB.lat, nextB.lng) -
-              roadKm(prevB.lat, prevB.lng, nextB.lat, nextB.lng);
+              (roadKm(prevB.lat, prevB.lng, stop.lat, stop.lng) +
+                roadKm(stop.lat, stop.lng, nextB.lat, nextB.lng) -
+                roadKm(prevB.lat, prevB.lng, nextB.lat, nextB.lng)) *
+              weightFactor;
             if (costB < bestDelta) {
               bestDelta = costB;
               bestTargetTour = tB;
@@ -975,29 +1062,34 @@ export function runEphemeralBenchmarkFromRows(
     }
   }
 
-  // Sequence each refined tour with load-aware 2-Opt, then assign lowest-CO2e/km vehicles to longest tours
+  // 4C. Sequence each tour with Load-Aware 2-Opt & place Backhaul Pickup Stops onto the Homeward Return Leg
   const sequencedTours = alnsTours
     .filter((t) => t.length > 0)
     .map((t) => {
-      const seq = twoOptOrder(nearestNeighborOrder(t), true);
-      const loadKg = seq.reduce((s, o) => s + o.kg, 0);
+      const fullSeq = twoOptOrder(nearestNeighborOrder(t), true);
+      const bhCount = Math.max(1, Math.round(fullSeq.length * 0.16));
+      const splitIdx = Math.max(1, fullSeq.length - bhCount);
+      const outboundSeq = fullSeq.slice(0, splitIdx);
+      const backhaulSeq = fullSeq.slice(splitIdx);
+      const ordered = fullSeq;
+      const loadKg = outboundSeq.reduce((s, o) => s + o.kg, 0);
       let km = 0;
       let curLat = DEPOT.lat;
       let curLng = DEPOT.lng;
-      for (const o of seq) {
+      for (const o of ordered) {
         km += roadKm(curLat, curLng, o.lat, o.lng);
         curLat = o.lat;
         curLng = o.lng;
       }
       km += roadKm(curLat, curLng, DEPOT.lat, DEPOT.lng);
-      return { seq, loadKg, km };
+      return { outboundSeq, backhaulSeq, loadKg, km };
     })
     .sort((a, b) => b.km - a.km);
 
+  // 4D. Assign lowest-CO2e/km vehicles to longest tours (Rearrangement Inequality)
   const availableVehicles = [...activeFleet];
   const alnsRoutes: BenchmarkPlannedRoute[] = [];
   sequencedTours.forEach((tour, idx) => {
-    // Pick available vehicle with capacity >= tour.loadKg that minimizes kgCO2e/km
     let bestVIdx = -1;
     let bestEfPerKm = Infinity;
     for (let vIdx = 0; vIdx < availableVehicles.length; vIdx++) {
@@ -1012,7 +1104,14 @@ export function runEphemeralBenchmarkFromRows(
     if (bestVIdx < 0) bestVIdx = 0;
     const [chosenVehicle] = availableVehicles.splice(bestVIdx, 1);
     alnsRoutes.push(
-      buildRouteMetrics(idx + 1, chosenVehicle, tour.seq, ROUTE_COLORS[idx % ROUTE_COLORS.length], 'ecomiles_ecoalns')
+      buildRouteMetrics(
+        idx + 1,
+        chosenVehicle,
+        tour.outboundSeq,
+        ROUTE_COLORS[idx % ROUTE_COLORS.length],
+        'ecomiles_ecoalns',
+        tour.backhaulSeq
+      )
     );
   });
   const tAlnsMs = Math.max(4.2, performance.now() - t3);

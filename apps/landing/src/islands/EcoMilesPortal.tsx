@@ -53,6 +53,7 @@ import {
 import { EvsimDualSimulator } from './EvsimDualSimulator';
 
 import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
+import { getOrFetchOsrmRouteGeometry, type LngLat } from '../utils/hcmcRoadGraph';
 interface EChartsInstance {
   setOption: (opt: Record<string, unknown>, notMerge?: boolean) => void;
   resize: () => void;
@@ -148,8 +149,8 @@ function HcmcSingleRouteMapCanvas({
     ctx.save();
     ctx.scale(dpr, dpr);
 
-    const lats = result.orders.map((o) => o.lat).concat([10.801]);
-    const lngs = result.orders.map((o) => o.lng).concat([106.661]);
+    const lats = result.orders.map((o) => o.lat).concat([10.8018]);
+    const lngs = result.orders.map((o) => o.lng).concat([106.6385]);
     const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
     const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
 
@@ -174,12 +175,37 @@ function HcmcSingleRouteMapCanvas({
         : strategy.routes.filter((r) => r.route_id === selectedRouteId);
 
     for (const r of routesToDraw) {
+      const stopCoords: LngLat[] = r.stops.map((s) => [s.lng, s.lat]);
+      const osrmGeom = getOrFetchOsrmRouteGeometry(stopCoords, () =>
+        setTileTick((n) => (n + 1) % 10000)
+      );
+
       ctx.beginPath();
-      r.stops.forEach((s, i) => {
-        const [x, y] = toXY(s.lng, s.lat);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
+      let started = false;
+      if (osrmGeom && osrmGeom.length >= 2) {
+        for (const [lng, lat] of osrmGeom) {
+          const [x, y] = toXY(lng, lat);
+          if (!started) {
+            ctx.moveTo(x, y);
+            started = true;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+      } else {
+        for (const s of r.stops) {
+          const pts = s.leg_path && s.leg_path.length > 0 ? s.leg_path : [[s.lng, s.lat]];
+          for (const [lng, lat] of pts) {
+            const [x, y] = toXY(lng, lat);
+            if (!started) {
+              ctx.moveTo(x, y);
+              started = true;
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+        }
+      }
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.lineWidth = selectedRouteId === 'ALL' ? 4.4 : 5.4;
       ctx.lineCap = 'round';
@@ -195,7 +221,8 @@ function HcmcSingleRouteMapCanvas({
         const [sx, sy] = toXY(s.lng, s.lat);
         ctx.beginPath();
         ctx.arc(sx, sy, selectedRouteId === 'ALL' ? 4.8 : 6.8, 0, Math.PI * 2);
-        ctx.fillStyle = s.qd23_ban_conflict ? '#f08c00' : '#2f9e44';
+        ctx.fillStyle =
+          s.kind === 'backhaul' ? '#1971c2' : s.qd23_ban_conflict ? '#f08c00' : '#2f9e44';
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 1.6;
@@ -210,8 +237,8 @@ function HcmcSingleRouteMapCanvas({
       });
     }
 
-    // Depot Square
-    const [dx, dy] = toXY(106.661, 10.801);
+    // Depot Square on 364 Cộng Hòa, P.13, Tân Bình
+    const [dx, dy] = toXY(106.6385, 10.8018);
     ctx.fillStyle = '#22a06b';
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
@@ -220,7 +247,7 @@ function HcmcSingleRouteMapCanvas({
     ctx.fillStyle = '#14532d';
     ctx.font = '700 10.5px system-ui, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Kho Trung Tâm Tân Bình DC', dx + 12, dy + 4);
+    ctx.fillText('Kho Tân Bình (364 Cộng Hòa)', dx + 12, dy + 4);
 
     ctx.restore();
   }, [result, strategy, selectedRouteId, view, tileTick]);
