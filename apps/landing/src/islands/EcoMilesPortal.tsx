@@ -52,6 +52,7 @@ import {
 } from '../utils/tenantPrivacyEngine';
 import { EvsimDualSimulator } from './EvsimDualSimulator';
 
+import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
 interface EChartsInstance {
   setOption: (opt: Record<string, unknown>, notMerge?: boolean) => void;
   resize: () => void;
@@ -108,6 +109,28 @@ function HcmcSingleRouteMapCanvas({
   selectedRouteId: number | 'ALL';
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [tileTick, setTileTick] = useState<number>(0);
+  const [view, setView] = useState<{ zoom: number; panX: number; panY: number }>({
+    zoom: 12.7,
+    panX: 0,
+    panY: 0,
+  });
+  const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const onWheelNative = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = -e.deltaY * 0.0018;
+      setView((prev) => ({
+        ...prev,
+        zoom: Math.min(15.5, Math.max(11.3, prev.zoom + delta)),
+      }));
+    };
+    canvas.addEventListener('wheel', onWheelNative, { passive: false });
+    return () => canvas.removeEventListener('wheel', onWheelNative);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -125,47 +148,26 @@ function HcmcSingleRouteMapCanvas({
     ctx.save();
     ctx.scale(dpr, dpr);
 
-    // Warm cartographic ground (#e6dcc6) matching EVSIM
-    ctx.fillStyle = '#e6dcc6';
-    ctx.fillRect(0, 0, cw, ch);
-
     const lats = result.orders.map((o) => o.lat).concat([10.801]);
     const lngs = result.orders.map((o) => o.lng).concat([106.661]);
-    const minLat = Math.min(...lats) - 0.012;
-    const maxLat = Math.max(...lats) + 0.012;
-    const minLng = Math.min(...lngs) - 0.015;
-    const maxLng = Math.max(...lngs) + 0.015;
+    const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+    const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
 
-    const toXY = (lng: number, lat: number): [number, number] => {
-      const nx = (lng - minLng) / Math.max(0.001, maxLng - minLng);
-      const ny = 1 - (lat - minLat) / Math.max(0.001, maxLat - minLat);
-      const pad = 28;
-      return [pad + nx * (cw - pad * 2), pad + ny * (ch - pad * 2)];
+    const vp: MercatorViewport = {
+      centerLat,
+      centerLng,
+      zoom: view.zoom,
+      panX: view.panX,
+      panY: view.panY,
+      width: cw,
+      height: ch,
     };
 
-    // Saigon River
-    const river: Array<[number, number]> = [
-      [106.712, 10.855],
-      [106.722, 10.832],
-      [106.735, 10.815],
-      [106.718, 10.795],
-      [106.708, 10.776],
-      [106.707, 10.761],
-      [106.728, 10.745],
-      [106.742, 10.72],
-    ];
-    ctx.beginPath();
-    river.forEach(([lng, lat], i) => {
-      const [x, y] = toXY(lng, lat);
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.strokeStyle = '#86cbe6';
-    ctx.lineWidth = 11;
-    ctx.lineCap = 'round';
-    ctx.stroke();
+    drawHcmcMapTiles(ctx, vp, () => setTileTick((n) => (n + 1) % 10000));
 
-    // Routes
+    const toXY = (lng: number, lat: number): [number, number] =>
+      projectLatLngToCanvas(lng, lat, vp);
+
     const routesToDraw =
       selectedRouteId === 'ALL'
         ? strategy.routes
@@ -178,24 +180,30 @@ function HcmcSingleRouteMapCanvas({
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.lineWidth = selectedRouteId === 'ALL' ? 4.4 : 5.4;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
       ctx.strokeStyle = r.color || '#1971c2';
-      ctx.lineWidth = selectedRouteId === 'ALL' ? 2.2 : 3.2;
+      ctx.lineWidth = selectedRouteId === 'ALL' ? 2.4 : 3.4;
       ctx.stroke();
 
       r.stops.forEach((s) => {
         if (s.kind === 'depot') return;
         const [sx, sy] = toXY(s.lng, s.lat);
         ctx.beginPath();
-        ctx.arc(sx, sy, selectedRouteId === 'ALL' ? 4.2 : 6.5, 0, Math.PI * 2);
+        ctx.arc(sx, sy, selectedRouteId === 'ALL' ? 4.8 : 6.8, 0, Math.PI * 2);
         ctx.fillStyle = s.qd23_ban_conflict ? '#f08c00' : '#2f9e44';
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.4;
+        ctx.lineWidth = 1.6;
         ctx.stroke();
 
         if (selectedRouteId !== 'ALL') {
           ctx.fillStyle = '#111827';
-          ctx.font = '700 9.5px system-ui, sans-serif';
+          ctx.font = '700 10px system-ui, sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText(String(s.seq), sx, sy - 9);
         }
@@ -215,11 +223,28 @@ function HcmcSingleRouteMapCanvas({
     ctx.fillText('Kho Trung Tâm Tân Bình DC', dx + 12, dy + 4);
 
     ctx.restore();
-  }, [result, strategy, selectedRouteId]);
+  }, [result, strategy, selectedRouteId, view, tileTick]);
 
   return (
-    <div className="relative w-full h-[290px] rounded-lg overflow-hidden border border-[#d8cfbd] bg-[#e6dcc6]">
-      <canvas ref={canvasRef} className="w-full h-full block" />
+    <div className="relative w-full h-[290px] rounded-lg overflow-hidden border border-[#d8cfbd] bg-[#ebe5d9]">
+      <canvas
+        ref={canvasRef}
+        onPointerDown={(e) => {
+          dragRef.current = { startX: e.clientX, startY: e.clientY, origX: view.panX, origY: view.panY };
+        }}
+        onPointerMove={(e) => {
+          const active = dragRef.current;
+          if (!active) return;
+          const nextX = active.origX + (e.clientX - active.startX);
+          const nextY = active.origY + (e.clientY - active.startY);
+          setView((prev) => ({ ...prev, panX: nextX, panY: nextY }));
+        }}
+        onPointerUp={() => {
+          dragRef.current = null;
+        }}
+        onDoubleClick={() => setView({ zoom: 12.7, panX: 0, panY: 0 })}
+        className="w-full h-full block cursor-grab active:cursor-grabbing"
+      />
     </div>
   );
 }

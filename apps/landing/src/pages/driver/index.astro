@@ -8,5 +8,5 @@ export const prerender = true;
   title="EcoMiles: Ứng Dụng Dành Cho Tài Xế Giao Hàng"
   description="Ứng dụng tài xế EcoMiles: dẫn đường chế độ Ô tô tải, tuân thủ giờ cấm tải và cập nhật trạng thái điểm dừng theo thời gian thực."
 >
-  <EcoMilesPortal client:load initialRoute="/driver" />
+  <EcoMilesPortal client:only="react" initialRoute="/driver" />
 </BaseLayout>

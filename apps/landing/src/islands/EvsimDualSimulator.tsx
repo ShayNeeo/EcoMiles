@@ -20,72 +20,12 @@ import {
   type StrategySummary,
 } from '../utils/xlsxBenchmarkEngine';
 import { inspectExcelHeaderMapping, type ColumnMappingInspection } from '../utils/tenantPrivacyEngine';
-
+import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
 // =============================================================================
 // HCMC CARTOGRAPHIC GEOMETRY FOR EVSIM-STYLE DUAL CANVAS RENDERING
 // =============================================================================
 const DEPOT_COORD = { lat: 10.801, lng: 106.661, label: 'Kho Tân Bình DC' };
 
-const HCMC_DISTRICTS_LABELS: Array<{ name: string; lat: number; lng: number; kind: 'depot' | 'core' | 'suburb' }> = [
-  { name: 'TÂN BÌNH', lat: 10.801, lng: 106.652, kind: 'depot' },
-  { name: 'QUẬN 1', lat: 10.775, lng: 106.701, kind: 'core' },
-  { name: 'QUẬN 3', lat: 10.783, lng: 106.684, kind: 'core' },
-  { name: 'QUẬN 5', lat: 10.755, lng: 106.667, kind: 'core' },
-  { name: 'QUẬN 10', lat: 10.772, lng: 106.668, kind: 'core' },
-  { name: 'PHÚ NHUẬN', lat: 10.799, lng: 106.681, kind: 'core' },
-  { name: 'BÌNH THẠNH', lat: 10.811, lng: 106.709, kind: 'core' },
-  { name: 'GÒ VẤP', lat: 10.835, lng: 106.668, kind: 'suburb' },
-  { name: 'QUẬN 7', lat: 10.734, lng: 106.721, kind: 'suburb' },
-  { name: 'TP. THỦ ĐỨC', lat: 10.805, lng: 106.748, kind: 'suburb' },
-  { name: 'TÂN PHÚ', lat: 10.791, lng: 106.628, kind: 'suburb' },
-];
-
-// Saigon River polyline in (lng, lat)
-const SAIGON_RIVER_PATH: Array<[number, number]> = [
-  [106.712, 10.855],
-  [106.722, 10.832],
-  [106.735, 10.815],
-  [106.718, 10.795],
-  [106.708, 10.776],
-  [106.707, 10.761],
-  [106.728, 10.745],
-  [106.742, 10.720],
-];
-
-// Major HCMC Arterial Corridors (asphalt roads on the EVSIM map)
-const HCMC_ARTERIAL_ROADS: Array<Array<[number, number]>> = [
-  // Cộng Hòa -> Nguyễn Văn Trỗi -> Nam Kỳ Khởi Nghĩa -> Quận 1
-  [
-    [106.628, 10.805],
-    [106.661, 10.801],
-    [106.681, 10.796],
-    [106.692, 10.782],
-    [106.701, 10.775],
-  ],
-  // Phạm Văn Đồng -> Bình Thạnh -> Thủ Đức
-  [
-    [106.661, 10.801],
-    [106.678, 10.816],
-    [106.709, 10.818],
-    [106.748, 10.825],
-  ],
-  // Cách Mạng Tháng 8 -> Quận 10 -> Quận 5 -> Quận 7
-  [
-    [106.661, 10.801],
-    [106.668, 10.774],
-    [106.667, 10.755],
-    [106.698, 10.745],
-    [106.722, 10.734],
-  ],
-  // Điện Biên Phủ -> Xa Lộ Hà Nội -> Thủ Đức
-  [
-    [106.668, 10.772],
-    [106.684, 10.783],
-    [106.709, 10.799],
-    [106.735, 10.802],
-    [106.755, 10.805],
-  ],
-];
 
 interface SimulatedTruckLeg {
   truckIdx: number;
@@ -348,7 +288,7 @@ export function EvsimDualSimulator({
     panX: 0,
     panY: 0,
   });
-
+  const [tileTick, setTileTick] = useState<number>(0);
   const leftMapCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const rightMapCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const leftSparkCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -449,9 +389,36 @@ export function EvsimDualSimulator({
     return () => cancelAnimationFrame(rafId);
   }, [playing, speed]);
 
-  // Draw EVSIM-style HCMC Cartographic Map + Moving Trucks + Diff Stars
+  // Attach non-passive wheel listeners so e.preventDefault() never logs a passive listener warning
+  useEffect(() => {
+    const canvases = [leftMapCanvasRef.current, rightMapCanvasRef.current].filter(
+      (c): c is HTMLCanvasElement => c !== null
+    );
+    const onWheelNative = (e: WheelEvent) => {
+      e.preventDefault();
+      const factor = Math.exp(-e.deltaY * 0.0015);
+      setViewTransform((prev) => ({
+        ...prev,
+        zoom: Math.min(4.0, Math.max(0.65, prev.zoom * factor)),
+      }));
+    };
+    for (const c of canvases) {
+      c.addEventListener('wheel', onWheelNative, { passive: false });
+    }
+    return () => {
+      for (const c of canvases) {
+        c.removeEventListener('wheel', onWheelNative);
+      }
+    };
+  }, [leftSide, rightSide]);
+
+  // Draw EVSIM-style Real HCMC Web Mercator Street Map + Moving Trucks + Diff Stars
   useEffect(() => {
     if (!leftSide || !rightSide || !result) return;
+
+    const centerLat = (bounds.minLat + bounds.maxLat) / 2;
+    const centerLng = (bounds.minLng + bounds.maxLng) / 2;
+    const baseZoom = 12.6 + Math.log2(Math.max(0.5, viewTransform.zoom));
 
     const drawMapCanvas = (
       canvas: HTMLCanvasElement | null,
@@ -472,73 +439,23 @@ export function EvsimDualSimulator({
       ctx.save();
       ctx.scale(dpr, dpr);
 
-      // 1. EVSIM Warm Cartographic Ground (#e6dcc6)
-      ctx.fillStyle = '#e6dcc6';
-      ctx.fillRect(0, 0, cw, ch);
-
-      const toXY = (lng: number, lat: number): [number, number] => {
-        const nx = (lng - bounds.minLng) / Math.max(0.001, bounds.maxLng - bounds.minLng);
-        const ny = 1 - (lat - bounds.minLat) / Math.max(0.001, bounds.maxLat - bounds.minLat);
-        const basePad = 26;
-        const x0 = basePad + nx * (cw - basePad * 2);
-        const y0 = basePad + ny * (ch - basePad * 2);
-        const cx = cw / 2;
-        const cy = ch / 2;
-        return [
-          cx + (x0 - cx) * viewTransform.zoom + viewTransform.panX,
-          cy + (y0 - cy) * viewTransform.zoom + viewTransform.panY,
-        ];
+      const vp: MercatorViewport = {
+        centerLat,
+        centerLng,
+        zoom: baseZoom,
+        panX: viewTransform.panX,
+        panY: viewTransform.panY,
+        width: cw,
+        height: ch,
       };
 
-      // 2. Green Park Zones (Gia Định / Tân Sơn Nhất & Tao Đàn)
-      ctx.fillStyle = 'rgba(134, 192, 95, 0.35)';
-      const [px1, py1] = toXY(106.665, 10.812);
-      ctx.beginPath();
-      ctx.arc(px1, py1, 26 * viewTransform.zoom, 0, Math.PI * 2);
-      ctx.fill();
+      // 1. Real Ho Chi Minh City Web Mercator Map Tiles (Carto Voyager / OpenStreetMap)
+      drawHcmcMapTiles(ctx, vp, () => setTileTick((n) => (n + 1) % 10000));
 
-      // 3. Saigon River (#86cbe6 with #4fa3c7 edge)
-      ctx.beginPath();
-      SAIGON_RIVER_PATH.forEach(([lng, lat], i) => {
-        const [x, y] = toXY(lng, lat);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = '#4fa3c7';
-      ctx.lineWidth = 14 * viewTransform.zoom;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.stroke();
-      ctx.strokeStyle = '#86cbe6';
-      ctx.lineWidth = 10 * viewTransform.zoom;
-      ctx.stroke();
+      const toXY = (lng: number, lat: number): [number, number] =>
+        projectLatLngToCanvas(lng, lat, vp);
 
-      // 4. HCMC Arterial Road Network (#4a4f5b asphalt + #f3f3f0 lane markings)
-      for (const road of HCMC_ARTERIAL_ROADS) {
-        ctx.beginPath();
-        road.forEach(([lng, lat], i) => {
-          const [x, y] = toXY(lng, lat);
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        });
-        ctx.strokeStyle = '#c4b89f';
-        ctx.lineWidth = 6.5 * viewTransform.zoom;
-        ctx.stroke();
-        ctx.strokeStyle = '#4a4f5b';
-        ctx.lineWidth = 4.5 * viewTransform.zoom;
-        ctx.stroke();
-      }
-
-      // 5. District Labels
-      ctx.font = '700 9.5px system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      for (const d of HCMC_DISTRICTS_LABELS) {
-        const [dx, dy] = toXY(d.lng, d.lat);
-        ctx.fillStyle = d.kind === 'depot' ? '#14532d' : '#50565e';
-        ctx.fillText(d.name, dx, dy);
-      }
-
-      // 6. Planned Route Polylines (faint background traces + active progress traces)
+      // 2. Planned Route Polylines (crisp halo + route stroke on top of real HCMC streets)
       for (const route of side.strategy.routes) {
         if (route.stops.length < 2) continue;
         ctx.beginPath();
@@ -547,8 +464,14 @@ export function EvsimDualSimulator({
           if (idx === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         });
-        ctx.strokeStyle = isRightEcoSide ? 'rgba(25, 113, 194, 0.28)' : 'rgba(224, 49, 49, 0.24)';
-        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.lineWidth = 4.2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        ctx.strokeStyle = isRightEcoSide ? 'rgba(25, 113, 194, 0.72)' : 'rgba(224, 49, 49, 0.62)';
+        ctx.lineWidth = 2.4;
         ctx.stroke();
       }
 
@@ -709,7 +632,7 @@ export function EvsimDualSimulator({
     drawMapCanvas(rightMapCanvasRef.current, rightSide, true);
     drawSparkline(leftSparkCanvasRef.current, leftSide, maxKm, maxCo2);
     drawSparkline(rightSparkCanvasRef.current, rightSide, maxKm, maxCo2);
-  }, [leftSide, rightSide, result, bounds, timeSec, viewTransform]);
+  }, [leftSide, rightSide, result, bounds, timeSec, viewTransform, tileTick]);
 
   if (!result || !leftSide || !rightSide) {
     return (
@@ -731,16 +654,7 @@ export function EvsimDualSimulator({
   const netEmptyKmSavedTotal = Number((baseSt.km_empty_return - ecoSt.km_empty_return).toFixed(1));
   const rescuedBanCount = Math.max(0, baseSt.ban_violations - ecoSt.ban_violations);
 
-  // Synchronized Pan/Zoom handlers
-  const handleWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
-    e.preventDefault();
-    const factor = Math.exp(-e.deltaY * 0.0015);
-    setViewTransform((prev) => ({
-      ...prev,
-      zoom: Math.min(6, Math.max(0.7, prev.zoom * factor)),
-    }));
-  };
-
+  // Synchronized Pan/Zoom handlers (reads dragRef synchronously before setState to prevent null dereference)
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     dragRef.current = {
       startX: e.clientX,
@@ -751,13 +665,14 @@ export function EvsimDualSimulator({
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!dragRef.current) return;
-    const dx = e.clientX - dragRef.current.startX;
-    const dy = e.clientY - dragRef.current.startY;
+    const activeDrag = dragRef.current;
+    if (!activeDrag) return;
+    const nextPanX = activeDrag.origX + (e.clientX - activeDrag.startX);
+    const nextPanY = activeDrag.origY + (e.clientY - activeDrag.startY);
     setViewTransform((prev) => ({
       ...prev,
-      panX: dragRef.current!.origX + dx,
-      panY: dragRef.current!.origY + dy,
+      panX: nextPanX,
+      panY: nextPanY,
     }));
   };
 
@@ -1063,7 +978,6 @@ export function EvsimDualSimulator({
             <div className="relative h-[310px] w-full bg-[#e6dcc6] overflow-hidden">
               <canvas
                 ref={panel.mapRef}
-                onWheel={handleWheel}
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
