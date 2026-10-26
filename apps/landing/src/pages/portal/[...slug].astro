@@ -21,5 +21,5 @@ const initialRoute = slug ? `/${slug}` : '/dashboard';
   title="EcoMiles: Cổng Quản Trị & Vận Hành Doanh Nghiệp"
   description="Cổng vận hành logistics đô thị EcoMiles: Báo cáo tự động, Bàn điều phối, Ứng dụng Tài xế và Kiểm định lộ trình."
 >
-  <EcoMilesPortal client:load initialRoute={initialRoute} />
+  <EcoMilesPortal client:only="react" initialRoute={initialRoute} />
 </BaseLayout>

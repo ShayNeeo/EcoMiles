@@ -8,5 +8,5 @@ export const prerender = true;
   title="EcoMiles: Trung Tâm Tối Ưu Lộ Trình, Giảm Chạy Rỗng & Báo Cáo CO₂ Tự Động"
   description="Bảng điều khiển theo dõi lộ trình, tỷ lệ xe chạy rỗng, tuân thủ giờ cấm QĐ 23/2018 và xuất báo cáo kiểm toán phát thải tự động."
 >
-  <EcoMilesPortal client:load initialRoute="/dashboard" />
+  <EcoMilesPortal client:only="react" initialRoute="/dashboard" />
 </BaseLayout>
