@@ -225,7 +225,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
         0.35
       );
     },
-    { scope: sectionRef, dependencies: [selectedDeviceId] }
+    { scope: sectionRef }
   );
 
   const renderDeviceIcon = (id: DeviceViewId) => {
@@ -290,15 +290,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
           ref={stageCardRef}
           className="rounded-3xl bg-slate-950/90 border border-white/10 p-4 sm:p-6 lg:p-7 shadow-[0_28px_80px_rgba(0,0,0,0.65)]"
         >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeDevice.id}
-              initial={{ opacity: 0, y: 14, scale: 0.985 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.985 }}
-              transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center"
-            >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
               {/* Left/Center 8 Cols: Interactive 7-Device Spatial Stage OR Individual High-DPI Hardware Mockup */}
               <div
                 ref={multiStageRef}
@@ -520,7 +512,15 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
               </div>
 
               {/* Right 4 Cols: Role Context, 3 Verified Highlights & Live Launch CTAs */}
-              <div className="lg:col-span-4 flex flex-col justify-between space-y-4">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeDevice.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                  className="lg:col-span-4 flex flex-col justify-between space-y-4"
+                >
                 <div className="space-y-2.5">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-bold text-ecomiles-lime bg-ecomiles-lime/10 border border-ecomiles-lime/25 uppercase tracking-wider">
                     {activeDevice.roleBadge}
@@ -584,9 +584,9 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     </motion.a>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+                </motion.div>
+              </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>

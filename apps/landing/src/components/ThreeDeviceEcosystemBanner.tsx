@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 
@@ -135,6 +135,14 @@ interface ThreeDeviceEcosystemBannerProps {
   onSelectDevice: (id: DeviceBannerFocusId) => void;
 }
 
+type ClusterPresetId = 'none' | 'office' | 'tablet' | 'field';
+
+const CLUSTER_MEMBERS: Record<Exclude<ClusterPresetId, 'none'>, DeviceBannerFocusId[]> = {
+  office: ['macbook_pro', 'windows_xps'],
+  tablet: ['galaxy_zfold', 'ipad_pro'],
+  field: ['iphone_18_pro_max', 'iphone_duo', 'galaxy_s26_ultra'],
+};
+
 export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProps> = ({
   selectedDeviceId,
   onSelectDevice,
@@ -142,24 +150,90 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
   const mountRef = useRef<HTMLDivElement | null>(null);
   const camTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.48, z: 7.45 });
   const lookTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.38, z: 0 });
+  const lookCurrentRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.38, z: 0 });
+  const focusRingTargetRef = useRef<{ x: number; z: number; scale: number; opacity: number }>({
+    x: 0,
+    z: 0,
+    scale: 0.2,
+    opacity: 0,
+  });
   const selectedIdRef = useRef<DeviceBannerFocusId>(selectedDeviceId);
+  const clusterRef = useRef<ClusterPresetId>('none');
+  const [clusterOverride, setClusterOverride] = useState<{
+    preset: Exclude<ClusterPresetId, 'none'>;
+    forDeviceId: DeviceBannerFocusId;
+  } | null>(null);
+  const [isAutoTour, setIsAutoTour] = useState<boolean>(false);
+  const clusterPreset: ClusterPresetId =
+    clusterOverride && clusterOverride.forDeviceId === selectedDeviceId
+      ? clusterOverride.preset
+      : 'none';
   const onSelectRef = useRef(onSelectDevice);
 
   useEffect(() => {
     onSelectRef.current = onSelectDevice;
   }, [onSelectDevice]);
 
+  // Auto-Orbit Camera Tour across all 7 devices
+  useEffect(() => {
+    if (!isAutoTour) return;
+    const tourStops: DeviceBannerFocusId[] = [
+      'macbook_pro',
+      'windows_xps',
+      'galaxy_zfold',
+      'iphone_18_pro_max',
+      'iphone_duo',
+      'galaxy_s26_ultra',
+      'ipad_pro',
+      'all_banner',
+    ];
+    const timerId = window.setInterval(() => {
+      setClusterOverride(null);
+      clusterRef.current = 'none';
+      const idx = tourStops.indexOf(selectedIdRef.current);
+      const nextId = tourStops[(idx + 1) % tourStops.length];
+      onSelectRef.current(nextId);
+    }, 2800);
+    return () => window.clearInterval(timerId);
+  }, [isAutoTour]);
+
+  const applyClusterPreset = (preset: Exclude<ClusterPresetId, 'none'>) => {
+    setIsAutoTour(false);
+    setClusterOverride({ preset, forDeviceId: selectedDeviceId });
+    clusterRef.current = preset;
+    const dur =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 0
+        : 0.9;
+    if (preset === 'office') {
+      gsap.to(camTargetRef.current, { x: 0, y: 2.12, z: 3.85, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(lookTargetRef.current, { x: 0, y: 2.02, z: -1.15, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(focusRingTargetRef.current, { x: 0, z: -1.15, scale: 2.8, opacity: 0.75, duration: dur, overwrite: 'auto' });
+    } else if (preset === 'tablet') {
+      gsap.to(camTargetRef.current, { x: 0, y: 1.42, z: 6.65, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(lookTargetRef.current, { x: 0, y: 1.25, z: 0.15, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(focusRingTargetRef.current, { x: 0, z: 0.15, scale: 3.6, opacity: 0.7, duration: dur, overwrite: 'auto' });
+    } else {
+      gsap.to(camTargetRef.current, { x: 0, y: 1.02, z: 4.55, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(lookTargetRef.current, { x: 0, y: 0.97, z: 1.15, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(focusRingTargetRef.current, { x: 0, z: 1.15, scale: 2.3, opacity: 0.85, duration: dur, overwrite: 'auto' });
+    }
+  };
+
   // GSAP Smooth 3D Camera Flight when selectedDeviceId changes
   useEffect(() => {
     selectedIdRef.current = selectedDeviceId;
+    clusterRef.current = 'none';
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dur = prefersReducedMotion ? 0 : 0.85;
 
     if (selectedDeviceId === 'all_banner') {
-      gsap.to(camTargetRef.current, { x: 0, y: 1.48, z: 7.45, duration: dur, ease: 'power3.out' });
-      gsap.to(lookTargetRef.current, { x: 0, y: 1.38, z: 0, duration: dur, ease: 'power3.out' });
+      gsap.to(camTargetRef.current, { x: 0, y: 1.48, z: 7.45, duration: dur, ease: 'power3.out', overwrite: 'auto' });
+      gsap.to(lookTargetRef.current, { x: 0, y: 1.38, z: 0, duration: dur, ease: 'power3.out', overwrite: 'auto' });
+      gsap.to(focusRingTargetRef.current, { x: 0, z: 0, scale: 0.2, opacity: 0, duration: dur, overwrite: 'auto' });
     } else {
       const spec = DEVICE_3D_SPECS.find((d) => d.id === selectedDeviceId);
       if (spec) {
@@ -169,6 +243,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           z: spec.camPos[2],
           duration: dur,
           ease: 'power3.out',
+          overwrite: 'auto',
         });
         gsap.to(lookTargetRef.current, {
           x: spec.lookAt[0],
@@ -176,11 +251,20 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           z: spec.lookAt[2],
           duration: dur,
           ease: 'power3.out',
+          overwrite: 'auto',
+        });
+        gsap.to(focusRingTargetRef.current, {
+          x: spec.pos[0],
+          z: spec.pos[2],
+          scale: spec.width > 2 ? 1.85 : spec.width > 1.2 ? 1.15 : 0.8,
+          opacity: 0.88,
+          duration: dur,
+          ease: 'power3.out',
+          overwrite: 'auto',
         });
       }
     }
   }, [selectedDeviceId]);
-
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
@@ -230,6 +314,19 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     const floorRing = new THREE.Mesh(ringGeo, ringMat);
     floorRing.position.y = -0.11;
     stageGroup.add(floorRing);
+
+    // Animated Ground Focus Ring under the active 3D device
+    const focusRingGeo = new THREE.RingGeometry(0.65, 0.78, 48);
+    focusRingGeo.rotateX(-Math.PI / 2);
+    const focusRingMat = new THREE.MeshBasicMaterial({
+      color: 0xd6f65a,
+      transparent: true,
+      opacity: 0,
+      side: THREE.DoubleSide,
+    });
+    const focusRing = new THREE.Mesh(focusRingGeo, focusRingMat);
+    focusRing.position.set(0, -0.105, 0);
+    stageGroup.add(focusRing);
 
     // 3D Data-Sync Arcs + Animated Data Pulses from Office Laptops to Field Devices
     const syncCurves: THREE.CatmullRomCurve3[] = [];
@@ -331,6 +428,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       if (hits.length > 0) {
         const hitId = hits[0].object.userData.deviceId as DeviceBannerFocusId | undefined;
         if (hitId) {
+          setIsAutoTour(false);
           onSelectRef.current(selectedIdRef.current === hitId ? 'all_banner' : hitId);
         }
       }
@@ -363,24 +461,37 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       camera.position.x = THREE.MathUtils.lerp(
         camera.position.x,
         camTargetRef.current.x + (prefersReducedMotion ? 0 : pointerOffset.x),
-        0.08
+        0.1
       );
       camera.position.y = THREE.MathUtils.lerp(
         camera.position.y,
         camTargetRef.current.y + (prefersReducedMotion ? 0 : pointerOffset.y),
-        0.08
+        0.1
       );
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, camTargetRef.current.z, 0.08);
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, camTargetRef.current.z, 0.1);
 
-      lookVec.set(lookTargetRef.current.x, lookTargetRef.current.y, lookTargetRef.current.z);
+      lookCurrentRef.current.x = THREE.MathUtils.lerp(lookCurrentRef.current.x, lookTargetRef.current.x, 0.12);
+      lookCurrentRef.current.y = THREE.MathUtils.lerp(lookCurrentRef.current.y, lookTargetRef.current.y, 0.12);
+      lookCurrentRef.current.z = THREE.MathUtils.lerp(lookCurrentRef.current.z, lookTargetRef.current.z, 0.12);
+      lookVec.set(lookCurrentRef.current.x, lookCurrentRef.current.y, lookCurrentRef.current.z);
       camera.lookAt(lookVec);
 
+      focusRing.position.x = focusRingTargetRef.current.x;
+      focusRing.position.z = focusRingTargetRef.current.z;
+      const pulseScale =
+        focusRingTargetRef.current.scale * (prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 3.2) * 0.05);
+      focusRing.scale.set(pulseScale, 1, pulseScale);
+      focusRingMat.opacity = focusRingTargetRef.current.opacity;
+
+      const activeCluster = clusterRef.current;
       deviceMeshes.forEach((m, i) => {
         const baseY = m.userData.baseY as number;
         const baseRotY = m.userData.baseRotY as number;
         const devId = m.userData.deviceId as DeviceBannerFocusId;
-        const isFocused = sel === 'all_banner' || sel === devId;
-
+        const isFocused =
+          activeCluster !== 'none'
+            ? CLUSTER_MEMBERS[activeCluster].includes(devId)
+            : sel === 'all_banner' || sel === devId;
         const mat = m.material as THREE.MeshBasicMaterial;
         mat.opacity = THREE.MathUtils.lerp(mat.opacity, isFocused ? 1.0 : 0.16, 0.12);
         m.rotation.y = THREE.MathUtils.lerp(
@@ -425,6 +536,8 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       grid.dispose();
       ringGeo.dispose();
       ringMat.dispose();
+      focusRingGeo.dispose();
+      focusRingMat.dispose();
       syncGeos.forEach((g) => g.dispose());
       syncMats.forEach((m) => m.dispose());
       deviceMeshes.forEach((m) => {
@@ -445,14 +558,72 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     <div className="relative w-full space-y-2">
       <div
         ref={mountRef}
-        className="w-full h-[390px] sm:h-[430px] cursor-pointer rounded-xl overflow-hidden"
+        className="w-full h-[350px] sm:h-[385px] cursor-pointer rounded-xl overflow-hidden"
         title="Bấm trực tiếp vào bất kỳ thiết bị 3D nào để bay camera tới thiết bị đó (Bấm lần nữa để về toàn cảnh)"
       />
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-ecomiles-lime/30 text-[11px] text-slate-300">
-        <span className="font-bold text-ecomiles-lime">
-          Three.js 3D WebGL + GSAP Camera Flight + Luồng Đồng Bộ Dữ Liệu 3D
-        </span>
-        <span>Bấm trực tiếp vào thiết bị 3D để bay camera tới (bấm lần 2 để về toàn cảnh)</span>
+      <div className="flex flex-wrap items-center justify-between gap-1 px-2 py-1 rounded-xl bg-slate-950/90 border border-ecomiles-lime/30 text-[10px] text-slate-300">
+        <div className="flex flex-wrap items-center gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              setIsAutoTour(false);
+              setClusterOverride(null);
+              clusterRef.current = 'none';
+              onSelectDevice('all_banner');
+            }}
+            className={`px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors ${
+              clusterPreset === 'none' && selectedDeviceId === 'all_banner'
+                ? 'bg-ecomiles-lime text-slate-950'
+                : 'bg-slate-900 text-slate-300 hover:text-white border border-white/10'
+            }`}
+          >
+            Toàn cảnh (7)
+          </button>
+          <button
+            type="button"
+            onClick={() => applyClusterPreset('office')}
+            className={`px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors ${
+              clusterPreset === 'office'
+                ? 'bg-ecomiles-lime text-slate-950'
+                : 'bg-slate-900 text-slate-300 hover:text-white border border-white/10'
+            }`}
+          >
+            2 Laptop Văn Phòng
+          </button>
+          <button
+            type="button"
+            onClick={() => applyClusterPreset('tablet')}
+            className={`px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors ${
+              clusterPreset === 'tablet'
+                ? 'bg-ecomiles-lime text-slate-950'
+                : 'bg-slate-900 text-slate-300 hover:text-white border border-white/10'
+            }`}
+          >
+            Z Fold + iPad Pro
+          </button>
+          <button
+            type="button"
+            onClick={() => applyClusterPreset('field')}
+            className={`px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors ${
+              clusterPreset === 'field'
+                ? 'bg-ecomiles-lime text-slate-950'
+                : 'bg-slate-900 text-slate-300 hover:text-white border border-white/10'
+            }`}
+          >
+            3 Điện Thoại Tài Xế
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsAutoTour((prev) => !prev)}
+          className={`px-2 py-0.5 rounded-lg font-extrabold cursor-pointer transition-colors ${
+            isAutoTour
+              ? 'bg-emerald-400 text-slate-950 shadow-sm'
+              : 'bg-ecomiles-lime/15 text-ecomiles-lime border border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
+          }`}
+        >
+          {isAutoTour ? '⏸ Đang Bay' : '▶ Bay Tự Động'}
+        </button>
       </div>
     </div>
   );

@@ -1,16 +1,43 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { motion } from 'motion/react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { Tag, Check, Sparkles, ArrowRight, FileText, RefreshCw, Calculator, Info, Plug } from 'lucide-react';
+
+gsap.registerPlugin(useGSAP);
 
 interface PricingProps {
   onOpenPilotModal: (interest?: string) => void;
 }
 
 export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) => {
+  const [activeDrivers, setActiveDrivers] = useState<number>(15);
   const [monthlyOrders, setMonthlyOrders] = useState<number>(100);
   const [averageWeight, setAverageWeight] = useState<number>(50);
   const [averageDistance, setAverageDistance] = useState<number>(20);
   const backhaulFeeEstimate = monthlyOrders * (5000 + averageWeight * averageDistance * 10);
+  const feeNumRef = useRef<HTMLSpanElement | null>(null);
+  const feeProxy = useRef({ value: backhaulFeeEstimate });
 
+  useGSAP(
+    () => {
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      gsap.to(feeProxy.current, {
+        value: backhaulFeeEstimate,
+        duration: prefersReducedMotion ? 0 : 0.5,
+        ease: 'power2.out',
+        overwrite: 'auto',
+        onUpdate: () => {
+          if (feeNumRef.current) {
+            feeNumRef.current.textContent = Math.round(feeProxy.current.value).toLocaleString('vi-VN');
+          }
+        },
+      });
+    },
+    { dependencies: [backhaulFeeEstimate] }
+  );
   const tiers = [
     {
       name: 'Gói Starter',
@@ -24,7 +51,8 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Hỗ trợ thiết lập và bắt đầu sử dụng',
         'Vượt mức: +100.000đ/tài xế/tháng',
       ],
-      highlight: false,
+      highlight: activeDrivers <= 10,
+      badge: activeDrivers <= 10 ? 'ĐỀ XUẤT CHO BẠN' : undefined,
     },
     {
       name: 'Gói Nhỏ',
@@ -38,8 +66,8 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Theo dõi tài xế và tiến độ đơn hàng',
         'Vượt mức: +75.000đ/tài xế/tháng',
       ],
-      highlight: true,
-      badge: 'PHỔ BIẾN NHẤT',
+      highlight: activeDrivers >= 11 && activeDrivers <= 20,
+      badge: activeDrivers >= 11 && activeDrivers <= 20 ? 'ĐỀ XUẤT · PHỔ BIẾN NHẤT' : undefined,
     },
     {
       name: 'Gói Vừa',
@@ -53,7 +81,8 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Báo cáo nhiên liệu và lượng CO₂',
         'Vượt mức: +50.000đ/tài xế/tháng',
       ],
-      highlight: false,
+      highlight: activeDrivers >= 21 && activeDrivers <= 100,
+      badge: activeDrivers >= 21 && activeDrivers <= 100 ? 'ĐỀ XUẤT CHO BẠN' : undefined,
     },
     {
       name: 'Gói Lớn',
@@ -67,7 +96,8 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Hỗ trợ kỹ thuật và đào tạo ưu tiên',
         'Vượt mức: +50.000đ/tài xế/tháng',
       ],
-      highlight: false,
+      highlight: activeDrivers > 100,
+      badge: activeDrivers > 100 ? 'ĐỀ XUẤT CHO BẠN' : undefined,
     },
   ];
 
@@ -88,6 +118,37 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           <p className="mt-4 text-sm sm:text-base text-slate-300">
             Chọn gói theo số lượng tài xế hoạt động mỗi tháng. Doanh nghiệp có thể bắt đầu nhỏ và nâng cấp khi nhu cầu tăng.
           </p>
+          {/* Interactive Fleet Size Tier Matcher */}
+          <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-2 p-2 rounded-2xl bg-slate-900/90 border border-white/10">
+            <span className="text-xs font-bold text-slate-300 px-2">Quy mô đội xe của bạn:</span>
+            {[
+              { label: '8 tài xế (Khởi đầu)', count: 8 },
+              { label: '15 tài xế (Đội nhỏ)', count: 15 },
+              { label: '45 tài xế (Đội vừa)', count: 45 },
+              { label: '120 tài xế (Mạng lưới lớn)', count: 120 },
+            ].map((preset) => {
+              const isSelected = activeDrivers === preset.count;
+              return (
+                <button
+                  key={preset.count}
+                  type="button"
+                  onClick={() => setActiveDrivers(preset.count)}
+                  className={`relative px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                    isSelected ? 'text-slate-950' : 'text-slate-300 hover:text-white'
+                  }`}
+                >
+                  {isSelected && (
+                    <motion.span
+                      layoutId="pricingFleetPresetPill"
+                      transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                      className="absolute inset-0 rounded-xl bg-ecomiles-lime shadow-sm"
+                    />
+                  )}
+                  <span className="relative z-10">{preset.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Pricing Cards Grid */}
@@ -95,14 +156,14 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           {tiers.map((tier) => (
             <div
               key={tier.name}
-              className={`rounded-3xl p-6 sm:p-8 xl:p-6 flex flex-col justify-between transition-all duration-300 ${
+              className={`relative rounded-3xl p-6 sm:p-8 xl:p-6 flex flex-col justify-between transition-all duration-300 ${
                 tier.highlight
-                  ? 'bg-slate-900 border-2 border-ecomiles-lime shadow-2xl shadow-ecomiles-lime/10 relative'
+                  ? 'bg-slate-900 border-2 border-ecomiles-lime shadow-2xl shadow-ecomiles-lime/10'
                   : 'bg-slate-900/60 border border-white/10 hover:border-white/20'
               }`}
             >
               {tier.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-ecomiles-lime text-slate-950 font-extrabold text-[10px] tracking-wider rounded-full shadow-md uppercase">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap px-3.5 py-1 bg-ecomiles-lime text-slate-950 font-extrabold text-[10px] tracking-wider rounded-full shadow-md uppercase">
                   {tier.badge}
                 </div>
               )}
@@ -309,8 +370,8 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                   <Calculator className="h-4 w-4 text-ecomiles-lime" />
                   <span>Dự toán phí module mỗi tháng</span>
                 </div>
-                <div className="mt-2 text-3xl font-extrabold tracking-tight text-ecomiles-lime">
-                  {backhaulFeeEstimate.toLocaleString('vi-VN')}đ
+                <div className="mt-2 text-3xl font-extrabold tracking-tight text-ecomiles-lime tabular-nums">
+                  <span ref={feeNumRef}>{backhaulFeeEstimate.toLocaleString('vi-VN')}</span>đ
                 </div>
                 <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
                   Công thức minh họa: 5.000đ/đơn + 10đ/kg/km. Đơn giá chính thức được hiệu chỉnh theo sản lượng, cung đường và thỏa thuận với doanh nghiệp.

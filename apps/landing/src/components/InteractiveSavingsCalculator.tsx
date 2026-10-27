@@ -16,6 +16,17 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
   const [dailyKm, setDailyKm] = useState<number>(85);
   const [fuelConsumption, setFuelConsumption] = useState<number>(11); // L/100km
   const [savingsRate, setSavingsRate] = useState<number>(25); // %
+  const moneyNumRef = useRef<HTMLSpanElement | null>(null);
+  const litersNumRef = useRef<HTMLSpanElement | null>(null);
+  const co2NumRef = useRef<HTMLSpanElement | null>(null);
+  const co2TonsNumRef = useRef<HTMLSpanElement | null>(null);
+  const kmNumRef = useRef<HTMLSpanElement | null>(null);
+  const countProxy = useRef({
+    money: 12 * 85 * 26 * 0.25 * 0.11 * 23500,
+    liters: 12 * 85 * 26 * 0.25 * 0.11,
+    co2: 12 * 85 * 26 * 0.25 * 0.11 * 2.68,
+    km: 12 * 85 * 26 * 0.25,
+  });
 
   // Calculations
   const workingDays = 26; // days/month
@@ -53,6 +64,41 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
       );
     },
     { scope: sectionRef }
+  );
+
+  useGSAP(
+    () => {
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      gsap.to(countProxy.current, {
+        money: moneySavedVND,
+        liters: litersSaved,
+        co2: co2SavedKg,
+        km: kmSaved,
+        duration: prefersReducedMotion ? 0 : 0.55,
+        ease: 'power2.out',
+        overwrite: 'auto',
+        onUpdate: () => {
+          if (moneyNumRef.current) {
+            moneyNumRef.current.textContent = Math.round(countProxy.current.money).toLocaleString('vi-VN');
+          }
+          if (litersNumRef.current) {
+            litersNumRef.current.textContent = Math.round(countProxy.current.liters).toLocaleString('vi-VN');
+          }
+          if (co2NumRef.current) {
+            co2NumRef.current.textContent = Math.round(countProxy.current.co2).toLocaleString('vi-VN');
+          }
+          if (co2TonsNumRef.current) {
+            co2TonsNumRef.current.textContent = (countProxy.current.co2 / 1000).toFixed(2);
+          }
+          if (kmNumRef.current) {
+            kmNumRef.current.textContent = Math.round(countProxy.current.km).toLocaleString('vi-VN');
+          }
+        },
+      });
+    },
+    { dependencies: [moneySavedVND, litersSaved, co2SavedKg, kmSaved], scope: sectionRef }
   );
 
   return (
@@ -251,12 +297,12 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   <DollarSign className="w-4 h-4 text-emerald-400" />
                   <span>Chi phí nhiên liệu tiết kiệm ròng:</span>
                 </div>
-                <div className="text-3xl sm:text-4xl font-extrabold text-ecomiles-lime tracking-tight">
-                  {Math.round(moneySavedVND).toLocaleString('vi-VN')}{' '}
+                <div className="text-3xl sm:text-4xl font-extrabold text-ecomiles-lime tracking-tight tabular-nums">
+                  <span ref={moneyNumRef}>{Math.round(moneySavedVND).toLocaleString('vi-VN')}</span>{' '}
                   <span className="text-sm font-bold text-white">VNĐ/tháng</span>
                 </div>
-                <div className="text-xs text-emerald-400 font-semibold mt-1">
-                  ~ {Math.round(litersSaved).toLocaleString('vi-VN')} Lít dầu diesel cắt giảm
+                <div className="text-xs text-emerald-400 font-semibold mt-1 tabular-nums">
+                  ~ <span ref={litersNumRef}>{Math.round(litersSaved).toLocaleString('vi-VN')}</span> Lít dầu diesel cắt giảm
                 </div>
               </div>
 
@@ -267,12 +313,12 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     <Leaf className="w-3.5 h-3.5 text-emerald-400" />
                     <span>CO₂ Tiết Giảm</span>
                   </div>
-                  <div className="text-xl font-extrabold text-white">
-                    {Math.round(co2SavedKg).toLocaleString('vi-VN')}{' '}
+                  <div className="text-xl font-extrabold text-white tabular-nums">
+                    <span ref={co2NumRef}>{Math.round(co2SavedKg).toLocaleString('vi-VN')}</span>{' '}
                     <span className="text-xs font-normal text-slate-400">kg CO₂</span>
                   </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">
-                    ~ {(co2SavedKg / 1000).toFixed(2)} Tấn CO₂/tháng
+                  <div className="text-[11px] text-slate-400 mt-0.5 tabular-nums">
+                    ~ <span ref={co2TonsNumRef}>{(co2SavedKg / 1000).toFixed(2)}</span> Tấn CO₂/tháng
                   </div>
                 </div>
 
@@ -281,8 +327,8 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     <TrendingDown className="w-3.5 h-3.5 text-emerald-300" />
                     <span>Km Cắt Giảm</span>
                   </div>
-                  <div className="text-xl font-extrabold text-white">
-                    {Math.round(kmSaved).toLocaleString('vi-VN')}{' '}
+                  <div className="text-xl font-extrabold text-white tabular-nums">
+                    <span ref={kmNumRef}>{Math.round(kmSaved).toLocaleString('vi-VN')}</span>{' '}
                     <span className="text-xs font-normal text-slate-400">km/tháng</span>
                   </div>
                   <div className="text-[11px] text-slate-400 mt-0.5">
