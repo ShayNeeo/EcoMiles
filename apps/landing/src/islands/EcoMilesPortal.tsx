@@ -1393,6 +1393,37 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
+                {/* Compact 7-Device Ecosystem Operational Sync Strip in Tab 1 */}
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img
+                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                      alt="Đồng Bộ 7 Thiết Bị Thực Tế"
+                      className="h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0"
+                    />
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[11.5px] font-bold text-[#d6f65a] uppercase tracking-wide">
+                          Đồng Bộ 7 Thiết Bị Thực Tế Trong Ca Vận Hành
+                        </span>
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          7/7 Thiết bị Online · &lt;50ms
+                        </span>
+                      </div>
+                      <p className="text-[11.5px] text-slate-300 mt-0.5">
+                        MacBook Pro 16&quot; · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowDeviceBanner((prev) => !prev)}
+                    className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold shrink-0 transition-colors cursor-pointer"
+                  >
+                    {showDeviceBanner ? 'Ẩn Thanh 7 Thiết Bị ▲' : 'Mở Thanh 7 Thiết Bị ▼'}
+                  </button>
+                </div>
+
                 {/* Active Truck Fleet & Order Completion Table */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

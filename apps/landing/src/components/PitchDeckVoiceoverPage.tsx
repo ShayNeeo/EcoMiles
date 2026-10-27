@@ -188,7 +188,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
   const [activeFeatureTab, setActiveFeatureTab] = useState<number>(0);
 
   // Interactive state for Slide 6 (Live Console tabs)
-  const [activeConsoleTab, setActiveConsoleTab] = useState<'both' | 'dispatcher' | 'driver'>('both');
+  const [activeConsoleTab, setActiveConsoleTab] = useState<'both' | 'dispatcher' | 'driver' | 'devices_7'>('both');
 
   const [galleryStageMode, setGalleryStageMode] = useState<'studio_24k' | 'webgl_3d'>('studio_24k');
   const [deckWebglFocusId, setDeckWebglFocusId] = useState<DeviceBannerFocusId>('all_banner');
@@ -1359,6 +1359,18 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                               <Smartphone className="w-3.5 h-3.5" />
                               <span className="hidden sm:inline">App Tài Xế</span>
                             </button>
+                            <button
+                              type="button"
+                              onClick={() => setActiveConsoleTab('devices_7')}
+                              className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition cursor-pointer ${
+                                activeConsoleTab === 'devices_7'
+                                  ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20'
+                                  : 'text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              <Layers className="w-3.5 h-3.5" />
+                              <span>Dàn 7 Thiết Bị</span>
+                            </button>
                           </div>
                         </div>
 
@@ -1563,6 +1575,50 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                   />
                                 </div>
                               </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 4TH TAB: 7-DEVICE SYNC HARDWARE STAGE */}
+                        {activeConsoleTab === 'devices_7' && (
+                          <div className="space-y-5">
+                            <div
+                              onClick={() => setLightboxAsset('00_ecomiles_clean_devices_hero_stage.png')}
+                              className="relative rounded-2xl overflow-hidden border border-emerald-500/40 bg-slate-950 p-3 group cursor-zoom-in shadow-2xl"
+                            >
+                              <img
+                                src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                                alt="EcoMiles 7 Thiết Bị Đồng Bộ"
+                                className="w-full max-h-[340px] object-contain mx-auto rounded-xl drop-shadow-[0_18px_36px_rgba(0,0,0,0.85)]"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                              {[
+                                { file: '26_mockup_macbook_pro_16_b2b_tms.png', name: 'MacBook Pro 16"', role: 'B2B TMS' },
+                                { file: '27_mockup_windows_xps_16_evsim_dual.png', name: 'Windows XPS 16', role: 'EVSIM Dual' },
+                                { file: '24_mockup_samsung_zfold_tablet_cockpit.png', name: 'Galaxy Z Fold', role: 'Cockpit Ops' },
+                                { file: '25_mockup_ipad_pro_tablet_tms.png', name: 'iPad Pro M4', role: 'Warehouse TMS' },
+                                { file: '23_mockup_iphone_duo_dual_screen.png', name: 'iPhone Duo', role: 'Dual-Screen' },
+                                { file: '21_mockup_iphone_18_pro_max_driver.png', name: 'iPhone 18 Pro Max', role: 'Driver App' },
+                                { file: '22_mockup_samsung_s26_ultra_maps_live.png', name: 'Galaxy S26 Ultra', role: 'Live /maps' },
+                              ].map((dev) => (
+                                <button
+                                  key={dev.file}
+                                  type="button"
+                                  onClick={() => setLightboxAsset(dev.file)}
+                                  className="group rounded-xl border border-white/10 bg-slate-950 p-2 text-left hover:border-emerald-400/50 transition-all cursor-zoom-in flex flex-col justify-between"
+                                >
+                                  <img
+                                    src={`/pitch-deck-screenshots/${dev.file}`}
+                                    alt={dev.name}
+                                    className="w-full h-24 object-contain rounded-lg bg-black/40 p-1"
+                                  />
+                                  <div className="mt-2 min-w-0">
+                                    <div className="text-[11px] font-bold text-white truncate">{dev.name}</div>
+                                    <div className="text-[10px] text-slate-400 truncate">{dev.role}</div>
+                                  </div>
+                                </button>
+                              ))}
                             </div>
                           </div>
                         )}

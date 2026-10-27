@@ -228,13 +228,17 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   }, [tiltRotateX, tiltRotateY]);
 
   useEffect(() => {
-    if (selectedDeviceId === 'all_banner') return;
+    if (selectedDeviceId === 'all_banner' && stageRenderMode !== 'webgl_3d') return;
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        const nextDev = hardwareDevices[wrapHardwareIndex(activeHardwareIndex - 1)];
+        const nextIdx =
+          selectedDeviceId === 'all_banner'
+            ? hardwareDevices.length - 1
+            : wrapHardwareIndex(activeHardwareIndex - 1);
+        const nextDev = hardwareDevices[nextIdx];
         if (nextDev) {
           tiltRotateX.set(0);
           tiltRotateY.set(0);
@@ -242,7 +246,9 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
         }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
-        const nextDev = hardwareDevices[wrapHardwareIndex(activeHardwareIndex + 1)];
+        const nextIdx =
+          selectedDeviceId === 'all_banner' ? 0 : wrapHardwareIndex(activeHardwareIndex + 1);
+        const nextDev = hardwareDevices[nextIdx];
         if (nextDev) {
           tiltRotateX.set(0);
           tiltRotateY.set(0);
@@ -257,7 +263,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedDeviceId, activeHardwareIndex, hardwareDevices, wrapHardwareIndex, tiltRotateX, tiltRotateY]);
+  }, [selectedDeviceId, stageRenderMode, activeHardwareIndex, hardwareDevices, wrapHardwareIndex, tiltRotateX, tiltRotateY]);
   // GSAP ScrollTrigger 4-Beat Spatial Fan-Out (Office -> Handover -> Field -> Outcome)
   useGSAP(
     () => {

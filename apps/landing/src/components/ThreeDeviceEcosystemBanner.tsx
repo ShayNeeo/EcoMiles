@@ -130,6 +130,17 @@ const SYNC_ARCS: Array<Array<[number, number, number]>> = [
   ],
 ];
 
+const ARC_ENDPOINTS: ReadonlyArray<
+  readonly [Exclude<DeviceBannerFocusId, 'all_banner'>, Exclude<DeviceBannerFocusId, 'all_banner'>]
+> = [
+  ['macbook_pro', 'galaxy_zfold'],
+  ['macbook_pro', 'iphone_18_pro_max'],
+  ['macbook_pro', 'iphone_duo'],
+  ['windows_xps', 'iphone_duo'],
+  ['windows_xps', 'galaxy_s26_ultra'],
+  ['windows_xps', 'ipad_pro'],
+];
+
 interface ThreeDeviceEcosystemBannerProps {
   selectedDeviceId: DeviceBannerFocusId;
   onSelectDevice: (id: DeviceBannerFocusId) => void;
@@ -404,6 +415,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     const syncPulses: THREE.Mesh[] = [];
     const syncGeos: THREE.BufferGeometry[] = [];
     const syncMats: THREE.Material[] = [];
+    const syncTubeMats: THREE.MeshBasicMaterial[] = [];
     const pulseGeo = new THREE.SphereGeometry(0.055, 12, 12);
     syncGeos.push(pulseGeo);
 
@@ -418,6 +430,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       });
       syncGeos.push(tGeo);
       syncMats.push(tMat);
+      syncTubeMats.push(tMat);
       stageGroup.add(new THREE.Mesh(tGeo, tMat));
 
       const pMat = new THREE.MeshBasicMaterial({ color: 0xd6f65a });
@@ -729,6 +742,17 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       syncPulses.forEach((p, idx) => {
         const curve = syncCurves[p.userData.curveIdx as number];
         if (!curve) return;
+        const [fromId, toId] = ARC_ENDPOINTS[idx];
+        const hov = hoveredIdRef.current;
+        const isArcActive =
+          (hov !== null && (hov === fromId || hov === toId)) ||
+          (sel !== 'all_banner' && (sel === fromId || sel === toId));
+        const targetArcOpacity = isArcActive ? 0.88 : sel === 'all_banner' ? 0.38 : 0.14;
+        const tubeMat = syncTubeMats[idx];
+        if (tubeMat) {
+          tubeMat.opacity = THREE.MathUtils.lerp(tubeMat.opacity, targetArcOpacity, 0.12);
+        }
+        p.scale.setScalar(isArcActive ? 1.5 : 1.0);
         const u = ((p.userData.offset as number) + (prefersReducedMotion ? 0 : elapsed * (0.28 + idx * 0.02))) % 1;
         curve.getPointAt(u, pulsePos);
         p.position.copy(pulsePos);
