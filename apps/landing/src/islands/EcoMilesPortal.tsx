@@ -411,18 +411,21 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
   // Sync URL route with Role & Sidebar Tab
   useEffect(() => {
-    if (pathname === '/benchmark') {
-      setActiveRole('tester');
-    } else if (pathname === '/driver') {
-      setActiveRole('driver');
-    } else if (pathname === '/audit') {
-      setActiveRole('admin');
-    } else if (pathname === '/dispatcher' || pathname === '/app') {
-      setActiveRole('user');
-      setUserTab('routing');
-    } else {
-      setActiveRole(defaultRole);
-    }
+    const tid = window.setTimeout(() => {
+      if (pathname === '/benchmark') {
+        setActiveRole('tester');
+      } else if (pathname === '/driver') {
+        setActiveRole('driver');
+      } else if (pathname === '/audit') {
+        setActiveRole('admin');
+      } else if (pathname === '/dispatcher' || pathname === '/app') {
+        setActiveRole('user');
+        setUserTab('routing');
+      } else {
+        setActiveRole(defaultRole);
+      }
+    }, 0);
+    return () => window.clearTimeout(tid);
   }, [pathname, defaultRole]);
 
   const loadCompanyWorkbook = async (fileName: string, companyName?: string) => {
@@ -449,8 +452,26 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
   };
 
   useEffect(() => {
-    loadCompanyWorkbook(activeCompany.default_sample_file);
-  }, [activeCompany.tenant_id]);
+    let cancelled = false;
+    const fileName = activeCompany.default_sample_file;
+    fetch(`/samples/${fileName}`)
+      .then((resp) => (resp.ok ? resp.arrayBuffer() : null))
+      .then((buf) => (buf ? parseXlsxToRows(buf) : null))
+      .then((rows) => {
+        if (cancelled || !rows) return;
+        if (rows.length > 0) {
+          setColumnInspection(inspectExcelHeaderMapping(rows[0]));
+        }
+        const bench = runEphemeralBenchmarkFromRows(rows, fileName);
+        setResult(bench);
+        setSelectedRouteId('ALL');
+        setStopStatusOverrides({});
+      })
+      .catch((e) => console.error(e));
+    return () => {
+      cancelled = true;
+    };
+  }, [activeCompany.tenant_id, activeCompany.default_sample_file]);
 
   const handleUploadCustomFile = async (file: File) => {
     try {

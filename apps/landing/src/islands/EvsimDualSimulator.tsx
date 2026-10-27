@@ -373,10 +373,25 @@ export function EvsimDualSimulator({
   };
 
   useEffect(() => {
-    if (!result) {
-      loadScenarioFile('EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx');
-    }
-  }, []);
+    let cancelled = false;
+    fetch('/samples/EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx')
+      .then((resp) => (resp.ok ? resp.arrayBuffer() : null))
+      .then((buf) => (buf ? parseXlsxToRows(buf) : null))
+      .then((rows) => {
+        if (cancelled || !rows) return;
+        if (rows.length > 0) {
+          setColumnInspection(inspectExcelHeaderMapping(rows[0]));
+        }
+        const bench = runEphemeralBenchmarkFromRows(rows, 'EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx');
+        setResult(bench);
+        onResultChange?.(bench);
+        setTimeSec(9.25 * 3600);
+      })
+      .catch((e) => console.error(e));
+    return () => {
+      cancelled = true;
+    };
+  }, [onResultChange]);
 
   const handleUploadFile = async (file: File) => {
     try {
@@ -478,12 +493,10 @@ export function EvsimDualSimulator({
     const centerLng = (bounds.minLng + bounds.maxLng) / 2;
     const baseZoom = 12.6 + Math.log2(Math.max(0.5, viewTransform.zoom));
 
-    const drawMapCanvas = (
-      canvas: HTMLCanvasElement | null,
-      side: SimulatedTimelineSide,
-      isRightEcoSide: boolean
-    ) => {
-      if (!canvas) return;
+    const drawMapCanvas = (isRightEcoSide: boolean) => {
+      const canvas = isRightEcoSide ? rightMapCanvasRef.current : leftMapCanvasRef.current;
+      const side = isRightEcoSide ? rightSide : leftSide;
+      if (!canvas || !side) return;
       const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
       const cw = canvas.clientWidth || 520;
       const ch = canvas.clientHeight || 320;
@@ -766,8 +779,8 @@ export function EvsimDualSimulator({
     const maxKm = Math.max(leftSide.strategy.km_total, rightSide.strategy.km_total, 10) * 1.05;
     const maxCo2 = Math.max(leftSide.strategy.kg_co2_ttw, rightSide.strategy.kg_co2_ttw, 5) * 1.05;
 
-    drawMapCanvas(leftMapCanvasRef.current, leftSide, false);
-    drawMapCanvas(rightMapCanvasRef.current, rightSide, true);
+    drawMapCanvas(false);
+    drawMapCanvas(true);
     drawSparkline(leftSparkCanvasRef.current, leftSide, maxKm, maxCo2);
     drawSparkline(rightSparkCanvasRef.current, rightSide, maxKm, maxCo2);
   }, [leftSide, rightSide, result, bounds, timeSec, viewTransform, tileTick]);

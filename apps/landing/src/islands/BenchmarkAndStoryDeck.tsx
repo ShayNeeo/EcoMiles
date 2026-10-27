@@ -158,7 +158,23 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
   };
 
   useEffect(() => {
-    loadSampleWorkbook('EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx');
+    let cancelled = false;
+    const fileName = 'EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx';
+    fetch(`/samples/${fileName}`)
+      .then((resp) => (resp.ok ? resp.arrayBuffer() : null))
+      .then((buf) => (buf ? parseXlsxToRows(buf) : null))
+      .then((rows) => {
+        if (cancelled || !rows) return;
+        const bench = runEphemeralBenchmarkFromRows(rows, fileName);
+        setResult(bench);
+        setFocusedDistrict('ALL');
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) setUploadError(err instanceof Error ? err.message : String(err));
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleFileUpload = async (file: File) => {

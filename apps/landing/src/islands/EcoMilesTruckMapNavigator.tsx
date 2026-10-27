@@ -360,8 +360,22 @@ export function EcoMilesTruckMapNavigator({
   onBackToDriver?: () => void;
 }) {
   const [result, setResult] = useState<EphemeralBenchmarkResult | null>(null);
-  const [vehicleIdx, setVehicleIdx] = useState<number>(initialVehicleIdx);
-  const [navMode, setNavMode] = useState<'overview' | 'navigate'>(initialMode);
+  const [vehicleIdx, setVehicleIdx] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const vParam = new URLSearchParams(window.location.search).get('vehicle');
+      if (vParam !== null && Number.isFinite(Number(vParam))) {
+        return Math.max(0, Number(vParam));
+      }
+    }
+    return initialVehicleIdx;
+  });
+  const [navMode, setNavMode] = useState<'overview' | 'navigate'>(() => {
+    if (typeof window !== 'undefined') {
+      const mParam = new URLSearchParams(window.location.search).get('mode');
+      if (mParam === 'navigate' || mParam === 'overview') return mParam;
+    }
+    return initialMode;
+  });
   const [playing, setPlaying] = useState<boolean>(true);
   const [simSpeed, setSimSpeed] = useState<number>(1.0);
   const [progressFrac, setProgressFrac] = useState<number>(0.12);
@@ -380,19 +394,6 @@ export function EcoMilesTruckMapNavigator({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const vParam = params.get('vehicle');
-      const mParam = params.get('mode');
-      if (vParam !== null && Number.isFinite(Number(vParam))) {
-        setVehicleIdx(Math.max(0, Number(vParam)));
-      }
-      if (mParam === 'navigate' || mParam === 'overview') {
-        setNavMode(mParam);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     fetch('/samples/EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx')

@@ -87,10 +87,10 @@ const HERO_DEVICES: HeroDeviceSpec[] = [
 ];
 
 export const HeroMultiDeviceStage: React.FC = () => {
-  const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]); // Default highlight: iPhone Duo
+  const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]);
   const [inspectedDevice, setInspectedDevice] = useState<HeroDeviceSpec | null>(null);
 
-  // 3-Plane Differential Parallax (scroll-craft standing hero requirement)
+  // 3-Plane Differential Parallax + Overlapping Occlusion (scroll-craft standing hero requirement)
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
   const smoothX = useSpring(pointerX, { stiffness: 200, damping: 24 });
@@ -100,12 +100,12 @@ export const HeroMultiDeviceStage: React.FC = () => {
   const rearX = useTransform(smoothX, [-0.5, 0.5], [-6, 6]);
   const rearY = useTransform(smoothY, [-0.5, 0.5], [-4, 4]);
 
-  // Plane 2 (Mid Foldable/Tablet Wings): medium ±13px movement
-  const midX = useTransform(smoothX, [-0.5, 0.5], [-13, 13]);
+  // Plane 2 (Mid Foldable/Tablet Wings): medium ±14px movement
+  const midX = useTransform(smoothX, [-0.5, 0.5], [-14, 14]);
   const midY = useTransform(smoothY, [-0.5, 0.5], [-8, 8]);
 
-  // Plane 3 (Foreground Field Phones): strong ±20px movement
-  const frontX = useTransform(smoothX, [-0.5, 0.5], [-20, 20]);
+  // Plane 3 (Foreground Field Phones): strong ±22px movement
+  const frontX = useTransform(smoothX, [-0.5, 0.5], [-22, 22]);
   const frontY = useTransform(smoothY, [-0.5, 0.5], [-12, 12]);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -141,44 +141,47 @@ export const HeroMultiDeviceStage: React.FC = () => {
     <div
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className="relative rounded-3xl border border-ecomiles-lime/35 bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.42)_0%,rgba(4,9,18,0.96)_78%)] p-3 sm:p-4 shadow-[0_24px_64px_rgba(0,0,0,0.8)] overflow-hidden"
+      className="relative rounded-3xl border border-ecomiles-lime/35 bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.46)_0%,rgba(4,9,18,0.97)_78%)] p-3 sm:p-4 shadow-[0_24px_64px_rgba(0,0,0,0.85)] overflow-hidden"
     >
       {/* Perspective Studio Grid Horizon */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent_0%,rgba(214,246,90,0.08)_100%)] border-t border-ecomiles-lime/20"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(180deg,transparent_0%,rgba(214,246,90,0.09)_100%)] border-t border-ecomiles-lime/20"
       />
 
-      {/* 3-Plane Layered Hardware Formation */}
-      <div className="relative z-10 space-y-2.5">
-        {/* Plane 1 (Rear Office Plane): MacBook Pro 16" + Windows 11 XPS 16 */}
-        <motion.div style={{ x: rearX, y: rearY }} className="grid grid-cols-2 gap-2.5 sm:gap-3 items-end px-2">
+      {/* 3-Plane Layered Hardware V-Formation with True Depth Occlusion (-mt-8 sm:-mt-11) */}
+      <div className="relative z-10">
+        {/* Plane 1 (Rear Office Plane, z-10): MacBook Pro 16" + Windows 11 XPS 16 */}
+        <motion.div
+          style={{ x: rearX, y: rearY }}
+          className="relative z-10 grid grid-cols-2 gap-2 sm:gap-3 items-end px-3 sm:px-5"
+        >
           {rearDevices.map((dev) => (
             <motion.button
               key={dev.id}
               type="button"
               onMouseEnter={() => setHoveredDevice(dev)}
               onClick={() => setInspectedDevice(dev)}
-              whileHover={{ y: -6, scale: 1.03 }}
+              whileHover={{ y: -8, scale: 1.03, zIndex: 35 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-              className="group text-center cursor-pointer focus:outline-none"
+              className="group relative text-center cursor-pointer focus:outline-none"
             >
-              <div className="mb-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-950/90 border border-white/15 group-hover:border-ecomiles-lime text-[9.5px] font-bold text-slate-200 group-hover:text-ecomiles-lime transition-colors">
+              <div className="mb-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-950/90 border border-white/15 group-hover:border-ecomiles-lime text-[9.5px] font-bold text-slate-200 group-hover:text-ecomiles-lime transition-colors shadow-md">
                 {renderDeviceIcon(dev.id)}
                 <span>{dev.shortTag}</span>
               </div>
               <img
                 src={dev.imgSrc}
                 alt={dev.name}
-                className="w-full h-auto max-h-[145px] sm:max-h-[160px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
+                className="w-full h-auto max-h-[168px] sm:max-h-[188px] object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
               />
             </motion.button>
           ))}
         </motion.div>
 
-        {/* Plane 2 (Mid Wings) & Plane 3 (Foreground Trio): Z Fold · 18 Pro Max · iPhone Duo · S26 Ultra · iPad Pro */}
-        <div className="grid grid-cols-5 gap-1.5 sm:gap-2 items-end pt-1">
+        {/* Plane 2 (Mid Wings, z-20) & Plane 3 (Foreground Trio, z-30) Occluding Lower 22% of Laptops */}
+        <div className="relative z-20 -mt-8 sm:-mt-11 grid grid-cols-5 gap-1.5 sm:gap-2 items-end">
           {bottomRowDevices.map((dev) => {
             const isFront = dev.plane === 'front';
             const isDuo = dev.id === 'iphone_duo';
@@ -189,13 +192,13 @@ export const HeroMultiDeviceStage: React.FC = () => {
                   x: isFront ? frontX : midX,
                   y: isFront ? frontY : midY,
                 }}
-                className={isDuo ? 'col-span-1 z-20' : 'col-span-1 z-10'}
+                className={isDuo ? 'col-span-1 relative z-30' : isFront ? 'col-span-1 relative z-25' : 'col-span-1 relative z-20'}
               >
                 <motion.button
                   type="button"
                   onMouseEnter={() => setHoveredDevice(dev)}
                   onClick={() => setInspectedDevice(dev)}
-                  whileHover={{ y: -8, scale: 1.07 }}
+                  whileHover={{ y: -10, scale: 1.08, zIndex: 40 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 24 }}
                   className="group w-full text-center cursor-pointer focus:outline-none"
@@ -204,11 +207,11 @@ export const HeroMultiDeviceStage: React.FC = () => {
                     src={dev.imgSrc}
                     alt={dev.name}
                     className={`w-full h-auto ${
-                      isDuo ? 'max-h-[148px] sm:max-h-[165px]' : 'max-h-[138px] sm:max-h-[155px]'
-                    } object-contain mx-auto drop-shadow-[0_16px_28px_rgba(0,0,0,0.9)]`}
+                      isDuo ? 'max-h-[155px] sm:max-h-[175px]' : 'max-h-[145px] sm:max-h-[164px]'
+                    } object-contain mx-auto drop-shadow-[0_20px_34px_rgba(0,0,0,0.95)]`}
                   />
                   <span
-                    className={`mt-1 inline-block px-1.5 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-bold truncate max-w-full transition-colors ${
+                    className={`mt-1 inline-block px-1.5 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-bold truncate max-w-full transition-colors shadow-sm ${
                       hoveredDevice.id === dev.id
                         ? 'bg-ecomiles-lime text-slate-950'
                         : 'bg-slate-950/90 text-slate-300 border border-white/10 group-hover:text-ecomiles-lime'
@@ -224,7 +227,7 @@ export const HeroMultiDeviceStage: React.FC = () => {
       </div>
 
       {/* Live Hovered Device Telemetry Bar */}
-      <div className="relative z-20 mt-3 pt-2.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+      <div className="relative z-30 mt-2.5 pt-2.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px]">
         <div className="flex items-center gap-2 min-w-0">
           <span className="px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 font-extrabold shrink-0">
             {hoveredDevice.shortTag}

@@ -175,6 +175,21 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
 
   const slideRefs = useRef<(HTMLElement | null)[]>([]);
 
+  const scrollToSlide = (slideId: number) => {
+    const targetElement = slideRefs.current[slideId - 1];
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+    }
+  };
+
   // Intersection observer to track active slide during scroll
   useEffect(() => {
     if (window.location.hash) {
@@ -208,8 +223,10 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      setIsPlayingAudio(false);
+      const tid = window.setTimeout(() => setIsPlayingAudio(false), 0);
+      return () => window.clearTimeout(tid);
     }
+    return undefined;
   }, [activeSlide]);
 
   // Keyboard navigation for presentation
@@ -235,23 +252,6 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeSlide]);
-
-  const scrollToSlide = (slideId: number) => {
-    const targetElement = slideRefs.current[slideId - 1];
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
-      }
-    }
-  };
 
   // Web Speech API Voice-over playback for judges
   const toggleVoiceoverSpeech = (slideId: number) => {
