@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import gsap from 'gsap';
 
@@ -177,6 +178,54 @@ const DEVICE_LIVE_ROUTES: Record<
   galaxy_s26_ultra: { href: '/maps/?vehicle=1&mode=navigate', label: 'Mở Dẫn Đường Trực Tiếp (/maps) ↗' },
 };
 
+const DEVICE_2D_MOCKUPS: Record<
+  Exclude<DeviceBannerFocusId, 'all_banner'>,
+  { src: string; title: string; subtitle: string; resolution: string }
+> = {
+  macbook_pro: {
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    title: 'MacBook Pro 16" · M3 Max',
+    subtitle: 'Trung Tâm Điều Phối B2B Fleet TMS',
+    resolution: '3456 × 2234 (Liquid Retina XDR)',
+  },
+  windows_xps: {
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    title: 'Dell Windows 11 XPS 16',
+    subtitle: 'Đối Chứng EVSIM & Mô Phỏng 2 Bên',
+    resolution: '3840 × 2400 (4K+ OLED InfinityEdge)',
+  },
+  galaxy_zfold: {
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    title: 'Samsung Galaxy Z Fold',
+    subtitle: 'Buồng Lái Xe Tải & Bản Đồ Mở (/maps)',
+    resolution: '2160 × 1856 (Dynamic AMOLED 2X)',
+  },
+  ipad_pro: {
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    title: 'iPad Pro M4 13"',
+    subtitle: 'Bảng Điều Khiển Kho Vận & Phân Bổ Kiện Hàng',
+    resolution: '2752 × 2064 (Ultra Retina XDR)',
+  },
+  iphone_duo: {
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    title: 'iPhone Duo Gập Đôi',
+    subtitle: 'Đa Nhiệm 2 Màn Hình: Đơn Hàng + Lộ Trình',
+    resolution: '2420 × 1080 (Dual Dynamic OLED)',
+  },
+  iphone_18_pro_max: {
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    title: 'iPhone 18 Pro Max',
+    subtitle: 'Ứng Dụng Tài Xế Chặng Giữa (>500kg)',
+    resolution: '2868 × 1320 (Super Retina XDR 120Hz)',
+  },
+  galaxy_s26_ultra: {
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    title: 'Samsung Galaxy S26 Ultra',
+    subtitle: 'Dẫn Đường Trực Tiếp Thời Gian Thực (/maps)',
+    resolution: '3120 × 1440 (Dynamic AMOLED 2X 120Hz)',
+  },
+};
+
 export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProps> = ({
   selectedDeviceId,
   onSelectDevice,
@@ -200,6 +249,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     forDeviceId: DeviceBannerFocusId;
   } | null>(null);
   const [isAutoTour, setIsAutoTour] = useState<boolean>(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
   const clusterPreset: ClusterPresetId =
     clusterOverride && clusterOverride.forDeviceId === selectedDeviceId
       ? clusterOverride.preset
@@ -955,17 +1005,27 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
                       : '3 Điện Thoại Tài Xế'
                 }`
               : selectedDeviceId !== 'all_banner'
-                ? `Camera 3D: ${DEVICE_LABELS[selectedDeviceId]}`
+                ? `3D: ${DEVICE_2D_MOCKUPS[selectedDeviceId].title}`
                 : null}
         </div>
       )}
       {selectedDeviceId !== 'all_banner' && (
-        <a
-          href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
-          className="absolute top-2 right-2.5 z-20 px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-[10.5px] font-extrabold shadow-lg transition-colors"
-        >
-          {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
-        </a>
+        <div className="absolute top-2 right-2.5 z-20 flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setIsLightboxOpen(true)}
+            className="px-2.5 py-1 rounded-lg bg-slate-900/95 hover:bg-slate-800 border border-ecomiles-lime/60 text-ecomiles-lime text-[10.5px] font-extrabold shadow-lg backdrop-blur-md transition-all cursor-pointer"
+            title="Phóng to màn hình thiết bị độ phân giải 2.4K"
+          >
+            🔍 Phóng To 2.4K
+          </button>
+          <a
+            href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
+            className="px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-[10.5px] font-extrabold shadow-lg transition-colors"
+          >
+            {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
+          </a>
+        </div>
       )}
       <div
         ref={mountRef}
@@ -1054,6 +1114,63 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           </button>
         </div>
       </div>
+      {isLightboxOpen &&
+        selectedDeviceId !== 'all_banner' &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="High-DPI Hardware Mockup Lightbox"
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 sm:p-6"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/40 bg-slate-900/95 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/80">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="w-2.5 h-2.5 rounded-full bg-ecomiles-lime animate-pulse shrink-0" />
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-bold text-white truncate">
+                      {DEVICE_2D_MOCKUPS[selectedDeviceId].title}
+                    </h3>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {DEVICE_2D_MOCKUPS[selectedDeviceId].subtitle} ·{' '}
+                      <span className="text-ecomiles-lime font-mono">
+                        {DEVICE_2D_MOCKUPS[selectedDeviceId].resolution}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-xs font-bold transition-colors"
+                  >
+                    {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setIsLightboxOpen(false)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 transition-colors cursor-pointer"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={DEVICE_2D_MOCKUPS[selectedDeviceId].src}
+                  alt={DEVICE_2D_MOCKUPS[selectedDeviceId].title}
+                  className="max-h-[74vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

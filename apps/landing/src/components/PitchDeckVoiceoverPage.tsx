@@ -190,6 +190,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
   // Interactive state for Slide 6 (Live Console tabs)
   const [activeConsoleTab, setActiveConsoleTab] = useState<'both' | 'dispatcher' | 'driver' | 'devices_7'>('both');
 
+  const [activeFieldDeviceIdx, setActiveFieldDeviceIdx] = useState<number>(0);
   const [galleryStageMode, setGalleryStageMode] = useState<'studio_24k' | 'webgl_3d'>('studio_24k');
   const [deckWebglFocusId, setDeckWebglFocusId] = useState<DeviceBannerFocusId>('all_banner');
   const [lightboxAsset, setLightboxAsset] = useState<string | null>(null);
@@ -1709,6 +1710,109 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             </tbody>
                           </table>
                         </div>
+
+                        {/* Interactive 4-Device Field Hardware Switcher */}
+                        {(() => {
+                          const FIELD_DEVICES = [
+                            {
+                              label: '1. iPhone Duo · Gập Đôi 2 Màn Hình',
+                              file: '23_mockup_iphone_duo_dual_screen.png',
+                              role: 'Dual-Screen Manifest + Waypoints',
+                              desc: 'Màn trái hiển thị bảng kê Middle-Mile (Xe tải >2.5T), màn phải chạy điều hướng Last-Mile (<=500kg) khóa điểm dừng Google Maps ($0 API).',
+                              primaryHref: '/driver/',
+                              primaryText: 'Mở App Tài Xế (/driver)',
+                            },
+                            {
+                              label: '2. iPhone 18 Pro Max · Chế Độ Nắng Gắt',
+                              file: '21_mockup_iphone_18_pro_max_driver.png',
+                              role: 'High-Contrast Outdoor HUD',
+                              desc: 'Giao diện PWA tương phản cao ngoài trời nắng gắt TP.HCM, cảnh báo khung giờ cấm tải QĐ 23/2018 (06h-09h & 16h-20h) và ký nhận giao hàng 1-chạm.',
+                              primaryHref: '/driver/',
+                              primaryText: 'Mở App Tài Xế (/driver)',
+                            },
+                            {
+                              label: '3. Galaxy S26 Ultra · Hẻm Nhỏ Waypoints',
+                              file: '22_mockup_samsung_s26_ultra_maps_live.png',
+                              role: 'Alley Waypoints & Live Truck Follow',
+                              desc: 'Tự động tách đơn hẻm nhỏ Quận 3 / Quận 10 sang xe van <=500kg và xuất URL Google Maps khóa cứng thứ tự Waypoints 1-2-3.',
+                              primaryHref: '/maps/?vehicle=0&mode=navigate',
+                              primaryText: 'Mở Bản Đồ (/maps Live)',
+                            },
+                            {
+                              label: '4. Galaxy Z Fold · Buồng Lái /maps',
+                              file: '24_mockup_samsung_zfold_tablet_cockpit.png',
+                              role: 'In-Cab Tablet Cockpit (/maps)',
+                              desc: 'Màn hình gập 7.6" gắn taplo xe tải hiển thị đồng thời lộ trình OSRM thực tế, vùng đỏ cấm tải QĐ 23 và telemetry nhiên liệu / CO₂ thời gian thực.',
+                              primaryHref: '/maps/?vehicle=0&mode=navigate',
+                              primaryText: 'Mở Buồng Lái (/maps)',
+                            },
+                          ];
+                          const currentDevice = FIELD_DEVICES[activeFieldDeviceIdx] ?? FIELD_DEVICES[0];
+                          return (
+                            <div className="rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-5 space-y-4">
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+                                  4 Thiết Bị Thực Địa &amp; Buồng Lái Tạo Nên Lợi Thế $0 Map API
+                                </span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {FIELD_DEVICES.map((dev, idx) => (
+                                    <button
+                                      key={dev.label}
+                                      type="button"
+                                      onClick={() => setActiveFieldDeviceIdx(idx)}
+                                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                                        activeFieldDeviceIdx === idx
+                                          ? 'bg-emerald-400 text-slate-950 border-emerald-300'
+                                          : 'bg-slate-900 text-slate-300 border-white/10 hover:text-white'
+                                      }`}
+                                    >
+                                      {dev.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+                                <div className="lg:col-span-6 flex flex-col items-center justify-center rounded-xl border border-white/10 bg-slate-900/70 p-3">
+                                  <button
+                                    type="button"
+                                    onClick={() => setLightboxAsset(currentDevice.file)}
+                                    className="group cursor-zoom-in"
+                                  >
+                                    <img
+                                      src={`/pitch-deck-screenshots/${currentDevice.file}`}
+                                      alt={currentDevice.label}
+                                      className="max-h-[240px] w-auto object-contain mx-auto rounded-lg drop-shadow-2xl"
+                                    />
+                                    <span className="mt-1.5 block text-[10px] font-mono text-slate-400 group-hover:text-emerald-300">
+                                      🔍 Bấm để phóng to 2.4K ({currentDevice.file})
+                                    </span>
+                                  </button>
+                                </div>
+                                <div className="lg:col-span-6 space-y-3">
+                                  <span className="inline-block rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[10.5px] font-mono font-bold text-emerald-300">
+                                    {currentDevice.role}
+                                  </span>
+                                  <h4 className="text-base font-black text-white">{currentDevice.label}</h4>
+                                  <p className="text-xs text-slate-300 leading-relaxed">{currentDevice.desc}</p>
+                                  <div className="flex flex-wrap gap-2 pt-1">
+                                    <a
+                                      href={currentDevice.primaryHref}
+                                      className="px-3.5 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs font-extrabold transition"
+                                    >
+                                      {currentDevice.primaryText} ↗
+                                    </a>
+                                    <a
+                                      href="/maps/?vehicle=0&mode=navigate"
+                                      className="px-3.5 py-1.5 rounded-xl border border-white/15 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold transition"
+                                    >
+                                      Bản Đồ Xe Tải (/maps) ↗
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
                       </div>
                     )}
 
@@ -1783,6 +1887,56 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             <p className="text-xs text-slate-300 mt-3 leading-relaxed">
                               Thu phí khi kết nối thành công chuyến hàng chiều về giữa các chủ hàng và đội xe rỗng, tạo thêm nguồn doanh thu tuần hoàn.
                             </p>
+                          </div>
+                        </div>
+
+                        {/* 7-Device Zero-Knowledge Endpoint Matrix */}
+                        <div className="rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-5 space-y-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                            <div>
+                              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 block">
+                                Ma Trận 7 Thiết Bị Đầu Cuối &amp; Kiểm Toán Zero-Knowledge (AES-256-GCM)
+                              </span>
+                              <span className="text-xs text-slate-300">
+                                Toàn bộ 7 thiết bị phần cứng chỉ tốn 0đ phí bản đồ API và được cách ly khóa KMS theo từng doanh nghiệp
+                              </span>
+                            </div>
+                            <a
+                              href="/portal/audit/"
+                              className="px-3.5 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs font-extrabold transition shrink-0"
+                            >
+                              Mở Cổng Kiểm Toán (/portal/audit) ↗
+                            </a>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+                            {[
+                              { name: 'MacBook Pro 16"', file: '26_mockup_macbook_pro_16_b2b_tms.png', role: 'B2B TMS', zk: 'RBAC · TLS 1.3' },
+                              { name: 'Windows 11 XPS 16', file: '27_mockup_windows_xps_16_evsim_dual.png', role: 'EVSIM Lab', zk: 'GLEC Hash' },
+                              { name: 'Galaxy Z Fold', file: '24_mockup_samsung_zfold_tablet_cockpit.png', role: 'Cockpit /maps', zk: 'Zero-PII' },
+                              { name: 'iPad Pro M4', file: '25_mockup_ipad_pro_tablet_tms.png', role: 'Depot Hub', zk: 'Signed QR' },
+                              { name: 'iPhone Duo', file: '23_mockup_iphone_duo_dual_screen.png', role: '2-Tier App', zk: 'PIN 0000' },
+                              { name: 'iPhone 18 Pro Max', file: '21_mockup_iphone_18_pro_max_driver.png', role: 'Middle-Mile', zk: 'PoD Stamp' },
+                              { name: 'Galaxy S26 Ultra', file: '22_mockup_samsung_s26_ultra_maps_live.png', role: 'Waypoints', zk: '$0 Map API' },
+                            ].map((ep) => (
+                              <button
+                                key={ep.name}
+                                type="button"
+                                onClick={() => setLightboxAsset(ep.file)}
+                                className="group rounded-xl border border-white/10 bg-slate-900/90 p-2 text-left hover:border-emerald-400/50 transition-all cursor-zoom-in flex flex-col justify-between"
+                              >
+                                <img
+                                  src={`/pitch-deck-screenshots/${ep.file}`}
+                                  alt={ep.name}
+                                  className="w-full h-20 object-contain rounded-lg bg-slate-950/80 p-1"
+                                  loading="lazy"
+                                />
+                                <div className="mt-1.5 min-w-0">
+                                  <div className="text-[10.5px] font-bold text-white truncate">{ep.name}</div>
+                                  <div className="text-[9.5px] text-emerald-400 font-semibold truncate">{ep.role}</div>
+                                  <div className="text-[9px] font-mono text-slate-400 truncate">{ep.zk}</div>
+                                </div>
+                              </button>
+                            ))}
                           </div>
                         </div>
                       </div>
