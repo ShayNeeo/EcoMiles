@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -19,21 +20,88 @@ const NAV_LINKS = [
   { name: 'Dùng thử', href: '#pricing', id: 'pricing' },
 ];
 
-const NAVBAR_ECOSYSTEM_DEVICES = [
-  { id: 'macbook_pro', name: 'MacBook Pro 16"', role: 'B2B TMS' },
-  { id: 'windows_xps', name: 'Windows 11 XPS 16', role: 'EVSIM' },
-  { id: 'galaxy_zfold', name: 'Galaxy Z Fold', role: 'Cockpit' },
-  { id: 'ipad_pro', name: 'iPad Pro M4', role: 'Kho Vận' },
-  { id: 'iphone_duo', name: 'iPhone Duo', role: 'Gập Đôi' },
-  { id: 'iphone_18_pro_max', name: 'iPhone 18 Pro Max', role: 'Chặng Giữa' },
-  { id: 'galaxy_s26_ultra', name: 'Galaxy S26 Ultra', role: 'Live /maps' },
+const NAVBAR_LIGHTBOX_ASSETS = [
+  {
+    id: 'all_banner',
+    name: 'Studio 7 Thiết Bị',
+    role: '2400×1120',
+    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
+    spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    liveHref: '/dashboard/',
+  },
+  {
+    id: 'macbook_pro',
+    name: 'MacBook Pro 16"',
+    role: 'B2B TMS',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+    spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    liveHref: '/dashboard/',
+  },
+  {
+    id: 'windows_xps',
+    name: 'Windows 11 XPS 16',
+    role: 'EVSIM',
+    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+    spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    liveHref: '/benchmark/',
+  },
+  {
+    id: 'galaxy_zfold',
+    name: 'Galaxy Z Fold',
+    role: 'Cockpit',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+    spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
+  },
+  {
+    id: 'ipad_pro',
+    name: 'iPad Pro M4',
+    role: 'Kho Vận',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    liveHref: '/dashboard/',
+  },
+  {
+    id: 'iphone_duo',
+    name: 'iPhone Duo',
+    role: 'Gập Đôi',
+    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+    spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    liveHref: '/driver/',
+  },
+  {
+    id: 'iphone_18_pro_max',
+    name: 'iPhone 18 Pro Max',
+    role: 'Chặng Giữa',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    liveHref: '/driver/',
+  },
+  {
+    id: 'galaxy_s26_ultra',
+    name: 'Galaxy S26 Ultra',
+    role: 'Live /maps',
+    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+    spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    liveHref: '/driver/',
+  },
 ] as const;
+const NAVBAR_ECOSYSTEM_DEVICES = NAVBAR_LIGHTBOX_ASSETS.slice(1);
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalModal }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [devicesPopoverOpen, setDevicesPopoverOpen] = useState(false);
+  const [navbarLightboxIdx, setNavbarLightboxIdx] = useState<number | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
 
   const handleSelectNavbarDevice = (deviceId: string) => {
@@ -216,26 +284,51 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                         className="w-full h-24 object-contain bg-black/50 p-1 group-hover:scale-105 transition-transform duration-300"
                         loading="eager"
                       />
-                      <div className="px-2.5 py-1.5 bg-slate-950/90 border-t border-white/10 flex items-center justify-between">
+                      <div className="px-2.5 py-1.5 bg-slate-950/90 border-t border-white/10 flex items-center justify-between gap-2">
                         <span className="text-[10px] font-extrabold text-ecomiles-lime uppercase">
                           Sân Khấu 7 Thiết Bị 2.4K
                         </span>
-                        <span className="text-[9.5px] font-mono text-slate-300">Mở #showcase →</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDevicesPopoverOpen(false);
+                              setNavbarLightboxIdx(0);
+                            }}
+                            className="px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 font-extrabold text-[9.5px] hover:bg-yellow-300 cursor-pointer"
+                          >
+                            🔍 Phóng To 2.4K
+                          </button>
+                          <span className="text-[9.5px] font-mono text-slate-300">#showcase →</span>
+                        </div>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-1.5">
-                      {NAVBAR_ECOSYSTEM_DEVICES.map((device) => (
-                        <button
+                      {NAVBAR_ECOSYSTEM_DEVICES.map((device, idx) => (
+                        <div
                           key={device.id}
-                          type="button"
-                          onClick={() => handleSelectNavbarDevice(device.id)}
-                          className="text-left px-2 py-1.5 rounded-lg bg-white/5 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[10.5px] font-semibold transition-all flex items-center justify-between group cursor-pointer"
+                          className="rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10.5px] font-semibold transition-all flex items-center justify-between"
                         >
-                          <span className="truncate">{device.name}</span>
-                          <span className="text-[9px] font-mono text-ecomiles-lime group-hover:text-slate-900 ml-1 shrink-0">
-                            {device.role}
-                          </span>
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSelectNavbarDevice(device.id)}
+                            className="flex-1 text-left px-2 py-1.5 text-slate-200 hover:text-ecomiles-lime truncate cursor-pointer"
+                          >
+                            {device.name}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDevicesPopoverOpen(false);
+                              setNavbarLightboxIdx(idx + 1);
+                            }}
+                            title={`Phóng to 2.4K: ${device.name}`}
+                            className="px-1.5 py-1 text-[9px] font-mono font-bold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 rounded-r-lg transition-colors shrink-0 cursor-pointer"
+                          >
+                            {device.role} 🔍
+                          </button>
+                        </div>
                       ))}
                     </div>
                   </motion.div>
@@ -323,6 +416,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                 );
               })}
               <div className="pt-3 mt-1 border-t border-slate-800 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setNavbarLightboxIdx(0);
+                  }}
+                  className="w-full py-2.5 px-3 rounded-xl bg-slate-900 border border-ecomiles-lime/40 text-ecomiles-lime font-extrabold text-xs flex items-center justify-between cursor-pointer"
+                >
+                  <span>🔍 Sân Khấu 7 Thiết Bị 2.4K (Full Lightbox)</span>
+                  <span className="text-[10px] font-mono text-slate-300">8 Ảnh →</span>
+                </button>
                 <a
                   href="#calculator"
                   onClick={(e) => handleSmoothNavClick(e, '#calculator', 'calculator')}
@@ -386,6 +490,89 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
           </div>
         )}
       </div>
+      {navbarLightboxIdx !== null &&
+        typeof document !== 'undefined' &&
+        (() => {
+          const total = NAVBAR_LIGHTBOX_ASSETS.length;
+          const safeIdx = ((navbarLightboxIdx % total) + total) % total;
+          const activeAsset = NAVBAR_LIGHTBOX_ASSETS[safeIdx];
+          return createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={activeAsset.title}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6 pointer-events-auto"
+              onClick={() => setNavbarLightboxIdx(null)}
+            >
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{safeIdx + 1}/{total}] {activeAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setNavbarLightboxIdx((safeIdx - 1 + total) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNavbarLightboxIdx((safeIdx + 1) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={activeAsset.liveHref}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                    >
+                      Mở App Live ↗
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setNavbarLightboxIdx(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeAsset.src}
+                    alt={activeAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {NAVBAR_LIGHTBOX_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setNavbarLightboxIdx(idx)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>,
+            document.body
+          );
+        })()}
     </header>
   );
 };

@@ -86,6 +86,17 @@ const HERO_DEVICES: HeroDeviceSpec[] = [
     plane: 'mid',
   },
 ];
+const STUDIO_STAGE_SPEC: HeroDeviceSpec = {
+  id: 'studio_stage',
+  name: 'Sân Khấu 7 Thiết Bị Đồng Bộ (Studio 2.4K · 2400×1120)',
+  shortTag: '0. Studio 2.4K',
+  roleLabel: 'Toàn Cảnh 7 Thiết Bị Đồng Bộ Thời Gian Thực (<50ms) · $0 Map API',
+  imgSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+  liveHref: '/dashboard/',
+  liveText: 'Mở Trung Tâm B2B (/dashboard)',
+  plane: 'front',
+};
+const HERO_LIGHTBOX_ASSETS: HeroDeviceSpec[] = [STUDIO_STAGE_SPEC, ...HERO_DEVICES];
 
 export const HeroMultiDeviceStage: React.FC = () => {
   const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]);
@@ -375,6 +386,14 @@ export const HeroMultiDeviceStage: React.FC = () => {
           </button>
           <button
             type="button"
+            onClick={() => setFullscreenDevice(STUDIO_STAGE_SPEC)}
+            className="px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 font-extrabold text-[10px] cursor-pointer transition-colors"
+            title="Phóng to Sân Khấu 7 Thiết Bị 2.4K (2400×1120)"
+          >
+            🔍 Sân Khấu 2.4K
+          </button>
+          <button
+            type="button"
             onClick={() => setFullscreenDevice(hoveredDevice)}
             className="px-2 py-0.5 rounded bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold text-[10px] cursor-pointer transition-colors"
             title="Phóng to toàn màn hình 2.4K"
@@ -509,74 +528,95 @@ export const HeroMultiDeviceStage: React.FC = () => {
 
       {fullscreenDevice &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Chi tiết Mockup 2.4K ${fullscreenDevice.name}`}
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-            onClick={() => setFullscreenDevice(null)}
-          >
+        (() => {
+          const total = HERO_LIGHTBOX_ASSETS.length;
+          const activeIdx = Math.max(
+            0,
+            HERO_LIGHTBOX_ASSETS.findIndex((d) => d.id === fullscreenDevice.id)
+          );
+          return createPortal(
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Chi tiết Mockup 2.4K ${fullscreenDevice.name}`}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setFullscreenDevice(null)}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                <div className="min-w-0">
-                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    {fullscreenDevice.name}
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{activeIdx + 1}/{total}] {fullscreenDevice.name}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{fullscreenDevice.roleLabel}</div>
                   </div>
-                  <div className="text-[11px] text-slate-300 truncate">{fullscreenDevice.roleLabel}</div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFullscreenDevice(HERO_LIGHTBOX_ASSETS[(activeIdx - 1 + total) % total])
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFullscreenDevice(HERO_LIGHTBOX_ASSETS[(activeIdx + 1) % total])
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={fullscreenDevice.liveHref}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
+                    >
+                      <span>{fullscreenDevice.liveText}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setFullscreenDevice(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      aria-label="Đóng toàn màn hình"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const idx = HERO_DEVICES.findIndex((d) => d.id === fullscreenDevice.id);
-                      setFullscreenDevice(HERO_DEVICES[(idx - 1 + HERO_DEVICES.length) % HERO_DEVICES.length]);
-                    }}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                  >
-                    ‹ Trước
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const idx = HERO_DEVICES.findIndex((d) => d.id === fullscreenDevice.id);
-                      setFullscreenDevice(HERO_DEVICES[(idx + 1) % HERO_DEVICES.length]);
-                    }}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                  >
-                    Tiếp ›
-                  </button>
-                  <a
-                    href={fullscreenDevice.liveHref}
-                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
-                  >
-                    <span>{fullscreenDevice.liveText}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setFullscreenDevice(null)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    aria-label="Đóng toàn màn hình"
-                  >
-                    ✕ Đóng
-                  </button>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={fullscreenDevice.imgSrc}
+                    alt={fullscreenDevice.name}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {HERO_LIGHTBOX_ASSETS.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setFullscreenDevice(item)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        item.id === fullscreenDevice.id
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortTag}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={fullscreenDevice.imgSrc}
-                  alt={fullscreenDevice.name}
-                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </div>
   );
 };
