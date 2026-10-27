@@ -1,10 +1,69 @@
 import React, { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Tag, Check, Sparkles, ArrowRight, FileText, RefreshCw, Calculator, Info, Plug } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP);
+const PRICING_LIGHTBOX_ASSETS = [
+  {
+    id: 'studio_stage',
+    shortLabel: 'Studio 7 Thiết Bị',
+    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
+    spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+  },
+  {
+    id: 'macbook_pro',
+    shortLabel: 'MacBook Pro 16"',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+    spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+  },
+  {
+    id: 'windows_xps',
+    shortLabel: 'Windows 11 XPS 16',
+    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+    spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+  },
+  {
+    id: 'galaxy_zfold',
+    shortLabel: 'Galaxy Z Fold',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+    spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+  },
+  {
+    id: 'ipad_pro',
+    shortLabel: 'iPad Pro M4',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+  },
+  {
+    id: 'iphone_duo',
+    shortLabel: 'iPhone Duo (Gập Đôi)',
+    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+    spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+  },
+  {
+    id: 'iphone_18_pro_max',
+    shortLabel: 'iPhone 18 Pro Max',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+  },
+  {
+    id: 'galaxy_s26_ultra',
+    shortLabel: 'Galaxy S26 Ultra',
+    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+    spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+  },
+] as const;
 
 interface PricingProps {
   onOpenPilotModal: (interest?: string) => void;
@@ -12,6 +71,11 @@ interface PricingProps {
 
 export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) => {
   const [activeDrivers, setActiveDrivers] = useState<number>(15);
+  const [pricingLightboxIdx, setPricingLightboxIdx] = useState<number | null>(null);
+  const openDeviceMockup = (deviceId: string) => {
+    const idx = PRICING_LIGHTBOX_ASSETS.findIndex((asset) => asset.id === deviceId);
+    setPricingLightboxIdx(idx >= 0 ? idx : 0);
+  };
   const [monthlyOrders, setMonthlyOrders] = useState<number>(100);
   const [averageWeight, setAverageWeight] = useState<number>(50);
   const [averageDistance, setAverageDistance] = useState<number>(20);
@@ -170,6 +234,37 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           </div>
         </div>
 
+        {/* Interactive 7-Device Provisioning Banner */}
+        <div className="mb-8 rounded-2xl border border-white/10 bg-slate-900/80 p-3 sm:p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <img
+              src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+              alt="EcoMiles 7-Device Provisioning Stage"
+              onClick={() => setPricingLightboxIdx(0)}
+              className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/50 p-0.5 shrink-0 cursor-zoom-in"
+            />
+            <div className="min-w-0">
+              <div className="text-[11px] font-extrabold text-ecomiles-lime uppercase tracking-wider">
+                Cấp Phát Tức Thì Trên Cả 7 Thiết Bị ($0 Phí Thiết Bị Chuyên Dụng)
+              </div>
+              <div className="text-xs text-slate-300 truncate">
+                Mọi gói thuê bao đều chạy trực tiếp trên thiết bị sẵn có của doanh nghiệp và tài xế — bấm để xem Mockup 2.4K.
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+            {PRICING_LIGHTBOX_ASSETS.map((asset, idx) => (
+              <button
+                key={asset.id}
+                type="button"
+                onClick={() => setPricingLightboxIdx(idx)}
+                className="px-2.5 py-1 rounded-lg bg-slate-950/90 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[10.5px] font-bold transition-colors cursor-zoom-in"
+              >
+                {asset.shortLabel} 🔍
+              </button>
+            ))}
+          </div>
+        </div>
         {/* Pricing Cards Grid */}
         <div className="mb-16 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 xl:grid-cols-4">
           {tiers.map((tier) => (
@@ -204,22 +299,16 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {tier.hardwareEndpoints.map((ep) => (
-                        <a
+                        <button
                           key={ep.label}
-                          href="#showcase"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.dispatchEvent(
-                              new CustomEvent('ecomiles:select-device', { detail: { deviceId: ep.deviceId } })
-                            );
-                            document.querySelector('#showcase')?.scrollIntoView({ behavior: 'smooth' });
-                          }}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/90 border border-white/10 hover:border-ecomiles-lime/40 text-[10px] font-bold text-slate-300 hover:text-ecomiles-lime transition-colors"
-                          title="Xem mô hình thiết bị trên Sân khấu 7 Thiết Bị (#showcase)"
+                          type="button"
+                          onClick={() => openDeviceMockup(ep.deviceId)}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/90 border border-white/10 hover:border-ecomiles-lime/40 text-[10px] font-bold text-slate-300 hover:text-ecomiles-lime transition-colors cursor-zoom-in"
+                          title={`Phóng to Mockup 2.4K của ${ep.label}`}
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-ecomiles-lime shrink-0" />
-                          <span>{ep.label}</span>
-                        </a>
+                          <span>{ep.label} 🔍</span>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -499,6 +588,83 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           </button>
         </div>
       </div>
+      {pricingLightboxIdx !== null &&
+        typeof document !== 'undefined' &&
+        (() => {
+          const total = PRICING_LIGHTBOX_ASSETS.length;
+          const safeIdx = ((pricingLightboxIdx % total) + total) % total;
+          const activeAsset = PRICING_LIGHTBOX_ASSETS[safeIdx];
+          return createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={activeAsset.title}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setPricingLightboxIdx(null)}
+            >
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{safeIdx + 1}/{total}] {activeAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setPricingLightboxIdx((safeIdx - 1 + total) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPricingLightboxIdx((safeIdx + 1) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPricingLightboxIdx(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeAsset.src}
+                    alt={activeAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {PRICING_LIGHTBOX_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setPricingLightboxIdx(idx)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>,
+            document.body
+          );
+        })()}
     </section>
   );
 };
