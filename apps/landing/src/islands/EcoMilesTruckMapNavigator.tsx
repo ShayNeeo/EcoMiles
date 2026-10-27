@@ -384,6 +384,9 @@ export function EcoMilesTruckMapNavigator({
   const [showBridges, setShowBridges] = useState<boolean>(true);
   const [showAllFleetRoutes, setShowAllFleetRoutes] = useState<boolean>(false);
   const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
+  const [activeCabinProfile, setActiveCabinProfile] = useState<
+    'zfold' | 'ipad_pro' | 'windows_xps' | 'macbook_pro'
+  >('zfold');
   const [tileTick, setTileTick] = useState<number>(0);
   const [voiceBanner, setVoiceBanner] = useState<string>('');
   const [overviewTransform, setOverviewTransform] = useState<{ zoom: number; panX: number; panY: number }>({
@@ -959,6 +962,43 @@ export function EcoMilesTruckMapNavigator({
               <span>7 Thiết Bị Đồng Bộ</span>
             </button>
           </div>
+        </div>
+        {/* IN-CAB / DESKTOP 4-HARDWARE PROFILE SYNCHRONIZER STRIP */}
+        <div className="max-w-[1600px] mx-auto mt-1.5 pt-1.5 border-t border-[#e5e7eb] flex flex-wrap items-center justify-between gap-2 text-[11px]">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="font-extrabold uppercase tracking-wider text-[#4b5563] mr-1">
+              Thiết bị buồng lái đang đồng bộ:
+            </span>
+            {(
+              [
+                { id: 'zfold', label: 'Galaxy Z Fold · Cabin 7.6"', spec: '750×834 · Buồng lái rảnh tay' },
+                { id: 'ipad_pro', label: 'iPad Pro M4 · Taplo 13"', spec: '1024×768 · Taplo kho bãi' },
+                { id: 'windows_xps', label: 'Windows 11 XPS 16 · EVSIM', spec: '1440×900 · Đối chứng kép' },
+                { id: 'macbook_pro', label: 'MacBook Pro 16" · TMS', spec: '1440×900 · Điều phối B2B' },
+              ] as const
+            ).map((prof) => {
+              const isActive = activeCabinProfile === prof.id;
+              return (
+                <button
+                  key={prof.id}
+                  type="button"
+                  onClick={() => setActiveCabinProfile(prof.id)}
+                  className={`px-2.5 py-0.5 rounded-lg font-bold transition-colors cursor-pointer border ${
+                    isActive
+                      ? 'bg-[#14532d] text-[#d6f65a] border-[#14532d] shadow-xs'
+                      : 'bg-[#f9fafb] text-[#374151] border-[#d1d5db] hover:bg-white'
+                  }`}
+                  title={prof.spec}
+                >
+                  {isActive ? '● ' : ''}
+                  {prof.label}
+                </button>
+              );
+            })}
+          </div>
+          <span className="font-mono font-bold text-[#14532d] bg-[#e8f7ee] border border-[#bbf7d0] px-2 py-0.5 rounded-md">
+            ● Đồng bộ &lt;50ms · 0 Vi Phạm QĐ 23/2018
+          </span>
         </div>
         {showDeviceBanner && (
           <div className="mt-2.5 pt-2.5 border-t border-[#d8cfbd] bg-[#060d14] text-white rounded-xl px-3.5 py-2.5">

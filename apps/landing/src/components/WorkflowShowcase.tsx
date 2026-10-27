@@ -58,6 +58,7 @@ interface WorkflowStepSpec {
   proofImage: string;
   liveUrl: string;
   liveLabel: string;
+  devices: readonly string[];
   outcomes: string[];
 }
 
@@ -110,6 +111,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/01_desktop_b2b_tms_fleet_overview.png',
       liveUrl: '/dashboard/',
       liveLabel: 'Thử Tải File .XLSX Trên /dashboard',
+      devices: ['MacBook Pro 16"', 'Windows 11 XPS 16', 'iPad Pro M4'],
       outcomes: [
         'Tự động ánh xạ 100% cột tiếng Việt / tiếng Anh không cần sửa tay',
         'Phát hiện tức thì 28 đơn rơi vào khung giờ cấm 06:00-09:00 & 16:00-20:00',
@@ -130,6 +132,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
       liveUrl: '/dashboard/',
       liveLabel: 'Xem Bảng Đội Xe Trên /dashboard',
+      devices: ['MacBook Pro 16"', 'Windows 11 XPS 16', 'iPad Pro M4'],
       outcomes: [
         'Chỉ cần huy động 7/10 xe để phục vụ 100% 120 đơn hàng (tiết kiệm 3 xe dự phòng)',
         'Tỷ lệ lấp đầy tải trọng đạt 101.5% nhờ luân chuyển hàng chiều về',
@@ -150,6 +153,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/03_desktop_b2b_tms_routing_qd23_ban_guard.png',
       liveUrl: '/dashboard/',
       liveLabel: 'Mở Bàn Điều Phối & Bộ Lọc QĐ 23',
+      devices: ['MacBook Pro 16"', 'Windows 11 XPS 16', 'Galaxy Z Fold'],
       outcomes: [
         'Khử 28/28 lỗi vi phạm giờ cấm QĐ 23/2018 (tránh phạt 5.000.000đ/lỗi)',
         'Cho phép điều chỉnh trực tiếp thanh trượt bán kính gom cụm (1.5 - 6.0 km)',
@@ -170,6 +174,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
       liveUrl: '/benchmark/',
       liveLabel: 'Kiểm Chứng Trên Buồng Đôi EVSIM (/benchmark)',
+      devices: ['Windows 11 XPS 16', 'MacBook Pro 16"', 'iPad Pro M4'],
       outcomes: [
         'Tiết giảm 130.7 km mỗi ca vận hành (-34.9% tổng quãng đường)',
         'Thời gian giải thuật trung bình 13.9 ms (p50) / 20.4 ms (p95)',
@@ -190,6 +195,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
       liveUrl: '/driver/',
       liveLabel: 'Xem Lệnh Ghép Chiều Về Trên /driver',
+      devices: ['iPhone Duo', 'iPhone 18 Pro Max', 'Galaxy S26 Ultra', 'MacBook Pro 16"'],
       outcomes: [
         'Hạ tỷ lệ chạy rỗng từ 32.8% (122.9 km) xuống 2.7% (6.5 km)',
         'Thu hồi tự động 1,864.9 kg hàng hoàn / vỏ thùng về kho Tân Bình',
@@ -210,6 +216,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
       liveUrl: '/driver/',
       liveLabel: 'Trải Nghiệm App Tài Xế (/driver)',
+      devices: ['iPhone 18 Pro Max', 'Galaxy S26 Ultra', 'iPhone Duo'],
       outcomes: [
         '0đ chi phí bản đồ API hàng tháng (tiết kiệm 7.500.000đ/tháng phí Google API)',
         'Khóa cứng tọa độ trung gian (waypoints=lat,lng|lat,lng) trên Google Maps Ô tô',
@@ -230,6 +237,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
       liveUrl: '/maps/?vehicle=0&mode=navigate',
       liveLabel: 'Mở Chế Độ Bắt Đầu Lái (/maps Live)',
+      devices: ['Galaxy Z Fold', 'iPad Pro M4', 'iPhone Duo'],
       outcomes: [
         'Hiển thị trực quan 3 vùng cấm tải QĐ 23/2018 và giới hạn cầu 13T / 4.5m',
         'Tự động đọc hướng dẫn rẽ bằng giọng nói tiếng Việt (Web Speech TTS)',
@@ -250,6 +258,7 @@ export const WorkflowShowcase: React.FC = () => {
       proofImage: '/pitch-deck-screenshots/20_slide_composite_4role_enterprise_architecture.png',
       liveUrl: '/portal/audit/',
       liveLabel: 'Mở Phòng Giám Sát Zero-Knowledge (/portal/audit)',
+      devices: ['MacBook Pro 16"', 'Windows 11 XPS 16', 'Galaxy Z Fold', 'iPad Pro M4'],
       outcomes: [
         'Cắt giảm 39.2% lượng phát thải CO₂e (tiết kiệm 36.14 kg CO₂e mỗi ca)',
         'Xuất báo cáo Excel 3 Sheet sẵn sàng nộp kiểm toán chuỗi cung ứng xanh',
@@ -294,26 +303,41 @@ export const WorkflowShowcase: React.FC = () => {
             Bấm vào từng bước bên dưới để xem đầu vào, đầu ra và giao diện thực tế tương ứng trong hệ thống EcoMiles.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
             <button
               type="button"
               onClick={() => {
                 setIsPlaying((p) => !p);
                 setProgress(0);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-ecomiles-lime/40 bg-slate-900/90 text-xs font-bold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 transition-all shadow-lg shadow-ecomiles-lime/10 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-ecomiles-lime/40 bg-slate-900/90 text-[11px] font-bold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 transition-all shadow-lg shadow-ecomiles-lime/10 cursor-pointer"
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-              <span>{isPlaying ? '⏸ Tạm dừng tour 8 bước' : '▶ Tự động chạy 8 bước'}</span>
+              <span>{isPlaying ? 'Tạm dừng tour 8 bước' : 'Tự động chạy 8 bước'}</span>
             </button>
             {isPlaying && (
-              <div className="w-36 h-2 rounded-full bg-slate-800/80 border border-white/10 overflow-hidden">
+              <div className="w-32 h-2 rounded-full bg-slate-800/80 border border-white/10 overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-ecomiles-mint to-ecomiles-lime rounded-full transition-all duration-75"
                   style={{ width: `${progress}%` }}
                 />
               </div>
             )}
+            {[
+              { label: 'Bàn Điều Phối (/dashboard)', href: '/dashboard/' },
+              { label: 'Bản Đồ Xe Tải (/maps)', href: '/maps/?vehicle=0&mode=navigate' },
+              { label: 'App Tài Xế (/driver)', href: '/driver/' },
+              { label: 'Đối Chứng (/benchmark)', href: '/benchmark/' },
+            ].map((app) => (
+              <a
+                key={app.href}
+                href={app.href}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-ecomiles-lime/40 text-[11px] font-semibold text-slate-200 hover:text-ecomiles-lime transition-colors"
+              >
+                <span>{app.label}</span>
+                <ArrowUpRight className="w-3 h-3" />
+              </a>
+            ))}
           </div>
         </motion.div>
 
@@ -406,6 +430,36 @@ export const WorkflowShowcase: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                {/* 7-Device Flagship Hardware Execution Matrix */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1">
+                    Thiết bị thực thi ({current.devices.length}/7):
+                  </span>
+                  {[
+                    'MacBook Pro 16"',
+                    'Windows 11 XPS 16',
+                    'Galaxy Z Fold',
+                    'iPad Pro M4',
+                    'iPhone Duo',
+                    'iPhone 18 Pro Max',
+                    'Galaxy S26 Ultra',
+                  ].map((device) => {
+                    const isActiveDevice = current.devices.includes(device);
+                    return (
+                      <span
+                        key={device}
+                        className={`px-2 py-0.5 rounded-full text-[10.5px] font-semibold border transition-colors ${
+                          isActiveDevice
+                            ? 'bg-ecomiles-lime/15 border-ecomiles-lime/50 text-ecomiles-lime shadow-sm'
+                            : 'bg-slate-950/50 border-white/5 text-slate-500'
+                        }`}
+                      >
+                        {isActiveDevice ? '● ' : ''}{device}
+                      </span>
+                    );
+                  })}
+                </div>
+
 
                 <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
                   {current.summary}

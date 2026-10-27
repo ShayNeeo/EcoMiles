@@ -372,6 +372,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
   const [loginLoadingRole, setLoginLoadingRole] = useState<AppRole | null>(null);
   const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
   const [isFoldableDualView, setIsFoldableDualView] = useState<boolean>(false);
+  const [driverHardwareProfile, setDriverHardwareProfile] = useState<
+    'iphone_18_pro_max' | 'galaxy_s26_ultra' | 'iphone_duo_zfold'
+  >('iphone_18_pro_max');
   const [authSessionInfo, setAuthSessionInfo] = useState<{
     token: string;
     account: string;
@@ -2638,23 +2641,51 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <KeyRound className="w-3.5 h-3.5 text-[#1971c2]" />
                         <span>PIN: 0000</span>
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => setIsFoldableDualView((prev) => !prev)}
-                        className={`px-2.5 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                          isFoldableDualView
-                            ? 'bg-[#14532d] text-[#d6f65a] border-[#14532d] shadow-xs'
-                            : 'bg-white text-[#111827] border-[#d1d5db] hover:bg-[#f3f4f6]'
-                        }`}
-                        title="Bật chế độ 2 màn hình gập đôi (iPhone Duo / Galaxy Z Fold): Màn hình đơn hàng + Màn hình dẫn đường trực tiếp (/maps)"
-                      >
-                        <SplitSquareVertical className="w-3.5 h-3.5 text-[#1971c2]" />
-                        <span>
-                          {isFoldableDualView
-                            ? 'Đang bật: Màn Hình Gập Đôi (iPhone Duo / Z Fold)'
-                            : 'Chế độ Gập Đôi (iPhone Duo / Z Fold)'}
-                        </span>
-                      </button>
+                      <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-xl bg-[#f3f4f6] border border-[#d1d5db]">
+                        {(
+                          [
+                            {
+                              id: 'iphone_18_pro_max',
+                              label: 'iPhone 18 Pro Max (Nắng Gắt)',
+                              foldable: false,
+                            },
+                            {
+                              id: 'galaxy_s26_ultra',
+                              label: 'Galaxy S26 Ultra (Hẻm Nhỏ)',
+                              foldable: false,
+                            },
+                            {
+                              id: 'iphone_duo_zfold',
+                              label: 'iPhone Duo / Z Fold (Gập Đôi)',
+                              foldable: true,
+                            },
+                          ] as const
+                        ).map((dev) => {
+                          const isActive =
+                            (dev.foldable && isFoldableDualView) ||
+                            (!dev.foldable &&
+                              !isFoldableDualView &&
+                              driverHardwareProfile === dev.id);
+                          return (
+                            <button
+                              key={dev.id}
+                              type="button"
+                              onClick={() => {
+                                setDriverHardwareProfile(dev.id);
+                                setIsFoldableDualView(dev.foldable);
+                              }}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer ${
+                                isActive
+                                  ? 'bg-[#14532d] text-[#d6f65a] shadow-xs'
+                                  : 'text-[#374151] hover:bg-white'
+                              }`}
+                            >
+                              {dev.foldable && <SplitSquareVertical className="w-3 h-3" />}
+                              <span>{dev.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
