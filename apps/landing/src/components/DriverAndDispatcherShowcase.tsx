@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Check,
   Compass,
+  Download,
   Laptop,
   Layers,
   Monitor,
@@ -42,14 +43,14 @@ interface DeviceShowcaseSpec {
 const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
   {
     id: 'all_banner',
-    shortLabel: 'Toàn Cảnh 7 Thiết Bị',
+    shortLabel: 'Toàn Cảnh 7 Thiết Bị (3D Stage)',
     deviceTitle: 'Hệ Sinh Thái Đa Thiết Bị Đồng Bộ Thời Gian Thực (Desktop · Foldable · Tablet · Mobile)',
-    roleBadge: 'PANORAMIC STUDIO SHOWCASE · 7 THIẾT BỊ FLAGSHIP',
+    roleBadge: 'INTERACTIVE 7-DEVICE SPATIAL STAGE · CLICK BẤT KỲ THIẾT BỊ NÀO ĐỂ PHÓNG TO',
     imageSrc: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
     liveRouteUrl: '/dashboard/',
     liveRouteLabel: 'Mở Trung Tâm Điều Phối B2B (/dashboard)',
     description:
-      'Một nền tảng duy nhất đồng bộ từ máy trạm điều phối tại văn phòng (MacBook Pro 16", Windows 11 XPS 16) đến máy tính bảng kho vận / buồng lái (Samsung Galaxy Z Fold, iPad Pro M4) và điện thoại tài xế ngoài thực địa (iPhone Duo Dual-Screen, iPhone 18 Pro Max, Samsung Galaxy S26 Ultra).',
+      'Một nền tảng duy nhất đồng bộ từ máy trạm điều phối tại văn phòng (MacBook Pro 16", Windows 11 XPS 16) đến máy tính bảng kho vận / buồng lái (Samsung Galaxy Z Fold, iPad Pro M4) và điện thoại tài xế ngoài thực địa (iPhone Duo Dual-Screen, iPhone 18 Pro Max, Samsung Galaxy S26 Ultra). Di chuột hoặc bấm trực tiếp vào bất kỳ thiết bị nào trong sân khấu bên trái để kiểm tra chi tiết.',
     highlights: [
       'Đồng bộ tức thì trạng thái 94/120 đơn hoàn thành & 7/10 xe tải đang khai thác',
       'Tiết giảm 34.9% tổng quãng đường (374.4 km xuống 243.7 km) và 39.2% phát thải CO₂e',
@@ -129,7 +130,7 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     liveRouteUrl: '/driver/',
     liveRouteLabel: 'Mở Ứng Dụng Tài Xế (/driver)',
     description:
-      'Thiết kế đa nhiệm trên điện thoại gập đôi: màn hình bên trái giữ danh sách điểm dừng và trạng thái giao hàng (/driver), trong khi màn hình bên phải chạy bản đồ dẫn đường trực tiếp (/maps?mode=navigate).',
+      'Thiết kế đa nhiệm trên điện thoại gập đôi: màn hình bên trái giữ danh sách 13 điểm dừng và trạng thái giao hàng (/driver), trong khi màn hình bên phải chạy bản đồ dẫn đường trực tiếp của cùng chuyến xe 51C-000.09 (/maps?mode=navigate).',
     highlights: [
       'Tài xế vừa xem ghi chú người nhận & đơn ghép chiều về vừa theo dõi lộ trình né đường cấm',
       'Không cần chuyển tab qua lại khi đang di chuyển qua các giao lộ phức tạp tại TP.HCM',
@@ -174,10 +175,12 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   const [selectedDeviceId, setSelectedDeviceId] = useState<DeviceViewId>('all_banner');
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageCardRef = useRef<HTMLDivElement | null>(null);
+  const multiStageRef = useRef<HTMLDivElement | null>(null);
 
   const activeDevice =
     FLAGSHIP_DEVICES.find((d) => d.id === selectedDeviceId) ?? FLAGSHIP_DEVICES[0];
 
+  // GSAP ScrollTrigger 4-Beat Spatial Fan-Out (Office -> Handover -> Field -> Outcome)
   useGSAP(
     () => {
       const prefersReducedMotion =
@@ -185,25 +188,43 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion || !sectionRef.current || !stageCardRef.current) return;
 
-      gsap.fromTo(
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: stageCardRef.current,
+          start: 'top 90%',
+          end: 'top 35%',
+          scrub: 0.45,
+        },
+      });
+
+      tl.fromTo(
         stageCardRef.current,
-        { y: 36, opacity: 0.35, rotateX: 4, transformPerspective: 1200 },
-        {
-          y: 0,
-          opacity: 1,
-          rotateX: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: stageCardRef.current,
-            start: 'top 90%',
-            end: 'top 40%',
-            scrub: 0.4,
-          },
-        }
+        { y: 32, opacity: 0.4, rotateX: 4, transformPerspective: 1200 },
+        { y: 0, opacity: 1, rotateX: 0, duration: 0.6, ease: 'none' },
+        0
+      );
+
+      // 4-Beat Device Fan-Out inside the Interactive 7-Device Stage
+      tl.fromTo(
+        '.gsap-beat-office',
+        { y: 24, scale: 0.94, opacity: 0.5 },
+        { y: 0, scale: 1, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'none' },
+        0.05
+      );
+      tl.fromTo(
+        '.gsap-beat-handover',
+        { y: 36, scale: 0.9, opacity: 0.35 },
+        { y: 0, scale: 1, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'none' },
+        0.2
+      );
+      tl.fromTo(
+        '.gsap-beat-field',
+        { y: 48, scale: 0.88, opacity: 0.25 },
+        { y: 0, scale: 1, opacity: 1, stagger: 0.07, duration: 0.5, ease: 'none' },
+        0.35
       );
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [selectedDeviceId] }
   );
 
   const renderDeviceIcon = (id: DeviceViewId) => {
@@ -277,15 +298,170 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
               transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
               className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center"
             >
-              {/* Left/Center 8 Cols: High-DPI Hardware Mockup Stage (Immediately Visible Above the Fold!) */}
-              <div className="lg:col-span-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.32)_0%,rgba(2,6,23,0.92)_75%)] rounded-2xl p-3 sm:p-5 border border-white/10">
-                <div className="w-full flex items-center justify-center">
-                  <img
-                    src={activeDevice.imageSrc}
-                    alt={activeDevice.deviceTitle}
-                    className="max-h-[470px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.8)] rounded-xl"
-                  />
-                </div>
+              {/* Left/Center 8 Cols: Interactive 7-Device Spatial Stage OR Individual High-DPI Hardware Mockup */}
+              <div
+                ref={multiStageRef}
+                className="lg:col-span-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.34)_0%,rgba(2,6,23,0.94)_75%)] rounded-2xl p-3 sm:p-5 border border-white/10 overflow-hidden"
+              >
+                {activeDevice.id === 'all_banner' ? (
+                  <div className="w-full space-y-4">
+                    {/* Tier 1 (Rear Office Plane): MacBook Pro 16" + Windows 11 XPS 16 */}
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 items-end">
+                      <div className="gsap-beat-office">
+                        <motion.button
+                          type="button"
+                          onClick={() => setSelectedDeviceId('macbook_pro')}
+                          whileHover={{ y: -8, scale: 1.03 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ type: 'spring', stiffness: 360, damping: 24 }}
+                          className="group w-full text-center cursor-pointer focus:outline-none"
+                        >
+                          <div className="mb-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/90 border border-ecomiles-lime/40 text-[10px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                            <Laptop className="w-3 h-3" />
+                            <span>1. MacBook Pro 16&quot; · Điều phối B2B</span>
+                          </div>
+                          <img
+                            src="/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png"
+                            alt="MacBook Pro 16 inch B2B CRM/TMS"
+                            className="w-full h-auto max-h-[195px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.75)]"
+                          />
+                        </motion.button>
+                      </div>
+
+                      <div className="gsap-beat-office">
+                        <motion.button
+                          type="button"
+                          onClick={() => setSelectedDeviceId('windows_xps')}
+                          whileHover={{ y: -8, scale: 1.03 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ type: 'spring', stiffness: 360, damping: 24 }}
+                          className="group w-full text-center cursor-pointer focus:outline-none"
+                        >
+                          <div className="mb-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/90 border border-ecomiles-lime/40 text-[10px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                            <Laptop className="w-3 h-3" />
+                            <span>2. Windows 11 XPS 16 · EVSIM Dual</span>
+                          </div>
+                          <img
+                            src="/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png"
+                            alt="Dell XPS 16 Windows 11 EVSIM Dual Simulator"
+                            className="w-full h-auto max-h-[195px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.75)]"
+                          />
+                        </motion.button>
+                      </div>
+                    </div>
+
+                    {/* Tier 2 & 3 (Mid Handover Tablets + Foreground Field Phones): 5 Interactive Devices */}
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 items-end pt-1 border-t border-white/10">
+                      <div className="gsap-beat-handover">
+                        <motion.button
+                          type="button"
+                          onClick={() => setSelectedDeviceId('galaxy_zfold')}
+                          whileHover={{ y: -10, scale: 1.05 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+                          className="group w-full text-center cursor-pointer focus:outline-none"
+                        >
+                          <img
+                            src="/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png"
+                            alt="Samsung Galaxy Z Fold Unfolded Truck Map Cockpit"
+                            className="w-full h-auto max-h-[185px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                          />
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                            3. Galaxy Z Fold
+                          </span>
+                        </motion.button>
+                      </div>
+
+                      <div className="gsap-beat-field">
+                        <motion.button
+                          type="button"
+                          onClick={() => setSelectedDeviceId('iphone_18_pro_max')}
+                          whileHover={{ y: -10, scale: 1.06 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+                          className="group w-full text-center cursor-pointer focus:outline-none"
+                        >
+                          <img
+                            src="/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png"
+                            alt="iPhone 18 Pro Max Driver App"
+                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                          />
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                            4. iPhone 18 Pro Max
+                          </span>
+                        </motion.button>
+                      </div>
+
+                      <div className="gsap-beat-field col-span-2 sm:col-span-1">
+                        <motion.button
+                          type="button"
+                          onClick={() => setSelectedDeviceId('iphone_duo')}
+                          whileHover={{ y: -10, scale: 1.06 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+                          className="group w-full text-center cursor-pointer focus:outline-none"
+                        >
+                          <img
+                            src="/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png"
+                            alt="iPhone Duo Dual-Screen Foldable"
+                            className="w-full h-auto max-h-[185px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
+                          />
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 text-[9.5px] font-extrabold">
+                            5. iPhone Duo (Gập Đôi)
+                          </span>
+                        </motion.button>
+                      </div>
+
+                      <div className="gsap-beat-field">
+                        <motion.button
+                          type="button"
+                          onClick={() => setSelectedDeviceId('galaxy_s26_ultra')}
+                          whileHover={{ y: -10, scale: 1.06 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+                          className="group w-full text-center cursor-pointer focus:outline-none"
+                        >
+                          <img
+                            src="/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png"
+                            alt="Samsung Galaxy S26 Ultra Live Truck Navigation"
+                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                          />
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                            6. Galaxy S26 Ultra
+                          </span>
+                        </motion.button>
+                      </div>
+
+                      <div className="gsap-beat-handover">
+                        <motion.button
+                          type="button"
+                          onClick={() => setSelectedDeviceId('ipad_pro')}
+                          whileHover={{ y: -10, scale: 1.05 }}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+                          className="group w-full text-center cursor-pointer focus:outline-none"
+                        >
+                          <img
+                            src="/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png"
+                            alt="iPad Pro M4 Tablet Fleet Dashboard"
+                            className="w-full h-auto max-h-[185px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                          />
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                            7. iPad Pro M4
+                          </span>
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full flex items-center justify-center">
+                    <img
+                      src={activeDevice.imageSrc}
+                      alt={activeDevice.deviceTitle}
+                      className="max-h-[470px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.8)] rounded-xl"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Right 4 Cols: Role Context, 3 Verified Highlights & Live Launch CTAs */}
@@ -329,16 +505,29 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     <span>{activeDevice.liveRouteLabel}</span>
                     <ArrowRight className="w-4 h-4" />
                   </motion.a>
-                  <motion.a
-                    href="/maps/?vehicle=0&mode=navigate"
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Compass className="w-4 h-4 text-ecomiles-lime" />
-                    <span>Mở Bản Đồ Xe Tải (/maps)</span>
-                  </motion.a>
+                  <div className="grid grid-cols-2 gap-2">
+                    <motion.a
+                      href="/maps/?vehicle=0&mode=navigate"
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                      className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Compass className="w-3.5 h-3.5 text-ecomiles-lime shrink-0" />
+                      <span>Bản Đồ (/maps)</span>
+                    </motion.a>
+                    <motion.a
+                      href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                      download="00_ecomiles_flagship_cover_banner.png"
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                      className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-ecomiles-lime border border-ecomiles-lime/30 font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5 shrink-0" />
+                      <span>Tải Ảnh Bìa 2.4K</span>
+                    </motion.a>
+                  </div>
                 </div>
               </div>
             </motion.div>

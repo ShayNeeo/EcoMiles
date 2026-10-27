@@ -547,7 +547,7 @@ def make_slide_canvas(title: str, subtitle: str, kpi_pill: str) -> Image.Image:
     d.rounded_rectangle([40, 22, 98, 80], radius=14, fill=(20, 83, 45, 255))
     d.text((52, 34), "EM", fill=(214, 246, 90, 255), font=get_font(True, 24))
 
-    d.text((116, 22), title, fill=(255, 255, 255, 255), font=get_font(True, 25))
+    d.text((116, 23), title, fill=(255, 255, 255, 255), font=get_font(True, 23))
     d.text((116, 58), subtitle, fill=(209, 213, 219, 255), font=get_font(False, 15))
 
     f_kpi = get_font(True, 15)
@@ -695,7 +695,7 @@ def build_all() -> list[str]:
     built.append(p27)
 
     c1 = make_slide_canvas(
-        "EcoMiles Flagship Multi-Device Ecosystem (MacBook Pro · Windows XPS · Z Fold · iPhone 18 Pro Max · S26 Ultra)",
+        "EcoMiles Multi-Device Ecosystem (MacBook · Windows · Z Fold · iPhone · S26 Ultra)",
         "Đồng bộ thời gian thực từ Trung tâm Điều phối (MacBook/Windows) đến Buồng lái Z Fold và Điện thoại Tài xế (iPhone 18 Pro Max & S26 Ultra)",
         "-34.9% Km Lộ Trình  ·  -39.2% CO₂e  ·  0 Lỗi QĐ 23/2018",
     )

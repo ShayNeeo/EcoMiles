@@ -1029,7 +1029,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         >
                           {activeStrategy.routes.map((r, i) => (
                             <option key={r.route_id} value={i}>
-                              Xe {r.plate} · {DRIVER_NAMES[i % DRIVER_NAMES.length]} ({r.stops.filter((s) => s.kind === 'stop').length} điểm giao)
+                              Xe {r.plate} · {DRIVER_NAMES[i % DRIVER_NAMES.length]} ({r.stops.filter((s) => s.kind !== 'depot').length} điểm · {r.km} km)
                             </option>
                           ))}
                         </select>
@@ -1591,7 +1591,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         max="6.0"
                         step="0.5"
                         value={clusterRadiusKm}
-                        onChange={(e) => setClusterRadiusKm(Number(e.target.value))}
+                        onChange={(e) => {
+                          const nextR = Number(e.target.value);
+                          setClusterRadiusKm(nextR);
+                          setStatusBanner(
+                            `Đã cập nhật bán kính gom cụm địa lý sang ${nextR.toFixed(1)} km cho ${activeCompany.short_name}.`
+                          );
+                        }}
                         className="w-full accent-[#1971c2] cursor-pointer mt-1"
                       />
                     </div>
@@ -1601,7 +1607,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         type="checkbox"
                         id="chk-qd23"
                         checked={enforceQd23Ban}
-                        onChange={(e) => setEnforceQd23Ban(e.target.checked)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setEnforceQd23Ban(checked);
+                          setSelectedStrategyId(
+                            checked && enableBackhaul ? 'ecomiles_ecoalns' : checked ? 'ecomiles_2opt' : 'human_google_proxy'
+                          );
+                        }}
                         className="w-4 h-4 accent-[#1971c2]"
                       />
                       <label htmlFor="chk-qd23" className="font-semibold text-[#111827] cursor-pointer">
@@ -1614,7 +1626,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         type="checkbox"
                         id="chk-backhaul"
                         checked={enableBackhaul}
-                        onChange={(e) => setEnableBackhaul(e.target.checked)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setEnableBackhaul(checked);
+                          setSelectedStrategyId(checked ? 'ecomiles_ecoalns' : 'ecomiles_2opt');
+                        }}
                         className="w-4 h-4 accent-[#1971c2]"
                       />
                       <label htmlFor="chk-backhaul" className="font-semibold text-[#111827] cursor-pointer">
@@ -2267,7 +2283,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       >
                         {activeStrategy.routes.map((r, i) => (
                           <option key={r.route_id} value={i}>
-                            {r.plate} ({r.stops.filter((s) => s.kind === 'stop').length} điểm giao · {r.km} km)
+                            {r.plate} ({r.stops.filter((s) => s.kind !== 'depot').length} điểm · {r.km} km)
                           </option>
                         ))}
                       </select>
