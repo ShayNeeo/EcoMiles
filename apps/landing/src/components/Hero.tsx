@@ -39,6 +39,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'webgl_7devices' | 'studio_24k' | 'three_network'>('devices_banner');
   const [heroWebglDeviceId, setHeroWebglDeviceId] = useState<DeviceBannerFocusId>('all_banner');
+  const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
   const heroRef = useRef<HTMLElement | null>(null);
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
@@ -281,35 +282,95 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               </div>
             ) : heroStageMode === 'studio_24k' ? (
               <div className="relative w-full rounded-3xl overflow-hidden border border-ecomiles-lime/35 bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.46)_0%,rgba(4,9,18,0.97)_78%)] p-3 sm:p-4 shadow-[0_24px_64px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center space-y-2.5">
+                {/* Dual-Banner Switcher: A. Sân Khấu 7 Thiết Bị 2400×1120 vs B. Ảnh Bìa OpenGraph 2400×1260 */}
+                <div className="w-full flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                  <div className="inline-flex flex-wrap items-center gap-1 p-0.5 rounded-xl bg-slate-950/90 border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setStudioBannerVariant('clean_stage')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                        studioBannerVariant === 'clean_stage'
+                          ? 'bg-ecomiles-lime text-slate-950'
+                          : 'text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      A. Sân Khấu 7 Thiết Bị 2400×1120
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStudioBannerVariant('cover_banner')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                        studioBannerVariant === 'cover_banner'
+                          ? 'bg-ecomiles-lime text-slate-950'
+                          : 'text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      B. Ảnh Bìa OpenGraph 2400×1260
+                    </button>
+                  </div>
+                  <a
+                    href={
+                      studioBannerVariant === 'clean_stage'
+                        ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                        : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                    }
+                    download={
+                      studioBannerVariant === 'clean_stage'
+                        ? '00_ecomiles_clean_devices_hero_stage.png'
+                        : '00_ecomiles_flagship_cover_banner.png'
+                    }
+                    className="font-extrabold text-ecomiles-lime hover:underline"
+                  >
+                    Tải PNG 2.4K →
+                  </a>
+                </div>
                 <img
-                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  alt="EcoMiles 7-Device Flagship Studio Cover Banner with Floor Reflections"
-                  className="w-full h-auto max-h-[340px] object-contain mx-auto rounded-xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
+                  src={
+                    studioBannerVariant === 'clean_stage'
+                      ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                      : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                  }
+                  alt={
+                    studioBannerVariant === 'clean_stage'
+                      ? 'EcoMiles 7-Device Clean Studio Stage (2400x1120) with Floor Reflections'
+                      : 'EcoMiles 7-Device OpenGraph Flagship Cover Banner (2400x1260)'
+                  }
+                  className="w-full h-auto max-h-[310px] object-contain mx-auto rounded-xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
                 <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
-                  {STUDIO_24K_HOTSPOTS.map((spot) => (
+                  {STUDIO_24K_HOTSPOTS.map((spot, idx) => (
                     <button
                       key={spot.id}
                       type="button"
-                      onClick={() => handleSelectStudioDevice(spot.id)}
+                      onClick={() => {
+                        setHeroWebglDeviceId(spot.id);
+                        setHeroStageMode('webgl_7devices');
+                      }}
                       className="px-2 py-0.5 rounded-lg bg-slate-900/90 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[9.5px] font-bold transition-colors cursor-pointer"
+                      title={`Bay camera 3D WebGL tới ${spot.label}`}
                     >
-                      {spot.label}
+                      {idx + 1}. {spot.label} · 3D →
                     </button>
                   ))}
                 </div>
                 <div className="w-full flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-ecomiles-lime/30 text-[10.5px] text-slate-300">
                   <span className="font-bold text-ecomiles-lime">
-                    Ảnh Bìa Studio 2.4K (2400×1120) · Phản Chiếu Sàn Gương 7 Thiết Bị
+                    {studioBannerVariant === 'clean_stage'
+                      ? 'Ảnh Bìa Studio 2.4K (2400×1120) · Phản Chiếu Sàn Gương 7 Thiết Bị'
+                      : 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260) · Chuẩn Thương Hiệu EcoMiles'}
                   </span>
-                  <a
-                    href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                    download="00_ecomiles_flagship_cover_banner.png"
-                    className="font-extrabold text-ecomiles-lime hover:underline"
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSelectStudioDevice(
+                        heroWebglDeviceId === 'all_banner' ? 'macbook_pro' : heroWebglDeviceId
+                      )
+                    }
+                    className="font-extrabold text-emerald-400 hover:text-ecomiles-lime hover:underline cursor-pointer"
                   >
-                    Tải PNG 2.4K →
-                  </a>
+                    Cuộn xuống Khu Trưng Bày (#showcase) ↓
+                  </button>
                 </div>
               </div>
             ) : (
