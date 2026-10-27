@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -13,6 +13,7 @@ import {
   Truck,
 } from 'lucide-react';
 import { HcmcThreeNetworkStage } from './HcmcThreeNetworkStage';
+import { HeroMultiDeviceStage } from './HeroMultiDeviceStage';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -29,27 +30,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
   const fgPlaneRef = useRef<HTMLDivElement | null>(null);
-
-  // Framer Motion 3D Tilt Spring Physics for the Hero Multi-Device Cover Banner
-  const pointerX = useMotionValue(0);
-  const pointerY = useMotionValue(0);
-  const smoothX = useSpring(pointerX, { stiffness: 220, damping: 24 });
-  const smoothY = useSpring(pointerY, { stiffness: 220, damping: 24 });
-  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-7, 7]);
-  const rotateX = useTransform(smoothY, [-0.5, 0.5], [6, -6]);
-
-  const handleCardPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
-    const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
-    pointerX.set(nx);
-    pointerY.set(ny);
-  };
-
-  const handleCardPointerLeave = () => {
-    pointerX.set(0);
-    pointerY.set(0);
-  };
 
   // Layer 2: GSAP ScrollTrigger Dimensional Parallax across Background, Midground, and Foreground Planes
   useGSAP(
@@ -240,36 +220,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
             </div>
 
             {heroStageMode === 'devices_banner' ? (
-              <motion.div
-                onPointerMove={handleCardPointerMove}
-                onPointerLeave={handleCardPointerLeave}
-                style={{
-                  rotateX,
-                  rotateY,
-                  transformPerspective: 1200,
-                }}
-                className="relative rounded-3xl border border-ecomiles-lime/35 bg-slate-950/90 p-2.5 sm:p-3.5 shadow-[0_24px_64px_rgba(0,0,0,0.75)] overflow-hidden group"
-              >
-                <a href="#showcase" className="block relative overflow-hidden rounded-2xl">
-                  <img
-                    src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                    alt="EcoMiles 7-Device Flagship Cover Banner: MacBook Pro, Windows XPS, Galaxy Z Fold, iPad Pro, iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra"
-                    className="w-full h-auto block rounded-2xl transition-transform duration-500 group-hover:scale-[1.015]"
-                  />
-                </a>
-                <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 px-2 text-[11px] text-slate-300">
-                  <span className="font-semibold text-white">
-                    MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
-                  </span>
-                  <a
-                    href="#showcase"
-                    className="font-extrabold text-ecomiles-lime hover:underline flex items-center gap-1"
-                  >
-                    <span>Khám phá sân khấu 3D 7 thiết bị</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </motion.div>
+              <HeroMultiDeviceStage />
             ) : (
               <HcmcThreeNetworkStage />
             )}

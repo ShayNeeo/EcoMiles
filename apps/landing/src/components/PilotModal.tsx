@@ -21,11 +21,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
     notes: '',
   });
 
-  React.useEffect(() => {
-    if (initialInterest) {
-      setFormData((prev) => ({ ...prev, interest: initialInterest }));
-    }
-  }, [initialInterest, isOpen]);
+  // initialInterest is already seeded in useState above
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
