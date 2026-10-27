@@ -103,6 +103,19 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     liveHref: '/maps/?vehicle=0&mode=navigate',
   },
 ];
+const STUDIO_HUB_SPEC: HcmcNodeSpec = {
+  id: 'studio_stage',
+  label: 'Toàn Cảnh Hệ Sinh Thái 7 Thiết Bị (Studio 2.4K)',
+  shortName: '0. Studio 2.4K',
+  x: 0,
+  z: 0,
+  kind: 'hub',
+  deviceLabel: 'Master Studio Stage · 2400×1120',
+  stats: 'Toàn bộ 7 thiết bị · Sàn gương phản chiếu · Đồng bộ thời gian thực',
+  mockupSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+  liveHref: '/dashboard/',
+};
+const HCMC_LIGHTBOX_NODES: HcmcNodeSpec[] = [STUDIO_HUB_SPEC, ...HCMC_3D_NODES];
 
 const ROUTE_ARCS: Array<{ points: Array<[number, number, number]>; color: number }> = [
   {
@@ -653,6 +666,17 @@ export const HcmcThreeNetworkStage: React.FC = () => {
               type="button"
               onClick={() => {
                 setIsAutoHubTour(false);
+                focusHcmcNode(STUDIO_HUB_SPEC);
+                setIsDeviceLightboxOpen(true);
+              }}
+              className="px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border bg-ecomiles-lime text-slate-950 border-ecomiles-lime hover:bg-yellow-300"
+            >
+              🔍 Sân Khấu 2.4K
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsAutoHubTour(false);
                 setIsDeviceLightboxOpen(true);
               }}
               className="px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border bg-slate-950 text-ecomiles-lime border-ecomiles-lime/50 hover:bg-ecomiles-lime hover:text-slate-950"
@@ -720,7 +744,8 @@ export const HcmcThreeNetworkStage: React.FC = () => {
               <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
                 <div className="min-w-0">
                   <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    {selectedNode.label} · {selectedNode.deviceLabel}
+                    [{Math.max(0, HCMC_LIGHTBOX_NODES.findIndex((n) => n.id === selectedNode.id)) + 1}/
+                    {HCMC_LIGHTBOX_NODES.length}] {selectedNode.label} · {selectedNode.deviceLabel}
                   </div>
                   <div className="text-[11px] text-slate-300 truncate">{selectedNode.stats}</div>
                 </div>
@@ -728,24 +753,25 @@ export const HcmcThreeNetworkStage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      const idx = HCMC_3D_NODES.findIndex((n) => n.id === selectedNode.id);
-                      const prev = HCMC_3D_NODES[(idx - 1 + HCMC_3D_NODES.length) % HCMC_3D_NODES.length];
+                      const idx = Math.max(0, HCMC_LIGHTBOX_NODES.findIndex((n) => n.id === selectedNode.id));
+                      const prev =
+                        HCMC_LIGHTBOX_NODES[(idx - 1 + HCMC_LIGHTBOX_NODES.length) % HCMC_LIGHTBOX_NODES.length];
                       if (prev) focusHcmcNode(prev);
                     }}
                     className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                   >
-                    ‹ Trạm trước
+                    ‹ Trước
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      const idx = HCMC_3D_NODES.findIndex((n) => n.id === selectedNode.id);
-                      const next = HCMC_3D_NODES[(idx + 1) % HCMC_3D_NODES.length];
+                      const idx = Math.max(0, HCMC_LIGHTBOX_NODES.findIndex((n) => n.id === selectedNode.id));
+                      const next = HCMC_LIGHTBOX_NODES[(idx + 1) % HCMC_LIGHTBOX_NODES.length];
                       if (next) focusHcmcNode(next);
                     }}
                     className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                   >
-                    Trạm tiếp ›
+                    Tiếp ›
                   </button>
                   <a
                     href={selectedNode.liveHref}
@@ -768,8 +794,24 @@ export const HcmcThreeNetworkStage: React.FC = () => {
                 <img
                   src={selectedNode.mockupSrc}
                   alt={`${selectedNode.label} - ${selectedNode.deviceLabel}`}
-                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
                 />
+              </div>
+              <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                {HCMC_LIGHTBOX_NODES.map((node) => (
+                  <button
+                    key={node.id}
+                    type="button"
+                    onClick={() => focusHcmcNode(node)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                      selectedNode.id === node.id
+                        ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                        : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                    }`}
+                  >
+                    {node.shortName}
+                  </button>
+                ))}
               </div>
             </div>
           </div>,

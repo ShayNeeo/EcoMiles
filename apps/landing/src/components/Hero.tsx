@@ -31,6 +31,89 @@ const STUDIO_24K_HOTSPOTS = [
   { id: 'galaxy_s26_ultra', label: 'Galaxy S26 Ultra' },
   { id: 'ipad_pro', label: 'iPad Pro M4' },
 ] as const;
+const HERO_STUDIO_LIGHTBOX_ASSETS = [
+  {
+    id: 'clean_stage',
+    shortTag: 'A. Studio 2.4K',
+    title: 'Sân Khấu 7 Thiết Bị Đồng Bộ (2400×1120 Studio Stage)',
+    subtitle: 'Phản chiếu sàn gương 7 thiết bị · Đồng bộ <50ms · $0 Map API',
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    downloadName: '00_ecomiles_clean_devices_hero_stage.png',
+    liveHref: '/dashboard/',
+  },
+  {
+    id: 'cover_banner',
+    shortTag: 'B. Ảnh Bìa OG',
+    title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+    subtitle: 'Chuẩn thương hiệu EcoMiles · B2B Urban Logistics & ISO 14083',
+    src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+    downloadName: '00_ecomiles_flagship_cover_banner.png',
+    liveHref: '/pitch-deck/',
+  },
+  {
+    id: 'macbook_pro',
+    shortTag: '1. MacBook Pro 16"',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+    subtitle: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    downloadName: '26_mockup_macbook_pro_16_b2b_tms.png',
+    liveHref: '/dashboard/',
+  },
+  {
+    id: 'windows_xps',
+    shortTag: '2. Windows XPS 16',
+    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+    subtitle: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    downloadName: '27_mockup_windows_xps_16_evsim_dual.png',
+    liveHref: '/benchmark/',
+  },
+  {
+    id: 'galaxy_zfold',
+    shortTag: '3. Galaxy Z Fold',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+    subtitle: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    downloadName: '24_mockup_samsung_zfold_tablet_cockpit.png',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
+  },
+  {
+    id: 'iphone_18_pro_max',
+    shortTag: '4. iPhone 18 Pro Max',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    subtitle: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    downloadName: '21_mockup_iphone_18_pro_max_driver.png',
+    liveHref: '/driver/',
+  },
+  {
+    id: 'iphone_duo',
+    shortTag: '5. iPhone Duo',
+    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+    subtitle: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    downloadName: '23_mockup_iphone_duo_dual_screen.png',
+    liveHref: '/driver/',
+  },
+  {
+    id: 'galaxy_s26_ultra',
+    shortTag: '6. Galaxy S26 Ultra',
+    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+    subtitle: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    downloadName: '22_mockup_samsung_s26_ultra_maps_live.png',
+    liveHref: '/driver/',
+  },
+  {
+    id: 'ipad_pro',
+    shortTag: '7. iPad Pro M4',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    subtitle: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    downloadName: '25_mockup_ipad_pro_tablet_tms.png',
+    liveHref: '/dashboard/',
+  },
+] as const;
 
 interface HeroProps {
   onOpenPilotModal: () => void;
@@ -41,7 +124,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'webgl_7devices' | 'studio_24k' | 'three_network'>('devices_banner');
   const [heroWebglDeviceId, setHeroWebglDeviceId] = useState<DeviceBannerFocusId>('all_banner');
   const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
-  const [isStudioLightboxOpen, setIsStudioLightboxOpen] = useState<boolean>(false);
+  const [studioLightboxIdx, setStudioLightboxIdx] = useState<number | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
@@ -313,7 +396,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setIsStudioLightboxOpen(true)}
+                      onClick={() => setStudioLightboxIdx(studioBannerVariant === 'clean_stage' ? 0 : 1)}
                       className="px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
                     >
                       🔍 Phóng To 2.4K
@@ -346,25 +429,37 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       ? 'EcoMiles 7-Device Clean Studio Stage (2400x1120) with Floor Reflections'
                       : 'EcoMiles 7-Device OpenGraph Flagship Cover Banner (2400x1260)'
                   }
-                  onClick={() => setIsStudioLightboxOpen(true)}
+                  onClick={() => setStudioLightboxIdx(studioBannerVariant === 'clean_stage' ? 0 : 1)}
                   title="Nhấn để phóng to 2.4K toàn màn hình"
                   className="w-full h-auto max-h-[310px] object-contain mx-auto rounded-xl cursor-zoom-in drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
                 <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
                   {STUDIO_24K_HOTSPOTS.map((spot, idx) => (
-                    <button
+                    <div
                       key={spot.id}
-                      type="button"
-                      onClick={() => {
-                        setHeroWebglDeviceId(spot.id);
-                        setHeroStageMode('webgl_7devices');
-                      }}
-                      className="px-2 py-0.5 rounded-lg bg-slate-900/90 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[9.5px] font-bold transition-colors cursor-pointer"
-                      title={`Bay camera 3D WebGL tới ${spot.label}`}
+                      className="inline-flex items-center rounded-lg overflow-hidden border border-white/10 bg-slate-900/90 text-[9.5px] font-bold"
                     >
-                      {idx + 1}. {spot.label} · 3D →
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => setStudioLightboxIdx(idx + 2)}
+                        className="px-1.5 py-0.5 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime transition-colors cursor-zoom-in"
+                        title={`Phóng to 2.4K: ${spot.label}`}
+                      >
+                        🔍
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHeroWebglDeviceId(spot.id);
+                          setHeroStageMode('webgl_7devices');
+                        }}
+                        className="px-2 py-0.5 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 transition-colors cursor-pointer"
+                        title={`Bay camera 3D WebGL tới ${spot.label}`}
+                      >
+                        {idx + 1}. {spot.label} · 3D →
+                      </button>
+                    </div>
                   ))}
                 </div>
                 <div className="w-full flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-ecomiles-lime/30 text-[10.5px] text-slate-300">
@@ -478,90 +573,101 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
           </motion.div>
         </div>
       </div>
-      {isStudioLightboxOpen &&
+      {studioLightboxIdx !== null &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Phóng to Ảnh Bìa Studio 2.4K"
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-            onClick={() => setIsStudioLightboxOpen(false)}
-          >
+        (() => {
+          const total = HERO_STUDIO_LIGHTBOX_ASSETS.length;
+          const safeIdx = ((studioLightboxIdx % total) + total) % total;
+          const activeAsset = HERO_STUDIO_LIGHTBOX_ASSETS[safeIdx];
+          return createPortal(
             <div
-              className="relative max-w-6xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Phóng to Ảnh Bìa Studio 2.4K: ${activeAsset.title}`}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setStudioLightboxIdx(null)}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                <div className="inline-flex flex-wrap items-center gap-1 p-0.5 rounded-xl bg-slate-900 border border-white/10 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => setStudioBannerVariant('clean_stage')}
-                    className={`px-3 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
-                      studioBannerVariant === 'clean_stage'
-                        ? 'bg-ecomiles-lime text-slate-950'
-                        : 'text-slate-300 hover:text-white'
-                    }`}
-                  >
-                    A. Sân Khấu 7 Thiết Bị 2400×1120
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStudioBannerVariant('cover_banner')}
-                    className={`px-3 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
-                      studioBannerVariant === 'cover_banner'
-                        ? 'bg-ecomiles-lime text-slate-950'
-                        : 'text-slate-300 hover:text-white'
-                    }`}
-                  >
-                    B. Ảnh Bìa OpenGraph 2400×1260
-                  </button>
+              <div
+                className="relative max-w-6xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{safeIdx + 1}/{total}] {activeAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.subtitle}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setStudioLightboxIdx((safeIdx - 1 + total) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStudioLightboxIdx((safeIdx + 1) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={activeAsset.liveHref}
+                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                    >
+                      Mở App Live ↗
+                    </a>
+                    <a
+                      href={activeAsset.src}
+                      download={activeAsset.downloadName}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                    >
+                      Tải PNG 2.4K →
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setStudioLightboxIdx(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      aria-label="Đóng phóng to 2.4K"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={
-                      studioBannerVariant === 'clean_stage'
-                        ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                        : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                    }
-                    download={
-                      studioBannerVariant === 'clean_stage'
-                        ? '00_ecomiles_clean_devices_hero_stage.png'
-                        : '00_ecomiles_flagship_cover_banner.png'
-                    }
-                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
-                  >
-                    Tải PNG 2.4K →
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setIsStudioLightboxOpen(false)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    aria-label="Đóng phóng to 2.4K"
-                  >
-                    ✕ Đóng
-                  </button>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeAsset.src}
+                    alt={activeAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {HERO_STUDIO_LIGHTBOX_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setStudioLightboxIdx(idx);
+                        if (idx === 0) setStudioBannerVariant('clean_stage');
+                        if (idx === 1) setStudioBannerVariant('cover_banner');
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortTag}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={
-                    studioBannerVariant === 'clean_stage'
-                      ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                      : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                  }
-                  alt={
-                    studioBannerVariant === 'clean_stage'
-                      ? 'EcoMiles 7-Device Clean Studio Stage (2400x1120) with Floor Reflections'
-                      : 'EcoMiles 7-Device OpenGraph Flagship Cover Banner (2400x1260)'
-                  }
-                  className="max-h-[76vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </section>
   );
 };
