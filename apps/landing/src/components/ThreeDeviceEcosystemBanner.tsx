@@ -143,6 +143,16 @@ const CLUSTER_MEMBERS: Record<Exclude<ClusterPresetId, 'none'>, DeviceBannerFocu
   field: ['iphone_18_pro_max', 'iphone_duo', 'galaxy_s26_ultra'],
 };
 
+const DEVICE_LABELS: Record<Exclude<DeviceBannerFocusId, 'all_banner'>, string> = {
+  macbook_pro: 'MacBook Pro 16" (Trung Tâm Điều Phối B2B)',
+  windows_xps: 'Windows 11 XPS 16 (Đối Chứng EVSIM)',
+  galaxy_zfold: 'Samsung Galaxy Z Fold (Buồng Lái Xe Tải)',
+  ipad_pro: 'iPad Pro M4 (Bảng Điều Khiển Kho Vận)',
+  iphone_18_pro_max: 'iPhone 18 Pro Max (Chặng Giữa >500kg)',
+  iphone_duo: 'iPhone Duo Gập Đôi (Đa Nhiệm 2 Màn Hình)',
+  galaxy_s26_ultra: 'Samsung Galaxy S26 Ultra (Dẫn Đường /maps)',
+};
+
 export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProps> = ({
   selectedDeviceId,
   onSelectDevice,
@@ -159,6 +169,8 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
   });
   const selectedIdRef = useRef<DeviceBannerFocusId>(selectedDeviceId);
   const clusterRef = useRef<ClusterPresetId>('none');
+  const hoveredIdRef = useRef<Exclude<DeviceBannerFocusId, 'all_banner'> | null>(null);
+  const [hoveredDeviceId, setHoveredDeviceId] = useState<Exclude<DeviceBannerFocusId, 'all_banner'> | null>(null);
   const [clusterOverride, setClusterOverride] = useState<{
     preset: Exclude<ClusterPresetId, 'none'>;
     forDeviceId: DeviceBannerFocusId;
@@ -465,6 +477,24 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       const ny = ((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
       pointerOffset.x = nx * 0.24;
       pointerOffset.y = -ny * 0.12;
+      pointerNdc.set(nx, -ny);
+      raycaster.setFromCamera(pointerNdc, camera);
+      const hits = raycaster.intersectObjects(deviceMeshes, false);
+      const hitId =
+        (hits[0]?.object.userData.deviceId as Exclude<DeviceBannerFocusId, 'all_banner'> | undefined) ?? null;
+      if (hoveredIdRef.current !== hitId) {
+        hoveredIdRef.current = hitId;
+        setHoveredDeviceId(hitId);
+      }
+    };
+
+    const onPointerLeave = () => {
+      pointerOffset.x = 0;
+      pointerOffset.y = 0;
+      if (hoveredIdRef.current !== null) {
+        hoveredIdRef.current = null;
+        setHoveredDeviceId(null);
+      }
     };
 
     const onClick = (e: MouseEvent) => {
@@ -483,6 +513,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     };
 
     container.addEventListener('pointermove', onPointerMove);
+    container.addEventListener('pointerleave', onPointerLeave);
     container.addEventListener('click', onClick);
 
     const onResize = () => {
@@ -536,23 +567,28 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         const baseY = m.userData.baseY as number;
         const baseRotY = m.userData.baseRotY as number;
         const devId = m.userData.deviceId as DeviceBannerFocusId;
+        const isHovered = hoveredIdRef.current === devId;
         const isFocused =
           activeCluster !== 'none'
             ? CLUSTER_MEMBERS[activeCluster].includes(devId)
             : sel === 'all_banner' || sel === devId;
         const mat = m.material as THREE.MeshBasicMaterial;
-        mat.opacity = THREE.MathUtils.lerp(mat.opacity, isFocused ? 1.0 : 0.16, 0.12);
+        mat.opacity = THREE.MathUtils.lerp(mat.opacity, isHovered ? 1.0 : isFocused ? 1.0 : 0.16, 0.12);
         m.rotation.y = THREE.MathUtils.lerp(
           m.rotation.y,
-          sel === devId ? 0 : baseRotY,
+          sel === devId || isHovered ? 0 : baseRotY,
           0.1
         );
+        const nextScale = THREE.MathUtils.lerp(m.scale.x, isHovered ? 1.045 : 1.0, 0.16);
+        m.scale.setScalar(nextScale);
 
         const ch = chassisMeshes[i];
         if (ch) {
           const chMat = ch.material as THREE.MeshBasicMaterial;
-          chMat.opacity = THREE.MathUtils.lerp(chMat.opacity, isFocused ? 0.92 : 0.12, 0.12);
+          chMat.color.setHex(isHovered ? 0xd6f65a : 0x1e293b);
+          chMat.opacity = THREE.MathUtils.lerp(chMat.opacity, isHovered ? 1.0 : isFocused ? 0.92 : 0.12, 0.12);
           ch.rotation.y = m.rotation.y;
+          ch.scale.setScalar(nextScale);
         }
 
         const refl = reflectionMeshes[i];
@@ -560,10 +596,11 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           const rMat = refl.material as THREE.ShaderMaterial;
           rMat.uniforms.uOpacity.value = THREE.MathUtils.lerp(
             rMat.uniforms.uOpacity.value as number,
-            isFocused ? 0.28 : 0.04,
+            isHovered ? 0.42 : isFocused ? 0.28 : 0.04,
             0.12
           );
           refl.rotation.y = m.rotation.y;
+          refl.scale.x = nextScale;
         }
 
         if (!prefersReducedMotion) {
@@ -594,6 +631,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       renderer.setAnimationLoop(null);
       timer.dispose();
       container.removeEventListener('pointermove', onPointerMove);
+      container.removeEventListener('pointerleave', onPointerLeave);
       container.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       grid.dispose();
@@ -623,6 +661,11 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
 
   return (
     <div className="relative w-full space-y-2">
+      {hoveredDeviceId && (
+        <div className="pointer-events-none absolute top-2 left-2.5 z-20 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-ecomiles-lime/60 text-[10.5px] font-bold text-ecomiles-lime shadow-lg backdrop-blur-md">
+          Đang trỏ: {DEVICE_LABELS[hoveredDeviceId]} · Bấm để bay camera tới
+        </div>
+      )}
       <div
         ref={mountRef}
         className="w-full h-[350px] sm:h-[385px] cursor-pointer rounded-xl overflow-hidden"

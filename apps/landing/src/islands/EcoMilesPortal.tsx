@@ -371,6 +371,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
   );
   const [loginLoadingRole, setLoginLoadingRole] = useState<AppRole | null>(null);
   const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
+  const [isFoldableDualView, setIsFoldableDualView] = useState<boolean>(false);
   const [authSessionInfo, setAuthSessionInfo] = useState<{
     token: string;
     account: string;
@@ -2433,6 +2434,23 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <KeyRound className="w-3.5 h-3.5 text-[#1971c2]" />
                         <span>PIN: 0000</span>
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => setIsFoldableDualView((prev) => !prev)}
+                        className={`px-2.5 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                          isFoldableDualView
+                            ? 'bg-[#14532d] text-[#d6f65a] border-[#14532d] shadow-xs'
+                            : 'bg-white text-[#111827] border-[#d1d5db] hover:bg-[#f3f4f6]'
+                        }`}
+                        title="Bật chế độ 2 màn hình gập đôi (iPhone Duo / Galaxy Z Fold): Màn hình đơn hàng + Màn hình dẫn đường trực tiếp (/maps)"
+                      >
+                        <SplitSquareVertical className="w-3.5 h-3.5 text-[#1971c2]" />
+                        <span>
+                          {isFoldableDualView
+                            ? 'Đang bật: Màn Hình Gập Đôi (iPhone Duo / Z Fold)'
+                            : 'Chế độ Gập Đôi (iPhone Duo / Z Fold)'}
+                        </span>
+                      </button>
                     </div>
                   </div>
 
@@ -2603,12 +2621,26 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         </span>
                       </div>
 
-                      {driverRoute && (
-                        <HcmcSingleRouteMapCanvas
-                          result={result}
-                          strategy={activeStrategy}
-                          selectedRouteId={driverRoute.route_id}
-                        />
+                      {isFoldableDualView ? (
+                        <div className="rounded-xl border-2 border-[#14532d] overflow-hidden bg-[#060d14] shadow-md">
+                          <div className="px-3 py-1.5 bg-[#14532d] text-white text-[11px] font-bold flex items-center justify-between">
+                            <span>Màn Hình Kép (iPhone Duo / Z Fold): Dẫn Đường Trực Tiếp (/maps)</span>
+                            <span className="text-[#d6f65a] font-mono">{driverRoute?.plate}</span>
+                          </div>
+                          <iframe
+                            src={`/maps/?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
+                            className="w-full h-[460px] border-0 bg-white"
+                            title="EcoMiles Foldable Dual-Screen Live Navigation"
+                          />
+                        </div>
+                      ) : (
+                        driverRoute && (
+                          <HcmcSingleRouteMapCanvas
+                            result={result}
+                            strategy={activeStrategy}
+                            selectedRouteId={driverRoute.route_id}
+                          />
+                        )
                       )}
 
                       {driverMileTier === 'middle_mile_truck' ? (

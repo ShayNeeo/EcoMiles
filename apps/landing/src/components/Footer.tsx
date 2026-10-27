@@ -1,11 +1,31 @@
 import React from 'react';
+import gsap from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ArrowRight, Compass, Download, FileSpreadsheet, Leaf, Mail, MapPin, Phone, ShieldCheck, Truck } from 'lucide-react';
 
+gsap.registerPlugin(ScrollToPlugin);
 interface FooterProps {
   onOpenPilotModal: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
+  const handleSmoothFooterScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetSelector: string) => {
+    if (typeof window === 'undefined') return;
+    const target = document.querySelector(targetSelector);
+    if (!target) return;
+    e.preventDefault();
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      target.scrollIntoView({ behavior: 'instant' });
+    } else {
+      gsap.to(window, {
+        duration: 0.85,
+        scrollTo: { y: target, offsetY: 64 },
+        ease: 'power3.inOut',
+      });
+    }
+  };
+
   return (
     <footer className="relative bg-slate-950 border-t border-white/10 pt-16 pb-10 px-4 sm:px-6 lg:px-8 text-slate-400 text-xs overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
@@ -110,27 +130,47 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
             <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Cấu Trúc &amp; Tài Liệu</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#solutions" className="hover:text-ecomiles-lime transition-colors">
+                <a
+                  href="#solutions"
+                  onClick={(e) => handleSmoothFooterScroll(e, '#solutions')}
+                  className="hover:text-ecomiles-lime transition-colors"
+                >
                   4 trụ cột công nghệ VRPTW &amp; GLEC
                 </a>
               </li>
               <li>
-                <a href="#calculator" className="hover:text-ecomiles-lime transition-colors">
+                <a
+                  href="#calculator"
+                  onClick={(e) => handleSmoothFooterScroll(e, '#calculator')}
+                  className="hover:text-ecomiles-lime transition-colors"
+                >
                   Công cụ tính ROI &amp; CO₂e tiết giảm
                 </a>
               </li>
               <li>
-                <a href="#workflow" className="hover:text-ecomiles-lime transition-colors">
+                <a
+                  href="#workflow"
+                  onClick={(e) => handleSmoothFooterScroll(e, '#workflow')}
+                  className="hover:text-ecomiles-lime transition-colors"
+                >
                   Quy trình vận hành 8 bước khép kín
                 </a>
               </li>
               <li>
-                <a href="#showcase" className="hover:text-ecomiles-lime transition-colors">
+                <a
+                  href="#showcase"
+                  onClick={(e) => handleSmoothFooterScroll(e, '#showcase')}
+                  className="hover:text-ecomiles-lime transition-colors"
+                >
                   Sân khấu 7 thiết bị (MacBook · Z Fold · Duo)
                 </a>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-ecomiles-lime transition-colors">
+                <a
+                  href="#pricing"
+                  onClick={(e) => handleSmoothFooterScroll(e, '#pricing')}
+                  className="hover:text-ecomiles-lime transition-colors"
+                >
                   Bảng giá SaaS &amp; Gói Pilot 4 - 6 tuần
                 </a>
               </li>
@@ -173,6 +213,31 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
               <span>Đăng Ký Dùng Thử Miễn Phí</span>
               <ArrowRight className="w-3 h-3" />
             </button>
+          </div>
+        </div>
+
+        {/* 7-Device Ecosystem Quick-Jump Bar */}
+        <div className="py-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+          <span className="font-bold text-slate-300">Hệ sinh thái 7 thiết bị:</span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {[
+              'MacBook Pro 16" (B2B TMS)',
+              'Windows 11 XPS 16 (EVSIM)',
+              'Samsung Galaxy Z Fold (Cockpit)',
+              'iPad Pro M4 (Kho Vận)',
+              'iPhone Duo (Gập Đôi)',
+              'iPhone 18 Pro Max (Chặng Giữa)',
+              'Galaxy S26 Ultra (Live /maps)',
+            ].map((label) => (
+              <a
+                key={label}
+                href="#showcase"
+                onClick={(e) => handleSmoothFooterScroll(e, '#showcase')}
+                className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-300 border border-white/10 font-semibold transition-colors"
+              >
+                {label}
+              </a>
+            ))}
           </div>
         </div>
 
