@@ -134,6 +134,8 @@ export const HcmcThreeNetworkStage: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<HcmcNodeSpec>(HCMC_3D_NODES[0]);
   const selectedNodeRef = useRef<HcmcNodeSpec>(HCMC_3D_NODES[0]);
   const [isAutoHubTour, setIsAutoHubTour] = useState<boolean>(false);
+  const [hoveredNode, setHoveredNode] = useState<HcmcNodeSpec | null>(null);
+  const hoveredNodeRef = useRef<HcmcNodeSpec | null>(null);
 
   const focusHcmcNode = (node: HcmcNodeSpec) => {
     selectedNodeRef.current = node;
@@ -378,16 +380,32 @@ export const HcmcThreeNetworkStage: React.FC = () => {
     });
 
     const targetRot = { x: 0.08, y: -0.25 };
+    const raycaster = new THREE.Raycaster();
+    const pointerNdc = new THREE.Vector2();
     const onPointerMove = (e: PointerEvent) => {
       const rect = container.getBoundingClientRect();
       const nx = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
       const ny = ((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
       targetRot.y = nx * 0.45;
       targetRot.x = ny * 0.22;
+      pointerNdc.set(nx, -ny);
+      raycaster.setFromCamera(pointerNdc, camera);
+      const hits = raycaster.intersectObjects(pickableMeshes, false);
+      const hitSpec =
+        (hits[0]?.object.userData.nodeSpec as HcmcNodeSpec | undefined) ?? null;
+      if (hoveredNodeRef.current?.id !== hitSpec?.id) {
+        hoveredNodeRef.current = hitSpec;
+        setHoveredNode(hitSpec);
+      }
+    };
+    const onPointerLeave = () => {
+      if (hoveredNodeRef.current !== null) {
+        hoveredNodeRef.current = null;
+        setHoveredNode(null);
+      }
     };
     container.addEventListener('pointermove', onPointerMove);
-    const raycaster = new THREE.Raycaster();
-    const pointerNdc = new THREE.Vector2();
+    container.addEventListener('pointerleave', onPointerLeave);
     const onClick = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       pointerNdc.x = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
@@ -451,6 +469,13 @@ export const HcmcThreeNetworkStage: React.FC = () => {
         );
       }
 
+      pickableMeshes.forEach((m) => {
+        if (m === banDisk) return;
+        const spec = m.userData.nodeSpec as HcmcNodeSpec | undefined;
+        const isHov = spec && hoveredNodeRef.current?.id === spec.id;
+        const nextScale = THREE.MathUtils.lerp(m.scale.x, isHov ? 1.24 : 1.0, 0.16);
+        m.scale.setScalar(nextScale);
+      });
       truckPucks.forEach((puck, idx) => {
         const cIdx = puck.userData.curveIdx as number;
         const offset = puck.userData.offset as number;
@@ -473,6 +498,7 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       renderer.setAnimationLoop(null);
       timer.dispose();
       container.removeEventListener('pointermove', onPointerMove);
+      container.removeEventListener('pointerleave', onPointerLeave);
       container.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       gridHelper.dispose();
@@ -520,11 +546,24 @@ export const HcmcThreeNetworkStage: React.FC = () => {
         </div>
       </div>
 
-      <div
-        ref={mountRef}
-        className="w-full h-[270px] sm:h-[310px] cursor-grab active:cursor-grabbing"
-        aria-label="Mô hình 3D mạng lưới giao nhận đô thị TP.HCM tránh vùng cấm tải QĐ 23/2018"
-      />
+      <div className="relative w-full">
+        {hoveredNode && (
+          <div className="pointer-events-none absolute top-2.5 left-3 z-10 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-ecomiles-lime/60 text-[10.5px] font-bold text-ecomiles-lime shadow-lg backdrop-blur-md">
+            Đang trỏ: {hoveredNode.label} · {hoveredNode.deviceLabel}
+          </div>
+        )}
+        <a
+          href="/maps/?vehicle=0&mode=navigate"
+          className="absolute top-2.5 right-3 z-10 px-2.5 py-1 rounded-lg bg-slate-950/90 hover:bg-ecomiles-lime hover:text-slate-950 border border-ecomiles-lime/40 text-[10.5px] font-extrabold text-ecomiles-lime transition-colors shadow-lg backdrop-blur-md"
+        >
+          Mở Bản Đồ /maps ↗
+        </a>
+        <div
+          ref={mountRef}
+          className="w-full h-[270px] sm:h-[310px] cursor-grab active:cursor-grabbing"
+          aria-label="Mô hình 3D mạng lưới giao nhận đô thị TP.HCM tránh vùng cấm tải QĐ 23/2018"
+        />
+      </div>
 
       {/* Interactive 7-Hub & 7-Device Corridor Telemetry Picker Strip */}
       <div className="px-3 py-2 border-t border-white/10 bg-slate-900/95 space-y-1.5 text-[10px]">

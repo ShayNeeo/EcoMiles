@@ -176,6 +176,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   const [selectedDeviceId, setSelectedDeviceId] = useState<DeviceViewId>('all_banner');
   const [stageRenderMode, setStageRenderMode] = useState<'spatial_2d' | 'webgl_3d' | 'studio_banner'>('spatial_2d');
   const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
+  const [isShowcaseAutoTour, setIsShowcaseAutoTour] = useState<boolean>(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageCardRef = useRef<HTMLDivElement | null>(null);
   const multiStageRef = useRef<HTMLDivElement | null>(null);
@@ -265,6 +266,29 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedDeviceId, stageRenderMode, activeHardwareIndex, hardwareDevices, wrapHardwareIndex, tiltRotateX, tiltRotateY]);
+
+  useEffect(() => {
+    if (!isShowcaseAutoTour) return;
+    const cycleIds: DeviceViewId[] = [
+      'all_banner',
+      'macbook_pro',
+      'windows_xps',
+      'galaxy_zfold',
+      'iphone_18_pro_max',
+      'iphone_duo',
+      'galaxy_s26_ultra',
+      'ipad_pro',
+    ];
+    const timer = window.setInterval(() => {
+      setSelectedDeviceId((prev) => {
+        const nextIdx = (cycleIds.indexOf(prev) + 1) % cycleIds.length;
+        tiltRotateX.set(0);
+        tiltRotateY.set(0);
+        return cycleIds[nextIdx];
+      });
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [isShowcaseAutoTour, tiltRotateX, tiltRotateY]);
   // GSAP ScrollTrigger 4-Beat Spatial Fan-Out (Office -> Handover -> Field -> Outcome)
   useGSAP(
     () => {
@@ -382,9 +406,22 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
               >
                 {/* 3-Mode Stage View Switcher: Interactive 2D Fan-Out vs 3D WebGL Camera Flight vs 2.4K Studio Banner */}
                 <div className="w-full flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-white/10 text-[11px]">
-                  <span className="font-bold text-slate-300 uppercase tracking-wider">
-                    Chế độ sân khấu thiết bị:
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-300 uppercase tracking-wider">
+                      Chế độ sân khấu thiết bị:
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsShowcaseAutoTour((prev) => !prev)}
+                      className={`px-2 py-0.5 rounded-lg font-bold text-[10px] cursor-pointer transition-colors border ${
+                        isShowcaseAutoTour
+                          ? 'bg-emerald-400 text-slate-950 border-emerald-300 shadow-sm'
+                          : 'bg-slate-950/90 text-ecomiles-lime border-ecomiles-lime/40 hover:bg-ecomiles-lime/15'
+                      }`}
+                    >
+                      {isShowcaseAutoTour ? '⏸ Đang xoay' : '▶ Tự động xoay'}
+                    </button>
+                  </div>
                   <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-950/90 border border-white/10">
                     <button
                       type="button"
@@ -494,7 +531,36 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     </div>
                   </div>
                 ) : activeDevice.id === 'all_banner' ? (
-                  <div className="w-full">
+                  <div className="w-full relative">
+                    {/* Animated SVG Data-Sync Bezier Network connecting Rear Office Laptops to 5 Foreground Field Devices */}
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 600 320"
+                      preserveAspectRatio="none"
+                      className="pointer-events-none absolute inset-0 w-full h-full z-0"
+                    >
+                      {[
+                        { sx: 150, sy: 95, ex: 70, ey: 250, d: 'M 150 95 C 150 170, 70 190, 70 250' },
+                        { sx: 150, sy: 95, ex: 185, ey: 255, d: 'M 150 95 C 150 180, 185 200, 185 255' },
+                        { sx: 150, sy: 95, ex: 300, ey: 260, d: 'M 150 95 C 180 180, 300 200, 300 260' },
+                        { sx: 450, sy: 95, ex: 300, ey: 260, d: 'M 450 95 C 420 180, 300 200, 300 260' },
+                        { sx: 450, sy: 95, ex: 415, ey: 255, d: 'M 450 95 C 450 180, 415 200, 415 255' },
+                        { sx: 450, sy: 95, ex: 530, ey: 250, d: 'M 450 95 C 450 170, 530 190, 530 250' },
+                      ].map((arc, idx) => (
+                        <g key={idx}>
+                          <path
+                            d={arc.d}
+                            fill="none"
+                            stroke="#d6f65a"
+                            strokeWidth={1.35}
+                            strokeOpacity={0.36}
+                            strokeDasharray="5 6"
+                          />
+                          <circle cx={arc.sx} cy={arc.sy} r={2.5} fill="#d6f65a" fillOpacity={0.65} />
+                          <circle cx={arc.ex} cy={arc.ey} r={2.8} fill="#34d399" fillOpacity={0.65} />
+                        </g>
+                      ))}
+                    </svg>
                     <div className="relative z-10 grid grid-cols-2 gap-3 sm:gap-4 items-end px-2 sm:px-4">
                       <div className="gsap-beat-office">
                         <motion.button

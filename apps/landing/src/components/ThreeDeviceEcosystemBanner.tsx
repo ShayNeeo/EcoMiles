@@ -247,6 +247,36 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     onSelectDevice(DEVICE_3D_SPECS[nextIdx].id);
   };
 
+  useEffect(() => {
+    if (selectedDeviceId === 'all_banner') return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const currentIdx = DEVICE_3D_SPECS.findIndex((d) => d.id === selectedIdRef.current);
+        const nextIdx =
+          currentIdx === -1
+            ? DEVICE_3D_SPECS.length - 1
+            : (currentIdx - 1 + DEVICE_3D_SPECS.length) % DEVICE_3D_SPECS.length;
+        onSelectRef.current(DEVICE_3D_SPECS[nextIdx].id);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const currentIdx = DEVICE_3D_SPECS.findIndex((d) => d.id === selectedIdRef.current);
+        const nextIdx = currentIdx === -1 ? 0 : (currentIdx + 1) % DEVICE_3D_SPECS.length;
+        onSelectRef.current(DEVICE_3D_SPECS[nextIdx].id);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        setIsAutoTour(false);
+        setClusterOverride(null);
+        clusterRef.current = 'none';
+        onSelectRef.current('all_banner');
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selectedDeviceId]);
+
   const applyClusterPreset = (preset: Exclude<ClusterPresetId, 'none'>) => {
     setIsAutoTour(false);
     setClusterOverride({ preset, forDeviceId: selectedDeviceId });
@@ -409,6 +439,18 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     const floorRing = new THREE.Mesh(ringGeo, ringMat);
     floorRing.position.y = -0.11;
     stageGroup.add(floorRing);
+
+    const innerRingGeo = new THREE.RingGeometry(2.35, 2.39, 64);
+    innerRingGeo.rotateX(-Math.PI / 2);
+    const innerRingMat = new THREE.MeshBasicMaterial({
+      color: 0xd6f65a,
+      transparent: true,
+      opacity: 0.26,
+      side: THREE.DoubleSide,
+    });
+    const innerFloorRing = new THREE.Mesh(innerRingGeo, innerRingMat);
+    innerFloorRing.position.y = -0.108;
+    stageGroup.add(innerFloorRing);
 
     // Animated Ground Focus Ring under the active 3D device
     const focusRingGeo = new THREE.RingGeometry(0.65, 0.78, 48);
@@ -866,6 +908,8 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       floorDiscMat.dispose();
       ringGeo.dispose();
       ringMat.dispose();
+      innerRingGeo.dispose();
+      innerRingMat.dispose();
       focusRingGeo.dispose();
       focusRingMat.dispose();
       holoBeamGeo.dispose();
