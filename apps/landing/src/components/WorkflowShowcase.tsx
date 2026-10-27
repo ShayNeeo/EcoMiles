@@ -67,6 +67,14 @@ const HARDWARE_EXECUTION_MOCKUPS: Record<
   string,
   { file: string; title: string; resolution: string; spec: string; liveHref: string; liveCta: string }
 > = {
+  'Studio 7 Thiết Bị': {
+    file: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (Studio 2.4K)',
+    resolution: '2400 × 1120 (Ultra-Wide High-DPI Stage)',
+    spec: '7 Thiết Bị Đồng Bộ <50ms · Sàn Gương Phản Chiếu · $0 Map API',
+    liveHref: '/dashboard/',
+    liveCta: 'Mở /dashboard',
+  },
   'MacBook Pro 16"': {
     file: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
     title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
@@ -499,6 +507,14 @@ export const WorkflowShowcase: React.FC = () => {
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1">
                     Thiết bị thực thi ({current.devices.length}/7):
                   </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveMockupDevice('Studio 7 Thiết Bị')}
+                    className="px-2 py-0.5 rounded-full text-[10.5px] font-extrabold border border-ecomiles-lime bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 transition-colors cursor-pointer"
+                    title="Xem Sân Khấu 7 Thiết Bị Đồng Bộ 2.4K (2400×1120)"
+                  >
+                    🔍 Sân Khấu 2.4K
+                  </button>
                   {[
                     'MacBook Pro 16"',
                     'Windows 11 XPS 16',
@@ -698,55 +714,94 @@ export const WorkflowShowcase: React.FC = () => {
       {activeMockupDevice &&
         HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice] &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].title}
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-            onClick={() => setActiveMockupDevice(null)}
-          >
+        (() => {
+          const mockupKeys = Object.keys(HARDWARE_EXECUTION_MOCKUPS);
+          const total = mockupKeys.length;
+          const activeIdx = Math.max(0, mockupKeys.indexOf(activeMockupDevice));
+          const activeItem = HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice];
+          return createPortal(
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={activeItem.title}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setActiveMockupDevice(null)}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                <div className="min-w-0">
-                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].title}
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{activeIdx + 1}/{total}] {activeItem.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">
+                      {activeItem.resolution} · {activeItem.spec}
+                    </div>
                   </div>
-                  <div className="text-[11px] text-slate-300 truncate">
-                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].resolution} ·{' '}
-                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].spec}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveMockupDevice(mockupKeys[(activeIdx - 1 + total) % total])
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveMockupDevice(mockupKeys[(activeIdx + 1) % total])
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={activeItem.liveHref}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                    >
+                      {activeItem.liveCta} ↗
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setActiveMockupDevice(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <a
-                    href={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].liveHref}
-                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
-                  >
-                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].liveCta} ↗
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setActiveMockupDevice(null)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                  >
-                    ✕ Đóng
-                  </button>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeItem.file}
+                    alt={activeItem.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {mockupKeys.map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setActiveMockupDevice(key)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        key === activeMockupDevice
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {key}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].file}
-                  alt={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].title}
-                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </section>
   );
 };

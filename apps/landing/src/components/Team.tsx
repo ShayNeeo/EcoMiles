@@ -278,52 +278,96 @@ export const Team: React.FC = () => {
       </div>
       {activeLightboxMember &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Mockup 2.4K: ${activeLightboxMember.name}`}
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-            onClick={() => setActiveLightboxMember(null)}
-          >
+        (() => {
+          const total = members.length;
+          const activeIdx = Math.max(
+            0,
+            members.findIndex((m) => m.name === activeLightboxMember.name)
+          );
+          return createPortal(
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Mockup 2.4K: ${activeLightboxMember.name}`}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setActiveLightboxMember(null)}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                <div className="min-w-0">
-                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    {activeLightboxMember.name} · {activeLightboxMember.ownershipBadge}
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{activeIdx + 1}/{total}] {activeLightboxMember.name} ·{' '}
+                      {activeLightboxMember.ownershipBadge}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">
+                      {activeLightboxMember.mockupTitle}
+                    </div>
                   </div>
-                  <div className="text-[11px] text-slate-300 truncate">{activeLightboxMember.mockupTitle}</div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveLightboxMember(members[(activeIdx - 1 + total) % total])
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveLightboxMember(members[(activeIdx + 1) % total])
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={activeLightboxMember.liveSubsystemHref}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                    >
+                      {activeLightboxMember.liveSubsystemLabel} ↗
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setActiveLightboxMember(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <a
-                    href={activeLightboxMember.liveSubsystemHref}
-                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
-                  >
-                    {activeLightboxMember.liveSubsystemLabel} ↗
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setActiveLightboxMember(null)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                  >
-                    ✕ Đóng
-                  </button>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeLightboxMember.mockupSrc}
+                    alt={activeLightboxMember.mockupTitle}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {members.map((m, idx) => (
+                    <button
+                      key={m.name}
+                      type="button"
+                      onClick={() => setActiveLightboxMember(m)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        m.name === activeLightboxMember.name
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {String(idx + 1).padStart(2, '0')}. {m.name}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={activeLightboxMember.mockupSrc}
-                  alt={activeLightboxMember.mockupTitle}
-                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </section>
   );
 };
