@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { ArrowUpRight, Laptop, Smartphone, SplitSquareVertical, Tablet, X } from 'lucide-react';
 
@@ -89,7 +89,22 @@ const HERO_DEVICES: HeroDeviceSpec[] = [
 export const HeroMultiDeviceStage: React.FC = () => {
   const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]);
   const [inspectedDevice, setInspectedDevice] = useState<HeroDeviceSpec | null>(null);
+  const [isPointerInside, setIsPointerInside] = useState<boolean>(false);
 
+  // Auto-Cycling 7-Device Spotlight Tour (pauses on pointer hover, inspect modal, or reduced motion)
+  useEffect(() => {
+    if (isPointerInside || inspectedDevice) return undefined;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined;
+    }
+    const interval = window.setInterval(() => {
+      setHoveredDevice((prev) => {
+        const idx = HERO_DEVICES.findIndex((d) => d.id === prev.id);
+        return HERO_DEVICES[(idx + 1) % HERO_DEVICES.length];
+      });
+    }, 2800);
+    return () => window.clearInterval(interval);
+  }, [isPointerInside, inspectedDevice]);
   // 3-Plane Differential Parallax + Overlapping Occlusion (scroll-craft standing hero requirement)
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -107,8 +122,8 @@ export const HeroMultiDeviceStage: React.FC = () => {
   // Plane 3 (Foreground Field Phones): strong ±22px movement
   const frontX = useTransform(smoothX, [-0.5, 0.5], [-22, 22]);
   const frontY = useTransform(smoothY, [-0.5, 0.5], [-12, 12]);
-
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    setIsPointerInside(true);
     const rect = e.currentTarget.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
     const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
@@ -117,6 +132,7 @@ export const HeroMultiDeviceStage: React.FC = () => {
   };
 
   const handlePointerLeave = () => {
+    setIsPointerInside(false);
     pointerX.set(0);
     pointerY.set(0);
   };
@@ -167,7 +183,13 @@ export const HeroMultiDeviceStage: React.FC = () => {
               transition={{ type: 'spring', stiffness: 380, damping: 24 }}
               className="group relative text-center cursor-pointer focus:outline-none"
             >
-              <div className="mb-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-950/90 border border-white/15 group-hover:border-ecomiles-lime text-[9.5px] font-bold text-slate-200 group-hover:text-ecomiles-lime transition-colors shadow-md">
+              <div
+                className={`mb-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[9.5px] font-bold transition-colors shadow-md ${
+                  hoveredDevice.id === dev.id
+                    ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                    : 'bg-slate-950/90 border-white/15 text-slate-200 group-hover:border-ecomiles-lime group-hover:text-ecomiles-lime'
+                }`}
+              >
                 {renderDeviceIcon(dev.id)}
                 <span>{dev.shortTag}</span>
               </div>

@@ -360,8 +360,8 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     />
                   </div>
                 ) : activeDevice.id === 'all_banner' ? (
-                  <div className="w-full space-y-4">
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4 items-end">
+                  <div className="w-full">
+                    <div className="relative z-10 grid grid-cols-2 gap-3 sm:gap-4 items-end px-2 sm:px-4">
                       <div className="gsap-beat-office">
                         <motion.button
                           type="button"
@@ -378,7 +378,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <img
                             src="/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png"
                             alt="MacBook Pro 16 inch B2B CRM/TMS"
-                            className="w-full h-auto max-h-[195px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.75)]"
+                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
                           />
                         </motion.button>
                       </div>
@@ -399,14 +399,14 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <img
                             src="/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png"
                             alt="Dell XPS 16 Windows 11 EVSIM Dual Simulator"
-                            className="w-full h-auto max-h-[195px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.75)]"
+                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
                           />
                         </motion.button>
                       </div>
                     </div>
 
                     {/* Tier 2 & 3 (Mid Handover Tablets + Foreground Field Phones): 5 Interactive Devices */}
-                    <div className="flex flex-wrap sm:flex-nowrap items-end justify-center gap-3 sm:gap-4 pt-2 border-t border-white/10">
+                    <div className="relative z-20 -mt-7 sm:-mt-9 flex flex-wrap sm:flex-nowrap items-end justify-center gap-3 sm:gap-4">
                       <div className="gsap-beat-handover shrink-0">
                         <motion.button
                           type="button"
@@ -419,7 +419,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <img
                             src="/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png"
                             alt="Samsung Galaxy Z Fold Unfolded Truck Map Cockpit"
-                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
                           />
                           <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             3. Galaxy Z Fold
@@ -439,7 +439,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <img
                             src="/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png"
                             alt="iPhone 18 Pro Max Driver App"
-                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
                           />
                           <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             4. iPhone 18 Pro Max
@@ -459,7 +459,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <img
                             src="/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png"
                             alt="iPhone Duo Dual-Screen Foldable"
-                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
+                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.95)]"
                           />
                           <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 text-[9.5px] font-extrabold whitespace-nowrap">
                             5. iPhone Duo (Gập Đôi)
@@ -479,7 +479,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <img
                             src="/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png"
                             alt="Samsung Galaxy S26 Ultra Live Truck Navigation"
-                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
                           />
                           <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             6. Galaxy S26 Ultra
@@ -499,7 +499,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <img
                             src="/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png"
                             alt="iPad Pro M4 Tablet Fleet Dashboard"
-                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
                           />
                           <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             7. iPad Pro M4

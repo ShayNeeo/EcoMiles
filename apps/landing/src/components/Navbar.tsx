@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { Leaf, Menu, X, ArrowRight, Calculator, LayoutDashboard } from 'lucide-react';
 
+gsap.registerPlugin(ScrollToPlugin);
 interface NavbarProps {
   onOpenPilotModal: () => void;
   onOpenPortalModal?: () => void;
@@ -20,6 +23,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
   const [activeSection, setActiveSection] = useState<string>('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const handleSmoothNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, sectionId: string) => {
+    if (typeof window === 'undefined') return;
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    setActiveSection(sectionId);
+    setMobileMenuOpen(false);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      target.scrollIntoView({ behavior: 'instant' });
+    } else {
+      gsap.to(window, {
+        duration: 0.8,
+        scrollTo: { y: target, offsetY: 64 },
+        ease: 'power3.inOut',
+      });
+    }
+  };
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -89,6 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                 <a
                   key={link.name}
                   href={link.href}
+                  onClick={(e) => handleSmoothNavClick(e, link.href, link.id)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`relative whitespace-nowrap rounded-full px-2.5 py-2 text-xs font-semibold transition-all duration-300 xl:px-3 ${
                     isActive
