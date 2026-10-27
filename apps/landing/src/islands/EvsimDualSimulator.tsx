@@ -401,6 +401,17 @@ export function EvsimDualSimulator({
       src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
     },
   ] as const;
+  useEffect(() => {
+    if (evsimLightboxIdx === null) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      const total = EVSIM_HARDWARE_MOCKUP_ASSETS.length;
+      if (e.key === 'Escape') setEvsimLightboxIdx(null);
+      else if (e.key === 'ArrowLeft') setEvsimLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setEvsimLightboxIdx((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [evsimLightboxIdx, EVSIM_HARDWARE_MOCKUP_ASSETS.length]);
   const [uploadNotice, setUploadNotice] = useState<string>('');
   const [viewTransform, setViewTransform] = useState<{ zoom: number; panX: number; panY: number }>({
     zoom: 1,

@@ -453,6 +453,17 @@ export function EcoMilesTruckMapNavigator({
     windows_xps: 3,
     macbook_pro: 4,
   };
+  useEffect(() => {
+    if (mapsLightboxAssetIdx === null) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      const total = MAPS_HARDWARE_MOCKUP_ASSETS.length;
+      if (e.key === 'Escape') setMapsLightboxAssetIdx(null);
+      else if (e.key === 'ArrowLeft') setMapsLightboxAssetIdx((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setMapsLightboxAssetIdx((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mapsLightboxAssetIdx, MAPS_HARDWARE_MOCKUP_ASSETS.length]);
   const [tileTick, setTileTick] = useState<number>(0);
   const [voiceBanner, setVoiceBanner] = useState<string>('');
   const [overviewTransform, setOverviewTransform] = useState<{ zoom: number; panX: number; panY: number }>({

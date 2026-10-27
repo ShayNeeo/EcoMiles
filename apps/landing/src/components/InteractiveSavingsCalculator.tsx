@@ -10,6 +10,80 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 interface CalculatorProps {
   onOpenPilotModal: () => void;
 }
+const CALC_HARDWARE_MOCKUP_ASSETS = [
+  {
+    id: 'studio_stage',
+    shortLabel: '0. Studio 7 Thiết Bị',
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
+    spec: '2400×1120 · Đồng bộ thời gian thực <50ms · $0 Map API',
+    href: '/dashboard/',
+    cta: 'Mở Trung Tâm B2B (/dashboard)',
+  },
+  {
+    id: 'macbook_pro',
+    shortLabel: '1. MacBook Pro 16"',
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+    spec: '3456×2234 · Điều phối B2B TMS & Báo cáo ESG 3 Sheet',
+    href: '/dashboard/',
+    cta: 'Mở /dashboard',
+  },
+  {
+    id: 'windows_xps',
+    shortLabel: '2. Windows XPS 16',
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+    spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
+    href: '/benchmark/',
+    cta: 'Mở /benchmark',
+  },
+  {
+    id: 'ipad_pro',
+    shortLabel: '3. iPad Pro M4',
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+    href: '/dashboard/',
+    cta: 'Mở /dashboard',
+  },
+  {
+    id: 'galaxy_zfold',
+    shortLabel: '4. Galaxy Z Fold',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+    spec: '2160×1856 · Bản đồ xe tải mở OpenTruck (/maps)',
+    href: '/maps/?vehicle=0&mode=navigate',
+    cta: 'Mở /maps Live',
+  },
+  {
+    id: 'iphone_duo',
+    shortLabel: '5. iPhone Duo',
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+    spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+    href: '/driver/',
+    cta: 'Mở /driver',
+  },
+  {
+    id: 'iphone_18_pro_max',
+    shortLabel: '6. iPhone 18 Pro Max',
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
+    href: '/driver/',
+    cta: 'Mở /driver',
+  },
+  {
+    id: 'galaxy_s26_ultra',
+    shortLabel: '7. Galaxy S26 Ultra',
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+    spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+    href: '/driver/',
+    cta: 'Mở /driver',
+  },
+] as const;
 
 export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpenPilotModal }) => {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -483,52 +557,104 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
       </div>
       {calcLightboxAsset &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={calcLightboxAsset.title}
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-            onClick={() => setCalcLightboxAsset(null)}
-          >
+        (() => {
+          const total = CALC_HARDWARE_MOCKUP_ASSETS.length;
+          const foundIdx = CALC_HARDWARE_MOCKUP_ASSETS.findIndex(
+            (a) => a.src === calcLightboxAsset.src
+          );
+          const safeIdx = foundIdx >= 0 ? foundIdx : 0;
+          return createPortal(
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={calcLightboxAsset.title}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setCalcLightboxAsset(null)}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                <div className="min-w-0">
-                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    {calcLightboxAsset.title}
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{safeIdx + 1}/{total}] {calcLightboxAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{calcLightboxAsset.spec}</div>
                   </div>
-                  <div className="text-[11px] text-slate-300 truncate">{calcLightboxAsset.spec}</div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCalcLightboxAsset(
+                          CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx - 1 + total) % total]
+                        )
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCalcLightboxAsset(
+                          CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx + 1) % total]
+                        )
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={calcLightboxAsset.src}
+                      download
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                    >
+                      Tải PNG 2.4K
+                    </a>
+                    <a
+                      href={calcLightboxAsset.href}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                    >
+                      {calcLightboxAsset.cta} ↗
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setCalcLightboxAsset(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <a
-                    href={calcLightboxAsset.href}
-                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
-                  >
-                    {calcLightboxAsset.cta} ↗
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setCalcLightboxAsset(null)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                  >
-                    ✕ Đóng
-                  </button>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={calcLightboxAsset.src}
+                    alt={calcLightboxAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {CALC_HARDWARE_MOCKUP_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setCalcLightboxAsset(item)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={calcLightboxAsset.src}
-                  alt={calcLightboxAsset.title}
-                  className="max-h-[74vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </section>
   );
 };

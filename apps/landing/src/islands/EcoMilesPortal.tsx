@@ -435,6 +435,17 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
     },
   ] as const;
+  useEffect(() => {
+    if (portalLightboxIdx === null) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      const total = PORTAL_LIGHTBOX_ASSETS.length;
+      if (e.key === 'Escape') setPortalLightboxIdx(null);
+      else if (e.key === 'ArrowLeft') setPortalLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setPortalLightboxIdx((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [portalLightboxIdx, PORTAL_LIGHTBOX_ASSETS.length]);
   const [authSessionInfo, setAuthSessionInfo] = useState<{
     token: string;
     account: string;
