@@ -573,76 +573,147 @@ def make_slide_canvas(title: str, subtitle: str, kpi_pill: str) -> Image.Image:
     return canvas
 
 
+def paste_studio_device_with_reflection(
+    canvas: Image.Image,
+    device_img: Image.Image,
+    pos: tuple[int, int],
+    floor_y: int,
+    label_text: str = "",
+    label_pos: str = "bottom",
+) -> None:
+    x, y = pos
+    w, h = device_img.size
+
+    # 1. Glossy Studio Floor Mirror Reflection (flipped vertically + vertical alpha gradient fade)
+    refl_h = min(130, h // 3)
+    bottom_slice = device_img.crop((0, h - refl_h, w, h)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    refl_alpha = bottom_slice.getchannel("A")
+    grad = Image.new("L", (w, refl_h), 0)
+    gd = ImageDraw.Draw(grad)
+    for ry in range(refl_h):
+        a_val = int(42 * (1.0 - (ry / refl_h) ** 1.35))
+        gd.line([(0, ry), (w - 1, ry)], fill=a_val)
+    combined_alpha = Image.fromarray(
+        bytes(min(a, b) for a, b in zip(refl_alpha.tobytes(), grad.tobytes())),
+        mode="L",
+    ).resize((w, refl_h)) if False else grad
+    bottom_slice.putalpha(combined_alpha)
+    bottom_slice = bottom_slice.filter(ImageFilter.GaussianBlur(2.5))
+    refl_y = max(y + h - 4, floor_y)
+    if refl_y + refl_h < canvas.size[1]:
+        canvas.alpha_composite(bottom_slice, (x, refl_y))
+
+    # 2. Deep Studio Drop Shadow
+    shadow = Image.new("RGBA", (w + 64, h + 64), (0, 0, 0, 0))
+    alpha = device_img.getchannel("A")
+    black_sil = Image.new("RGBA", (w, h), (2, 6, 14, 185))
+    shadow.paste(black_sil, (32, 36), alpha)
+    shadow = shadow.filter(ImageFilter.GaussianBlur(18))
+    canvas.alpha_composite(shadow, (x - 32, y - 32))
+
+    # 3. Crisp Device Hardware Frame + In-App Screen
+    canvas.alpha_composite(device_img, (x, y))
+
+    # 4. Refined Frosted-Glass Studio Pill (Zero Neon Clutter)
+    if label_text:
+        d = ImageDraw.Draw(canvas)
+        f_lbl = get_font(True, 13)
+        tb = d.textbbox((0, 0), label_text, font=f_lbl)
+        bw = (tb[2] - tb[0]) + 24
+        bh = 28
+        bx = x + (w - bw) // 2
+        by = (y + h + 12) if label_pos == "bottom" else (y - 38)
+        d.rounded_rectangle(
+            [bx, by, bx + bw, by + bh],
+            radius=14,
+            fill=(15, 23, 42, 230),
+            outline=(214, 246, 90, 140),
+            width=1,
+        )
+        d.text((bx + 12, by + 5), label_text, fill=(243, 244, 246, 255), font=f_lbl)
+
+
 def build_master_cover_banner() -> str:
     W, H = 2400, 1260
-    banner = Image.new("RGBA", (W, H), (11, 17, 28, 255))
+    floor_y = 995
+    banner = Image.new("RGBA", (W, H), (6, 11, 19, 255))
 
+    # Volumetric Studio Spotlight + Perspective Horizon Glow
     glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
-    gd.ellipse([350, 120, 2050, 1080], fill=(20, 83, 45, 110))
-    gd.ellipse([750, 260, 1650, 920], fill=(214, 246, 90, 38))
-    glow = glow.filter(ImageFilter.GaussianBlur(90))
+    gd.ellipse([280, 90, 2120, 1060], fill=(16, 78, 46, 125))
+    gd.ellipse([720, 220, 1680, 940], fill=(214, 246, 90, 42))
+    glow = glow.filter(ImageFilter.GaussianBlur(95))
     banner = Image.alpha_composite(banner, glow)
 
     bd = ImageDraw.Draw(banner)
-    bd.rectangle([0, 1055, W, H], fill=(8, 12, 20, 255))
-    bd.line([(0, 1055), (W, 1055)], fill=(214, 246, 90, 95), width=2)
+    # Studio Floor Plane + Perspective Grid Lines
+    bd.rectangle([0, floor_y, W, H], fill=(4, 8, 15, 245))
+    for gx in range(-400, W + 400, 160):
+        bd.line([(W // 2 + (gx - W // 2) // 2, floor_y), (gx, H)], fill=(34, 197, 94, 22), width=1)
+    for gy in [floor_y + 35, floor_y + 85, floor_y + 150, floor_y + 225]:
+        bd.line([(0, gy), (W, gy)], fill=(34, 197, 94, 18), width=1)
+    bd.line([(0, floor_y), (W, floor_y)], fill=(214, 246, 90, 110), width=2)
 
-    bd.rounded_rectangle([60, 36, 440, 78], radius=21, fill=(20, 83, 45, 240), outline=(214, 246, 90, 220), width=2)
-    bd.text((82, 46), "ECOMILES MULTI-DEVICE B2B PLATFORM", fill=(214, 246, 90, 255), font=get_font(True, 16))
-
+    # Minimalist Apple-Keynote Header + 3 Hero Proof Numbers
+    bd.rounded_rectangle([64, 34, 430, 72], radius=19, fill=(20, 83, 45, 220), outline=(214, 246, 90, 180), width=1)
+    bd.text((84, 43), "ECOMILES MULTI-DEVICE ECOSYSTEM", fill=(214, 246, 90, 255), font=get_font(True, 15))
     bd.text(
-        (60, 92),
-        "Một Nền Tảng Đồng Bộ Trên Mọi Thiết Bị Điều Phối & Buồng Lái Tài Xế",
+        (64, 84),
+        "Một Nền Tảng Đồng Bộ Từ Trung Tâm Điều Phối Đến Buồng Lái Tài Xế",
         fill=(255, 255, 255, 255),
-        font=get_font(True, 38),
+        font=get_font(True, 36),
     )
     bd.text(
-        (60, 144),
-        "MacBook Pro 16\"  ·  Windows 11 XPS  ·  Samsung Galaxy Z Fold  ·  iPad Pro  ·  iPhone Duo  ·  iPhone 18 Pro Max  ·  Galaxy S26 Ultra",
+        (64, 132),
+        "MacBook Pro 16\"  ·  Windows 11 XPS 16  ·  Galaxy Z Fold  ·  iPad Pro M4  ·  iPhone Duo  ·  iPhone 18 Pro Max  ·  Galaxy S26 Ultra",
         fill=(156, 163, 175, 255),
-        font=get_font(False, 19),
+        font=get_font(False, 18),
     )
 
     kpis = [
-        ("-34.9%", "Quãng đường (243.7 vs 374.4 km)"),
-        ("-39.2%", "Phát thải CO₂e (Chuẩn GLEC v3.2)"),
-        ("0 Lỗi", "Vi phạm Cấm tải QĐ 23/2018"),
+        ("-34.9%", "Quãng đường (243.7 km)"),
+        ("-39.2%", "Phát thải CO₂e (GLEC v3.2)"),
+        ("0 Lỗi", "Vi phạm giờ cấm QĐ 23/2018"),
     ]
     for i, (kv, kl) in enumerate(kpis):
-        kx = 1470 + i * 295
-        bd.rounded_rectangle([kx, 48, kx + 280, 152], radius=16, fill=(17, 24, 39, 235), outline=(214, 246, 90, 160), width=2)
-        bd.text((kx + 20, 60), kv, fill=(214, 246, 90, 255), font=get_font(True, 34))
-        bd.text((kx + 20, 110), kl, fill=(209, 213, 219, 255), font=get_font(False, 14))
+        kx = 1530 + i * 272
+        bd.rounded_rectangle([kx, 42, kx + 256, 140], radius=16, fill=(15, 23, 42, 220), outline=(255, 255, 255, 38), width=1)
+        bd.text((kx + 20, 52), kv, fill=(214, 246, 90, 255), font=get_font(True, 32))
+        bd.text((kx + 20, 98), kl, fill=(209, 213, 219, 255), font=get_font(False, 14))
 
+    # Tier 1 (Rear Apex): MacBook Pro 16" (Left-Center) + Windows 11 XPS 16 (Right-Center)
     mbp = render_macbook_pro_16(os.path.join(SHOT_DIR, "01_desktop_b2b_tms_fleet_overview.png"), 760, 475)
     xps = render_windows_xps_laptop(os.path.join(SHOT_DIR, "02_desktop_b2b_tms_evsim_dual_simulator.png"), 760, 475)
-    paste_with_shadow_and_badge(banner, mbp, (310, 235), "MACBOOK PRO 16\" · Điều Phối Đội Xe B2B CRM/TMS", "top")
-    paste_with_shadow_and_badge(banner, xps, (1280, 235), "WINDOWS 11 XPS 16 · Đối Chứng 2 Bên EVSIM", "top")
+    paste_studio_device_with_reflection(banner, mbp, (315, 225), floor_y, "MacBook Pro 16\" · Điều Phối Đội Xe B2B", "top")
+    paste_studio_device_with_reflection(banner, xps, (1285, 225), floor_y, "Windows 11 XPS 16 · Đối Chứng 2 Bên EVSIM", "top")
 
-    zfold = render_samsung_zfold_tablet(os.path.join(SHOT_DIR, "11_tablet_maps_live_navigate_cockpit.png"), 390, 520)
-    ipad = render_ipad_pro_tablet(os.path.join(SHOT_DIR, "09_tablet_b2b_tms_fleet_overview.png"), 390, 520)
-    paste_with_shadow_and_badge(banner, zfold, (56, 440), "SAMSUNG GALAXY Z FOLD · Bản Đồ (/maps)", "bottom")
-    paste_with_shadow_and_badge(banner, ipad, (1925, 440), "iPAD PRO TABLET · Quản Trị Đội Xe", "bottom")
+    # Tier 2 (Mid Wings): Samsung Galaxy Z Fold (Left Wing) + iPad Pro M4 (Right Wing)
+    zfold = render_samsung_zfold_tablet(os.path.join(SHOT_DIR, "11_tablet_maps_live_navigate_cockpit.png"), 384, 512)
+    ipad = render_ipad_pro_tablet(os.path.join(SHOT_DIR, "09_tablet_b2b_tms_fleet_overview.png"), 384, 512)
+    paste_studio_device_with_reflection(banner, zfold, (56, 430), floor_y, "Galaxy Z Fold · Bản Đồ (/maps)", "bottom")
+    paste_studio_device_with_reflection(banner, ipad, (1930, 430), floor_y, "iPad Pro M4 · Quản Trị Kho Vận", "bottom")
 
-    ip18 = render_iphone_18_pro_max(os.path.join(SHOT_DIR, "13_mobile_driver_middle_mile_hud.png"), 235, 508)
+    # Tier 3 (Foreground Center Focal Trio): iPhone 18 Pro Max + iPhone Duo Dual-Screen + Galaxy S26 Ultra
+    ip18 = render_iphone_18_pro_max(os.path.join(SHOT_DIR, "13_mobile_driver_middle_mile_hud.png"), 232, 502)
     duo = render_iphone_duo_dual_screen(
         os.path.join(SHOT_DIR, "13_mobile_driver_middle_mile_hud.png"),
         os.path.join(SHOT_DIR, "15_mobile_maps_live_follow_truck_nav.png"),
-        235,
-        508,
+        232,
+        502,
     )
-    s26 = render_samsung_s26_ultra(os.path.join(SHOT_DIR, "14_mobile_driver_last_mile_gmaps_waypoints.png"), 235, 508)
+    s26 = render_samsung_s26_ultra(os.path.join(SHOT_DIR, "14_mobile_driver_last_mile_gmaps_waypoints.png"), 232, 502)
 
-    paste_with_shadow_and_badge(banner, ip18, (555, 460), "iPHONE 18 PRO MAX · Chặng Giữa (>500kg)", "bottom")
-    paste_with_shadow_and_badge(banner, duo, (935, 460), "iPHONE DUO DUAL-SCREEN · /driver + /maps Live", "bottom")
-    paste_with_shadow_and_badge(banner, s26, (1545, 460), "GALAXY S26 ULTRA · Chặng Cuối (<=500kg)", "bottom")
+    paste_studio_device_with_reflection(banner, ip18, (560, 450), floor_y, "iPhone 18 Pro Max · Chặng Giữa", "bottom")
+    paste_studio_device_with_reflection(banner, duo, (940, 450), floor_y, "iPhone Duo Dual-Screen · /driver + /maps", "bottom")
+    paste_studio_device_with_reflection(banner, s26, (1548, 450), floor_y, "Galaxy S26 Ultra · Chặng Cuối", "bottom")
+
     bd = ImageDraw.Draw(banner)
     bd.text(
-        (60, 1185),
+        (64, 1205),
         "EcoMiles Platform  ·  100% Đường Phố Thật OSRM TP.HCM ($0 Map API)  ·  Zero-Knowledge AES-256-GCM  ·  https://ecomiles.pages.dev",
-        fill=(209, 213, 219, 255),
-        font=get_font(True, 18),
+        fill=(156, 163, 175, 230),
+        font=get_font(True, 16),
     )
 
     p0 = os.path.join(SHOT_DIR, "00_ecomiles_flagship_cover_banner.png")

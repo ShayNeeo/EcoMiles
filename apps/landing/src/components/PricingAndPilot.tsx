@@ -214,45 +214,93 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 Doanh nghiệp đăng ký module riêng. Phí được dự toán theo tổng số đơn kết nối, khối lượng bình quân và quãng đường vận chuyển.
               </p>
 
-              <div className="my-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div>
-                  <label htmlFor="backhaul-orders" className="mb-1.5 block text-xs font-semibold text-slate-300">
-                    Số đơn/tháng
-                  </label>
-                  <input
-                    id="backhaul-orders"
-                    type="number"
-                    min="1"
-                    value={monthlyOrders}
-                    onChange={(event) => setMonthlyOrders(Math.max(1, Number(event.target.value)))}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-ecomiles-lime"
-                  />
+              <div className="my-5 space-y-3">
+                <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                  <span className="text-slate-400 font-semibold">Mẫu sản lượng chiều về:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMonthlyOrders(120);
+                      setAverageWeight(85);
+                      setAverageDistance(18);
+                    }}
+                    className="px-2 py-0.5 rounded bg-slate-950 border border-ecomiles-lime/35 text-ecomiles-lime font-bold cursor-pointer"
+                  >
+                    120 đơn Kho Lạnh
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMonthlyOrders(500);
+                      setAverageWeight(60);
+                      setAverageDistance(22);
+                    }}
+                    className="px-2 py-0.5 rounded bg-slate-950 border border-white/10 text-slate-300 font-semibold cursor-pointer"
+                  >
+                    500 đơn Nội Đô
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMonthlyOrders(1500);
+                      setAverageWeight(110);
+                      setAverageDistance(28);
+                    }}
+                    className="px-2 py-0.5 rounded bg-slate-950 border border-white/10 text-slate-300 font-semibold cursor-pointer"
+                  >
+                    1.500 đơn Liên Quận
+                  </button>
                 </div>
-                <div>
-                  <label htmlFor="backhaul-weight" className="mb-1.5 block text-xs font-semibold text-slate-300">
-                    Kg/đơn
-                  </label>
-                  <input
-                    id="backhaul-weight"
-                    type="number"
-                    min="1"
-                    value={averageWeight}
-                    onChange={(event) => setAverageWeight(Math.max(1, Number(event.target.value)))}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-ecomiles-lime"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="backhaul-distance" className="mb-1.5 block text-xs font-semibold text-slate-300">
-                    Km/đơn
-                  </label>
-                  <input
-                    id="backhaul-distance"
-                    type="number"
-                    min="1"
-                    value={averageDistance}
-                    onChange={(event) => setAverageDistance(Math.max(1, Number(event.target.value)))}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white focus:ring-2 focus:ring-ecomiles-lime"
-                  />
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div className="p-3 rounded-xl bg-slate-950 border border-white/10">
+                    <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                      <label htmlFor="backhaul-orders">Số đơn/tháng</label>
+                      <strong className="text-ecomiles-lime">{monthlyOrders}</strong>
+                    </div>
+                    <input
+                      id="backhaul-orders"
+                      type="range"
+                      min="20"
+                      max="2000"
+                      step="20"
+                      value={monthlyOrders}
+                      onChange={(event) => setMonthlyOrders(Math.max(1, Number(event.target.value)))}
+                      className="w-full accent-ecomiles-lime cursor-pointer"
+                    />
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950 border border-white/10">
+                    <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                      <label htmlFor="backhaul-weight">Kg/đơn</label>
+                      <strong className="text-ecomiles-lime">{averageWeight} kg</strong>
+                    </div>
+                    <input
+                      id="backhaul-weight"
+                      type="range"
+                      min="10"
+                      max="500"
+                      step="10"
+                      value={averageWeight}
+                      onChange={(event) => setAverageWeight(Math.max(1, Number(event.target.value)))}
+                      className="w-full accent-ecomiles-lime cursor-pointer"
+                    />
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950 border border-white/10">
+                    <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                      <label htmlFor="backhaul-distance">Km/đơn</label>
+                      <strong className="text-ecomiles-lime">{averageDistance} km</strong>
+                    </div>
+                    <input
+                      id="backhaul-distance"
+                      type="range"
+                      min="5"
+                      max="80"
+                      step="1"
+                      value={averageDistance}
+                      onChange={(event) => setAverageDistance(Math.max(1, Number(event.target.value)))}
+                      className="w-full accent-ecomiles-lime cursor-pointer"
+                    />
+                  </div>
                 </div>
               </div>
 

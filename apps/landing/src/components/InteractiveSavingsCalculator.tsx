@@ -45,10 +45,50 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Sliders Control Panel (Left 7 Cols) */}
           <div className="lg:col-span-7 bg-slate-950/80 backdrop-blur-2xl rounded-3xl p-6 sm:p-9 border border-white/10 shadow-2xl flex flex-col justify-between">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <span>Thông Số Đội Xe &amp; Vận Hành</span>
-            </h3>
-
+            <div className="mb-6 space-y-3">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <span>Thông Số Đội Xe &amp; Vận Hành Thực Tế</span>
+              </h3>
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-slate-400 font-semibold">Mẫu doanh nghiệp B2B:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFleetSize(10);
+                    setDailyKm(54);
+                    setFuelConsumption(11.5);
+                    setSavingsRate(35);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-ecomiles-lime/35 text-ecomiles-lime font-bold cursor-pointer"
+                >
+                  10 Xe · Chuỗi Lạnh 120 Đơn (-35%)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFleetSize(25);
+                    setDailyKm(95);
+                    setFuelConsumption(12.0);
+                    setSavingsRate(28);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-semibold cursor-pointer"
+                >
+                  25 Xe · Chuỗi Siêu Thị
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFleetSize(50);
+                    setDailyKm(120);
+                    setFuelConsumption(13.5);
+                    setSavingsRate(30);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-semibold cursor-pointer"
+                >
+                  50 Xe · Đội Phân Phối FMCG
+                </button>
+              </div>
+            </div>
             <div className="space-y-6">
               {/* Slider 1: Fleet Size */}
               <div>
@@ -136,17 +176,17 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                 <input
                   aria-label="Tỷ lệ quãng đường dự kiến cắt giảm"
                   type="range"
-                  min="20"
-                  max="30"
+                  min="15"
+                  max="35"
                   step="1"
                   value={savingsRate}
                   onChange={(e) => setSavingsRate(Number(e.target.value))}
                   className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
                 />
                 <div className="flex justify-between text-[11px] text-slate-500 mt-1">
-                  <span>20% (Mức cơ sở)</span>
-                  <span>25% (Mức mục tiêu)</span>
-                  <span>30% (Tối ưu tốt)</span>
+                  <span>15% (Cơ sở)</span>
+                  <span>25% (Tiêu chuẩn)</span>
+                  <span>35% (Chuẩn 120 đơn QĐ 23: -34.9%)</span>
                 </div>
               </div>
             </div>

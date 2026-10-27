@@ -1837,6 +1837,63 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
             </section>
           );
         })}
+
+        {/* Complete 28-Asset Pitch Deck & Multi-Device Screenshot Gallery (00..27) */}
+        <section id="pitch-deck-screenshots" className="mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-8">
+          <div className="rounded-3xl border border-emerald-500/30 bg-slate-900/90 p-6 sm:p-10 shadow-2xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+              <div>
+                <span className="text-xs font-extrabold uppercase tracking-wider text-ecomiles-lime">
+                  PHỤ LỤC HÌNH ẢNH PITCH DECK · 28 RETINA PNG ASSETS (00..27)
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
+                  Bộ Ảnh Chụp Màn Hình &amp; Mockup 7 Thiết Bị (Desktop · Tablet · Mobile)
+                </h2>
+              </div>
+              <a
+                href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                download="00_ecomiles_flagship_cover_banner.png"
+                className="px-4 py-2.5 rounded-xl bg-ecomiles-lime text-slate-950 font-extrabold text-xs self-start sm:self-auto"
+              >
+                Tải Ảnh Bìa 7 Thiết Bị (2400x1260 PNG)
+              </a>
+            </div>
+
+            {/* Featured Master Cover Banner (00) + 4 Slide Composites (17..20) */}
+            <div className="space-y-4">
+              <img
+                src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                alt="00 - Master 7-Device Flagship Cover Banner (2400x1260)"
+                className="w-full h-auto rounded-2xl border border-white/10 shadow-2xl"
+                loading="lazy"
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  '17_slide_composite_all_devices_hero_trio.png',
+                  '18_slide_composite_driver_and_maps_mobile_tablet.png',
+                  '19_slide_composite_dispatcher_and_evsim_benchmark.png',
+                  '20_slide_composite_4role_enterprise_architecture.png',
+                ].map((fname) => (
+                  <a
+                    key={fname}
+                    href={`/pitch-deck-screenshots/${fname}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors"
+                  >
+                    <img
+                      src={`/pitch-deck-screenshots/${fname}`}
+                      alt={fname}
+                      className="w-full h-auto rounded-xl"
+                      loading="lazy"
+                    />
+                    <div className="text-[11px] font-mono text-slate-300 mt-2 px-1 truncate">{fname}</div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Persistent Bottom Presenter Bar */}

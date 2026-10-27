@@ -15,6 +15,7 @@ import {
   SplitSquareVertical,
   Tablet,
 } from 'lucide-react';
+import { ThreeDeviceEcosystemBanner } from './ThreeDeviceEcosystemBanner';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -173,10 +174,10 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
 
 export const DriverAndDispatcherShowcase: React.FC = () => {
   const [selectedDeviceId, setSelectedDeviceId] = useState<DeviceViewId>('all_banner');
+  const [stageRenderMode, setStageRenderMode] = useState<'spatial_2d' | 'webgl_3d' | 'studio_banner'>('spatial_2d');
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageCardRef = useRef<HTMLDivElement | null>(null);
   const multiStageRef = useRef<HTMLDivElement | null>(null);
-
   const activeDevice =
     FLAGSHIP_DEVICES.find((d) => d.id === selectedDeviceId) ?? FLAGSHIP_DEVICES[0];
 
@@ -301,11 +302,65 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
               {/* Left/Center 8 Cols: Interactive 7-Device Spatial Stage OR Individual High-DPI Hardware Mockup */}
               <div
                 ref={multiStageRef}
-                className="lg:col-span-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.34)_0%,rgba(2,6,23,0.94)_75%)] rounded-2xl p-3 sm:p-5 border border-white/10 overflow-hidden"
+                className="lg:col-span-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.34)_0%,rgba(2,6,23,0.94)_75%)] rounded-2xl p-3 sm:p-5 border border-white/10 overflow-hidden space-y-3"
               >
-                {activeDevice.id === 'all_banner' ? (
+                {/* 3-Mode Stage View Switcher: Interactive 2D Fan-Out vs 3D WebGL Camera Flight vs 2.4K Studio Banner */}
+                <div className="w-full flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-white/10 text-[11px]">
+                  <span className="font-bold text-slate-300 uppercase tracking-wider">
+                    Chế độ sân khấu thiết bị:
+                  </span>
+                  <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-950/90 border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setStageRenderMode('spatial_2d')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                        stageRenderMode === 'spatial_2d'
+                          ? 'bg-ecomiles-lime text-slate-950'
+                          : 'text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      1. Sân Khấu 7 Thiết Bị (Tương Tác)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStageRenderMode('webgl_3d')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                        stageRenderMode === 'webgl_3d'
+                          ? 'bg-ecomiles-lime text-slate-950'
+                          : 'text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      2. Không Gian 3D WebGL (Camera Flight)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStageRenderMode('studio_banner')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                        stageRenderMode === 'studio_banner'
+                          ? 'bg-ecomiles-lime text-slate-950'
+                          : 'text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      3. Ảnh Bìa Studio 2.4K (Phản Chiếu)
+                    </button>
+                  </div>
+                </div>
+
+                {stageRenderMode === 'webgl_3d' ? (
+                  <ThreeDeviceEcosystemBanner
+                    selectedDeviceId={selectedDeviceId}
+                    onSelectDevice={setSelectedDeviceId}
+                  />
+                ) : stageRenderMode === 'studio_banner' ? (
+                  <div className="w-full flex items-center justify-center">
+                    <img
+                      src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                      alt="EcoMiles 7-Device Flagship Studio Cover Banner with Floor Reflections"
+                      className="max-h-[450px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.85)] rounded-xl"
+                    />
+                  </div>
+                ) : activeDevice.id === 'all_banner' ? (
                   <div className="w-full space-y-4">
-                    {/* Tier 1 (Rear Office Plane): MacBook Pro 16" + Windows 11 XPS 16 */}
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 items-end">
                       <div className="gsap-beat-office">
                         <motion.button
