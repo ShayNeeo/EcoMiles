@@ -1010,7 +1010,7 @@ export function runEphemeralBenchmarkFromRows(
   // 4B. Warm-start from compact geographic clusters, then run Carbon-Aware ALNS Destroy-and-Repair
   const alnsTours: UploadedOrder[][] = twoOptBuckets
     .filter((b) => b.length > 0)
-    .map((b) => b.map((o) => sanitizedMap.get(o.external_id) || o));
+    .map((b) => nearestNeighborOrder(b.map((o) => sanitizedMap.get(o.external_id) || o)));
   const tourCaps = twoOptBuckets
     .map((b, idx) => (b.length > 0 ? sortedFleetCap[idx].capacity_kg : 0))
     .filter((c) => c > 0);
@@ -1035,10 +1035,14 @@ export function runEphemeralBenchmarkFromRows(
         let bestDelta = savingA - 0.05;
 
         for (let tB = 0; tB < alnsTours.length; tB++) {
-          if (tB === tA) continue;
           const tourB = alnsTours[tB];
+          if (tB === tA || tourB.length === 0) continue;
           const loadB = tourB.reduce((s, o) => s + o.kg, 0);
           if (loadB + stop.kg > tourCaps[tB]) continue;
+          // Sector coherence guard: only allow boundary transfers when stop is within 3.2km of tourB's centroid
+          const cLatB = tourB.reduce((s, o) => s + o.lat, 0) / tourB.length;
+          const cLngB = tourB.reduce((s, o) => s + o.lng, 0) / tourB.length;
+          if (roadKm(cLatB, cLngB, stop.lat, stop.lng) > 3.2) continue;
           for (let pos = 0; pos <= tourB.length; pos++) {
             const prevB = pos === 0 ? DEPOT : tourB[pos - 1];
             const nextB = pos === tourB.length ? DEPOT : tourB[pos];

@@ -398,6 +398,57 @@ export function interpolateAlongStreetPath(path: LngLat[], f: number): LngLat {
   return path[path.length - 1];
 }
 
+/**
+ * Interpolates a point `[lng, lat]` and screen-space tangent vector `(dx, dy)` at fraction `f` in [0, 1]
+ * along the exact polyline `path`. Guarantees the moving truck sits 100% on the drawn polyline.
+ */
+export function interpolateAlongStreetPathWithHeading(
+  path: LngLat[],
+  f: number
+): { lng: number; lat: number; dx: number; dy: number } {
+  if (path.length === 0) return { lng: 106.6385, lat: 10.8018, dx: 1, dy: 0 };
+  if (path.length === 1) return { lng: path[0][0], lat: path[0][1], dx: 1, dy: 0 };
+
+  const clampedF = Math.max(0, Math.min(1, f));
+  const segLengths: number[] = [];
+  let totalLen = 0;
+  for (let i = 1; i < path.length; i++) {
+    const d = Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]);
+    segLengths.push(d);
+    totalLen += d;
+  }
+  if (totalLen <= 1e-9) {
+    return { lng: path[0][0], lat: path[0][1], dx: 1, dy: 0 };
+  }
+
+  const target = clampedF * totalLen;
+  let acc = 0;
+  for (let i = 0; i < segLengths.length; i++) {
+    const seg = segLengths[i];
+    if (acc + seg >= target || i === segLengths.length - 1) {
+      const localU = seg > 1e-9 ? Math.max(0, Math.min(1, (target - acc) / seg)) : 0;
+      const p0 = path[i];
+      const p1 = path[i + 1];
+      const rawDx = p1[0] - p0[0];
+      const rawDy = -(p1[1] - p0[1]); // Canvas Y is inverted relative to latitude
+      const norm = Math.hypot(rawDx, rawDy) || 1;
+      return {
+        lng: p0[0] + (p1[0] - p0[0]) * localU,
+        lat: p0[1] + (p1[1] - p0[1]) * localU,
+        dx: rawDx / norm,
+        dy: rawDy / norm,
+      };
+    }
+    acc += seg;
+  }
+  const last = path[path.length - 1];
+  const prev = path[path.length - 2];
+  const rawDx = last[0] - prev[0];
+  const rawDy = -(last[1] - prev[1]);
+  const norm = Math.hypot(rawDx, rawDy) || 1;
+  return { lng: last[0], lat: last[1], dx: rawDx / norm, dy: rawDy / norm };
+}
+
 // =============================================================================
 // 64 REAL, VERIFIED HCMC COMMERCIAL STORE CORRIDORS (NEVER ON AIRPORT OR WATER)
 // =============================================================================
@@ -496,41 +547,158 @@ export const REAL_HCMC_STORE_LOCATIONS: RealHcmcLocation[] = [
 // LIVE OSRM STREET-BY-STREET GEOJSON ROUTE GEOMETRY CACHE (router.project-osrm.org)
 // =============================================================================
 const OSRM_POLYLINE_CACHE = new Map<string, LngLat[] | 'queued' | 'loading' | 'error'>();
-const OSRM_QUEUE: Array<{ key: string; onLoaded?: () => void }> = [];
-let osrmWorkerBusy = false;
+const OSRM_LEGS_CACHE = new Map<string, LngLat[][] | 'queued' | 'loading' | 'error'>();
+const OSRM_QUEUE: Array<{
+  key: string;
+  coords: LngLat[];
+  mode: 'full' | 'legs';
+  onLoaded?: () => void;
+}> = [];
+let osrmActiveWorkers = 0;
+const OSRM_MAX_CONCURRENCY = 4;
+let preseedStatus: 'idle' | 'loading' | 'loaded' | 'error' = 'idle';
+const preseedCallbacks: Array<() => void> = [];
 
-function drainOsrmQueue(): void {
-  if (osrmWorkerBusy || OSRM_QUEUE.length === 0) return;
-  osrmWorkerBusy = true;
-  const next = OSRM_QUEUE.shift()!;
-  OSRM_POLYLINE_CACHE.set(next.key, 'loading');
-  const url = `https://router.project-osrm.org/route/v1/driving/${next.key}?overview=full&geometries=geojson`;
-  fetch(url)
+function ensurePreseededOsrmCache(onLoaded?: () => void): void {
+  if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
+  if (preseedStatus === 'loaded' || preseedStatus === 'error') return;
+  if (onLoaded) preseedCallbacks.push(onLoaded);
+  if (preseedStatus === 'loading') return;
+
+  preseedStatus = 'loading';
+  fetch('/samples/hcmc_osrm_legs_cache.json')
     .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-    .then((data) => {
-      const geom = data?.routes?.[0]?.geometry?.coordinates;
-      if (Array.isArray(geom) && geom.length >= 2) {
-        OSRM_POLYLINE_CACHE.set(next.key, geom as LngLat[]);
-        next.onLoaded?.();
-      } else {
-        OSRM_POLYLINE_CACHE.set(next.key, 'error');
+    .then((data: Record<string, LngLat[][]>) => {
+      if (data && typeof data === 'object') {
+        for (const [key, legs] of Object.entries(data)) {
+          if (Array.isArray(legs) && legs.length > 0) {
+            OSRM_LEGS_CACHE.set(key, legs);
+            OSRM_POLYLINE_CACHE.set(key, legs.flat());
+          }
+        }
+      }
+      preseedStatus = 'loaded';
+      while (preseedCallbacks.length > 0) {
+        const cb = preseedCallbacks.shift();
+        cb?.();
       }
     })
     .catch(() => {
-      OSRM_POLYLINE_CACHE.set(next.key, 'error');
-    })
-    .finally(() => {
-      setTimeout(() => {
-        osrmWorkerBusy = false;
-        drainOsrmQueue();
-      }, 140);
+      preseedStatus = 'error';
+      preseedCallbacks.length = 0;
     });
 }
 
+function drainOsrmQueue(): void {
+  while (osrmActiveWorkers < OSRM_MAX_CONCURRENCY && OSRM_QUEUE.length > 0) {
+    const next = OSRM_QUEUE.shift()!;
+    // Skip if pre-seeded cache already resolved this key while queued
+    if (next.mode === 'legs' && Array.isArray(OSRM_LEGS_CACHE.get(next.key))) {
+      next.onLoaded?.();
+      continue;
+    }
+    if (next.mode === 'full' && Array.isArray(OSRM_POLYLINE_CACHE.get(next.key))) {
+      next.onLoaded?.();
+      continue;
+    }
+    osrmActiveWorkers++;
+    if (next.mode === 'legs') {
+      OSRM_LEGS_CACHE.set(next.key, 'loading');
+    } else {
+      OSRM_POLYLINE_CACHE.set(next.key, 'loading');
+    }
+    const url =
+      next.mode === 'legs'
+        ? `https://router.project-osrm.org/route/v1/driving/${next.key}?overview=simplified&geometries=geojson&steps=true`
+        : `https://router.project-osrm.org/route/v1/driving/${next.key}?overview=full&geometries=geojson`;
+
+    fetch(url)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((data) => {
+        const routeObj = data?.routes?.[0];
+        if (next.mode === 'legs' && Array.isArray(routeObj?.legs) && routeObj.legs.length > 0) {
+          const extractedLegs: LngLat[][] = routeObj.legs.map(
+            (legObj: { steps?: Array<{ geometry?: { coordinates?: LngLat[] } }> }, lIdx: number) => {
+              const pts: LngLat[] = [];
+              const startCoord = next.coords[lIdx];
+              const endCoord = next.coords[lIdx + 1];
+              if (startCoord) pts.push(startCoord);
+              for (const st of legObj.steps || []) {
+                for (const c of st?.geometry?.coordinates || []) {
+                  if (Array.isArray(c) && c.length >= 2) {
+                    const prev = pts[pts.length - 1];
+                    if (!prev || Math.hypot(prev[0] - c[0], prev[1] - c[1]) > 1e-6) {
+                      pts.push([c[0], c[1]]);
+                    }
+                  }
+                }
+              }
+              if (endCoord) pts.push(endCoord);
+              return pts.length >= 2
+                ? pts
+                : [startCoord || [106.6385, 10.8018], endCoord || [106.6385, 10.8018]];
+            }
+          );
+          OSRM_LEGS_CACHE.set(next.key, extractedLegs);
+          OSRM_POLYLINE_CACHE.set(next.key, extractedLegs.flat());
+          next.onLoaded?.();
+        } else {
+          const geom = routeObj?.geometry?.coordinates;
+          if (Array.isArray(geom) && geom.length >= 2) {
+            OSRM_POLYLINE_CACHE.set(next.key, geom as LngLat[]);
+            next.onLoaded?.();
+          } else {
+            if (next.mode === 'legs') OSRM_LEGS_CACHE.set(next.key, 'error');
+            else OSRM_POLYLINE_CACHE.set(next.key, 'error');
+          }
+        }
+      })
+      .catch(() => {
+        if (next.mode === 'legs') OSRM_LEGS_CACHE.set(next.key, 'error');
+        else OSRM_POLYLINE_CACHE.set(next.key, 'error');
+      })
+      .finally(() => {
+        setTimeout(() => {
+          osrmActiveWorkers--;
+          drainOsrmQueue();
+        }, 60);
+      });
+  }
+}
+
 /**
- * Returns the cached OSRM street-by-street GeoJSON polyline for a sequence of stops `coords`,
- * or queues an async fetch to `router.project-osrm.org` (throttled to prevent HTTP 429) and calls `onLoaded` when ready.
+ * Returns the exact per-leg street polylines (`LngLat[][]`, one polyline per leg `i -> i+1`)
+ * from the pre-seeded `/samples/hcmc_osrm_legs_cache.json` or live OSRM `steps=true`,
+ * or `fallbackLegs` while loading.
+ * Using this for BOTH road-line rendering AND truck interpolation guarantees 100% lockstep!
  */
+export function getOrFetchOsrmLegPaths(
+  coords: LngLat[],
+  fallbackLegs: LngLat[][],
+  onLoaded?: () => void
+): LngLat[][] {
+  if (
+    coords.length < 2 ||
+    coords.length > 45 ||
+    typeof window === 'undefined' ||
+    typeof fetch === 'undefined'
+  ) {
+    return fallbackLegs;
+  }
+  ensurePreseededOsrmCache(onLoaded);
+  const key = coords.map(([lng, lat]) => `${lng.toFixed(4)},${lat.toFixed(4)}`).join(';');
+  const existing = OSRM_LEGS_CACHE.get(key);
+  if (Array.isArray(existing) && existing.length === fallbackLegs.length) {
+    return existing;
+  }
+  if (!existing && preseedStatus === 'loaded') {
+    OSRM_LEGS_CACHE.set(key, 'queued');
+    OSRM_QUEUE.push({ key, coords, mode: 'legs', onLoaded });
+    drainOsrmQueue();
+  }
+  return fallbackLegs;
+}
+
 export function getOrFetchOsrmRouteGeometry(
   coords: LngLat[],
   onLoaded?: () => void
@@ -538,6 +706,7 @@ export function getOrFetchOsrmRouteGeometry(
   if (coords.length < 2 || typeof window === 'undefined' || typeof fetch === 'undefined') {
     return null;
   }
+  ensurePreseededOsrmCache(onLoaded);
   const sampled =
     coords.length <= 35
       ? coords
@@ -548,9 +717,9 @@ export function getOrFetchOsrmRouteGeometry(
   if (Array.isArray(existing)) {
     return existing;
   }
-  if (!existing) {
+  if (!existing && preseedStatus === 'loaded') {
     OSRM_POLYLINE_CACHE.set(key, 'queued');
-    OSRM_QUEUE.push({ key, onLoaded });
+    OSRM_QUEUE.push({ key, coords: sampled, mode: 'full', onLoaded });
     drainOsrmQueue();
   }
   return null;

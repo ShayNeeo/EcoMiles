@@ -53,7 +53,11 @@ import {
 import { EvsimDualSimulator } from './EvsimDualSimulator';
 
 import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
-import { getOrFetchOsrmRouteGeometry, type LngLat } from '../utils/hcmcRoadGraph';
+import {
+  getOrFetchOsrmRouteGeometry,
+  interpolateAlongStreetPathWithHeading,
+  type LngLat,
+} from '../utils/hcmcRoadGraph';
 interface EChartsInstance {
   setOption: (opt: Record<string, unknown>, notMerge?: boolean) => void;
   resize: () => void;
@@ -111,6 +115,7 @@ function HcmcSingleRouteMapCanvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [tileTick, setTileTick] = useState<number>(0);
+  const [animPhase, setAnimPhase] = useState<number>(0.18);
   const [view, setView] = useState<{ zoom: number; panX: number; panY: number }>({
     zoom: 12.7,
     panX: 0,
@@ -118,6 +123,18 @@ function HcmcSingleRouteMapCanvas({
   });
   const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
 
+  useEffect(() => {
+    let raf = 0;
+    let last = performance.now();
+    const step = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      setAnimPhase((p) => (p + dt / 18.0) % 1);
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, []);
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -149,15 +166,21 @@ function HcmcSingleRouteMapCanvas({
     ctx.save();
     ctx.scale(dpr, dpr);
 
-    const lats = result.orders.map((o) => o.lat).concat([10.8018]);
-    const lngs = result.orders.map((o) => o.lng).concat([106.6385]);
+    const routesToDraw =
+      selectedRouteId === 'ALL'
+        ? strategy.routes
+        : strategy.routes.filter((r) => r.route_id === selectedRouteId);
+
+    const routeStops = routesToDraw.flatMap((r) => r.stops);
+    const lats = (routeStops.length > 0 ? routeStops.map((s) => s.lat) : result.orders.map((o) => o.lat)).concat([10.8018]);
+    const lngs = (routeStops.length > 0 ? routeStops.map((s) => s.lng) : result.orders.map((o) => o.lng)).concat([106.6385]);
     const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
     const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
 
     const vp: MercatorViewport = {
       centerLat,
       centerLng,
-      zoom: view.zoom,
+      zoom: selectedRouteId === 'ALL' ? view.zoom : Math.max(12.2, view.zoom - 0.35),
       panX: view.panX,
       panY: view.panY,
       width: cw,
@@ -168,45 +191,24 @@ function HcmcSingleRouteMapCanvas({
 
     const toXY = (lng: number, lat: number): [number, number] =>
       projectLatLngToCanvas(lng, lat, vp);
-
-    const routesToDraw =
-      selectedRouteId === 'ALL'
-        ? strategy.routes
-        : strategy.routes.filter((r) => r.route_id === selectedRouteId);
-
-    for (const r of routesToDraw) {
+    routesToDraw.forEach((r, rIdx) => {
       const stopCoords: LngLat[] = r.stops.map((s) => [s.lng, s.lat]);
       const osrmGeom = getOrFetchOsrmRouteGeometry(stopCoords, () =>
         setTileTick((n) => (n + 1) % 10000)
       );
+      const fallbackPath: LngLat[] = r.stops.flatMap((s) =>
+        s.leg_path && s.leg_path.length > 0 ? s.leg_path : ([[s.lng, s.lat]] as LngLat[])
+      );
+      const activeRoadPath: LngLat[] =
+        osrmGeom && osrmGeom.length >= 2 ? osrmGeom : fallbackPath;
 
       ctx.beginPath();
-      let started = false;
-      if (osrmGeom && osrmGeom.length >= 2) {
-        for (const [lng, lat] of osrmGeom) {
-          const [x, y] = toXY(lng, lat);
-          if (!started) {
-            ctx.moveTo(x, y);
-            started = true;
-          } else {
-            ctx.lineTo(x, y);
-          }
-        }
-      } else {
-        for (const s of r.stops) {
-          const pts = s.leg_path && s.leg_path.length > 0 ? s.leg_path : [[s.lng, s.lat]];
-          for (const [lng, lat] of pts) {
-            const [x, y] = toXY(lng, lat);
-            if (!started) {
-              ctx.moveTo(x, y);
-              started = true;
-            } else {
-              ctx.lineTo(x, y);
-            }
-          }
-        }
+      for (let i = 0; i < activeRoadPath.length; i++) {
+        const [x, y] = toXY(activeRoadPath[i][0], activeRoadPath[i][1]);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
       ctx.lineWidth = selectedRouteId === 'ALL' ? 4.4 : 5.4;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
@@ -216,26 +218,72 @@ function HcmcSingleRouteMapCanvas({
       ctx.lineWidth = selectedRouteId === 'ALL' ? 2.4 : 3.4;
       ctx.stroke();
 
+      // Compact Customer Store Nodes
       r.stops.forEach((s) => {
         if (s.kind === 'depot') return;
         const [sx, sy] = toXY(s.lng, s.lat);
-        ctx.beginPath();
-        ctx.arc(sx, sy, selectedRouteId === 'ALL' ? 4.8 : 6.8, 0, Math.PI * 2);
+        const nodeSize = selectedRouteId === 'ALL' ? 3.0 : 4.2;
         ctx.fillStyle =
           s.kind === 'backhaul' ? '#1971c2' : s.qd23_ban_conflict ? '#f08c00' : '#2f9e44';
-        ctx.fill();
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.6;
-        ctx.stroke();
+        ctx.lineWidth = 1.4;
+        ctx.fillRect(sx - nodeSize, sy - nodeSize, nodeSize * 2, nodeSize * 2);
+        ctx.strokeRect(sx - nodeSize, sy - nodeSize, nodeSize * 2, nodeSize * 2);
 
         if (selectedRouteId !== 'ALL') {
           ctx.fillStyle = '#111827';
           ctx.font = '700 10px system-ui, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(String(s.seq), sx, sy - 9);
+          ctx.fillText(String(s.seq), sx, sy - 8);
         }
       });
-    }
+
+      // Live Moving Truck Puck + Directional Arrow riding 100% on `activeRoadPath`
+      if (activeRoadPath.length >= 2) {
+        const frac = (animPhase + rIdx * 0.17) % 1;
+        const { lng: curLng, lat: curLat, dx, dy } = interpolateAlongStreetPathWithHeading(
+          activeRoadPath,
+          frac
+        );
+        const [tx, ty] = toXY(curLng, curLat);
+        const truckColor = r.color || '#2f9e44';
+
+        ctx.beginPath();
+        ctx.arc(tx, ty, 10, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(17, 24, 39, 0.18)';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(tx, ty, 7.5, 0, Math.PI * 2);
+        ctx.fillStyle = truckColor;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(tx, ty);
+        ctx.rotate(Math.atan2(dy, dx));
+        ctx.beginPath();
+        ctx.moveTo(4.5, 0);
+        ctx.lineTo(-2.8, -3.2);
+        ctx.lineTo(-1.4, 0);
+        ctx.lineTo(-2.8, 3.2);
+        ctx.closePath();
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.restore();
+
+        const tag = selectedRouteId === 'ALL' ? `Xe ${r.route_id}` : r.plate;
+        ctx.font = '700 9px system-ui, sans-serif';
+        const tw = ctx.measureText(tag).width;
+        ctx.fillStyle = 'rgba(17, 24, 39, 0.84)';
+        ctx.fillRect(tx + 9, ty - 6, tw + 6, 12);
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'left';
+        ctx.fillText(tag, tx + 12, ty + 3);
+      }
+    });
 
     // Depot Square on 364 Cộng Hòa, P.13, Tân Bình
     const [dx, dy] = toXY(106.6385, 10.8018);
@@ -250,7 +298,7 @@ function HcmcSingleRouteMapCanvas({
     ctx.fillText('Kho Tân Bình (364 Cộng Hòa)', dx + 12, dy + 4);
 
     ctx.restore();
-  }, [result, strategy, selectedRouteId, view, tileTick]);
+  }, [result, strategy, selectedRouteId, view, tileTick, animPhase]);
 
   return (
     <div className="relative w-full h-[290px] rounded-lg overflow-hidden border border-[#d8cfbd] bg-[#ebe5d9]">

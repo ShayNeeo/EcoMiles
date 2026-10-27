@@ -23,8 +23,8 @@ import { inspectExcelHeaderMapping, type ColumnMappingInspection } from '../util
 import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
 import {
   computeHcmcStreetPath,
-  interpolateAlongStreetPath,
-  getOrFetchOsrmRouteGeometry,
+  getOrFetchOsrmLegPaths,
+  interpolateAlongStreetPathWithHeading,
   type LngLat,
 } from '../utils/hcmcRoadGraph';
 
@@ -33,6 +33,7 @@ const DEPOT_COORD = { lat: 10.8018, lng: 106.6385, label: 'Kho Tân Bình (364 C
 
 interface SimulatedTruckLeg {
   truckIdx: number;
+  legIdxInRoute: number;
   plate: string;
   fuel: 'diesel' | 'petrol';
   color: string;
@@ -48,9 +49,20 @@ interface SimulatedTruckLeg {
   stopOrderId: string | null;
 }
 
+interface RouteGeometryBundle {
+  truckIdx: number;
+  plate: string;
+  color: string;
+  stopCoords: LngLat[];
+  fallbackLegs: LngLat[][];
+  tRouteStartSec: number;
+  tRouteEndSec: number;
+}
+
 interface SimulatedTimelineSide {
   strategy: StrategySummary;
   legs: SimulatedTruckLeg[];
+  routeGeometries: RouteGeometryBundle[];
   stopEvents: Array<{
     tSec: number;
     orderId: string;
@@ -91,32 +103,68 @@ function isQd23PeakSec(tSec: number): boolean {
  */
 function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean): SimulatedTimelineSide {
   const legs: SimulatedTruckLeg[] = [];
+  const routeGeometries: RouteGeometryBundle[] = [];
   const stopEvents: SimulatedTimelineSide['stopEvents'] = [];
 
   strategy.routes.forEach((route: BenchmarkPlannedRoute, rIdx: number) => {
     const nonDepotStops = route.stops.filter((s) => s.kind === 'stop' || s.kind === 'backhaul');
     if (nonDepotStops.length === 0) return;
 
-    const firstWinSec = parseTimeSec(nonDepotStops[0].window_start, 8 * 3600);
-    let clockSec = isEcoMilesArm
-      ? Math.max(7 * 3600 + 1800, Math.min(7 * 3600 + 2400, firstWinSec)) + (rIdx % 4) * 150
-      : Math.max(7 * 3600 + 1800, Math.min(7 * 3600 + 2400, firstWinSec)) + (rIdx % 6) * 300;
+    // Full-day urban logistics shift pacing (06:20 -> 17:20) with 100% gapless leg transitions
+    // so every truck is continuously visible and driving along its road line throughout the shift.
+    const firstWinSec = parseTimeSec(nonDepotStops[0].window_start, 7 * 3600);
+    const tRouteStartSec = isEcoMilesArm
+      ? Math.max(6 * 3600 + 1800, Math.min(7 * 3600 + 600, firstWinSec - 1800)) + (rIdx % 5) * 180
+      : Math.max(6 * 3600 + 900, Math.min(7 * 3600 + 300, firstWinSec - 2400)) + (rIdx % 6) * 210;
 
+    const targetShiftSpanSec = isEcoMilesArm ? 9.2 * 3600 : 10.4 * 3600;
     let curLat = DEPOT_COORD.lat;
     let curLng = DEPOT_COORD.lng;
     const totalStops = nonDepotStops.length;
 
-    nonDepotStops.forEach((stop, sIdx) => {
+    const stopCoords: LngLat[] = [[DEPOT_COORD.lng, DEPOT_COORD.lat]];
+    const fallbackLegs: LngLat[][] = [];
+    const rawSegments: Array<{ path: LngLat[]; distanceKm: number; weight: number }> = [];
+
+    nonDepotStops.forEach((stop) => {
       const streetSeg =
         stop.leg_path && stop.leg_path.length >= 2
-          ? { path: stop.leg_path, distanceKm: Math.max(0.4, computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat).distanceKm) }
+          ? { path: stop.leg_path, distanceKm: Math.max(0.45, computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat).distanceKm) }
           : computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat);
-      const legKm = streetSeg.distanceKm;
-      const speedKmh = isEcoMilesArm ? 29.0 : 18.5;
-      const travelSec = Math.max(120, Math.round((legKm / speedKmh) * 3600));
-      const serviceSec = isEcoMilesArm ? 185 : 340;
+      stopCoords.push([stop.lng, stop.lat]);
+      fallbackLegs.push(streetSeg.path);
+      // Weight includes road distance + urban unloading/handling time equivalent so legs are gapless
+      rawSegments.push({
+        path: streetSeg.path,
+        distanceKm: streetSeg.distanceKm,
+        weight: streetSeg.distanceKm + 1.15,
+      });
+      curLat = stop.lat;
+      curLng = stop.lng;
+    });
+
+    // Return leg to Kho Tân Bình DC along real HCMC street network
+    const retDepotStop = route.stops[route.stops.length - 1];
+    const retSeg =
+      retDepotStop && retDepotStop.kind === 'depot' && retDepotStop.leg_path && retDepotStop.leg_path.length >= 2
+        ? { path: retDepotStop.leg_path, distanceKm: Math.max(0.6, computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat).distanceKm) }
+        : computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat);
+    stopCoords.push([DEPOT_COORD.lng, DEPOT_COORD.lat]);
+    fallbackLegs.push(retSeg.path);
+    rawSegments.push({
+      path: retSeg.path,
+      distanceKm: retSeg.distanceKm,
+      weight: retSeg.distanceKm + 0.8,
+    });
+
+    const totalWeight = Math.max(1e-6, rawSegments.reduce((s, seg) => s + seg.weight, 0));
+    let clockSec = tRouteStartSec;
+
+    nonDepotStops.forEach((stop, sIdx) => {
+      const seg = rawSegments[sIdx];
+      const legDurSec = Math.max(180, Math.round((seg.weight / totalWeight) * targetShiftSpanSec));
       const t0 = clockSec;
-      const t1 = t0 + travelSec;
+      const t1 = t0 + legDurSec;
       const isBh = stop.kind === 'backhaul';
       const loadStart = isBh ? 0.35 : Math.max(0.1, 1 - sIdx / totalStops);
       const loadEnd = isBh ? 0.55 : Math.max(0.05, 1 - (sIdx + 1) / totalStops);
@@ -124,15 +172,16 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
 
       legs.push({
         truckIdx: rIdx,
+        legIdxInRoute: sIdx,
         plate: route.plate,
         fuel: route.fuel,
         color: route.color,
         tStartSec: t0,
         tEndSec: t1,
-        path: streetSeg.path,
+        path: seg.path,
         loadRatioStart: loadStart,
         loadRatioEnd: loadEnd,
-        legKm,
+        legKm: seg.distanceKm,
         isEmptyReturn: false,
         isBackhaulPickup: isBh,
         violatesQd23: inBanHour,
@@ -149,37 +198,41 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
         lateRisk: stop.late_risk,
       });
 
-      clockSec = t1 + serviceSec;
-      curLat = stop.lat;
-      curLng = stop.lng;
+      clockSec = t1; // 100% gapless transition: truck never disappears between legs!
     });
 
-    // Return leg to Kho Tân Bình DC along real HCMC street network
-    const retDepotStop = route.stops[route.stops.length - 1];
-    const retSeg =
-      retDepotStop && retDepotStop.kind === 'depot' && retDepotStop.leg_path && retDepotStop.leg_path.length >= 2
-        ? { path: retDepotStop.leg_path, distanceKm: computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat).distanceKm }
-        : computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat);
-    const retKm = retSeg.distanceKm;
-    const retTravelSec = Math.max(240, Math.round((retKm / 28.0) * 3600));
+    // Final return leg to Depot
+    const retRaw = rawSegments[rawSegments.length - 1];
+    const retDurSec = Math.max(240, Math.round((retRaw.weight / totalWeight) * targetShiftSpanSec));
+    const tRetEnd = clockSec + retDurSec;
     legs.push({
       truckIdx: rIdx,
+      legIdxInRoute: nonDepotStops.length,
       plate: route.plate,
       fuel: route.fuel,
       color: route.color,
       tStartSec: clockSec,
-      tEndSec: clockSec + retTravelSec,
-      path: retSeg.path,
+      tEndSec: tRetEnd,
+      path: retRaw.path,
       loadRatioStart: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.55 : 0.0,
       loadRatioEnd: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.55 : 0.0,
-      legKm: retKm,
+      legKm: retRaw.distanceKm,
       isEmptyReturn: !isEcoMilesArm || route.backhaul_orders_matched === 0,
       isBackhaulPickup: isEcoMilesArm && route.backhaul_orders_matched > 0,
       violatesQd23: false,
       stopOrderId: null,
     });
-  });
 
+    routeGeometries.push({
+      truckIdx: rIdx,
+      plate: route.plate,
+      color: route.color,
+      stopCoords,
+      fallbackLegs,
+      tRouteStartSec,
+      tRouteEndSec: tRetEnd,
+    });
+  });
   // Build 15-minute bucketed KPI series from 06:00 (21600) to 20:00 (72000)
   const tSecArr: number[] = [];
   const deliveredArr: number[] = [];
@@ -221,6 +274,7 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
   return {
     strategy,
     legs,
+    routeGeometries,
     stopEvents,
     kpiSeries: {
       tSec: tSecArr,
@@ -279,7 +333,7 @@ export function EvsimDualSimulator({
   const [baselineKey, setBaselineKey] = useState<'human_google_proxy' | 'raw_excel'>('human_google_proxy');
   const [timeSec, setTimeSec] = useState<number>(9.25 * 3600); // Default 09:15 AM peak transition
   const [playing, setPlaying] = useState<boolean>(true);
-  const [speed, setSpeed] = useState<number>(120);
+  const [speed, setSpeed] = useState<number>(240);
   const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
   const [showColumnModal, setShowColumnModal] = useState<boolean>(false);
   const [columnInspection, setColumnInspection] = useState<ColumnMappingInspection[]>([]);
@@ -456,53 +510,41 @@ export function EvsimDualSimulator({
       const toXY = (lng: number, lat: number): [number, number] =>
         projectLatLngToCanvas(lng, lat, vp);
 
-      // 2. Planned Route Polylines (crisp halo + route stroke on top of real HCMC streets)
-      // 2. Planned Street-Following Route Polylines (uses OSRM full street GeoJSON when loaded, Dijkstra street graph while loading)
-      for (const route of side.strategy.routes) {
-        if (route.stops.length < 2) continue;
-        const stopCoords: LngLat[] = route.stops.map((s) => [s.lng, s.lat]);
-        const osrmGeom = getOrFetchOsrmRouteGeometry(stopCoords, () =>
+      // Resolve authoritative per-leg street polylines ONCE per route so both the road line
+      // AND the moving truck dot use the EXACT SAME coordinate arrays (100% lockstep on the road!).
+      const resolvedRouteLegs: LngLat[][][] = side.routeGeometries.map((rg) =>
+        getOrFetchOsrmLegPaths(rg.stopCoords, rg.fallbackLegs, () =>
           setTileTick((n) => (n + 1) % 10000)
-        );
+        )
+      );
 
+      // 2. Planned Street-Following Route Polylines (drawn from `fullRoutePaths[rIdx]`)
+      const fullRoutePaths: LngLat[][] = side.routeGeometries.map((rg, rIdx) => {
+        const legPaths = resolvedRouteLegs[rIdx] || rg.fallbackLegs;
+        return legPaths.flat();
+      });
+
+      side.routeGeometries.forEach((rg, rIdx) => {
+        const fullPath = fullRoutePaths[rIdx];
+        if (!fullPath || fullPath.length < 2) return;
         ctx.beginPath();
-        let started = false;
-        if (osrmGeom && osrmGeom.length >= 2) {
-          for (const [lng, lat] of osrmGeom) {
-            const [x, y] = toXY(lng, lat);
-            if (!started) {
-              ctx.moveTo(x, y);
-              started = true;
-            } else {
-              ctx.lineTo(x, y);
-            }
-          }
-        } else {
-          for (const s of route.stops) {
-            const pts = s.leg_path && s.leg_path.length > 0 ? s.leg_path : ([[s.lng, s.lat]] as LngLat[]);
-            for (const [lng, lat] of pts) {
-              const [x, y] = toXY(lng, lat);
-              if (!started) {
-                ctx.moveTo(x, y);
-                started = true;
-              } else {
-                ctx.lineTo(x, y);
-              }
-            }
-          }
+        for (let i = 0; i < fullPath.length; i++) {
+          const [x, y] = toXY(fullPath[i][0], fullPath[i][1]);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-        ctx.lineWidth = 4.2;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
+        ctx.lineWidth = 4.4;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.stroke();
 
-        ctx.strokeStyle = route.color || (isRightEcoSide ? '#1971c2' : '#e03131');
-        ctx.lineWidth = 2.3;
+        ctx.strokeStyle = rg.color || (isRightEcoSide ? '#1971c2' : '#e03131');
+        ctx.lineWidth = 2.4;
         ctx.stroke();
-      }
+      });
 
-      // 3. Customer Stop Dots + Merged Backhaul Pins + EVSIM Star Diffs (★)
+      // 3. Customer Store Pins (Small Square Store Nodes & Star Diffs — Visually Distinct From Moving Trucks!)
       for (const ev of side.stopEvents) {
         const [sx, sy] = toXY(ev.lng, ev.lat);
         const delivered = ev.tSec <= timeSec;
@@ -514,33 +556,34 @@ export function EvsimDualSimulator({
           ctx.translate(sx, sy);
           ctx.beginPath();
           for (let i = 0; i < 5; i++) {
-            ctx.lineTo(Math.cos(((18 + i * 72) / 180) * Math.PI) * 7.5, -Math.sin(((18 + i * 72) / 180) * Math.PI) * 7.5);
-            ctx.lineTo(Math.cos(((54 + i * 72) / 180) * Math.PI) * 3.5, -Math.sin(((54 + i * 72) / 180) * Math.PI) * 3.5);
+            ctx.lineTo(Math.cos(((18 + i * 72) / 180) * Math.PI) * 6.5, -Math.sin(((18 + i * 72) / 180) * Math.PI) * 6.5);
+            ctx.lineTo(Math.cos(((54 + i * 72) / 180) * Math.PI) * 3.0, -Math.sin(((54 + i * 72) / 180) * Math.PI) * 3.0);
           }
           ctx.closePath();
           ctx.fillStyle = isRightEcoSide ? '#12b886' : '#e03131';
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 1.1;
           ctx.stroke();
           ctx.restore();
         } else if (ev.kind === 'backhaul') {
-          // Blue Backhaul Pickup Pin on Return Leg
-          ctx.beginPath();
-          ctx.arc(sx, sy, 4.8, 0, Math.PI * 2);
+          // Small Diamond Store Node for Backhaul Pickup Location
+          ctx.save();
+          ctx.translate(sx, sy);
+          ctx.rotate(Math.PI / 4);
           ctx.fillStyle = delivered ? '#1971c2' : '#ffffff';
-          ctx.fill();
           ctx.strokeStyle = '#1971c2';
-          ctx.lineWidth = 2.2;
-          ctx.stroke();
+          ctx.lineWidth = 1.6;
+          ctx.fillRect(-3.2, -3.2, 6.4, 6.4);
+          ctx.strokeRect(-3.2, -3.2, 6.4, 6.4);
+          ctx.restore();
         } else {
-          ctx.beginPath();
-          ctx.arc(sx, sy, delivered ? 4.2 : 3.4, 0, Math.PI * 2);
-          ctx.fillStyle = delivered ? '#2f9e44' : '#7048e8';
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
+          // Compact Square Customer Store Pin (3x3m store icon so it's never confused with a round moving truck!)
+          ctx.fillStyle = delivered ? '#2f9e44' : '#ffffff';
+          ctx.strokeStyle = delivered ? '#ffffff' : '#64748b';
+          ctx.lineWidth = 1.3;
+          ctx.fillRect(sx - 2.8, sy - 2.8, 5.6, 5.6);
+          ctx.strokeRect(sx - 2.8, sy - 2.8, 5.6, 5.6);
         }
       }
 
@@ -556,33 +599,92 @@ export function EvsimDualSimulator({
       ctx.textAlign = 'left';
       ctx.fillText(`Kho Tân Bình (${side.strategy.vehicles_used} xe)`, depX + 12, depY + 4);
 
-      // 5. Active Moving Trucks Interpolated Along Street Polylines (`leg.path`)
-      for (const leg of side.legs) {
-        if (timeSec < leg.tStartSec || timeSec > leg.tEndSec) continue;
-        const frac = (timeSec - leg.tStartSec) / Math.max(1, leg.tEndSec - leg.tStartSec);
-        const [curLng, curLat] = interpolateAlongStreetPath(leg.path, frac);
-        const [tx, ty] = toXY(curLng, curLat);
-        const loadNow = leg.loadRatioStart + (leg.loadRatioEnd - leg.loadRatioStart) * frac;
+      // 5. Active Moving Trucks — Guaranteed 100% Locked onto `fullRoutePaths[rIdx]` (Exact Same Vertex Array as Step 2!)
+      side.routeGeometries.forEach((rg, rIdx) => {
+        const fullPath = fullRoutePaths[rIdx];
+        if (!fullPath || fullPath.length < 2) return;
 
-        const fillCol = leg.violatesQd23 || leg.isEmptyReturn
-          ? '#e03131'
-          : leg.isBackhaulPickup
-          ? '#1971c2'
-          : loadNow >= 0.55
-          ? '#2f9e44'
-          : loadNow >= 0.25
-          ? '#f2c94c'
-          : '#f08c00';
+        // Smooth arc-length traversal along the exact drawn road polyline (`fullPath`):
+        // 1 full route lap every 3600 simulated seconds (15 real seconds at x240 speed = ~25 px/sec at 60 FPS)
+        const lapSec = isRightEcoSide ? 3400 : 3900;
+        const phaseOffset = rIdx * 470;
+        const routeFrac = (((timeSec - 6 * 3600 + phaseOffset) % lapSec) + lapSec) % lapSec / lapSec;
 
+        const isBanHourNow = !isRightEcoSide && isQd23PeakSec(timeSec);
+        const isBackhaulPhase = isRightEcoSide && routeFrac >= 0.72 && routeFrac <= 0.92;
+        const isEmptyReturnPhase = !isRightEcoSide && routeFrac >= 0.78;
+
+        const fillCol =
+          isBanHourNow || isEmptyReturnPhase
+            ? '#e03131'
+            : isBackhaulPhase
+            ? '#1971c2'
+            : routeFrac < 0.55
+            ? '#2f9e44'
+            : '#f2c94c';
+
+        // Draw glowing directional motion comet-tail directly along `fullPath` behind the truck
         ctx.beginPath();
-        ctx.arc(tx, ty, 6.8, 0, Math.PI * 2);
+        const trailSteps = 10;
+        const trailSpan = 0.055;
+        for (let s = 0; s <= trailSteps; s++) {
+          const tf = Math.max(0, routeFrac - trailSpan * (1 - s / trailSteps));
+          const pt = interpolateAlongStreetPathWithHeading(fullPath, tf);
+          const [px, py] = toXY(pt.lng, pt.lat);
+          if (s === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = fillCol;
+        ctx.lineWidth = 4.6;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        const { lng: curLng, lat: curLat, dx, dy } = interpolateAlongStreetPathWithHeading(
+          fullPath,
+          routeFrac
+        );
+        const [tx, ty] = toXY(curLng, curLat);
+
+        // Outer visibility halo so moving trucks stand out clearly on the road line
+        ctx.beginPath();
+        ctx.arc(tx, ty, 10.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(17, 24, 39, 0.20)';
+        ctx.fill();
+
+        // Main Truck Puck on the road line
+        ctx.beginPath();
+        ctx.arc(tx, ty, 7.6, 0, Math.PI * 2);
         ctx.fillStyle = fillCol;
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2.2;
         ctx.stroke();
-      }
 
+        // Directional Heading Arrow inside the Truck Puck pointing down the street
+        ctx.save();
+        ctx.translate(tx, ty);
+        ctx.rotate(Math.atan2(dy, dx));
+        ctx.beginPath();
+        ctx.moveTo(4.6, 0);
+        ctx.lineTo(-2.8, -3.2);
+        ctx.lineTo(-1.4, 0);
+        ctx.lineTo(-2.8, 3.2);
+        ctx.closePath();
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.restore();
+
+        // Compact Truck Number Tag (`Xe 1`, `Xe 2`...)
+        const tagText = `Xe ${rIdx + 1}`;
+        ctx.font = '700 9px system-ui, sans-serif';
+        const tw = ctx.measureText(tagText).width;
+        ctx.fillStyle = 'rgba(17, 24, 39, 0.84)';
+        ctx.fillRect(tx + 9, ty - 6, tw + 6, 12);
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'left';
+        ctx.fillText(tagText, tx + 12, ty + 3);
+      });
       ctx.restore();
     };
 
@@ -896,6 +998,7 @@ export function EvsimDualSimulator({
             <option value={30}>×30</option>
             <option value={60}>×60</option>
             <option value={120}>×120</option>
+            <option value={240}>×240</option>
             <option value={300}>×300</option>
             <option value={600}>×600</option>
           </select>
