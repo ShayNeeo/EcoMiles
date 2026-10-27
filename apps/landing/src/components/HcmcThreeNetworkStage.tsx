@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import gsap from 'gsap';
 import { ShieldCheck, Truck, Zap } from 'lucide-react';
 
 interface HcmcNodeSpec {
@@ -61,9 +62,27 @@ export const HcmcThreeNetworkStage: React.FC = () => {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const [activeCluster, setActiveCluster] = useState<'all' | 'qd23' | 'backhaul'>('all');
   const activeClusterRef = useRef<'all' | 'qd23' | 'backhaul'>('all');
+  const camTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 4.7, z: 6.2 });
+  const lookTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
+  const lookCurrentRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
 
   useEffect(() => {
     activeClusterRef.current = activeCluster;
+    const dur =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 0
+        : 0.85;
+    if (activeCluster === 'qd23') {
+      gsap.to(camTargetRef.current, { x: -0.15, y: 2.85, z: 3.65, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(lookTargetRef.current, { x: -0.1, y: 0.06, z: 0.35, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+    } else if (activeCluster === 'backhaul') {
+      gsap.to(camTargetRef.current, { x: 0.55, y: 3.55, z: 4.85, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(lookTargetRef.current, { x: 0.25, y: 0.15, z: 0.45, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+    } else {
+      gsap.to(camTargetRef.current, { x: 0, y: 4.7, z: 6.2, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+      gsap.to(lookTargetRef.current, { x: 0, y: 0, z: 0, duration: dur, ease: 'power3.inOut', overwrite: 'auto' });
+    }
   }, [activeCluster]);
 
   useEffect(() => {
@@ -241,6 +260,14 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       const elapsed = timer.getElapsed();
       const mode = activeClusterRef.current;
 
+
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, camTargetRef.current.x, 0.1);
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, camTargetRef.current.y, 0.1);
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, camTargetRef.current.z, 0.1);
+      lookCurrentRef.current.x = THREE.MathUtils.lerp(lookCurrentRef.current.x, lookTargetRef.current.x, 0.12);
+      lookCurrentRef.current.y = THREE.MathUtils.lerp(lookCurrentRef.current.y, lookTargetRef.current.y, 0.12);
+      lookCurrentRef.current.z = THREE.MathUtils.lerp(lookCurrentRef.current.z, lookTargetRef.current.z, 0.12);
+      camera.lookAt(lookCurrentRef.current.x, lookCurrentRef.current.y, lookCurrentRef.current.z);
       banZoneMat.opacity = mode === 'qd23' ? 0.78 : 0.42;
       banZoneMat.emissiveIntensity = mode === 'qd23' ? 1.15 : 0.65;
       tubeMaterials.forEach((tm, idx) => {

@@ -370,6 +370,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     pathname === '/dashboard' || pathname === '/app' || pathname === '/portal'
   );
   const [loginLoadingRole, setLoginLoadingRole] = useState<AppRole | null>(null);
+  const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
   const [authSessionInfo, setAuthSessionInfo] = useState<{
     token: string;
     account: string;
@@ -845,6 +846,20 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
             <button
               type="button"
+              onClick={() => setShowDeviceBanner((prev) => !prev)}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                showDeviceBanner
+                  ? 'bg-[#14532d] text-[#d6f65a] border-[#14532d]'
+                  : 'border-[#d1d5db] bg-[#f9fafb] hover:bg-white text-[#111827]'
+              }`}
+              title="Xem dàn 7 thiết bị đồng bộ thời gian thực"
+            >
+              <SplitSquareVertical className="w-3.5 h-3.5 text-[#1971c2]" />
+              <span>7 Thiết Bị Đồng Bộ</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setShowLoginGate(true)}
               className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-white text-[#111827] font-bold flex items-center gap-1.5 cursor-pointer"
               title="Chuyển đổi tài khoản hoặc vai trò đăng nhập"
@@ -876,6 +891,63 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           >
             Đóng
           </button>
+        </div>
+      )}
+
+      {/* Toggleable 7-Device Ecosystem Cover Banner Bar inside B2B Portal */}
+      {showDeviceBanner && (
+        <div className="bg-[#060d14] border-b border-emerald-900/60 px-4 sm:px-6 py-3 text-white transition-all">
+          <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <img
+                src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                alt="EcoMiles 7 Thiết Bị Đồng Bộ"
+                className="h-16 sm:h-20 w-auto rounded-lg border border-white/15 object-contain bg-black/40 p-1 shrink-0"
+              />
+              <div>
+                <div className="text-[11px] font-bold text-[#d6f65a] uppercase tracking-wider">
+                  Hệ sinh thái 7 thiết bị đồng bộ thời gian thực (2400×1120 Studio Stage)
+                </div>
+                <div className="text-xs text-slate-300 mt-0.5">
+                  MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 shrink-0 text-xs">
+              <a
+                href="/maps/"
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
+              >
+                Bản Đồ Xe Tải (/maps)
+              </a>
+              <a
+                href="/driver/"
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
+              >
+                App Tài Xế (/driver)
+              </a>
+              <a
+                href="/benchmark/"
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
+              >
+                Đối Chứng EVSIM (/benchmark)
+              </a>
+              <a
+                href="/pitch-deck/"
+                className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
+              >
+                Bộ 28 Ảnh Pitch Deck →
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowDeviceBanner(false)}
+                className="px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer font-bold"
+              >
+                ✕ Đóng
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

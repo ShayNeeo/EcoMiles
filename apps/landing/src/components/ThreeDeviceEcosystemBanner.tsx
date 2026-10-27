@@ -362,7 +362,32 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     const deviceMeshes: THREE.Mesh[] = [];
     const chassisMeshes: THREE.Mesh[] = [];
+    const reflectionMeshes: THREE.Mesh[] = [];
     const loadedTextures: THREE.Texture[] = [];
+
+    const reflVertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+    const reflFragmentShader = `
+      uniform sampler2D uMap;
+      uniform float uOpacity;
+      uniform vec3 uTint;
+      varying vec2 vUv;
+      void main() {
+        vec2 mirroredUv = vec2(vUv.x, 1.0 - vUv.y);
+        vec4 texel = texture(uMap, mirroredUv);
+        float verticalFade = smoothstep(0.0, 0.85, vUv.y) * pow(vUv.y, 1.65);
+        float edgeVignette = smoothstep(0.0, 0.08, vUv.x) * smoothstep(1.0, 0.92, vUv.x);
+        vec3 reflColor = mix(texel.rgb, uTint, 0.14);
+        gl_FragColor = vec4(reflColor, texel.a * verticalFade * edgeVignette * uOpacity);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }
+    `;
 
     DEVICE_3D_SPECS.forEach((spec) => {
       const tex = loader.load(spec.textureUrl);
@@ -404,6 +429,29 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       };
       stageGroup.add(mesh);
       deviceMeshes.push(mesh);
+
+      // Real-Time GLSL ShaderMaterial Mirrored Floor Reflection beneath each device
+      const reflHeight = spec.height * 0.42;
+      const reflGeo = new THREE.PlaneGeometry(spec.width, reflHeight);
+      const reflMat = new THREE.ShaderMaterial({
+        vertexShader: reflVertexShader,
+        fragmentShader: reflFragmentShader,
+        uniforms: {
+          uMap: { value: tex },
+          uOpacity: { value: 0.28 },
+          uTint: { value: new THREE.Color(0xd6f65a) },
+        },
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      });
+      const reflBaseY = spec.pos[1] - spec.height / 2 - reflHeight / 2 - 0.025;
+      const reflMesh = new THREE.Mesh(reflGeo, reflMat);
+      reflMesh.position.set(spec.pos[0], reflBaseY, spec.pos[2]);
+      reflMesh.rotation.y = spec.rotY;
+      reflMesh.userData = { reflBaseY };
+      stageGroup.add(reflMesh);
+      reflectionMeshes.push(reflMesh);
     });
 
     // Pointer parallax & Raycaster click picking
@@ -507,10 +555,25 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           ch.rotation.y = m.rotation.y;
         }
 
+        const refl = reflectionMeshes[i];
+        if (refl) {
+          const rMat = refl.material as THREE.ShaderMaterial;
+          rMat.uniforms.uOpacity.value = THREE.MathUtils.lerp(
+            rMat.uniforms.uOpacity.value as number,
+            isFocused ? 0.28 : 0.04,
+            0.12
+          );
+          refl.rotation.y = m.rotation.y;
+        }
+
         if (!prefersReducedMotion) {
-          const nextY = baseY + Math.sin(elapsed * 1.5 + i * 0.7) * 0.03;
+          const bob = Math.sin(elapsed * 1.5 + i * 0.7) * 0.03;
+          const nextY = baseY + bob;
           m.position.y = nextY;
           if (ch) ch.position.y = nextY;
+          if (refl) {
+            refl.position.y = (refl.userData.reflBaseY as number) - bob * 0.5;
+          }
         }
       });
 
@@ -547,6 +610,10 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       chassisMeshes.forEach((c) => {
         c.geometry.dispose();
         (c.material as THREE.Material).dispose();
+      });
+      reflectionMeshes.forEach((r) => {
+        r.geometry.dispose();
+        (r.material as THREE.Material).dispose();
       });
       loadedTextures.forEach((t) => t.dispose());
       renderer.dispose();

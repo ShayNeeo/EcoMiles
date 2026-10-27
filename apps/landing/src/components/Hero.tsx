@@ -25,7 +25,7 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const [isCtaHovered, setIsCtaHovered] = useState(false);
-  const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'three_network'>('devices_banner');
+  const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'studio_24k' | 'three_network'>('devices_banner');
   const heroRef = useRef<HTMLElement | null>(null);
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
@@ -193,34 +193,66 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 <Layers className="w-3.5 h-3.5 text-ecomiles-lime" />
                 <span>Trình diễn trực tiếp:</span>
               </span>
-              <div className="inline-flex items-center gap-1 p-0.5 rounded-xl bg-slate-900 border border-white/10">
+              <div className="inline-flex flex-wrap items-center gap-1 p-0.5 rounded-xl bg-slate-900 border border-white/10">
                 <button
                   type="button"
                   onClick={() => setHeroStageMode('devices_banner')}
-                  className={`px-3 py-1 rounded-lg text-[11px] font-bold cursor-pointer transition-colors ${
+                  className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer transition-colors ${
                     heroStageMode === 'devices_banner'
                       ? 'bg-ecomiles-lime text-slate-950'
                       : 'text-slate-300 hover:text-white'
                   }`}
                 >
-                  1. Banner 7 Thiết Bị (In-App Cover)
+                  1. Tháp 7 Thiết Bị 3D
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHeroStageMode('studio_24k')}
+                  className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer transition-colors ${
+                    heroStageMode === 'studio_24k'
+                      ? 'bg-ecomiles-lime text-slate-950'
+                      : 'text-slate-300 hover:text-white'
+                  }`}
+                >
+                  2. Studio Phản Chiếu 2.4K
                 </button>
                 <button
                   type="button"
                   onClick={() => setHeroStageMode('three_network')}
-                  className={`px-3 py-1 rounded-lg text-[11px] font-bold cursor-pointer transition-colors ${
+                  className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer transition-colors ${
                     heroStageMode === 'three_network'
                       ? 'bg-ecomiles-lime text-slate-950'
                       : 'text-slate-300 hover:text-white'
                   }`}
                 >
-                  2. Mạng Lưới 3D TP.HCM (Three.js)
+                  3. Mạng Lưới 3D TP.HCM
                 </button>
               </div>
             </div>
 
             {heroStageMode === 'devices_banner' ? (
               <HeroMultiDeviceStage />
+            ) : heroStageMode === 'studio_24k' ? (
+              <div className="relative w-full rounded-3xl overflow-hidden border border-ecomiles-lime/35 bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.46)_0%,rgba(4,9,18,0.97)_78%)] p-3 sm:p-4 shadow-[0_24px_64px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center space-y-2.5">
+                <img
+                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  alt="EcoMiles 7-Device Flagship Studio Cover Banner with Floor Reflections"
+                  className="w-full h-auto max-h-[340px] object-contain mx-auto rounded-xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
+                  loading="eager"
+                />
+                <div className="w-full flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-ecomiles-lime/30 text-[10.5px] text-slate-300">
+                  <span className="font-bold text-ecomiles-lime">
+                    Ảnh Bìa Studio 2.4K (2400×1120) · Phản Chiếu Sàn Gương 7 Thiết Bị
+                  </span>
+                  <a
+                    href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                    download="00_ecomiles_flagship_cover_banner.png"
+                    className="font-extrabold text-ecomiles-lime hover:underline"
+                  >
+                    Tải PNG 2.4K →
+                  </a>
+                </div>
+              </div>
             ) : (
               <HcmcThreeNetworkStage />
             )}
