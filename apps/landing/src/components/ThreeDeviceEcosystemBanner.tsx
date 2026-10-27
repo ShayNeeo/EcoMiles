@@ -164,6 +164,19 @@ const DEVICE_LABELS: Record<Exclude<DeviceBannerFocusId, 'all_banner'>, string> 
   galaxy_s26_ultra: 'Samsung Galaxy S26 Ultra (Dẫn Đường /maps)',
 };
 
+const DEVICE_LIVE_ROUTES: Record<
+  Exclude<DeviceBannerFocusId, 'all_banner'>,
+  { href: string; label: string }
+> = {
+  macbook_pro: { href: '/dashboard/', label: 'Mở Trung Tâm B2B (/dashboard) ↗' },
+  windows_xps: { href: '/benchmark/', label: 'Mở Phòng Đối Chứng (/benchmark) ↗' },
+  galaxy_zfold: { href: '/maps/?vehicle=0&mode=navigate', label: 'Mở Bản Đồ Xe Tải (/maps) ↗' },
+  ipad_pro: { href: '/dispatcher/', label: 'Mở Giao Diện Kho Vận (/dispatcher) ↗' },
+  iphone_18_pro_max: { href: '/driver/', label: 'Mở App Tài Xế Chặng Giữa (/driver) ↗' },
+  iphone_duo: { href: '/driver/', label: 'Mở Đa Nhiệm 2 Màn Hình (/driver) ↗' },
+  galaxy_s26_ultra: { href: '/maps/?vehicle=1&mode=navigate', label: 'Mở Dẫn Đường Trực Tiếp (/maps) ↗' },
+};
+
 export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProps> = ({
   selectedDeviceId,
   onSelectDevice,
@@ -839,19 +852,27 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       {(hoveredDeviceId || clusterPreset !== 'none' || selectedDeviceId !== 'all_banner') && (
         <div className="pointer-events-none absolute top-2 left-2.5 z-20 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-ecomiles-lime/60 text-[10.5px] font-bold text-ecomiles-lime shadow-lg backdrop-blur-md">
           {hoveredDeviceId
-            ? `Đang trỏ: ${DEVICE_LABELS[hoveredDeviceId]} · Bấm để bay camera tới`
+            ? `Đang trỏ: ${DEVICE_LABELS[hoveredDeviceId]}`
             : clusterPreset !== 'none'
-              ? `Camera 3D: Cụm ${
+              ? `Cụm 3D: ${
                   clusterPreset === 'office'
                     ? '2 Laptop Văn Phòng'
                     : clusterPreset === 'tablet'
                       ? 'Z Fold + iPad Pro'
                       : '3 Điện Thoại Tài Xế'
-                } · Phím ← / → chuyển thiết bị`
+                }`
               : selectedDeviceId !== 'all_banner'
-                ? `Camera 3D: ${DEVICE_LABELS[selectedDeviceId]} · Phím ← / → chuyển thiết bị`
+                ? `Camera 3D: ${DEVICE_LABELS[selectedDeviceId]}`
                 : null}
         </div>
+      )}
+      {selectedDeviceId !== 'all_banner' && (
+        <a
+          href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
+          className="absolute top-2 right-2.5 z-20 px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-[10.5px] font-extrabold shadow-lg transition-colors"
+        >
+          {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
+        </a>
       )}
       <div
         ref={mountRef}

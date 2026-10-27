@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { HcmcThreeNetworkStage } from './HcmcThreeNetworkStage';
 import { HeroMultiDeviceStage } from './HeroMultiDeviceStage';
+import { ThreeDeviceEcosystemBanner, type DeviceBannerFocusId } from './ThreeDeviceEcosystemBanner';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
 
@@ -36,7 +37,8 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const [isCtaHovered, setIsCtaHovered] = useState(false);
-  const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'studio_24k' | 'three_network'>('devices_banner');
+  const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'webgl_7devices' | 'studio_24k' | 'three_network'>('devices_banner');
+  const [heroWebglDeviceId, setHeroWebglDeviceId] = useState<DeviceBannerFocusId>('all_banner');
   const heroRef = useRef<HTMLElement | null>(null);
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
@@ -224,41 +226,59 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 <button
                   type="button"
                   onClick={() => setHeroStageMode('devices_banner')}
-                  className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer transition-colors ${
+                  className={`px-2 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
                     heroStageMode === 'devices_banner'
                       ? 'bg-ecomiles-lime text-slate-950'
                       : 'text-slate-300 hover:text-white'
                   }`}
                 >
-                  1. Tháp 7 Thiết Bị 3D
+                  1. Tháp 7 Thiết Bị
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHeroStageMode('webgl_7devices')}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
+                    heroStageMode === 'webgl_7devices'
+                      ? 'bg-ecomiles-lime text-slate-950'
+                      : 'text-slate-300 hover:text-white'
+                  }`}
+                >
+                  2. Không Gian 3D WebGL
                 </button>
                 <button
                   type="button"
                   onClick={() => setHeroStageMode('studio_24k')}
-                  className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer transition-colors ${
+                  className={`px-2 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
                     heroStageMode === 'studio_24k'
                       ? 'bg-ecomiles-lime text-slate-950'
                       : 'text-slate-300 hover:text-white'
                   }`}
                 >
-                  2. Studio Phản Chiếu 2.4K
+                  3. Studio 2.4K
                 </button>
                 <button
                   type="button"
                   onClick={() => setHeroStageMode('three_network')}
-                  className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer transition-colors ${
+                  className={`px-2 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
                     heroStageMode === 'three_network'
                       ? 'bg-ecomiles-lime text-slate-950'
                       : 'text-slate-300 hover:text-white'
                   }`}
                 >
-                  3. Mạng Lưới 3D TP.HCM
+                  4. Mạng Lưới 3D TP.HCM
                 </button>
               </div>
             </div>
 
             {heroStageMode === 'devices_banner' ? (
               <HeroMultiDeviceStage />
+            ) : heroStageMode === 'webgl_7devices' ? (
+              <div className="rounded-3xl border border-ecomiles-lime/35 bg-slate-950/90 p-2.5 shadow-[0_24px_64px_rgba(0,0,0,0.85)]">
+                <ThreeDeviceEcosystemBanner
+                  selectedDeviceId={heroWebglDeviceId}
+                  onSelectDevice={setHeroWebglDeviceId}
+                />
+              </div>
             ) : heroStageMode === 'studio_24k' ? (
               <div className="relative w-full rounded-3xl overflow-hidden border border-ecomiles-lime/35 bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.46)_0%,rgba(4,9,18,0.97)_78%)] p-3 sm:p-4 shadow-[0_24px_64px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center space-y-2.5">
                 <img

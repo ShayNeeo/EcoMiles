@@ -1528,6 +1528,21 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   <div>
                                     <div className="font-bold text-[#111827]">{r.plate}</div>
                                     <div className="text-[11.5px] text-[#5f6368]">{driverName}</div>
+                                    <div className="mt-0.5">
+                                      <span className="inline-block px-1.5 py-0.5 rounded bg-[#e8f0fb] text-[#1f3a5f] text-[10px] font-bold">
+                                        {
+                                          [
+                                            'iPhone Duo Gập Đôi',
+                                            'Samsung Galaxy Z Fold',
+                                            'iPhone 18 Pro Max',
+                                            'Samsung Galaxy S26 Ultra',
+                                            'iPad Pro M4',
+                                            'MacBook Pro 16"',
+                                            'Windows 11 XPS 16',
+                                          ][idx % 7]
+                                        }
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -2333,6 +2348,37 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         Bộ lọc 2 tầng (Ingress &amp; Export Redaction) tự động che số điện thoại di động Việt Nam (<code>090****327</code>), CCCD và email trong toàn bộ nhật ký vận hành và báo cáo xuất ra.
                       </p>
                     </div>
+                  </div>
+                </div>
+
+                {/* 7-Device Zero-Knowledge Endpoint Isolation Strip */}
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-4 text-white space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-[#d6f65a]" />
+                      <span className="text-xs font-bold text-[#d6f65a] uppercase tracking-wider">
+                        Cách Ly Bảo Mật Trên 7 Thiết Bị Đầu Cuối (AES-256-GCM &amp; Che SĐT Nghị Định 13/2023/NĐ-CP)
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10.5px] font-mono">
+                      admin_can_decrypt = false (7/7 Endpoints)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-[11px]">
+                    {[
+                      { name: 'MacBook Pro 16"', policy: 'Khóa KMS Doanh nghiệp' },
+                      { name: 'Windows 11 XPS 16', policy: 'Sandbox Đối chứng EVSIM' },
+                      { name: 'Galaxy Z Fold', policy: 'Chỉ tọa độ lộ trình /maps' },
+                      { name: 'iPad Pro M4', policy: 'Phân quyền Trạm kho vận' },
+                      { name: 'iPhone Duo', policy: 'PIN 0000 + Che SĐT NĐ 13' },
+                      { name: 'iPhone 18 Pro Max', policy: 'PIN 0000 + PoD Mã hóa' },
+                      { name: 'Galaxy S26 Ultra', policy: 'GPS ẩn danh khách nhận' },
+                    ].map((ep) => (
+                      <div key={ep.name} className="p-2 rounded-lg bg-white/5 border border-white/10">
+                        <div className="font-bold text-white truncate">{ep.name}</div>
+                        <div className="text-[10px] text-emerald-300 mt-0.5 truncate">{ep.policy}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
