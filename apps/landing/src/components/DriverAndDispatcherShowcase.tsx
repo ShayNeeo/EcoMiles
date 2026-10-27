@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -181,6 +181,37 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   const activeDevice =
     FLAGSHIP_DEVICES.find((d) => d.id === selectedDeviceId) ?? FLAGSHIP_DEVICES[0];
 
+  const hardwareDevices = FLAGSHIP_DEVICES.filter((d) => d.id !== 'all_banner');
+  const activeHardwareIndex = Math.max(
+    0,
+    hardwareDevices.findIndex((d) => d.id === activeDevice.id)
+  );
+  const wrapHardwareIndex = gsap.utils.wrap(0, hardwareDevices.length);
+  const stepHardwareDevice = (delta: -1 | 1) => {
+    const nextDev = hardwareDevices[wrapHardwareIndex(activeHardwareIndex + delta)];
+    if (nextDev) {
+      tiltRotateX.set(0);
+      tiltRotateY.set(0);
+      setSelectedDeviceId(nextDev.id);
+    }
+  };
+  const tiltRotateX = useMotionValue(0);
+  const tiltRotateY = useMotionValue(0);
+  const springRotateX = useSpring(tiltRotateX, { stiffness: 260, damping: 22, mass: 0.6 });
+  const springRotateY = useSpring(tiltRotateY, { stiffness: 260, damping: 22, mass: 0.6 });
+
+  const handleSingleDevicePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+    const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+    tiltRotateX.set(-ny * 14);
+    tiltRotateY.set(nx * 16);
+  };
+
+  const handleSingleDevicePointerLeave = () => {
+    tiltRotateX.set(0);
+    tiltRotateY.set(0);
+  };
   // GSAP ScrollTrigger 4-Beat Spatial Fan-Out (Office -> Handover -> Field -> Outcome)
   useGSAP(
     () => {
@@ -501,12 +532,62 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="w-full flex items-center justify-center">
-                    <img
-                      src={activeDevice.imageSrc}
-                      alt={activeDevice.deviceTitle}
-                      className="max-h-[470px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.8)] rounded-xl"
-                    />
+                  <div className="relative w-full flex flex-col items-center justify-center gap-2.5 py-1">
+                    {/* In-Stage Return Pill + Cyclic 1..7 / 7 Counter */}
+                    <div className="w-full flex flex-wrap items-center justify-between gap-2 px-1 text-[11px]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          tiltRotateX.set(0);
+                          tiltRotateY.set(0);
+                          setSelectedDeviceId('all_banner');
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-bold transition-colors cursor-pointer"
+                      >
+                        ← Toàn cảnh 7 thiết bị
+                      </button>
+                      <div className="inline-flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => stepHardwareDevice(-1)}
+                          className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
+                        >
+                          ‹ Thiết bị trước
+                        </button>
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-950/90 border border-white/10 font-mono font-bold text-ecomiles-lime">
+                          {activeHardwareIndex + 1} / {hardwareDevices.length}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => stepHardwareDevice(1)}
+                          className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
+                        >
+                          Thiết bị tiếp ›
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Interactive 3D Pointer-Tilted Hardware Mockup */}
+                    <motion.div
+                      key={activeDevice.id}
+                      onPointerMove={handleSingleDevicePointerMove}
+                      onPointerLeave={handleSingleDevicePointerLeave}
+                      style={{
+                        rotateX: springRotateX,
+                        rotateY: springRotateY,
+                        transformPerspective: 1100,
+                      }}
+                      initial={{ opacity: 0, scale: 0.94, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                      className="w-full flex items-center justify-center cursor-grab active:cursor-grabbing py-1"
+                    >
+                      <img
+                        src={activeDevice.imageSrc}
+                        alt={activeDevice.deviceTitle}
+                        className="max-h-[420px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_22px_48px_rgba(0,0,0,0.85)] rounded-xl"
+                      />
+                    </motion.div>
                   </div>
                 )}
               </div>

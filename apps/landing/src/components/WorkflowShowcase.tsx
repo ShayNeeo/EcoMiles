@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowUpRight,
   Check,
@@ -7,10 +7,14 @@ import {
   Globe2,
   Layers,
   MapPin,
+  Maximize2,
   Navigation,
+  Pause,
+  Play,
   RefreshCw,
   Route,
   Truck,
+  X,
 } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'motion/react';
 
@@ -60,6 +64,26 @@ interface WorkflowStepSpec {
 export const WorkflowShowcase: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isZoomed, setIsZoomed] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
+
+  // Auto-Play 8-Step Tour timer (4.5s per step with 50ms smooth ticker)
+  useEffect(() => {
+    if (!isPlaying) return;
+    const intervalMs = 4500;
+    const tickMs = 50;
+    const timer = window.setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          setActiveStep((s) => (s + 1) % 8);
+          return 0;
+        }
+        return prev + (tickMs / intervalMs) * 100;
+      });
+    }, tickMs);
+    return () => window.clearInterval(timer);
+  }, [isPlaying]);
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -269,6 +293,28 @@ export const WorkflowShowcase: React.FC = () => {
           <p className="mt-4 text-sm sm:text-base text-slate-300">
             Bấm vào từng bước bên dưới để xem đầu vào, đầu ra và giao diện thực tế tương ứng trong hệ thống EcoMiles.
           </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
+            <button
+              type="button"
+              onClick={() => {
+                setIsPlaying((p) => !p);
+                setProgress(0);
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-ecomiles-lime/40 bg-slate-900/90 text-xs font-bold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 transition-all shadow-lg shadow-ecomiles-lime/10 cursor-pointer"
+            >
+              {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+              <span>{isPlaying ? '⏸ Tạm dừng tour 8 bước' : '▶ Tự động chạy 8 bước'}</span>
+            </button>
+            {isPlaying && (
+              <div className="w-36 h-2 rounded-full bg-slate-800/80 border border-white/10 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-ecomiles-mint to-ecomiles-lime rounded-full transition-all duration-75"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
+          </div>
         </motion.div>
 
         {/* 8 Step Selector Buttons (Full Un-Truncated Labels + Reduced-Motion-Safe layoutId) */}
@@ -283,7 +329,10 @@ export const WorkflowShowcase: React.FC = () => {
             <motion.button
               key={item.num}
               type="button"
-              onClick={() => setActiveStep(idx)}
+              onClick={() => {
+                setActiveStep(idx);
+                setProgress(0);
+              }}
               aria-pressed={activeStep === idx}
               variants={stepItem}
               whileHover={shouldReduceMotion ? undefined : { y: -3 }}
@@ -401,12 +450,31 @@ export const WorkflowShowcase: React.FC = () => {
               </div>
 
               {/* Right 6 Cols: Real In-App Screenshot Proof for This Step */}
-              <div className="lg:col-span-6 flex flex-col items-center justify-center bg-slate-950/90 rounded-2xl p-3 sm:p-5 border border-white/10">
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  setIsPlaying(false);
+                  setIsZoomed(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsPlaying(false);
+                    setIsZoomed(true);
+                  }
+                }}
+                className="group relative lg:col-span-6 flex flex-col items-center justify-center bg-slate-950/90 rounded-2xl p-3 sm:p-5 border border-white/10 hover:border-ecomiles-lime/50 cursor-zoom-in transition-all overflow-hidden"
+              >
                 <img
                   src={current.proofImage}
                   alt={`Giao diện thực tế Bước ${current.num}: ${current.title}`}
-                  className="max-h-[380px] w-auto max-w-full object-contain rounded-xl shadow-[0_18px_40px_rgba(0,0,0,0.75)]"
+                  className="max-h-[380px] w-auto max-w-full object-contain rounded-xl shadow-[0_18px_40px_rgba(0,0,0,0.75)] group-hover:scale-[1.015] transition-transform duration-300"
                 />
+                <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-white/20 text-[11px] font-semibold text-slate-200 group-hover:text-ecomiles-lime group-hover:border-ecomiles-lime/60 backdrop-blur-md transition-colors">
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Phóng to (High-DPI)</span>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -460,6 +528,52 @@ export const WorkflowShowcase: React.FC = () => {
           </div>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {isZoomed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setIsZoomed(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4 sm:p-8 cursor-zoom-out"
+          >
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.94, opacity: 0 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-6xl max-h-[92vh] w-full bg-slate-900 border border-white/20 rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col items-center cursor-default"
+            >
+              <div className="w-full flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-ecomiles-lime bg-ecomiles-lime/10 px-2.5 py-0.5 rounded-full border border-ecomiles-lime/20">
+                    Bước {current.num} / 08 · {current.badge}
+                  </span>
+                  <h4 className="text-sm sm:text-base font-bold text-white truncate">{current.title}</h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsZoomed(false)}
+                  className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-white/10 cursor-pointer"
+                  aria-label="Đóng ảnh"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="w-full flex-1 overflow-auto flex items-center justify-center">
+                <img
+                  src={current.proofImage}
+                  alt={current.title}
+                  className="max-h-[78vh] w-auto max-w-full object-contain rounded-xl border border-white/10 shadow-2xl"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

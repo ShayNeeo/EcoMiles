@@ -335,6 +335,19 @@ export const HcmcThreeNetworkStage: React.FC = () => {
         aria-label="Mô hình 3D mạng lưới giao nhận đô thị TP.HCM tránh vùng cấm tải QĐ 23/2018"
       />
 
+      {/* 7-Device Corridor Telemetry Sync Strip */}
+      <div className="flex flex-wrap items-center justify-between gap-1.5 px-3 py-1.5 border-t border-white/10 bg-slate-900/90 text-[10px] text-slate-300">
+        <span className="px-2 py-0.5 rounded bg-slate-950 border border-ecomiles-lime/30 text-ecomiles-lime font-bold">
+          Kho Tân Bình: MacBook Pro 16&quot; · Windows XPS 16
+        </span>
+        <span className="px-2 py-0.5 rounded bg-slate-950 border border-emerald-400/30 text-emerald-300 font-bold">
+          Hub Thủ Đức / Q7: Galaxy Z Fold · iPad Pro M4
+        </span>
+        <span className="px-2 py-0.5 rounded bg-slate-950 border border-sky-400/30 text-sky-300 font-bold">
+          7 Xe ALNS: iPhone Duo · 18 Pro Max · S26 Ultra
+        </span>
+      </div>
+
       <div className="grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 bg-slate-950/95 text-center py-2.5 px-2">
         <div className="px-2">
           <div className="text-[10px] text-slate-400 uppercase font-semibold flex items-center justify-center gap-1">

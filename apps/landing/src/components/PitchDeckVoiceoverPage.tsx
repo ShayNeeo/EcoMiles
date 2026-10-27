@@ -1859,14 +1859,78 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
               </a>
             </div>
 
-            {/* Featured Master Cover Banner (00) + 4 Slide Composites (17..20) */}
-            <div className="space-y-4">
-              <img
-                src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                alt="00 - Master 7-Device Flagship Cover Banner (2400x1260)"
-                className="w-full h-auto rounded-2xl border border-white/10 shadow-2xl"
-                loading="lazy"
-              />
+            {/* Featured Master Cover Banners (00 & 00_clean) + 7 Hardware Mockups (21..27) + 4 Slide Composites (17..20) */}
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <a
+                  href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block rounded-2xl overflow-hidden border border-ecomiles-lime/40 bg-slate-950 p-2 hover:border-ecomiles-lime transition-colors"
+                >
+                  <img
+                    src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                    alt="00_clean - Pure 7-Device Studio Stage with Floor Reflections (2400x1120)"
+                    className="w-full h-auto rounded-xl"
+                    loading="lazy"
+                  />
+                  <div className="text-[11px] font-mono text-ecomiles-lime mt-2 px-1 truncate">
+                    00_ecomiles_clean_devices_hero_stage.png (Pure 7-Device V-Formation Stage · 2400×1120)
+                  </div>
+                </a>
+                <a
+                  href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block rounded-2xl overflow-hidden border border-white/15 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors"
+                >
+                  <img
+                    src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                    alt="00 - Master 7-Device Flagship Cover Banner (2400x1260)"
+                    className="w-full h-auto rounded-xl"
+                    loading="lazy"
+                  />
+                  <div className="text-[11px] font-mono text-slate-300 mt-2 px-1 truncate">
+                    00_ecomiles_flagship_cover_banner.png (OpenGraph / Social Cover · 2400×1260)
+                  </div>
+                </a>
+              </div>
+
+              {/* 7 Individual Hardware Mockups (21..27) */}
+              <div>
+                <h3 className="text-sm font-bold text-ecomiles-lime uppercase tracking-wider mb-3">
+                  7 Mockup Thiết Bị Độc Lập (MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra)
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                  {[
+                    '26_mockup_macbook_pro_16_b2b_tms.png',
+                    '27_mockup_windows_xps_16_evsim_dual.png',
+                    '24_mockup_samsung_zfold_tablet_cockpit.png',
+                    '25_mockup_ipad_pro_tablet_tms.png',
+                    '23_mockup_iphone_duo_dual_screen.png',
+                    '21_mockup_iphone_18_pro_max_driver.png',
+                    '22_mockup_samsung_s26_ultra_maps_live.png',
+                  ].map((fname) => (
+                    <a
+                      key={fname}
+                      href={`/pitch-deck-screenshots/${fname}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex flex-col justify-between rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors"
+                    >
+                      <img
+                        src={`/pitch-deck-screenshots/${fname}`}
+                        alt={fname}
+                        className="w-full h-28 object-contain mx-auto"
+                        loading="lazy"
+                      />
+                      <div className="text-[10px] font-mono text-slate-300 mt-2 px-1 truncate">{fname}</div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4 Slide Composites (17..20) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                   '17_slide_composite_all_devices_hero_trio.png',
