@@ -90,10 +90,11 @@ export const HeroMultiDeviceStage: React.FC = () => {
   const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]);
   const [inspectedDevice, setInspectedDevice] = useState<HeroDeviceSpec | null>(null);
   const [isPointerInside, setIsPointerInside] = useState<boolean>(false);
+  const [isAutoSpotlight, setIsAutoSpotlight] = useState<boolean>(true);
 
   // Auto-Cycling 7-Device Spotlight Tour (pauses on pointer hover, inspect modal, or reduced motion)
   useEffect(() => {
-    if (isPointerInside || inspectedDevice) return undefined;
+    if (!isAutoSpotlight || isPointerInside || inspectedDevice) return undefined;
     if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return undefined;
     }
@@ -104,7 +105,7 @@ export const HeroMultiDeviceStage: React.FC = () => {
       });
     }, 2800);
     return () => window.clearInterval(interval);
-  }, [isPointerInside, inspectedDevice]);
+  }, [isAutoSpotlight, isPointerInside, inspectedDevice]);
   // 3-Plane Differential Parallax + Overlapping Occlusion (scroll-craft standing hero requirement)
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -173,24 +174,39 @@ export const HeroMultiDeviceStage: React.FC = () => {
         className="pointer-events-none absolute inset-0 w-full h-full z-15"
       >
         {[
-          { from: 'macbook_pro', to: 'galaxy_zfold', d: 'M 185 85 C 120 120, 85 180, 70 235' },
-          { from: 'macbook_pro', to: 'iphone_18_pro_max', d: 'M 185 85 C 185 135, 185 190, 185 240' },
-          { from: 'macbook_pro', to: 'iphone_duo', d: 'M 185 85 C 235 130, 275 185, 300 235' },
-          { from: 'windows_xps', to: 'iphone_duo', d: 'M 415 85 C 365 130, 325 185, 300 235' },
-          { from: 'windows_xps', to: 'galaxy_s26_ultra', d: 'M 415 85 C 415 135, 415 190, 415 240' },
-          { from: 'windows_xps', to: 'ipad_pro', d: 'M 415 85 C 480 120, 515 180, 530 235' },
+          { from: 'macbook_pro', to: 'galaxy_zfold', sx: 185, sy: 85, ex: 70, ey: 235, d: 'M 185 85 C 120 120, 85 180, 70 235' },
+          { from: 'macbook_pro', to: 'iphone_18_pro_max', sx: 185, sy: 85, ex: 185, ey: 240, d: 'M 185 85 C 185 135, 185 190, 185 240' },
+          { from: 'macbook_pro', to: 'iphone_duo', sx: 185, sy: 85, ex: 300, ey: 235, d: 'M 185 85 C 235 130, 275 185, 300 235' },
+          { from: 'windows_xps', to: 'iphone_duo', sx: 415, sy: 85, ex: 300, ey: 235, d: 'M 415 85 C 365 130, 325 185, 300 235' },
+          { from: 'windows_xps', to: 'galaxy_s26_ultra', sx: 415, sy: 85, ex: 415, ey: 240, d: 'M 415 85 C 415 135, 415 190, 415 240' },
+          { from: 'windows_xps', to: 'ipad_pro', sx: 415, sy: 85, ex: 530, ey: 235, d: 'M 415 85 C 480 120, 515 180, 530 235' },
         ].map((arc, idx) => {
           const isActive = hoveredDevice.id === arc.from || hoveredDevice.id === arc.to;
           return (
-            <path
-              key={idx}
-              d={arc.d}
-              fill="none"
-              stroke={isActive ? '#d6f65a' : '#34d399'}
-              strokeWidth={isActive ? 2.2 : 1.15}
-              strokeOpacity={isActive ? 0.92 : 0.28}
-              strokeDasharray="6 6"
-            />
+            <g key={idx}>
+              <path
+                d={arc.d}
+                fill="none"
+                stroke={isActive ? '#d6f65a' : '#34d399'}
+                strokeWidth={isActive ? 2.2 : 1.15}
+                strokeOpacity={isActive ? 0.92 : 0.28}
+                strokeDasharray="6 6"
+              />
+              <circle
+                cx={arc.sx}
+                cy={arc.sy}
+                r={isActive ? 3.5 : 2}
+                fill={isActive ? '#d6f65a' : '#34d399'}
+                fillOpacity={isActive ? 0.95 : 0.4}
+              />
+              <circle
+                cx={arc.ex}
+                cy={arc.ey}
+                r={isActive ? 4 : 2.2}
+                fill={isActive ? '#d6f65a' : '#34d399'}
+                fillOpacity={isActive ? 1 : 0.45}
+              />
+            </g>
           );
         })}
       </svg>
@@ -293,6 +309,17 @@ export const HeroMultiDeviceStage: React.FC = () => {
           <span className="text-slate-200 font-medium truncate">{hoveredDevice.roleLabel}</span>
         </div>
         <div className="flex items-center gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsAutoSpotlight((prev) => !prev)}
+            className={`px-2 py-0.5 rounded border text-[10px] font-bold transition-colors cursor-pointer ${
+              isAutoSpotlight
+                ? 'bg-ecomiles-lime/15 border-ecomiles-lime/50 text-ecomiles-lime'
+                : 'bg-slate-900/80 border-white/15 text-slate-400 hover:text-white'
+            }`}
+          >
+            {isAutoSpotlight ? '⏸ Tự động' : '▶ Tự động'}
+          </button>
           <button
             type="button"
             onClick={() => setInspectedDevice(hoveredDevice)}

@@ -1810,6 +1810,35 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
+                {/* Live 7-Device Broadcast Target Strip in /dispatcher */}
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl px-3.5 py-2.5 text-white flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="w-2 h-2 rounded-full bg-[#d6f65a] animate-pulse shrink-0" />
+                    <span className="text-[11px] font-bold text-[#d6f65a] uppercase tracking-wider">
+                      Đích đồng bộ 7 thiết bị (&lt;50ms):
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
+                    {[
+                      { label: 'MacBook Pro (TMS)', href: '/dashboard/' },
+                      { label: 'Windows XPS (EVSIM)', href: '/benchmark/' },
+                      { label: 'Galaxy Z Fold (/maps)', href: '/maps/?vehicle=0&mode=navigate' },
+                      { label: 'iPad Pro M4', href: '/dispatcher/' },
+                      { label: 'iPhone Duo (/driver)', href: '/driver/' },
+                      { label: 'iPhone 18 Pro Max', href: '/driver/' },
+                      { label: 'Galaxy S26 Ultra (/maps)', href: '/maps/?vehicle=1&mode=navigate' },
+                    ].map((dev) => (
+                      <a
+                        key={dev.label}
+                        href={dev.href}
+                        className="px-2 py-0.5 rounded-md bg-white/10 hover:bg-[#d6f65a] hover:text-[#060d14] text-slate-200 transition-colors"
+                      >
+                        {dev.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Map + Route Filter */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
                   <div className="lg:col-span-7 bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">

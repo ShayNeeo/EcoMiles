@@ -410,6 +410,19 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     focusRing.position.set(0, -0.105, 0);
     stageGroup.add(focusRing);
 
+    // 3D Vertical Holographic Pedestal Light Beam under the focused device
+    const holoBeamGeo = new THREE.CylinderGeometry(0.48, 0.72, 1.0, 32, 1, true);
+    const holoBeamMat = new THREE.MeshBasicMaterial({
+      color: 0xd6f65a,
+      transparent: true,
+      opacity: 0,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+    const holoBeam = new THREE.Mesh(holoBeamGeo, holoBeamMat);
+    holoBeam.position.set(0, 0.4, 0);
+    stageGroup.add(holoBeam);
+
     // 3D Data-Sync Arcs + Animated Data Pulses from Office Laptops to Field Devices
     const syncCurves: THREE.CatmullRomCurve3[] = [];
     const syncPulses: THREE.Mesh[] = [];
@@ -669,6 +682,10 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         focusRingTargetRef.current.scale * (prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 3.2) * 0.05);
       focusRing.scale.set(pulseScale, 1, pulseScale);
       focusRingMat.opacity = focusRingTargetRef.current.opacity;
+      holoBeam.position.x = focusRingTargetRef.current.x;
+      holoBeam.position.z = focusRingTargetRef.current.z;
+      holoBeam.scale.set(pulseScale, 1, pulseScale);
+      holoBeamMat.opacity = focusRingTargetRef.current.opacity * 0.16;
       floorDiscMat.uniforms.uTime.value = prefersReducedMotion ? 0 : elapsed;
       (floorDiscMat.uniforms.uFocusPos.value as THREE.Vector2).set(
         focusRingTargetRef.current.x,
@@ -789,6 +806,8 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       ringMat.dispose();
       focusRingGeo.dispose();
       focusRingMat.dispose();
+      holoBeamGeo.dispose();
+      holoBeamMat.dispose();
       syncGeos.forEach((g) => g.dispose());
       syncMats.forEach((m) => m.dispose());
       particleGeo.dispose();
