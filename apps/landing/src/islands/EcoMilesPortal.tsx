@@ -1719,6 +1719,44 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 =============================================================== */}
             {userTab === 'evsim_compare' && (
               <div className="space-y-4">
+                {/* Compact 7-Device EVSIM Comparison Strip in Tab 2 */}
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img
+                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                      alt="Đồng Bộ 7 Thiết Bị Thực Nghiệm EVSIM"
+                      className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0"
+                    />
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[11.5px] font-bold text-[#d6f65a] uppercase tracking-wide">
+                          Môi Trường Đối Chứng Thuật Toán EVSIM Trên 7 Thiết Bị Phần Cứng
+                        </span>
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                          Windows 11 XPS 16 &amp; MacBook Pro 16&quot; Dual-Engine
+                        </span>
+                      </div>
+                      <p className="text-[11.5px] text-slate-300 mt-0.5">
+                        MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
+                    <a
+                      href="/benchmark/"
+                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border border-white/10 transition-colors"
+                    >
+                      Mở Trang Benchmark Riêng ↗
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setShowDeviceBanner((prev) => !prev)}
+                      className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
+                    >
+                      {showDeviceBanner ? 'Ẩn Banner Đa Thiết Bị ▲' : 'Bật Toàn Bộ 7 Thiết Bị ▼'}
+                    </button>
+                  </div>
+                </div>
                 <EvsimDualSimulator
                   initialResult={result}
                   onResultChange={(newRes) => setResult(newRes)}
@@ -2229,6 +2267,65 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <Printer className="w-4 h-4 text-[#1971c2]" />
                       <span>In Hồ Sơ PDF</span>
                     </button>
+                  </div>
+                </div>
+
+                {/* 7-Device Hardware Telemetry Aggregation to 3-Sheet Excel Strip */}
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-4 text-white space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <img
+                        src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                        alt="EcoMiles 7-Device ESG Telemetry Pipeline"
+                        className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0"
+                      />
+                      <div>
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#d6f65a] block">
+                          Luồng Thu Thập Telemetry 7 Thiết Bị &rarr; Báo Cáo Excel 3 Sheet Tự Động
+                        </span>
+                        <span className="text-[11px] text-slate-300">
+                          Tổng hợp tự động từ 5 thiết bị thực địa và 2 máy trạm điều phối theo chuẩn GLEC v3.2 / ISO 14083
+                        </span>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
+                      7/7 Thiết Bị Đã Đồng Bộ
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-1">
+                      <div className="text-[10px] font-bold uppercase text-emerald-400">
+                        1. Telemetry 5 Thiết Bị Thực Địa
+                      </div>
+                      <div className="font-bold text-white">
+                        Galaxy Z Fold · iPad Pro M4 · iPhone Duo · 18 Pro Max · S26 Ultra
+                      </div>
+                      <p className="text-[11px] text-slate-300">
+                        Ghi nhận tọa độ GPS thực tế, tải trọng dỡ hàng từng điểm và trạng thái tuân thủ giờ cấm QĐ 23/2018.
+                      </p>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-1">
+                      <div className="text-[10px] font-bold uppercase text-cyan-300">
+                        2. Trạm Kiểm Định &amp; Tính Toán Kép
+                      </div>
+                      <div className="font-bold text-white">
+                        MacBook Pro 16&quot; (TMS) · Windows 11 XPS 16 (EVSIM)
+                      </div>
+                      <p className="text-[11px] text-slate-300">
+                        Tính toán phát thải động GLX-HDT-v1 (TTW &amp; WTW), đối chứng cự ly tiết giảm (-34.9%) và tỷ lệ chạy rỗng (2.7%).
+                      </p>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-white/5 border border-emerald-500/30 space-y-1">
+                      <div className="text-[10px] font-bold uppercase text-[#d6f65a]">
+                        3. Kết Xuất Workbook Excel 3 Sheet (.XLS)
+                      </div>
+                      <div className="font-bold text-white">
+                        1_Tong_Hop_ESG · 2_Chi_Tiet_Chuyen · 3_Kiem_Toan_QD23
+                      </div>
+                      <p className="text-[11px] text-slate-300">
+                        Kèm mã băm xác thực dữ liệu <code className="font-mono text-[#d6f65a]">{result.dataset_fingerprint}</code> chống chỉnh sửa thủ công.
+                      </p>
+                    </div>
                   </div>
                 </div>
 

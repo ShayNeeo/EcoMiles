@@ -247,36 +247,64 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
             </div>
 
             {/* 7-Device Studio Cover Banner Strip */}
-            <div className="mt-3 p-3 rounded-2xl bg-slate-950/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <img
-                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  alt="EcoMiles 7-Device Studio Banner"
-                  className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0"
-                />
-                <div>
-                  <div className="text-[11px] font-black text-ecomiles-lime uppercase tracking-wider">
-                    Hệ Sinh Thái 7 Thiết Bị Studio 2.4K (MacBook · Windows · Z Fold · iPad · iPhone Duo · S26 Ultra)
-                  </div>
-                  <div className="text-[11px] text-slate-300">
-                    Đồng bộ tức thì qua Cloudflare Edge Worker &amp; Bảo mật Zero-Knowledge AES-256-GCM
+            <div className="mt-3 p-3.5 rounded-2xl bg-slate-950/90 border border-white/10 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <img
+                    src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                    alt="EcoMiles 7-Device Studio Banner"
+                    className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0"
+                  />
+                  <div>
+                    <div className="text-[11px] font-black text-ecomiles-lime uppercase tracking-wider">
+                      Hệ Sinh Thái 7 Thiết Bị Studio 2.4K — Chạm 1-Click Mở Trực Tiếp Từng Thiết Bị
+                    </div>
+                    <div className="text-[11px] text-slate-300">
+                      Đồng bộ tức thì qua Cloudflare Edge Worker &amp; Bảo mật Zero-Knowledge AES-256-GCM
+                    </div>
                   </div>
                 </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href="#showcase"
+                    onClick={onClose}
+                    className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-white/10"
+                  >
+                    Sân Khấu 3D (#showcase)
+                  </a>
+                  <a
+                    href="/pitch-deck/"
+                    className="py-1.5 px-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-black text-xs"
+                  >
+                    Bộ 28 Ảnh Pitch Deck →
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <a
-                  href="#showcase"
-                  onClick={onClose}
-                  className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-white/10"
-                >
-                  Sân Khấu 3D (#showcase)
-                </a>
-                <a
-                  href="/pitch-deck/"
-                  className="py-1.5 px-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-black text-xs"
-                >
-                  Bộ 28 Ảnh Pitch Deck →
-                </a>
+
+              {/* 7-Device 1-Click Live Launch Pills */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1.5 pt-2 border-t border-white/10">
+                {[
+                  { device: 'MacBook Pro 16"', sub: 'B2B CRM/TMS', href: '/dashboard/' },
+                  { device: 'Windows 11 XPS 16', sub: 'EVSIM Dual Lab', href: '/benchmark/' },
+                  { device: 'Galaxy Z Fold', sub: 'Truck Cockpit', href: '/maps/?vehicle=0&mode=navigate' },
+                  { device: 'iPad Pro M4', sub: 'Taplo & ESG', href: '/dashboard/' },
+                  { device: 'iPhone Duo', sub: '2-Tier Driver', href: `/driver/?plate=${encodeURIComponent(selectedPlate)}` },
+                  { device: 'iPhone 18 Pro Max', sub: 'Driver ePOD', href: `/driver/?plate=${encodeURIComponent(selectedPlate)}` },
+                  { device: 'Galaxy S26 Ultra', sub: 'Follow-Truck Nav', href: '/maps/?vehicle=0&mode=navigate' },
+                ].map((item) => (
+                  <a
+                    key={item.device}
+                    href={item.href}
+                    className="group flex flex-col justify-between rounded-xl border border-white/10 bg-slate-900/90 px-2.5 py-1.5 hover:border-ecomiles-lime/60 hover:bg-slate-800/90 transition-all"
+                  >
+                    <span className="text-[10px] font-extrabold text-white group-hover:text-ecomiles-lime truncate">
+                      {item.device}
+                    </span>
+                    <span className="text-[9.5px] font-mono text-slate-400 group-hover:text-slate-200 truncate">
+                      {item.sub} →
+                    </span>
+                  </a>
+                ))}
               </div>
             </div>
           </motion.div>

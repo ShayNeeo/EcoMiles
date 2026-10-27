@@ -8,10 +8,14 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 interface TeamMember {
   name: string;
   role: React.ReactNode;
+  ownershipBadge: string;
+  hardwareEndpoints: string;
   image: string;
   imagePosition: string;
   liveSubsystemLabel: string;
   liveSubsystemHref: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
 }
 
 const members: TeamMember[] = [
@@ -24,6 +28,8 @@ const members: TeamMember[] = [
         Logistics &amp; Chuỗi Cung Ứng
       </>
     ),
+    ownershipBadge: 'Operations · B2B TMS & Luồng 120 Đơn',
+    hardwareEndpoints: 'MacBook Pro 16" · iPad Pro M4',
     image: '/team/thuy.jpg',
     imagePosition: 'center 20%',
     liveSubsystemLabel: 'Điều Phối B2B TMS (/dashboard)',
@@ -38,10 +44,14 @@ const members: TeamMember[] = [
         &amp; Kiến Trúc Hệ Thống
       </>
     ),
+    ownershipBadge: 'CTO · VRPTW/ALNS, 3D WebGL & 7 Thiết Bị',
+    hardwareEndpoints: 'Full 7-Device Studio · AES-256-GCM',
     image: '/team/thanh.jpg',
     imagePosition: 'center 32%',
-    liveSubsystemLabel: 'Kiến Trúc 7 Thiết Bị & Zero-Knowledge (/audit)',
+    liveSubsystemLabel: 'Zero-Knowledge Audit (/audit)',
     liveSubsystemHref: '/portal/audit/',
+    secondaryLabel: '28 Ảnh Pitch Deck ↗',
+    secondaryHref: '/pitch-deck/',
   },
   {
     name: 'Nguyễn Ngọc Khánh Phương',
@@ -52,6 +62,8 @@ const members: TeamMember[] = [
         &amp; Phát Triển Bền Vững
       </>
     ),
+    ownershipBadge: 'ESG Lead · Kiểm Định Đối Chứng EVSIM',
+    hardwareEndpoints: 'Windows 11 XPS 16 · ESG 3-Sheet',
     image: '/team/phuong.jpg',
     imagePosition: 'center 28%',
     liveSubsystemLabel: 'Đối Chứng EVSIM & ESG (/benchmark)',
@@ -66,10 +78,14 @@ const members: TeamMember[] = [
         &amp; Kế Hoạch Vốn
       </>
     ),
+    ownershipBadge: 'CFO · Bản Đồ Xe Tải $0 API & ROI',
+    hardwareEndpoints: 'Galaxy Z Fold · /pitch-deck/',
     image: '/team/phuc.jpg',
     imagePosition: 'center 24%',
     liveSubsystemLabel: 'Bản Đồ Xe Tải $0 API (/maps)',
     liveSubsystemHref: '/maps/?vehicle=0&mode=navigate',
+    secondaryLabel: 'Hồ Sơ Gọi Vốn ↗',
+    secondaryHref: '/pitch-deck/',
   },
   {
     name: 'Lê Thị Hoàng Ngân',
@@ -80,6 +96,8 @@ const members: TeamMember[] = [
         &amp; Thương Mại Điện Tử
       </>
     ),
+    ownershipBadge: 'Last-Mile Lead · App Tài Xế 2 Chặng',
+    hardwareEndpoints: 'iPhone Duo · 18 Pro Max · S26 Ultra',
     image: '/team/ngan.jpg',
     imagePosition: 'center 25%',
     liveSubsystemLabel: 'App Tài Xế 2 Chặng (/driver)',
@@ -199,20 +217,34 @@ export const Team: React.FC = () => {
                 </span>
               </div>
 
-              <div className="mx-auto mt-6 max-w-[260px]">
+              <div className="mx-auto mt-6 max-w-[270px]">
                 <h3 className="font-barlow text-lg font-extrabold uppercase leading-tight tracking-[0.025em] text-white sm:text-xl">
                   {member.name}
                 </h3>
-                <p className="mt-2 min-h-[44px] text-xs font-bold leading-5 text-ecomiles-lime sm:text-[13px] text-balance">
+                <p className="mt-2 min-h-[40px] text-xs font-bold leading-5 text-ecomiles-lime sm:text-[13px] text-balance">
                   {member.role}
                 </p>
-                <a
-                  href={member.liveSubsystemHref}
-                  className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-white/15 text-[10.5px] font-bold text-slate-200 hover:border-ecomiles-lime/60 hover:text-ecomiles-lime transition-all"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span>{member.liveSubsystemLabel}</span>
-                </a>
+                <div className="mt-2 rounded-xl border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-[10px] leading-4 text-slate-300">
+                  <div className="font-bold text-white">{member.ownershipBadge}</div>
+                  <div className="mt-0.5 font-mono text-[9.5px] text-emerald-300">{member.hardwareEndpoints}</div>
+                </div>
+                <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5">
+                  <a
+                    href={member.liveSubsystemHref}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-white/15 text-[10.5px] font-bold text-slate-200 hover:border-ecomiles-lime/60 hover:text-ecomiles-lime transition-all"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>{member.liveSubsystemLabel}</span>
+                  </a>
+                  {member.secondaryHref && member.secondaryLabel && (
+                    <a
+                      href={member.secondaryHref}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-ecomiles-lime/15 border border-ecomiles-lime/35 text-[10px] font-extrabold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 transition-all"
+                    >
+                      <span>{member.secondaryLabel}</span>
+                    </a>
+                  )}
+                </div>
               </div>
             </article>
           ))}
