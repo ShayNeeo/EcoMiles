@@ -249,12 +249,24 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   }, [tiltRotateX, tiltRotateY]);
 
   useEffect(() => {
-    if (selectedDeviceId === 'all_banner' && stageRenderMode !== 'webgl_3d') return;
+    if (!isShowcaseLightboxOpen && selectedDeviceId === 'all_banner' && stageRenderMode !== 'webgl_3d') {
+      return;
+    }
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        if (isShowcaseLightboxOpen) {
+          const nextDev = FLAGSHIP_DEVICES[wrapFlagshipIndex(activeFlagshipIndex - 1)];
+          if (nextDev) {
+            tiltRotateX.set(0);
+            tiltRotateY.set(0);
+            if (stageRenderMode === 'studio_banner') setStageRenderMode('spatial_2d');
+            setSelectedDeviceId(nextDev.id);
+          }
+          return;
+        }
         const nextIdx =
           selectedDeviceId === 'all_banner'
             ? hardwareDevices.length - 1
@@ -267,6 +279,16 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
         }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
+        if (isShowcaseLightboxOpen) {
+          const nextDev = FLAGSHIP_DEVICES[wrapFlagshipIndex(activeFlagshipIndex + 1)];
+          if (nextDev) {
+            tiltRotateX.set(0);
+            tiltRotateY.set(0);
+            if (stageRenderMode === 'studio_banner') setStageRenderMode('spatial_2d');
+            setSelectedDeviceId(nextDev.id);
+          }
+          return;
+        }
         const nextIdx =
           selectedDeviceId === 'all_banner' ? 0 : wrapHardwareIndex(activeHardwareIndex + 1);
         const nextDev = hardwareDevices[nextIdx];
@@ -277,6 +299,10 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
         }
       } else if (e.key === 'Escape') {
         e.preventDefault();
+        if (isShowcaseLightboxOpen) {
+          setIsShowcaseLightboxOpen(false);
+          return;
+        }
         tiltRotateX.set(0);
         tiltRotateY.set(0);
         setSelectedDeviceId('all_banner');
@@ -284,7 +310,18 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedDeviceId, stageRenderMode, activeHardwareIndex, hardwareDevices, wrapHardwareIndex, tiltRotateX, tiltRotateY]);
+  }, [
+    isShowcaseLightboxOpen,
+    selectedDeviceId,
+    stageRenderMode,
+    activeFlagshipIndex,
+    wrapFlagshipIndex,
+    activeHardwareIndex,
+    hardwareDevices,
+    wrapHardwareIndex,
+    tiltRotateX,
+    tiltRotateY,
+  ]);
 
   useEffect(() => {
     if (!isShowcaseAutoTour) return;

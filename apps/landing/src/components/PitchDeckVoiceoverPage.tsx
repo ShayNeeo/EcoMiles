@@ -265,6 +265,22 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (lightboxAsset !== null) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          setLightboxAsset(null);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          const total = GALLERY_LIGHTBOX_ASSETS.length;
+          const curIdx = GALLERY_LIGHTBOX_ASSETS.indexOf(
+            lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
+          );
+          const safeIdx = curIdx >= 0 ? curIdx : 0;
+          const delta = e.key === 'ArrowRight' ? 1 : -1;
+          setLightboxAsset(GALLERY_LIGHTBOX_ASSETS[(safeIdx + delta + total) % total]);
+        }
+        return;
+      }
 
       if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
         e.preventDefault();
@@ -283,7 +299,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeSlide]);
+  }, [activeSlide, lightboxAsset]);
 
   // Web Speech API Voice-over playback for judges
   const toggleVoiceoverSpeech = (slideId: number) => {
@@ -2600,7 +2616,16 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
               className="max-w-5xl w-full max-h-[92vh] flex flex-col bg-slate-900/95 border border-ecomiles-lime/45 rounded-2xl overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.95)] cursor-default"
             >
               <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90 text-xs">
-                <span className="font-mono font-bold text-ecomiles-lime truncate">{lightboxAsset}</span>
+                <span className="font-mono font-bold text-ecomiles-lime truncate">
+                  [
+                  {Math.max(
+                    0,
+                    GALLERY_LIGHTBOX_ASSETS.indexOf(
+                      lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
+                    )
+                  ) + 1}
+                  /{GALLERY_LIGHTBOX_ASSETS.length}] {lightboxAsset}
+                </span>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
