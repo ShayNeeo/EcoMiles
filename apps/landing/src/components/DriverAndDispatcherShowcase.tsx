@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
+import { motion, AnimatePresence, useMotionValue, useReducedMotion, useSpring } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -177,6 +177,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   const [stageRenderMode, setStageRenderMode] = useState<'spatial_2d' | 'webgl_3d' | 'studio_banner'>('spatial_2d');
   const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
   const [isShowcaseAutoTour, setIsShowcaseAutoTour] = useState<boolean>(false);
+  const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageCardRef = useRef<HTMLDivElement | null>(null);
   const multiStageRef = useRef<HTMLDivElement | null>(null);
@@ -558,6 +559,16 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           />
                           <circle cx={arc.sx} cy={arc.sy} r={2.5} fill="#d6f65a" fillOpacity={0.65} />
                           <circle cx={arc.ex} cy={arc.ey} r={2.8} fill="#34d399" fillOpacity={0.65} />
+                          {!shouldReduceMotion && (
+                            <circle r={2.6} fill="#d6f65a" fillOpacity={0.92}>
+                              <animateMotion
+                                dur="2.2s"
+                                begin={`${idx * 0.32}s`}
+                                repeatCount="indefinite"
+                                path={arc.d}
+                              />
+                            </circle>
+                          )}
                         </g>
                       ))}
                     </svg>

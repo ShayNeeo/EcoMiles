@@ -56,7 +56,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
     } else {
       gsap.to(window, {
         duration: 0.85,
-        scrollTo: { y: target, offsetY: 64 },
+        scrollTo: { y: target, offsetY: 64, autoKill: false },
         ease: 'power3.inOut',
       });
     }

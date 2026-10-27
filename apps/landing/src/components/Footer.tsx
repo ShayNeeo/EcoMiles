@@ -27,7 +27,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
     } else {
       gsap.to(window, {
         duration: 0.85,
-        scrollTo: { y: target, offsetY: 64 },
+        scrollTo: { y: target, offsetY: 64, autoKill: false },
         ease: 'power3.inOut',
       });
     }

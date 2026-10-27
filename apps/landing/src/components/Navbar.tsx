@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { Leaf, Menu, X, ArrowRight, Calculator, LayoutDashboard } from 'lucide-react';
+import { Leaf, Menu, X, ArrowRight, Calculator, LayoutDashboard, ChevronDown } from 'lucide-react';
 
 gsap.registerPlugin(ScrollToPlugin);
 interface NavbarProps {
@@ -19,10 +19,51 @@ const NAV_LINKS = [
   { name: 'Dùng thử', href: '#pricing', id: 'pricing' },
 ];
 
+const NAVBAR_ECOSYSTEM_DEVICES = [
+  { id: 'macbook_pro', name: 'MacBook Pro 16"', role: 'B2B TMS' },
+  { id: 'windows_xps', name: 'Windows 11 XPS 16', role: 'EVSIM' },
+  { id: 'galaxy_zfold', name: 'Galaxy Z Fold', role: 'Cockpit' },
+  { id: 'ipad_pro', name: 'iPad Pro M4', role: 'Kho Vận' },
+  { id: 'iphone_duo', name: 'iPhone Duo', role: 'Gập Đôi' },
+  { id: 'iphone_18_pro_max', name: 'iPhone 18 Pro Max', role: 'Chặng Giữa' },
+  { id: 'galaxy_s26_ultra', name: 'Galaxy S26 Ultra', role: 'Live /maps' },
+] as const;
+
 export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalModal }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [devicesPopoverOpen, setDevicesPopoverOpen] = useState(false);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+
+  const handleSelectNavbarDevice = (deviceId: string) => {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent('ecomiles:select-device', { detail: { deviceId } }));
+    setDevicesPopoverOpen(false);
+    setActiveSection('showcase');
+    const target = document.querySelector('#showcase');
+    if (!target) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      target.scrollIntoView({ behavior: 'instant' });
+    } else {
+      gsap.to(window, {
+        duration: 0.85,
+        scrollTo: { y: target, offsetY: 64, autoKill: false },
+        ease: 'power3.inOut',
+      });
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setDevicesPopoverOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSmoothNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, sectionId: string) => {
     if (typeof window === 'undefined') return;
@@ -37,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
     } else {
       gsap.to(window, {
         duration: 0.8,
-        scrollTo: { y: target, offsetY: 64 },
+        scrollTo: { y: target, offsetY: 64, autoKill: false },
         ease: 'power3.inOut',
       });
     }
@@ -134,6 +175,73 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
 
           {/* Right: Actions CTAs */}
           <div className="hidden sm:flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Desktop 7-Device Studio Banner & 1-Click Hardware Quick-Jump Popover */}
+            <div className="relative hidden xl:block" ref={popoverRef}>
+              <button
+                type="button"
+                onClick={() => setDevicesPopoverOpen((prev) => !prev)}
+                className={`whitespace-nowrap px-3 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  devicesPopoverOpen
+                    ? 'bg-ecomiles-lime text-slate-950 shadow-md'
+                    : 'text-slate-200 bg-white/10 hover:bg-white/15 border border-white/10'
+                }`}
+                aria-expanded={devicesPopoverOpen}
+                aria-haspopup="dialog"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>7 Thiết Bị</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    devicesPopoverOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {devicesPopoverOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                    className="absolute right-0 top-full mt-2.5 w-96 p-3.5 rounded-2xl bg-slate-950/95 backdrop-blur-2xl border border-white/15 shadow-2xl shadow-black/80 z-50 pointer-events-auto"
+                  >
+                    <div
+                      onClick={() => handleSelectNavbarDevice('all_banner')}
+                      className="group relative overflow-hidden rounded-xl border border-white/10 bg-slate-900 cursor-pointer mb-2.5 transition-all hover:border-ecomiles-lime/50"
+                    >
+                      <img
+                        src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                        alt="EcoMiles 7-Device Studio Stage"
+                        className="w-full h-24 object-contain bg-black/50 p-1 group-hover:scale-105 transition-transform duration-300"
+                        loading="eager"
+                      />
+                      <div className="px-2.5 py-1.5 bg-slate-950/90 border-t border-white/10 flex items-center justify-between">
+                        <span className="text-[10px] font-extrabold text-ecomiles-lime uppercase">
+                          Sân Khấu 7 Thiết Bị 2.4K
+                        </span>
+                        <span className="text-[9.5px] font-mono text-slate-300">Mở #showcase →</span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {NAVBAR_ECOSYSTEM_DEVICES.map((device) => (
+                        <button
+                          key={device.id}
+                          type="button"
+                          onClick={() => handleSelectNavbarDevice(device.id)}
+                          className="text-left px-2 py-1.5 rounded-lg bg-white/5 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[10.5px] font-semibold transition-all flex items-center justify-between group cursor-pointer"
+                        >
+                          <span className="truncate">{device.name}</span>
+                          <span className="text-[9px] font-mono text-ecomiles-lime group-hover:text-slate-900 ml-1 shrink-0">
+                            {device.role}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             <a
               href="#calculator"
               onClick={(e) => handleSmoothNavClick(e, '#calculator', 'calculator')}

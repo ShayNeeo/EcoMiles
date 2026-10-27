@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
 import { ArrowUpRight, Laptop, Smartphone, SplitSquareVertical, Tablet, X } from 'lucide-react';
 
 interface HeroDeviceSpec {
@@ -91,6 +91,7 @@ export const HeroMultiDeviceStage: React.FC = () => {
   const [inspectedDevice, setInspectedDevice] = useState<HeroDeviceSpec | null>(null);
   const [isPointerInside, setIsPointerInside] = useState<boolean>(false);
   const [isAutoSpotlight, setIsAutoSpotlight] = useState<boolean>(true);
+  const shouldReduceMotion = useReducedMotion();
 
   // Auto-Cycling 7-Device Spotlight Tour (pauses on pointer hover, inspect modal, or reduced motion)
   useEffect(() => {
@@ -217,6 +218,20 @@ export const HeroMultiDeviceStage: React.FC = () => {
                 fill={isActive ? '#d6f65a' : '#34d399'}
                 fillOpacity={isActive ? 1 : 0.45}
               />
+              {!shouldReduceMotion && (
+                <circle
+                  r={isActive ? 3.2 : 2.1}
+                  fill="#d6f65a"
+                  fillOpacity={isActive ? 1 : 0.72}
+                >
+                  <animateMotion
+                    dur="2.2s"
+                    begin={`${idx * 0.32}s`}
+                    repeatCount="indefinite"
+                    path={arc.d}
+                  />
+                </circle>
+              )}
             </g>
           );
         })}

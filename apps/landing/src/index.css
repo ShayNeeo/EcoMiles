@@ -21,7 +21,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   background-color: var(--glx-ink);
   color-scheme: dark;
 }
