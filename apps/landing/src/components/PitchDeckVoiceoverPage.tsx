@@ -651,6 +651,40 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                           </p>
                         </div>
 
+                        {/* 7-Device Studio Cover Banner Showcase Card on Slide 1 */}
+                        <div className="mb-6 rounded-2xl border border-ecomiles-lime/35 bg-slate-950/85 p-3 sm:p-4 shadow-xl space-y-2.5">
+                          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <span className="font-extrabold text-ecomiles-lime uppercase tracking-wider">
+                              Sân Khấu 7 Thiết Bị Đồng Bộ Thời Gian Thực (MacBook · Windows · Z Fold · iPad · iPhone Duo · 18 Pro Max · S26 Ultra)
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setLightboxAsset('00_ecomiles_clean_devices_hero_stage.png')}
+                                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-ecomiles-lime border border-ecomiles-lime/40 font-bold text-[11px] cursor-pointer"
+                              >
+                                Phóng to 2.4K
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setGalleryStageMode('webgl_3d');
+                                  document.getElementById('pitch-deck-screenshots')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-[11px] cursor-pointer"
+                              >
+                                Mở Sân Khấu 3D WebGL ↓
+                              </button>
+                            </div>
+                          </div>
+                          <img
+                            src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                            alt="EcoMiles 7-Device Flagship Studio Cover Banner"
+                            onClick={() => setLightboxAsset('00_ecomiles_clean_devices_hero_stage.png')}
+                            className="w-full max-h-[260px] object-contain mx-auto rounded-xl cursor-zoom-in drop-shadow-[0_18px_36px_rgba(0,0,0,0.85)]"
+                          />
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                           <div className="rounded-2xl border border-red-500/30 bg-red-950/15 p-5 relative overflow-hidden">
                             <div className="flex items-center justify-between mb-4 border-b border-red-500/20 pb-3">

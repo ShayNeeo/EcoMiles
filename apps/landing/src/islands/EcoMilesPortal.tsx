@@ -2943,6 +2943,96 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </div>
             </div>
           </div>
+
+          {/* 3. Live 7-Device Endpoint Telemetry & Zero-Knowledge Session Matrix */}
+          <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#247b50]" />
+                <h2 className="text-[15px] font-bold text-[#111827]">
+                  3. Ma Trận Phiên Kết Nối 7 Thiết Bị Đầu Cuối &amp; Kiểm Toán Mã Hóa Zero-Knowledge
+                </h2>
+              </div>
+              <span className="px-2.5 py-0.5 rounded bg-[#dcfae5] text-[#04250e] text-[11px] font-bold">
+                7 / 7 Thiết bị Online · TLS 1.3 + AES-256-GCM
+              </span>
+            </div>
+            <div className="overflow-x-auto border border-[#e5e7eb] rounded-lg">
+              <table className="w-full border-collapse text-xs">
+                <thead className="bg-[#f9fafb] text-[#5f6368] border-b border-[#e5e7eb]">
+                  <tr>
+                    <th className="py-2 px-3 text-left">Thiết bị phần cứng</th>
+                    <th className="py-2 px-3 text-left">Vai trò &amp; Không gian</th>
+                    <th className="py-2 px-3 text-left">Tuyến kết nối trực tiếp</th>
+                    <th className="py-2 px-3 text-left">Chuẩn mã hóa phiên</th>
+                    <th className="py-2 px-3 text-left">Quyền giải mã của Admin</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#f2f2f2]">
+                  {[
+                    {
+                      device: 'MacBook Pro 16" (macOS)',
+                      role: 'Vai trò 1 · Điều phối viên B2B',
+                      route: '/dashboard',
+                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
+                    },
+                    {
+                      device: 'Windows 11 XPS 16 (Workstation)',
+                      role: 'Vai trò 2 · Kiểm định viên EVSIM',
+                      route: '/benchmark',
+                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
+                    },
+                    {
+                      device: 'Samsung Galaxy Z Fold (768×1024)',
+                      role: 'Vai trò 3 · Buồng lái OpenTruck HUD',
+                      route: '/maps',
+                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
+                    },
+                    {
+                      device: 'iPad Pro M4 (1024×768 Landscape)',
+                      role: 'Vai trò 1 · Bảng điều khiển kho vận',
+                      route: '/dispatcher',
+                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
+                    },
+                    {
+                      device: 'iPhone Duo Dual-Screen (750×834)',
+                      role: 'Vai trò 3 · Đa nhiệm 2 màn hình gập đôi',
+                      route: '/driver',
+                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
+                    },
+                    {
+                      device: 'iPhone 18 Pro Max (422×907)',
+                      role: 'Vai trò 3 · Tài xế chặng giữa (>500kg)',
+                      route: '/driver',
+                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
+                    },
+                    {
+                      device: 'Samsung Galaxy S26 Ultra (418×899)',
+                      role: 'Vai trò 3 · Dẫn đường trực tiếp Follow-Truck',
+                      route: '/maps',
+                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
+                    },
+                  ].map((ep) => (
+                    <tr key={ep.device} className="hover:bg-[#f9fafb]">
+                      <td className="py-2 px-3 font-bold text-[#111827]">{ep.device}</td>
+                      <td className="py-2 px-3 text-[#5f6368]">{ep.role}</td>
+                      <td className="py-2 px-3 font-mono font-bold text-[#1971c2]">
+                        <a href={ep.route} className="hover:underline">
+                          {ep.route}
+                        </a>
+                      </td>
+                      <td className="py-2 px-3 font-mono text-[#247b50]">{ep.cipher}</td>
+                      <td className="py-2 px-3">
+                        <span className="px-2 py-0.5 rounded bg-[#ffedea] text-[#831c1e] font-mono font-bold text-[11px]">
+                          admin_can_decrypt = false
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
     </div>

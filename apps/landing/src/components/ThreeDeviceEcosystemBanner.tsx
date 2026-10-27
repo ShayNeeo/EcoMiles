@@ -428,6 +428,26 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       syncPulses.push(pulse);
     });
 
+    // 3D Atmospheric Studio Light Motes (THREE.Points + BufferGeometry per threejs-geometry skill)
+    const particleCount = 48;
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (((i * 73) % 100) / 100 - 0.5) * 9.0;
+      particlePositions[i * 3 + 1] = 0.05 + (((i * 41) % 100) / 100) * 2.5;
+      particlePositions[i * 3 + 2] = (((i * 59) % 100) / 100 - 0.5) * 5.2;
+    }
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.045,
+      color: 0xd6f65a,
+      transparent: true,
+      opacity: 0.45,
+      depthWrite: false,
+    });
+    const studioParticles = new THREE.Points(particleGeo, particleMat);
+    stageGroup.add(studioParticles);
+
     // Load 7 Real Device Textures (threejs-textures: SRGBColorSpace + LinearFilter + 3D Physical Chassis Backing)
     const loader = new THREE.TextureLoader();
     const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
@@ -714,6 +734,11 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         p.position.copy(pulsePos);
       });
 
+      if (!prefersReducedMotion) {
+        studioParticles.position.y = Math.sin(elapsed * 0.65) * 0.08;
+        studioParticles.rotation.y = elapsed * 0.03;
+      }
+
       renderer.render(scene, camera);
     };
 
@@ -735,6 +760,8 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       focusRingMat.dispose();
       syncGeos.forEach((g) => g.dispose());
       syncMats.forEach((m) => m.dispose());
+      particleGeo.dispose();
+      particleMat.dispose();
       deviceMeshes.forEach((m) => {
         m.geometry.dispose();
         (m.material as THREE.Material).dispose();
