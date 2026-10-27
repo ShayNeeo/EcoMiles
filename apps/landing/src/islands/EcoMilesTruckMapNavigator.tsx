@@ -383,6 +383,7 @@ export function EcoMilesTruckMapNavigator({
   const [showBanZones, setShowBanZones] = useState<boolean>(true);
   const [showBridges, setShowBridges] = useState<boolean>(true);
   const [showAllFleetRoutes, setShowAllFleetRoutes] = useState<boolean>(false);
+  const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
   const [tileTick, setTileTick] = useState<number>(0);
   const [voiceBanner, setVoiceBanner] = useState<string>('');
   const [overviewTransform, setOverviewTransform] = useState<{ zoom: number; panX: number; panY: number }>({
@@ -943,8 +944,69 @@ export function EcoMilesTruckMapNavigator({
                 <span>2. Dẫn Đường Trực Tiếp (Chế độ Bắt Đầu)</span>
               </button>
             </div>
+            <button
+              type="button"
+              onClick={() => setShowDeviceBanner((prev) => !prev)}
+              aria-expanded={showDeviceBanner}
+              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 border transition-all cursor-pointer ${
+                showDeviceBanner
+                  ? 'bg-[#14532d] text-[#d6f65a] border-[#0f3f22] shadow-xs'
+                  : 'bg-white hover:bg-slate-50 text-[#111827] border-[#d1d5db]'
+              }`}
+              title="Xem dàn 7 thiết bị đồng bộ thời gian thực"
+            >
+              <Layers className="w-3.5 h-3.5 text-[#1971c2]" />
+              <span>7 Thiết Bị Đồng Bộ</span>
+            </button>
           </div>
         </div>
+        {showDeviceBanner && (
+          <div className="mt-2.5 pt-2.5 border-t border-[#d8cfbd] bg-[#060d14] text-white rounded-xl px-3.5 py-2.5">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <img
+                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  alt="EcoMiles 7-Device Studio Stage"
+                  className="h-12 sm:h-14 w-auto rounded-lg border border-white/15 bg-black/40 p-0.5 object-contain shrink-0"
+                />
+                <div>
+                  <div className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#d6f65a]">
+                    Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)
+                  </div>
+                  <div className="text-xs text-slate-300 font-medium">
+                    MacBook Pro 16&quot; · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
+                <a
+                  href="/dashboard/"
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+                >
+                  Trung Tâm Điều Phối (/dashboard)
+                </a>
+                <a
+                  href="/driver/"
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+                >
+                  App Tài Xế (/driver)
+                </a>
+                <a
+                  href="/benchmark/"
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+                >
+                  Đối Chứng EVSIM (/benchmark)
+                </a>
+                <a
+                  href="/pitch-deck/"
+                  className="px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
+                >
+                  Bộ 28 Ảnh Pitch Deck →
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* MAIN WORKSPACE: LEFT/CENTER INTERACTIVE TRUCK MAP + RIGHT DETAILED ROUTING DRAWER */}

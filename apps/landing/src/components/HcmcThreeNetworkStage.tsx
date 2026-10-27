@@ -6,19 +6,85 @@ import { ShieldCheck, Truck, Zap } from 'lucide-react';
 interface HcmcNodeSpec {
   id: string;
   label: string;
+  shortName: string;
   x: number;
   z: number;
   kind: 'depot' | 'hub' | 'ban';
+  deviceLabel: string;
+  stats: string;
 }
 
 const HCMC_3D_NODES: HcmcNodeSpec[] = [
-  { id: 'depot', label: 'Kho Tân Bình (364 Cộng Hòa)', x: -1.9, z: -0.7, kind: 'depot' },
-  { id: 'govap', label: 'Gò Vấp (18 đơn)', x: -0.8, z: -2.1, kind: 'hub' },
-  { id: 'binhthanh', label: 'Bình Thạnh (Cầu 13T)', x: 0.9, z: -0.9, kind: 'hub' },
-  { id: 'thuduc', label: 'TP. Thủ Đức (24 đơn)', x: 2.4, z: -1.4, kind: 'hub' },
-  { id: 'quan7', label: 'Quận 7 · Nam Sài Gòn', x: 1.3, z: 1.9, kind: 'hub' },
-  { id: 'binhtan', label: 'Bình Tân · Chợ Lớn', x: -2.3, z: 1.5, kind: 'hub' },
-  { id: 'q1_ban', label: 'Lõi Cấm Tải QĐ 23 (06-09h & 16-20h)', x: -0.1, z: 0.35, kind: 'ban' },
+  {
+    id: 'depot',
+    label: 'Kho Tân Bình (364 Cộng Hòa)',
+    shortName: 'Kho Tân Bình',
+    x: -1.9,
+    z: -0.7,
+    kind: 'depot',
+    deviceLabel: 'MacBook Pro 16" & Windows XPS 16',
+    stats: '120 đơn · 7 tuyến ALNS · Xuất phát 05:30',
+  },
+  {
+    id: 'govap',
+    label: 'Gò Vấp (18 đơn)',
+    shortName: 'Gò Vấp',
+    x: -0.8,
+    z: -2.1,
+    kind: 'hub',
+    deviceLabel: 'iPhone 18 Pro Max',
+    stats: '18 đơn · Bắc Sài Gòn · ETA 06:45',
+  },
+  {
+    id: 'binhthanh',
+    label: 'Bình Thạnh (Cầu 13T)',
+    shortName: 'Bình Thạnh',
+    x: 0.9,
+    z: -0.9,
+    kind: 'hub',
+    deviceLabel: 'iPhone Duo Dual-Screen',
+    stats: 'Cầu 13T · Chuyển tải Đông-Bắc · 100% đúng tải',
+  },
+  {
+    id: 'thuduc',
+    label: 'TP. Thủ Đức (24 đơn)',
+    shortName: 'TP. Thủ Đức',
+    x: 2.4,
+    z: -1.4,
+    kind: 'hub',
+    deviceLabel: 'Samsung Galaxy Z Fold',
+    stats: '24 đơn · Xa Lộ Hà Nội · Ghép đơn chiều về',
+  },
+  {
+    id: 'quan7',
+    label: 'Quận 7 · Nam Sài Gòn',
+    shortName: 'Quận 7',
+    x: 1.3,
+    z: 1.9,
+    kind: 'hub',
+    deviceLabel: 'iPad Pro M4',
+    stats: '19 đơn · Nam Sài Gòn · Phối hợp Cảng Hiệp Phước',
+  },
+  {
+    id: 'binhtan',
+    label: 'Bình Tân · Chợ Lớn',
+    shortName: 'Bình Tân',
+    x: -2.3,
+    z: 1.5,
+    kind: 'hub',
+    deviceLabel: 'Samsung Galaxy S26 Ultra',
+    stats: '22 đơn · Quốc Lộ 1A · Tải trọng 94.2%',
+  },
+  {
+    id: 'q1_ban',
+    label: 'Lõi Cấm Tải QĐ 23 (06-09h & 16-20h)',
+    shortName: 'Lõi Cấm QĐ 23',
+    x: -0.1,
+    z: 0.35,
+    kind: 'ban',
+    deviceLabel: 'OpenTruck HUD · 0 Vi Phạm',
+    stats: 'Khung cấm 06-09h & 16-20h · Định tuyến vòng 100%',
+  },
 ];
 
 const ROUTE_ARCS: Array<{ points: Array<[number, number, number]>; color: number }> = [
@@ -65,6 +131,32 @@ export const HcmcThreeNetworkStage: React.FC = () => {
   const camTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 4.7, z: 6.2 });
   const lookTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
   const lookCurrentRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
+  const [selectedNode, setSelectedNode] = useState<HcmcNodeSpec>(HCMC_3D_NODES[0]);
+
+  const focusHcmcNode = (node: HcmcNodeSpec) => {
+    setSelectedNode(node);
+    const dur =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 0
+        : 0.75;
+    gsap.to(camTargetRef.current, {
+      x: node.x * 0.85,
+      y: 2.75,
+      z: node.z + 3.15,
+      duration: dur,
+      ease: 'power3.out',
+      overwrite: 'auto',
+    });
+    gsap.to(lookTargetRef.current, {
+      x: node.x,
+      y: 0.12,
+      z: node.z,
+      duration: dur,
+      ease: 'power3.out',
+      overwrite: 'auto',
+    });
+  };
 
   useEffect(() => {
     activeClusterRef.current = activeCluster;
@@ -153,6 +245,45 @@ export const HcmcThreeNetworkStage: React.FC = () => {
     gridHelper.position.y = 0.015;
     worldGroup.add(gridHelper);
 
+    // GLSL ShaderMaterial Concentric Radar Sonar Pulse radiating from Kho Tan Binh (-1.9, -0.7)
+    const radarGeo = new THREE.CircleGeometry(3.36, 64);
+    radarGeo.rotateX(-Math.PI / 2);
+    const radarMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      uniforms: {
+        uTime: { value: 0 },
+        uOrigin: { value: new THREE.Vector2(-1.9, -0.7) },
+        uColor: { value: new THREE.Color(0xd6f65a) },
+      },
+      vertexShader: `
+        varying vec2 vXz;
+        void main() {
+          vXz = position.xz;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform vec2 uOrigin;
+        uniform vec3 uColor;
+        varying vec2 vXz;
+        void main() {
+          float d = distance(vXz, uOrigin);
+          float wave = fract(d * 1.15 - uTime * 0.45);
+          float ring = smoothstep(0.0, 0.12, wave) * (1.0 - smoothstep(0.12, 0.28, wave));
+          float falloff = 1.0 - smoothstep(0.4, 5.2, d);
+          gl_FragColor = vec4(uColor, ring * falloff * 0.24);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
+      `,
+    });
+    const radarDisk = new THREE.Mesh(radarGeo, radarMat);
+    radarDisk.position.y = 0.012;
+    worldGroup.add(radarDisk);
+
     const banZoneGeo = new THREE.CylinderGeometry(0.88, 0.88, 0.06, 36);
     const banZoneMat = new THREE.MeshStandardMaterial({
       color: 0xef4444,
@@ -163,7 +294,9 @@ export const HcmcThreeNetworkStage: React.FC = () => {
     });
     const banDisk = new THREE.Mesh(banZoneGeo, banZoneMat);
     banDisk.position.set(-0.1, 0.04, 0.35);
+    banDisk.userData = { nodeSpec: HCMC_3D_NODES.find((n) => n.id === 'q1_ban') };
     worldGroup.add(banDisk);
+    const pickableMeshes: THREE.Mesh[] = [banDisk];
 
     const banRingGeo = new THREE.RingGeometry(0.84, 0.92, 48);
     banRingGeo.rotateX(-Math.PI / 2);
@@ -190,7 +323,9 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       });
       const mesh = new THREE.Mesh(isDepot ? depotGeo : nodeGeo, mat);
       mesh.position.set(n.x, isDepot ? 0.2 : 0.13, n.z);
+      mesh.userData = { nodeSpec: n };
       worldGroup.add(mesh);
+      pickableMeshes.push(mesh);
     });
 
     const curves: THREE.CatmullRomCurve3[] = [];
@@ -238,6 +373,20 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       targetRot.x = ny * 0.22;
     };
     container.addEventListener('pointermove', onPointerMove);
+    const raycaster = new THREE.Raycaster();
+    const pointerNdc = new THREE.Vector2();
+    const onClick = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      pointerNdc.x = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+      pointerNdc.y = -((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 + 1;
+      raycaster.setFromCamera(pointerNdc, camera);
+      const hits = raycaster.intersectObjects(pickableMeshes, false);
+      if (hits.length > 0) {
+        const hitSpec = hits[0].object.userData.nodeSpec as HcmcNodeSpec | undefined;
+        if (hitSpec) focusHcmcNode(hitSpec);
+      }
+    };
+    container.addEventListener('click', onClick);
 
     const onResize = () => {
       if (!container) return;
@@ -259,6 +408,7 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       timer.update();
       const elapsed = timer.getElapsed();
       const mode = activeClusterRef.current;
+      radarMat.uniforms.uTime.value = prefersReducedMotion ? 1.2 : elapsed;
 
 
       camera.position.x = THREE.MathUtils.lerp(camera.position.x, camTargetRef.current.x, 0.1);
@@ -310,6 +460,7 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       renderer.setAnimationLoop(null);
       timer.dispose();
       container.removeEventListener('pointermove', onPointerMove);
+      container.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       gridHelper.dispose();
       worldGroup.traverse((obj) => {
@@ -362,17 +513,33 @@ export const HcmcThreeNetworkStage: React.FC = () => {
         aria-label="Mô hình 3D mạng lưới giao nhận đô thị TP.HCM tránh vùng cấm tải QĐ 23/2018"
       />
 
-      {/* 7-Device Corridor Telemetry Sync Strip */}
-      <div className="flex flex-wrap items-center justify-between gap-1.5 px-3 py-1.5 border-t border-white/10 bg-slate-900/90 text-[10px] text-slate-300">
-        <span className="px-2 py-0.5 rounded bg-slate-950 border border-ecomiles-lime/30 text-ecomiles-lime font-bold">
-          Kho Tân Bình: MacBook Pro 16&quot; · Windows XPS 16
-        </span>
-        <span className="px-2 py-0.5 rounded bg-slate-950 border border-emerald-400/30 text-emerald-300 font-bold">
-          Hub Thủ Đức / Q7: Galaxy Z Fold · iPad Pro M4
-        </span>
-        <span className="px-2 py-0.5 rounded bg-slate-950 border border-sky-400/30 text-sky-300 font-bold">
-          7 Xe ALNS: iPhone Duo · 18 Pro Max · S26 Ultra
-        </span>
+      {/* Interactive 7-Hub & 7-Device Corridor Telemetry Picker Strip */}
+      <div className="px-3 py-2 border-t border-white/10 bg-slate-900/95 space-y-1.5 text-[10px]">
+        <div className="flex flex-wrap items-center justify-between gap-1.5">
+          <span className="font-extrabold text-ecomiles-lime">
+            {selectedNode.label} · {selectedNode.deviceLabel}
+          </span>
+          <span className="text-slate-300 font-medium">{selectedNode.stats}</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-1">
+          {HCMC_3D_NODES.map((node) => {
+            const isSel = selectedNode.id === node.id;
+            return (
+              <button
+                key={node.id}
+                type="button"
+                onClick={() => focusHcmcNode(node)}
+                className={`px-2 py-0.5 rounded font-bold cursor-pointer transition-colors ${
+                  isSel
+                    ? 'bg-ecomiles-lime text-slate-950'
+                    : 'bg-slate-950 text-slate-300 hover:text-white border border-white/10'
+                }`}
+              >
+                {node.shortName}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 bg-slate-950/95 text-center py-2.5 px-2">

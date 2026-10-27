@@ -2,15 +2,32 @@ import React, { useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { useGSAP } from '@gsap/react';
-import { ArrowUpRight, BarChart3, CheckCircle, Clock, Cpu, RefreshCw, Route } from 'lucide-react';
+import { ArrowUpRight, BarChart3, CheckCircle, Clock, Cpu, Monitor, RefreshCw, Route } from 'lucide-react';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
 
 export const Solutions: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
+
+  const handleScrollToShowcase = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (typeof window === 'undefined') return;
+    const target = document.querySelector('#showcase');
+    if (!target) return;
+    e.preventDefault();
+    if (shouldReduceMotion) {
+      target.scrollIntoView({ behavior: 'instant' });
+    } else {
+      gsap.to(window, {
+        duration: 0.85,
+        scrollTo: { y: target, offsetY: 64 },
+        ease: 'power3.inOut',
+      });
+    }
+  };
   useGSAP(
     () => {
       if (shouldReduceMotion || !sectionRef.current) return;
@@ -51,6 +68,7 @@ export const Solutions: React.FC = () => {
       liveHref: '/dashboard/',
       liveLabel: 'Kiểm tra Bảng Điều Khiển Đội Xe (/dashboard)',
       gradient: 'from-yellow-400/10 to-emerald-400/5',
+      deviceTag: 'MacBook Pro 16" & Windows XPS 16',
     },
     {
       id: '02',
@@ -67,6 +85,7 @@ export const Solutions: React.FC = () => {
       liveHref: '/maps/?vehicle=0&mode=overview',
       liveLabel: 'Xem Bản Đồ Vùng Cấm QĐ 23 (/maps)',
       gradient: 'from-emerald-500/10 to-teal-500/5',
+      deviceTag: 'Samsung Galaxy Z Fold & iPad Pro M4',
     },
     {
       id: '03',
@@ -83,6 +102,7 @@ export const Solutions: React.FC = () => {
       liveHref: '/driver/',
       liveLabel: 'Mở Ứng Dụng Tài Xế 2 Chặng (/driver)',
       gradient: 'from-emerald-500/10 to-teal-500/5',
+      deviceTag: 'iPhone Duo Dual-Screen',
     },
     {
       id: '04',
@@ -99,6 +119,7 @@ export const Solutions: React.FC = () => {
       liveHref: '/benchmark/',
       liveLabel: 'Mở Buồng Đối Chứng 2 Bên EVSIM (/benchmark)',
       gradient: 'from-yellow-400/10 to-emerald-500/5',
+      deviceTag: 'iPhone 18 Pro Max & Galaxy S26 Ultra',
     },
   ];
 
@@ -163,13 +184,22 @@ export const Solutions: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-2 flex flex-wrap items-center justify-between gap-2">
                   <a
                     href={item.liveHref}
                     className="inline-flex items-center gap-1.5 text-xs font-extrabold text-ecomiles-lime hover:underline"
                   >
                     <span>{item.liveLabel}</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                  <a
+                    href="#showcase"
+                    onClick={handleScrollToShowcase}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 hover:bg-ecomiles-lime/15 border border-white/10 hover:border-ecomiles-lime/40 text-[10.5px] font-bold text-slate-300 hover:text-ecomiles-lime transition-all cursor-pointer"
+                    title="Xem thiết bị trên Sân khấu 7 Thiết Bị (#showcase)"
+                  >
+                    <Monitor className="w-3 h-3 text-ecomiles-lime" />
+                    <span>{item.deviceTag}</span>
                   </a>
                 </div>
               </div>
