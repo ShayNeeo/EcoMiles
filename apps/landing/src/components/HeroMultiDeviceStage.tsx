@@ -181,7 +181,7 @@ export const HeroMultiDeviceStage: React.FC = () => {
         </motion.div>
 
         {/* Plane 2 (Mid Wings, z-20) & Plane 3 (Foreground Trio, z-30) Occluding Lower 22% of Laptops */}
-        <div className="relative z-20 -mt-8 sm:-mt-11 grid grid-cols-5 gap-1.5 sm:gap-2 items-end">
+        <div className="relative z-20 -mt-7 sm:-mt-10 flex flex-wrap sm:flex-nowrap items-end justify-center gap-2 sm:gap-2.5">
           {bottomRowDevices.map((dev) => {
             const isFront = dev.plane === 'front';
             const isDuo = dev.id === 'iphone_duo';
@@ -192,26 +192,24 @@ export const HeroMultiDeviceStage: React.FC = () => {
                   x: isFront ? frontX : midX,
                   y: isFront ? frontY : midY,
                 }}
-                className={isDuo ? 'col-span-1 relative z-30' : isFront ? 'col-span-1 relative z-25' : 'col-span-1 relative z-20'}
+                className={isDuo ? 'relative z-30 shrink-0' : isFront ? 'relative z-25 shrink-0' : 'relative z-20 shrink-0'}
               >
                 <motion.button
                   type="button"
                   onMouseEnter={() => setHoveredDevice(dev)}
                   onClick={() => setInspectedDevice(dev)}
-                  whileHover={{ y: -10, scale: 1.08, zIndex: 40 }}
+                  whileHover={{ y: -10, scale: 1.07, zIndex: 40 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-                  className="group w-full text-center cursor-pointer focus:outline-none"
+                  className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
                 >
                   <img
                     src={dev.imgSrc}
                     alt={dev.name}
-                    className={`w-full h-auto ${
-                      isDuo ? 'max-h-[155px] sm:max-h-[175px]' : 'max-h-[145px] sm:max-h-[164px]'
-                    } object-contain mx-auto drop-shadow-[0_20px_34px_rgba(0,0,0,0.95)]`}
+                    className="h-[112px] sm:h-[146px] w-auto object-contain mx-auto drop-shadow-[0_20px_34px_rgba(0,0,0,0.95)]"
                   />
                   <span
-                    className={`mt-1 inline-block px-1.5 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-bold truncate max-w-full transition-colors shadow-sm ${
+                    className={`mt-1 inline-block px-2 py-0.5 rounded text-[9px] sm:text-[9.5px] font-bold whitespace-nowrap transition-colors shadow-sm ${
                       hoveredDevice.id === dev.id
                         ? 'bg-ecomiles-lime text-slate-950'
                         : 'bg-slate-950/90 text-slate-300 border border-white/10 group-hover:text-ecomiles-lime'

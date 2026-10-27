@@ -2043,6 +2043,55 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     </table>
                   </div>
                 </div>
+
+                {/* Multi-Device Pitch Deck & Hardware Mockup Suite Card */}
+                <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h2 className="text-[15px] font-bold text-[#111827]">
+                        Bộ Ảnh Chụp Màn Hình &amp; Mockup 7 Thiết Bị Cho Hồ Sơ Thuyết Trình (Pitch Deck Suite)
+                      </h2>
+                      <p className="text-[12px] text-[#5f6368]">
+                        Tải trực tiếp ảnh bìa 2400x1260 và 4 slide tổng hợp đa thiết bị (MacBook Pro 16&quot;, Windows 11 XPS 16, Galaxy Z Fold, iPad Pro M4, iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra):
+                      </p>
+                    </div>
+                    <a
+                      href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                      download="00_ecomiles_flagship_cover_banner.png"
+                      className="px-3.5 py-2 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] text-xs font-extrabold"
+                    >
+                      Tải Ảnh Bìa 7 Thiết Bị (2400x1260 PNG)
+                    </a>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a
+                      href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block rounded-xl overflow-hidden border border-[#d1d5db] bg-[#060d14] p-2"
+                    >
+                      <img
+                        src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                        alt="7-Device Hardware Stage"
+                        className="w-full h-auto rounded-lg"
+                        loading="lazy"
+                      />
+                    </a>
+                    <a
+                      href="/pitch-deck-screenshots/18_slide_composite_driver_and_maps_mobile_tablet.png"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block rounded-xl overflow-hidden border border-[#d1d5db] bg-[#f3f4ef] p-2"
+                    >
+                      <img
+                        src="/pitch-deck-screenshots/18_slide_composite_driver_and_maps_mobile_tablet.png"
+                        alt="Mobile and Foldable Fleet Lineup"
+                        className="w-full h-auto rounded-lg"
+                        loading="lazy"
+                      />
+                    </a>
+                  </div>
+                </div>
               </div>
             )}
 

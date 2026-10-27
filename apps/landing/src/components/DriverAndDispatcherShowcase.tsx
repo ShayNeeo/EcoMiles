@@ -406,102 +406,102 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     </div>
 
                     {/* Tier 2 & 3 (Mid Handover Tablets + Foreground Field Phones): 5 Interactive Devices */}
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 items-end pt-1 border-t border-white/10">
-                      <div className="gsap-beat-handover">
+                    <div className="flex flex-wrap sm:flex-nowrap items-end justify-center gap-3 sm:gap-4 pt-2 border-t border-white/10">
+                      <div className="gsap-beat-handover shrink-0">
                         <motion.button
                           type="button"
                           onClick={() => setSelectedDeviceId('galaxy_zfold')}
                           whileHover={{ y: -10, scale: 1.05 }}
                           whileTap={{ scale: 0.98 }}
                           transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group w-full text-center cursor-pointer focus:outline-none"
+                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
                         >
                           <img
                             src="/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png"
                             alt="Samsung Galaxy Z Fold Unfolded Truck Map Cockpit"
-                            className="w-full h-auto max-h-[185px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
                           />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             3. Galaxy Z Fold
                           </span>
                         </motion.button>
                       </div>
 
-                      <div className="gsap-beat-field">
+                      <div className="gsap-beat-field shrink-0">
                         <motion.button
                           type="button"
                           onClick={() => setSelectedDeviceId('iphone_18_pro_max')}
                           whileHover={{ y: -10, scale: 1.06 }}
                           whileTap={{ scale: 0.98 }}
                           transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group w-full text-center cursor-pointer focus:outline-none"
+                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
                         >
                           <img
                             src="/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png"
                             alt="iPhone 18 Pro Max Driver App"
-                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
                           />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             4. iPhone 18 Pro Max
                           </span>
                         </motion.button>
                       </div>
 
-                      <div className="gsap-beat-field col-span-2 sm:col-span-1">
+                      <div className="gsap-beat-field shrink-0">
                         <motion.button
                           type="button"
                           onClick={() => setSelectedDeviceId('iphone_duo')}
                           whileHover={{ y: -10, scale: 1.06 }}
                           whileTap={{ scale: 0.98 }}
                           transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group w-full text-center cursor-pointer focus:outline-none"
+                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
                         >
                           <img
                             src="/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png"
                             alt="iPhone Duo Dual-Screen Foldable"
-                            className="w-full h-auto max-h-[185px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
+                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
                           />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 text-[9.5px] font-extrabold">
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 text-[9.5px] font-extrabold whitespace-nowrap">
                             5. iPhone Duo (Gập Đôi)
                           </span>
                         </motion.button>
                       </div>
 
-                      <div className="gsap-beat-field">
+                      <div className="gsap-beat-field shrink-0">
                         <motion.button
                           type="button"
                           onClick={() => setSelectedDeviceId('galaxy_s26_ultra')}
                           whileHover={{ y: -10, scale: 1.06 }}
                           whileTap={{ scale: 0.98 }}
                           transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group w-full text-center cursor-pointer focus:outline-none"
+                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
                         >
                           <img
                             src="/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png"
                             alt="Samsung Galaxy S26 Ultra Live Truck Navigation"
-                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
                           />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             6. Galaxy S26 Ultra
                           </span>
                         </motion.button>
                       </div>
 
-                      <div className="gsap-beat-handover">
+                      <div className="gsap-beat-handover shrink-0">
                         <motion.button
                           type="button"
                           onClick={() => setSelectedDeviceId('ipad_pro')}
                           whileHover={{ y: -10, scale: 1.05 }}
                           whileTap={{ scale: 0.98 }}
                           transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group w-full text-center cursor-pointer focus:outline-none"
+                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
                         >
                           <img
                             src="/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png"
                             alt="iPad Pro M4 Tablet Fleet Dashboard"
-                            className="w-full h-auto max-h-[185px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
+                            className="h-[135px] sm:h-[172px] w-auto object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.8)]"
                           />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
                             7. iPad Pro M4
                           </span>
                         </motion.button>
