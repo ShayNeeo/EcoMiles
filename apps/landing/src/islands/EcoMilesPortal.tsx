@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   createRootRoute,
   createRoute,
@@ -375,6 +376,65 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
   const [driverHardwareProfile, setDriverHardwareProfile] = useState<
     'iphone_18_pro_max' | 'galaxy_s26_ultra' | 'iphone_duo_zfold'
   >('iphone_18_pro_max');
+  const [portalLightboxIdx, setPortalLightboxIdx] = useState<number | null>(null);
+  const PORTAL_LIGHTBOX_ASSETS = [
+    {
+      id: 'studio_stage',
+      shortLabel: 'Studio 7 Thiết Bị',
+      title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
+      spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
+      src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    },
+    {
+      id: 'macbook_pro',
+      shortLabel: 'MacBook Pro 16"',
+      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+      spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
+      src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    },
+    {
+      id: 'windows_xps',
+      shortLabel: 'Windows 11 XPS 16',
+      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+      spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
+      src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    },
+    {
+      id: 'galaxy_zfold',
+      shortLabel: 'Galaxy Z Fold',
+      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+      spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
+      src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    },
+    {
+      id: 'ipad_pro',
+      shortLabel: 'iPad Pro M4',
+      title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+      spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+      src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    },
+    {
+      id: 'iphone_duo',
+      shortLabel: 'iPhone Duo (Gập Đôi)',
+      title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+      spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+      src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    },
+    {
+      id: 'iphone_18_pro_max',
+      shortLabel: 'iPhone 18 Pro Max',
+      title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+      spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
+      src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    },
+    {
+      id: 'galaxy_s26_ultra',
+      shortLabel: 'Galaxy S26 Ultra',
+      title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+      spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+      src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    },
+  ] as const;
   const [authSessionInfo, setAuthSessionInfo] = useState<{
     token: string;
     account: string;
@@ -906,11 +966,21 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               <img
                 src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                 alt="EcoMiles 7 Thiết Bị Đồng Bộ"
-                className="h-16 sm:h-20 w-auto rounded-lg border border-white/15 object-contain bg-black/40 p-1 shrink-0"
+                onClick={() => setPortalLightboxIdx(0)}
+                className="h-16 sm:h-20 w-auto rounded-lg border border-white/15 object-contain bg-black/40 p-1 shrink-0 cursor-zoom-in"
               />
               <div>
-                <div className="text-[11px] font-bold text-[#d6f65a] uppercase tracking-wider">
-                  Hệ sinh thái 7 thiết bị đồng bộ thời gian thực (2400×1120 Studio Stage)
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] font-bold text-[#d6f65a] uppercase tracking-wider">
+                    Hệ sinh thái 7 thiết bị đồng bộ thời gian thực (2400×1120 Studio Stage)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPortalLightboxIdx(0)}
+                    className="px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
+                  >
+                    🔍 Xem Mockup 2.4K
+                  </button>
                 </div>
                 <div className="text-xs text-slate-300 mt-0.5">
                   MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
@@ -1463,13 +1533,22 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       </p>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowDeviceBanner((prev) => !prev)}
-                    className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold shrink-0 transition-colors cursor-pointer"
-                  >
-                    {showDeviceBanner ? 'Ẩn Thanh 7 Thiết Bị ▲' : 'Mở Thanh 7 Thiết Bị ▼'}
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setPortalLightboxIdx(0)}
+                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 text-xs font-extrabold transition-colors cursor-pointer"
+                    >
+                      🔍 Xem Mockup 2.4K
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowDeviceBanner((prev) => !prev)}
+                      className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
+                    >
+                      {showDeviceBanner ? 'Ẩn Thanh 7 Thiết Bị ▲' : 'Mở Thanh 7 Thiết Bị ▼'}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Active Truck Fleet & Order Completion Table */}
@@ -2831,6 +2910,21 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           );
                         })}
                       </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPortalLightboxIdx(
+                            isFoldableDualView
+                              ? 5
+                              : driverHardwareProfile === 'galaxy_s26_ultra'
+                                ? 7
+                                : 6
+                          )
+                        }
+                        className="px-2.5 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] text-[11px] font-extrabold cursor-pointer transition-colors"
+                      >
+                        🔍 Xem Mockup 2.4K
+                      </button>
                     </div>
                   </div>
 
@@ -3415,6 +3509,90 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           </div>
         </div>
       )}
+      {portalLightboxIdx !== null &&
+        typeof document !== 'undefined' &&
+        (() => {
+          const total = PORTAL_LIGHTBOX_ASSETS.length;
+          const safeIdx = ((portalLightboxIdx % total) + total) % total;
+          const activeAsset = PORTAL_LIGHTBOX_ASSETS[safeIdx];
+          return createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={activeAsset.title}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setPortalLightboxIdx(null)}
+            >
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-[#d6f65a]/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-[#d6f65a] truncate">
+                      [{safeIdx + 1}/{total}] {activeAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setPortalLightboxIdx((safeIdx - 1 + total) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPortalLightboxIdx((safeIdx + 1) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={activeAsset.src}
+                      download
+                      className="px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
+                    >
+                      Tải PNG 2.4K
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setPortalLightboxIdx(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeAsset.src}
+                    alt={activeAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {PORTAL_LIGHTBOX_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setPortalLightboxIdx(idx)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-[#d6f65a] text-slate-950 border-[#d6f65a]'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>,
+            document.body
+          );
+        })()}
     </div>
   );
 }
