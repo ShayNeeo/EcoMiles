@@ -1999,6 +1999,43 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
+                {/* 7-Device Order Ingestion & Dispatch Pipeline Strip */}
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 text-white grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                  <div className="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                    <div className="text-[10.5px] font-bold text-[#d6f65a] uppercase">
+                      1. Trạm Nhập &amp; Chuẩn Hóa .XLSX
+                    </div>
+                    <div className="font-bold text-white mt-0.5">
+                      MacBook Pro 16&quot; · Windows 11 XPS 16
+                    </div>
+                    <div className="text-[11px] text-slate-300 mt-0.5">
+                      Ánh xạ tự động 120 đơn từ ERP &amp; kiểm thử đối chứng EVSIM
+                    </div>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                    <div className="text-[10.5px] font-bold text-emerald-300 uppercase">
+                      2. Trạm Điều Phối Bến Bãi &amp; Kho Lạnh
+                    </div>
+                    <div className="font-bold text-white mt-0.5">
+                      iPad Pro M4 · Samsung Galaxy Z Fold
+                    </div>
+                    <div className="text-[11px] text-slate-300 mt-0.5">
+                      Phân bổ tải trọng 7 xe &amp; hiển thị vùng cấm QĐ 23 (/maps)
+                    </div>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                    <div className="text-[10.5px] font-bold text-sky-300 uppercase">
+                      3. Thực Địa Giao Nhận 2 Chặng ($0 API)
+                    </div>
+                    <div className="font-bold text-white mt-0.5">
+                      iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+                    </div>
+                    <div className="text-[11px] text-slate-300 mt-0.5">
+                      Đồng bộ danh sách điểm dừng (/driver) &amp; dẫn đường trực tiếp
+                    </div>
+                  </div>
+                </div>
+
                 {/* Searchable Orders Table */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
                   <div className="flex items-center justify-between gap-3">

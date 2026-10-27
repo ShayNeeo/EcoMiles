@@ -641,8 +641,19 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         const hitId = hits[0].object.userData.deviceId as DeviceBannerFocusId | undefined;
         if (hitId) {
           setIsAutoTour(false);
+          setClusterOverride(null);
+          clusterRef.current = 'none';
           onSelectRef.current(selectedIdRef.current === hitId ? 'all_banner' : hitId);
         }
+      } else if (selectedIdRef.current !== 'all_banner' || clusterRef.current !== 'none') {
+        setIsAutoTour(false);
+        setClusterOverride(null);
+        clusterRef.current = 'none';
+        onSelectRef.current('all_banner');
+        const dur = prefersReducedMotion ? 0 : 0.85;
+        gsap.to(camTargetRef.current, { x: 0, y: 1.48, z: 7.45, duration: dur, ease: 'power3.out', overwrite: 'auto' });
+        gsap.to(lookTargetRef.current, { x: 0, y: 1.38, z: 0, duration: dur, ease: 'power3.out', overwrite: 'auto' });
+        gsap.to(focusRingTargetRef.current, { x: 0, z: 0, scale: 0.2, opacity: 0, duration: dur, overwrite: 'auto' });
       }
     };
 

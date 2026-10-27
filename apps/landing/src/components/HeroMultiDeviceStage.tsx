@@ -106,6 +106,17 @@ export const HeroMultiDeviceStage: React.FC = () => {
     }, 2800);
     return () => window.clearInterval(interval);
   }, [isAutoSpotlight, isPointerInside, inspectedDevice]);
+
+  const stepHeroDevice = (delta: -1 | 1) => {
+    setIsAutoSpotlight(false);
+    const refId = (inspectedDevice ?? hoveredDevice).id;
+    const idx = HERO_DEVICES.findIndex((d) => d.id === refId);
+    const nextDev = HERO_DEVICES[(idx + delta + HERO_DEVICES.length) % HERO_DEVICES.length];
+    if (nextDev) {
+      setHoveredDevice(nextDev);
+      setInspectedDevice((prev) => (prev ? nextDev : null));
+    }
+  };
   // 3-Plane Differential Parallax + Overlapping Occlusion (scroll-craft standing hero requirement)
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -309,6 +320,24 @@ export const HeroMultiDeviceStage: React.FC = () => {
           <span className="text-slate-200 font-medium truncate">{hoveredDevice.roleLabel}</span>
         </div>
         <div className="flex items-center gap-3 shrink-0">
+          <div className="inline-flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => stepHeroDevice(-1)}
+              className="px-1.5 py-0.5 rounded bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/15 font-bold cursor-pointer"
+              title="Thiết bị trước"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={() => stepHeroDevice(1)}
+              className="px-1.5 py-0.5 rounded bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/15 font-bold cursor-pointer"
+              title="Thiết bị tiếp theo"
+            >
+              ›
+            </button>
+          </div>
           <button
             type="button"
             onClick={() => setIsAutoSpotlight((prev) => !prev)}
@@ -352,7 +381,23 @@ export const HeroMultiDeviceStage: React.FC = () => {
                 <div className="text-xs font-extrabold text-ecomiles-lime">{inspectedDevice.name}</div>
                 <div className="text-[11px] text-slate-300">{inspectedDevice.roleLabel}</div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => stepHeroDevice(-1)}
+                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer whitespace-nowrap"
+                  title="Thiết bị trước"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={() => stepHeroDevice(1)}
+                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer whitespace-nowrap"
+                  title="Thiết bị tiếp theo"
+                >
+                  ›
+                </button>
                 <a
                   href="#showcase"
                   onClick={(e) => {
@@ -362,21 +407,21 @@ export const HeroMultiDeviceStage: React.FC = () => {
                     window.dispatchEvent(new CustomEvent('ecomiles:select-device', { detail: { deviceId: targetId } }));
                     document.querySelector('#showcase')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-ecomiles-lime border border-ecomiles-lime/40 font-bold text-xs"
+                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-ecomiles-lime border border-ecomiles-lime/40 font-bold text-[11px] whitespace-nowrap"
                 >
-                  Mở trên #showcase
+                  #showcase
                 </a>
                 <a
                   href={inspectedDevice.liveHref}
-                  className="px-3 py-1.5 rounded-lg bg-ecomiles-lime text-slate-950 font-extrabold text-xs flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-lg bg-ecomiles-lime text-slate-950 font-extrabold text-[11px] flex items-center gap-1 whitespace-nowrap"
                 >
                   <span>{inspectedDevice.liveText}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <ArrowUpRight className="w-3 h-3 shrink-0" />
                 </a>
                 <button
                   type="button"
                   onClick={() => setInspectedDevice(null)}
-                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer"
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer shrink-0"
                   aria-label="Đóng phóng to"
                 >
                   <X className="w-4 h-4" />
