@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Calculator, TrendingDown, Leaf, ArrowRight, DollarSign } from 'lucide-react';
 
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 interface CalculatorProps {
   onOpenPilotModal: () => void;
 }
 
 export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpenPilotModal }) => {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [fleetSize, setFleetSize] = useState<number>(12);
   const [dailyKm, setDailyKm] = useState<number>(85);
   const [fuelConsumption, setFuelConsumption] = useState<number>(11); // L/100km
@@ -22,8 +27,39 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
   const moneySavedVND = litersSaved * fuelPrice;
   const co2SavedKg = litersSaved * emissionFactor;
 
+  useGSAP(
+    () => {
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion || !sectionRef.current) return;
+
+      gsap.fromTo(
+        '.gsap-calc-panel',
+        { y: 32, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.65,
+          stagger: 0.14,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section id="calculator" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-900 border-t border-white/5 scroll-mt-24">
+    <section
+      ref={sectionRef}
+      id="calculator"
+      className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-900 border-t border-white/5 scroll-mt-24"
+    >
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -44,7 +80,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
         {/* Calculator Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Sliders Control Panel (Left 7 Cols) */}
-          <div className="lg:col-span-7 bg-slate-950/80 backdrop-blur-2xl rounded-3xl p-6 sm:p-9 border border-white/10 shadow-2xl flex flex-col justify-between">
+          <div className="gsap-calc-panel lg:col-span-7 bg-slate-950/80 backdrop-blur-2xl rounded-3xl p-6 sm:p-9 border border-white/10 shadow-2xl flex flex-col justify-between">
             <div className="mb-6 space-y-3">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <span>Thông Số Đội Xe &amp; Vận Hành Thực Tế</span>
@@ -197,7 +233,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
           </div>
 
           {/* Results Metric Panel (Right 5 Cols) */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-slate-950 to-slate-900 rounded-3xl p-6 sm:p-9 border border-ecomiles-lime/30 shadow-2xl flex flex-col justify-between">
+          <div className="gsap-calc-panel lg:col-span-5 bg-gradient-to-br from-slate-950 to-slate-900 rounded-3xl p-6 sm:p-9 border border-ecomiles-lime/30 shadow-2xl flex flex-col justify-between">
             <div>
               <div className="mb-6 flex flex-col items-start gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-slate-300">

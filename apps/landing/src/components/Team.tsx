@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Sparkles } from 'lucide-react';
 
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 interface TeamMember {
   name: string;
   role: React.ReactNode;
@@ -72,8 +76,39 @@ const members: TeamMember[] = [
 ];
 
 export const Team: React.FC = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useGSAP(
+    () => {
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion || !sectionRef.current) return;
+
+      gsap.fromTo(
+        '.gsap-team-card',
+        { y: 36, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.65,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 78%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
   return (
     <section
+      ref={sectionRef}
       id="team"
       aria-labelledby="team-heading"
       className="relative isolate overflow-hidden bg-ecomiles-ink px-4 py-24 text-white sm:px-6 sm:py-32 lg:px-8 scroll-mt-24"
@@ -123,7 +158,7 @@ export const Team: React.FC = () => {
           {members.map((member, index) => (
             <article
               key={member.name}
-              className="group min-w-0 w-[calc(50%-0.5rem)] max-w-[220px] text-center max-[359px]:w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.34rem)] lg:w-[calc(33.333%-1.67rem)] lg:max-w-[300px]"
+              className="gsap-team-card group min-w-0 w-[calc(50%-0.5rem)] max-w-[220px] text-center max-[359px]:w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.34rem)] lg:w-[calc(33.333%-1.67rem)] lg:max-w-[300px]"
             >
               <div className="relative mx-auto aspect-square w-full max-w-[240px]">
                 <div

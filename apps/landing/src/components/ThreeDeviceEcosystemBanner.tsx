@@ -27,73 +27,107 @@ const DEVICE_3D_SPECS: ThreeDeviceNodeSpec[] = [
   {
     id: 'macbook_pro',
     textureUrl: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
-    width: 3.3,
-    height: 2.15,
-    pos: [-1.85, 1.35, -1.1],
-    rotY: 0.14,
-    camPos: [-1.6, 1.4, 2.3],
-    lookAt: [-1.85, 1.35, -1.1],
+    width: 3.1,
+    height: 2.02,
+    pos: [-1.95, 2.05, -1.15],
+    rotY: 0.16,
+    camPos: [-1.75, 2.05, 1.95],
+    lookAt: [-1.95, 2.05, -1.15],
   },
   {
     id: 'windows_xps',
     textureUrl: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
-    width: 3.3,
-    height: 2.15,
-    pos: [1.85, 1.35, -1.1],
-    rotY: -0.14,
-    camPos: [1.6, 1.4, 2.3],
-    lookAt: [1.85, 1.35, -1.1],
+    width: 3.1,
+    height: 2.02,
+    pos: [1.95, 2.05, -1.15],
+    rotY: -0.16,
+    camPos: [1.75, 2.05, 1.95],
+    lookAt: [1.95, 2.05, -1.15],
   },
   {
     id: 'galaxy_zfold',
     textureUrl: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-    width: 1.55,
-    height: 2.1,
-    pos: [-3.55, 1.05, 0.25],
-    rotY: 0.32,
-    camPos: [-2.7, 1.08, 2.75],
-    lookAt: [-3.55, 1.05, 0.25],
+    width: 1.42,
+    height: 1.94,
+    pos: [-3.75, 1.25, 0.15],
+    rotY: 0.34,
+    camPos: [-2.95, 1.25, 2.55],
+    lookAt: [-3.75, 1.25, 0.15],
   },
   {
     id: 'ipad_pro',
     textureUrl: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
-    width: 1.55,
-    height: 2.1,
-    pos: [3.55, 1.05, 0.25],
-    rotY: -0.32,
-    camPos: [2.7, 1.08, 2.75],
-    lookAt: [3.55, 1.05, 0.25],
+    width: 1.42,
+    height: 1.94,
+    pos: [3.75, 1.25, 0.15],
+    rotY: -0.34,
+    camPos: [2.95, 1.25, 2.55],
+    lookAt: [3.75, 1.25, 0.15],
   },
   {
     id: 'iphone_18_pro_max',
     textureUrl: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
-    width: 0.96,
-    height: 2.06,
-    pos: [-1.55, 0.92, 1.15],
+    width: 0.88,
+    height: 1.88,
+    pos: [-1.75, 0.96, 1.05],
     rotY: 0.18,
-    camPos: [-1.35, 0.95, 3.25],
-    lookAt: [-1.55, 0.92, 1.15],
+    camPos: [-1.55, 0.96, 3.05],
+    lookAt: [-1.75, 0.96, 1.05],
   },
   {
     id: 'iphone_duo',
     textureUrl: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
-    width: 1.82,
-    height: 2.02,
-    pos: [0, 0.94, 1.38],
+    width: 1.68,
+    height: 1.86,
+    pos: [0, 0.98, 1.25],
     rotY: 0,
-    camPos: [0, 0.96, 3.55],
-    lookAt: [0, 0.94, 1.38],
+    camPos: [0, 0.98, 3.25],
+    lookAt: [0, 0.98, 1.25],
   },
   {
     id: 'galaxy_s26_ultra',
     textureUrl: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
-    width: 0.96,
-    height: 2.06,
-    pos: [1.55, 0.92, 1.15],
+    width: 0.88,
+    height: 1.88,
+    pos: [1.75, 0.96, 1.05],
     rotY: -0.18,
-    camPos: [1.35, 0.95, 3.25],
-    lookAt: [1.55, 0.92, 1.15],
+    camPos: [1.55, 0.96, 3.05],
+    lookAt: [1.75, 0.96, 1.05],
   },
+];
+
+// 3D Data-Sync Arcs connecting Office Laptops (MacBook/XPS) to Tablets & Driver Phones
+const SYNC_ARCS: Array<Array<[number, number, number]>> = [
+  [
+    [-1.95, 1.6, -1.1],
+    [-2.85, 2.15, -0.4],
+    [-3.75, 1.25, 0.15],
+  ],
+  [
+    [-1.95, 1.6, -1.1],
+    [-1.85, 1.85, 0.0],
+    [-1.75, 0.96, 1.05],
+  ],
+  [
+    [-1.2, 1.6, -1.1],
+    [-0.4, 1.95, 0.1],
+    [0, 0.98, 1.25],
+  ],
+  [
+    [1.2, 1.6, -1.1],
+    [0.4, 1.95, 0.1],
+    [0, 0.98, 1.25],
+  ],
+  [
+    [1.95, 1.6, -1.1],
+    [1.85, 1.85, 0.0],
+    [1.75, 0.96, 1.05],
+  ],
+  [
+    [1.95, 1.6, -1.1],
+    [2.85, 2.15, -0.4],
+    [3.75, 1.25, 0.15],
+  ],
 ];
 
 interface ThreeDeviceEcosystemBannerProps {
@@ -106,8 +140,9 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
   onSelectDevice,
 }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
-  const camTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.55, z: 6.15 });
-  const lookTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.05, z: 0 });
+  const camTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.48, z: 7.45 });
+  const lookTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.38, z: 0 });
+  const selectedIdRef = useRef<DeviceBannerFocusId>(selectedDeviceId);
   const onSelectRef = useRef(onSelectDevice);
 
   useEffect(() => {
@@ -116,14 +151,15 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
 
   // GSAP Smooth 3D Camera Flight when selectedDeviceId changes
   useEffect(() => {
+    selectedIdRef.current = selectedDeviceId;
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dur = prefersReducedMotion ? 0 : 0.85;
 
     if (selectedDeviceId === 'all_banner') {
-      gsap.to(camTargetRef.current, { x: 0, y: 1.55, z: 6.15, duration: dur, ease: 'power3.out' });
-      gsap.to(lookTargetRef.current, { x: 0, y: 1.05, z: 0, duration: dur, ease: 'power3.out' });
+      gsap.to(camTargetRef.current, { x: 0, y: 1.48, z: 7.45, duration: dur, ease: 'power3.out' });
+      gsap.to(lookTargetRef.current, { x: 0, y: 1.38, z: 0, duration: dur, ease: 'power3.out' });
     } else {
       const spec = DEVICE_3D_SPECS.find((d) => d.id === selectedDeviceId);
       if (spec) {
@@ -154,7 +190,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const width = Math.max(320, container.clientWidth);
-    const height = Math.max(340, container.clientHeight);
+    const height = Math.max(360, container.clientHeight);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -171,29 +207,58 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    camera.position.set(0, 1.55, 6.15);
-    camera.lookAt(0, 1.05, 0);
+    const camera = new THREE.PerspectiveCamera(39, width / height, 0.1, 100);
+    camera.position.set(0, 1.48, 7.45);
+    camera.lookAt(0, 1.38, 0);
 
     const stageGroup = new THREE.Group();
     scene.add(stageGroup);
 
     // Studio Grid & Glowing Emerald Horizon Ring
-    const grid = new THREE.GridHelper(14, 28, 0xd6f65a, 0x064e3b);
-    grid.position.y = -0.15;
+    const grid = new THREE.GridHelper(16, 32, 0xd6f65a, 0x064e3b);
+    grid.position.y = -0.12;
     stageGroup.add(grid);
 
-    const ringGeo = new THREE.RingGeometry(3.8, 3.88, 64);
+    const ringGeo = new THREE.RingGeometry(4.2, 4.28, 64);
     ringGeo.rotateX(-Math.PI / 2);
     const ringMat = new THREE.MeshBasicMaterial({
       color: 0xd6f65a,
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.42,
       side: THREE.DoubleSide,
     });
     const floorRing = new THREE.Mesh(ringGeo, ringMat);
-    floorRing.position.y = -0.14;
+    floorRing.position.y = -0.11;
     stageGroup.add(floorRing);
+
+    // 3D Data-Sync Arcs + Animated Data Pulses from Office Laptops to Field Devices
+    const syncCurves: THREE.CatmullRomCurve3[] = [];
+    const syncPulses: THREE.Mesh[] = [];
+    const syncGeos: THREE.BufferGeometry[] = [];
+    const syncMats: THREE.Material[] = [];
+    const pulseGeo = new THREE.SphereGeometry(0.055, 12, 12);
+    syncGeos.push(pulseGeo);
+
+    SYNC_ARCS.forEach((pts, idx) => {
+      const curve = new THREE.CatmullRomCurve3(pts.map(([x, y, z]) => new THREE.Vector3(x, y, z)));
+      syncCurves.push(curve);
+      const tGeo = new THREE.TubeGeometry(curve, 36, 0.014, 8, false);
+      const tMat = new THREE.MeshBasicMaterial({
+        color: idx % 2 === 0 ? 0xd6f65a : 0x34d399,
+        transparent: true,
+        opacity: 0.35,
+      });
+      syncGeos.push(tGeo);
+      syncMats.push(tMat);
+      stageGroup.add(new THREE.Mesh(tGeo, tMat));
+
+      const pMat = new THREE.MeshBasicMaterial({ color: 0xd6f65a });
+      syncMats.push(pMat);
+      const pulse = new THREE.Mesh(pulseGeo, pMat);
+      pulse.userData = { curveIdx: idx, offset: idx * 0.16 };
+      stageGroup.add(pulse);
+      syncPulses.push(pulse);
+    });
 
     // Load 7 Real Device Textures (threejs-textures: tag SRGBColorSpace + maxAnisotropy)
     const loader = new THREE.TextureLoader();
@@ -211,12 +276,17 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       const mat = new THREE.MeshBasicMaterial({
         map: tex,
         transparent: true,
+        opacity: 1.0,
         side: THREE.DoubleSide,
       });
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.set(spec.pos[0], spec.pos[1], spec.pos[2]);
       mesh.rotation.y = spec.rotY;
-      mesh.userData = { deviceId: spec.id, baseY: spec.pos[1] };
+      mesh.userData = {
+        deviceId: spec.id,
+        baseY: spec.pos[1],
+        baseRotY: spec.rotY,
+      };
       stageGroup.add(mesh);
       deviceMeshes.push(mesh);
     });
@@ -230,7 +300,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       const rect = container.getBoundingClientRect();
       const nx = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
       const ny = ((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
-      pointerOffset.x = nx * 0.22;
+      pointerOffset.x = nx * 0.24;
       pointerOffset.y = -ny * 0.12;
     };
 
@@ -243,7 +313,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       if (hits.length > 0) {
         const hitId = hits[0].object.userData.deviceId as DeviceBannerFocusId | undefined;
         if (hitId) {
-          onSelectRef.current(hitId);
+          onSelectRef.current(selectedIdRef.current === hitId ? 'all_banner' : hitId);
         }
       }
     };
@@ -254,7 +324,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     const onResize = () => {
       if (!container) return;
       const w = Math.max(320, container.clientWidth);
-      const h = Math.max(340, container.clientHeight);
+      const h = Math.max(360, container.clientHeight);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -265,10 +335,12 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     timer.connect(document);
 
     const lookVec = new THREE.Vector3();
+    const pulsePos = new THREE.Vector3();
 
     const animate = () => {
       timer.update();
       const elapsed = timer.getElapsed();
+      const sel = selectedIdRef.current;
 
       camera.position.x = THREE.MathUtils.lerp(
         camera.position.x,
@@ -285,12 +357,32 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       lookVec.set(lookTargetRef.current.x, lookTargetRef.current.y, lookTargetRef.current.z);
       camera.lookAt(lookVec);
 
-      if (!prefersReducedMotion) {
-        deviceMeshes.forEach((m, i) => {
-          const baseY = m.userData.baseY as number;
-          m.position.y = baseY + Math.sin(elapsed * 1.6 + i * 0.7) * 0.035;
-        });
-      }
+      deviceMeshes.forEach((m, i) => {
+        const baseY = m.userData.baseY as number;
+        const baseRotY = m.userData.baseRotY as number;
+        const devId = m.userData.deviceId as DeviceBannerFocusId;
+        const isFocused = sel === 'all_banner' || sel === devId;
+
+        const mat = m.material as THREE.MeshBasicMaterial;
+        mat.opacity = THREE.MathUtils.lerp(mat.opacity, isFocused ? 1.0 : 0.16, 0.12);
+        m.rotation.y = THREE.MathUtils.lerp(
+          m.rotation.y,
+          sel === devId ? 0 : baseRotY,
+          0.1
+        );
+
+        if (!prefersReducedMotion) {
+          m.position.y = baseY + Math.sin(elapsed * 1.5 + i * 0.7) * 0.03;
+        }
+      });
+
+      syncPulses.forEach((p, idx) => {
+        const curve = syncCurves[p.userData.curveIdx as number];
+        if (!curve) return;
+        const u = ((p.userData.offset as number) + (prefersReducedMotion ? 0 : elapsed * (0.28 + idx * 0.02))) % 1;
+        curve.getPointAt(u, pulsePos);
+        p.position.copy(pulsePos);
+      });
 
       renderer.render(scene, camera);
     };
@@ -306,6 +398,8 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       grid.dispose();
       ringGeo.dispose();
       ringMat.dispose();
+      syncGeos.forEach((g) => g.dispose());
+      syncMats.forEach((m) => m.dispose());
       deviceMeshes.forEach((m) => {
         m.geometry.dispose();
         (m.material as THREE.Material).dispose();
@@ -317,14 +411,17 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
   }, []);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full space-y-2">
       <div
         ref={mountRef}
-        className="w-full h-[380px] sm:h-[440px] cursor-pointer"
-        title="Bấm trực tiếp vào bất kỳ thiết bị 3D nào để bay camera tới thiết bị đó"
+        className="w-full h-[390px] sm:h-[430px] cursor-pointer rounded-xl overflow-hidden"
+        title="Bấm trực tiếp vào bất kỳ thiết bị 3D nào để bay camera tới thiết bị đó (Bấm lần nữa để về toàn cảnh)"
       />
-      <div className="pointer-events-none absolute bottom-2.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-slate-950/85 border border-ecomiles-lime/35 text-[11px] font-bold text-ecomiles-lime whitespace-nowrap shadow-md">
-        Sân Khấu 3D WebGL (Three.js + GSAP Camera Flight) · Bấm vào bất kỳ thiết bị nào để bay camera tới
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-ecomiles-lime/30 text-[11px] text-slate-300">
+        <span className="font-bold text-ecomiles-lime">
+          Three.js 3D WebGL + GSAP Camera Flight + Luồng Đồng Bộ Dữ Liệu 3D
+        </span>
+        <span>Bấm trực tiếp vào thiết bị 3D để bay camera tới (bấm lần 2 để về toàn cảnh)</span>
       </div>
     </div>
   );

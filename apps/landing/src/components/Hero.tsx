@@ -1,12 +1,20 @@
 import React, { useRef, useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { ArrowUpRight, CheckCircle2, Compass, FileSpreadsheet, ShieldCheck, Truck } from 'lucide-react';
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Compass,
+  FileSpreadsheet,
+  Layers,
+  ShieldCheck,
+  Truck,
+} from 'lucide-react';
 import { HcmcThreeNetworkStage } from './HcmcThreeNetworkStage';
 
-gsap.registerPlugin( useGSAP, ScrollTrigger );
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const EXPO_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -16,12 +24,34 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const [isCtaHovered, setIsCtaHovered] = useState(false);
+  const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'three_network'>('devices_banner');
   const heroRef = useRef<HTMLElement | null>(null);
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
   const fgPlaneRef = useRef<HTMLDivElement | null>(null);
 
-  // Layer 2: GSAP ScrollTrigger Dimensional Parallax across Background, Midground, and Foreground 3D Planes
+  // Framer Motion 3D Tilt Spring Physics for the Hero Multi-Device Cover Banner
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const smoothX = useSpring(pointerX, { stiffness: 220, damping: 24 });
+  const smoothY = useSpring(pointerY, { stiffness: 220, damping: 24 });
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-7, 7]);
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [6, -6]);
+
+  const handleCardPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+    const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+    pointerX.set(nx);
+    pointerY.set(ny);
+  };
+
+  const handleCardPointerLeave = () => {
+    pointerX.set(0);
+    pointerY.set(0);
+  };
+
+  // Layer 2: GSAP ScrollTrigger Dimensional Parallax across Background, Midground, and Foreground Planes
   useGSAP(
     () => {
       const prefersReducedMotion =
@@ -64,28 +94,27 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
         muted
         loop
         playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.68] saturate-[0.82] contrast-[1.08] pointer-events-none"
+        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.66] saturate-[0.82] contrast-[1.08] pointer-events-none"
       />
 
-      {/* Focused Contrast Scrim (scroll-craft rule: directional scrim for crisp typography) */}
+      {/* Focused Contrast Scrim */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(2,9,5,0.78)_0%,rgba(4,21,13,0.32)_45%,rgba(7,17,12,0.96)_100%)]" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-slate-950/35 mix-blend-multiply" />
 
       {/* Main Hero Content Layer (Immediate 0ms First Paint — Zero LCP Block) */}
       <div className="relative z-10 flex flex-col flex-1 w-full h-full justify-between overflow-hidden">
-        {/* Top Spacing for Floating Navbar */}
         <div className="h-16 sm:h-20" />
 
-        {/* Main Content Grid: Midground Copy + Foreground 3D Three.js HCMC Network Stage */}
+        {/* Main Content Grid: Midground Copy (6 Cols) + Foreground Multi-Device Cover Banner / 3D Stage (6 Cols) */}
         <div
           className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center w-full max-w-[1440px] mx-auto"
           style={{
-            padding: 'clamp(16px, 4vh, 56px) clamp(16px, 3vw, 48px) 0',
-            gap: 'clamp(20px, 3.5vw, 44px)',
+            padding: 'clamp(12px, 3vh, 44px) clamp(16px, 3vw, 48px) 0',
+            gap: 'clamp(20px, 3vw, 40px)',
           }}
         >
-          {/* Plane 2 (Midground, 7 Cols): Display Headline + Live Route Quick-Launch */}
-          <div ref={midPlaneRef} className="lg:col-span-7 flex min-w-0 flex-col justify-center text-left space-y-5">
+          {/* Plane 2 (Midground, 6 Cols): Display Headline + Live Route Quick-Launch */}
+          <div ref={midPlaneRef} className="lg:col-span-6 flex min-w-0 flex-col justify-center text-left space-y-5">
             <motion.div
               initial={{ y: 16, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -96,7 +125,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               <span>TỐI ƯU LỘ TRÌNH VRPTW ĐÔ THỊ TP.HCM · CHUẨN ISO 14083 / GLEC v3.2</span>
             </motion.div>
 
-            <h1 className="flex w-full max-w-none flex-col gap-1.5 text-balance font-barlow text-[clamp(34px,8.5vw,52px)] font-extrabold uppercase leading-[0.98] tracking-[0.02em] sm:gap-2.5 sm:text-[clamp(46px,6.2vw,72px)] lg:text-[clamp(52px,4.6vw,82px)]">
+            <h1 className="flex w-full max-w-none flex-col gap-1.5 text-balance font-barlow text-[clamp(34px,8.5vw,50px)] font-extrabold uppercase leading-[0.98] tracking-[0.02em] sm:gap-2.5 sm:text-[clamp(44px,5.8vw,68px)] lg:text-[clamp(48px,4.2vw,74px)]">
               <motion.span
                 initial={{ y: 28, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -119,15 +148,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.65, delay: 0.22, ease: EXPO_OUT }}
-              className="max-w-2xl text-sm sm:text-base lg:text-lg text-slate-200 leading-relaxed font-normal"
+              className="max-w-2xl text-sm sm:text-base text-slate-200 leading-relaxed font-normal"
             >
               Nhập trực tiếp bảng tính <code className="text-ecomiles-lime font-mono font-bold">.XLSX</code> từ ERP:
               thuật toán <strong>Carbon-Aware ALNS</strong> tự động gom cụm điểm giao, né khung giờ cấm tải{' '}
               <strong>QĐ 23/2018/QĐ-UBND</strong>, ghép đơn chiều về giảm chạy rỗng xuống <strong>2.7%</strong> và đồng
-              bộ xuống ứng dụng tài xế với <strong>$0 chi phí bản đồ API</strong>.
+              bộ xuống 7 dòng thiết bị điều phối &amp; tài xế với <strong>$0 chi phí bản đồ API</strong>.
             </motion.p>
 
-            {/* Quick-Launch Live Workspace Pills (Framer Motion Spring Micro-Interactions) */}
+            {/* Quick-Launch Live Workspace Pills */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -142,7 +171,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 className="px-4 py-2.5 rounded-xl bg-ecomiles-lime text-slate-950 font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-lg cursor-pointer"
               >
                 <FileSpreadsheet className="w-4 h-4" />
-                <span>Mở Trung Tâm Điều Phối B2B (/dashboard)</span>
+                <span>Trung Tâm Điều Phối B2B (/dashboard)</span>
                 <ArrowUpRight className="w-4 h-4" />
               </motion.a>
 
@@ -151,10 +180,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                className="px-4 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white border border-ecomiles-lime/40 font-bold text-xs sm:text-sm flex items-center gap-2 backdrop-blur-md cursor-pointer"
+                className="px-3.5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white border border-ecomiles-lime/40 font-bold text-xs sm:text-sm flex items-center gap-2 backdrop-blur-md cursor-pointer"
               >
                 <Compass className="w-4 h-4 text-ecomiles-lime" />
-                <span>Bản Đồ Xe Tải &amp; Vùng Cấm QĐ 23 (/maps)</span>
+                <span>Bản Đồ Xe Tải (/maps)</span>
               </motion.a>
 
               <motion.a
@@ -165,20 +194,85 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 className="px-3.5 py-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-900 text-slate-200 border border-white/15 font-semibold text-xs sm:text-sm flex items-center gap-1.5 backdrop-blur-md cursor-pointer"
               >
                 <Truck className="w-4 h-4 text-emerald-400" />
-                <span>App Tài Xế 2 Chặng (/driver)</span>
+                <span>App Tài Xế (/driver)</span>
               </motion.a>
             </motion.div>
           </div>
 
-          {/* Plane 3 (Foreground, 5 Cols): Interactive Three.js 3D HCMC Logistics Network Stage */}
+          {/* Plane 3 (Foreground, 6 Cols): 2-Mode Interactive Hero Cover Stage (7-Device In-App Cover Banner + 3D WebGL Network) */}
           <motion.div
             ref={fgPlaneRef}
             initial={{ scale: 0.94, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.75, delay: 0.18, ease: EXPO_OUT }}
-            className="lg:col-span-5 mx-auto flex w-full min-w-0 max-w-[560px] flex-col justify-center lg:mx-0 lg:max-w-none"
+            className="lg:col-span-6 mx-auto flex w-full min-w-0 flex-col justify-center space-y-2.5"
           >
-            <HcmcThreeNetworkStage />
+            {/* Top Mode Switcher Pill Bar */}
+            <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-2xl bg-slate-950/85 border border-white/15 backdrop-blur-md text-xs">
+              <span className="font-bold text-slate-300 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-ecomiles-lime" />
+                <span>Trình diễn trực tiếp:</span>
+              </span>
+              <div className="inline-flex items-center gap-1 p-0.5 rounded-xl bg-slate-900 border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setHeroStageMode('devices_banner')}
+                  className={`px-3 py-1 rounded-lg text-[11px] font-bold cursor-pointer transition-colors ${
+                    heroStageMode === 'devices_banner'
+                      ? 'bg-ecomiles-lime text-slate-950'
+                      : 'text-slate-300 hover:text-white'
+                  }`}
+                >
+                  1. Banner 7 Thiết Bị (In-App Cover)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHeroStageMode('three_network')}
+                  className={`px-3 py-1 rounded-lg text-[11px] font-bold cursor-pointer transition-colors ${
+                    heroStageMode === 'three_network'
+                      ? 'bg-ecomiles-lime text-slate-950'
+                      : 'text-slate-300 hover:text-white'
+                  }`}
+                >
+                  2. Mạng Lưới 3D TP.HCM (Three.js)
+                </button>
+              </div>
+            </div>
+
+            {heroStageMode === 'devices_banner' ? (
+              <motion.div
+                onPointerMove={handleCardPointerMove}
+                onPointerLeave={handleCardPointerLeave}
+                style={{
+                  rotateX,
+                  rotateY,
+                  transformPerspective: 1200,
+                }}
+                className="relative rounded-3xl border border-ecomiles-lime/35 bg-slate-950/90 p-2.5 sm:p-3.5 shadow-[0_24px_64px_rgba(0,0,0,0.75)] overflow-hidden group"
+              >
+                <a href="#showcase" className="block relative overflow-hidden rounded-2xl">
+                  <img
+                    src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                    alt="EcoMiles 7-Device Flagship Cover Banner: MacBook Pro, Windows XPS, Galaxy Z Fold, iPad Pro, iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra"
+                    className="w-full h-auto block rounded-2xl transition-transform duration-500 group-hover:scale-[1.015]"
+                  />
+                </a>
+                <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 px-2 text-[11px] text-slate-300">
+                  <span className="font-semibold text-white">
+                    MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
+                  </span>
+                  <a
+                    href="#showcase"
+                    className="font-extrabold text-ecomiles-lime hover:underline flex items-center gap-1"
+                  >
+                    <span>Khám phá sân khấu 3D 7 thiết bị</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </motion.div>
+            ) : (
+              <HcmcThreeNetworkStage />
+            )}
           </motion.div>
         </div>
 
@@ -186,10 +280,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
         <div
           className="relative z-10 grid w-full max-w-[1440px] mx-auto grid-cols-1 items-end gap-6 lg:grid-cols-[1fr_auto]"
           style={{
-            padding: 'clamp(20px, 3vh, 36px) clamp(16px, 3vw, 48px) clamp(24px, 4vh, 48px)',
+            padding: 'clamp(16px, 2.5vh, 32px) clamp(16px, 3vw, 48px) clamp(20px, 3.5vh, 40px)',
           }}
         >
-          {/* Left: Verified Benchmark Proof Strip (100% consistent with 120-order & 80-order datasets) */}
           <motion.div
             initial={{ y: 24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -236,7 +329,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
             </div>
           </motion.div>
 
-          {/* Right: Distortion-Free Primary Pilot CTA (1:1 Circular Arrow Housing at All Viewports) */}
           <motion.div
             initial={{ y: 24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
