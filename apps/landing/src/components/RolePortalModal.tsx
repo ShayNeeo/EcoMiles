@@ -245,6 +245,40 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                 </a>
               </div>
             </div>
+
+            {/* 7-Device Studio Cover Banner Strip */}
+            <div className="mt-3 p-3 rounded-2xl bg-slate-950/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <img
+                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  alt="EcoMiles 7-Device Studio Banner"
+                  className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0"
+                />
+                <div>
+                  <div className="text-[11px] font-black text-ecomiles-lime uppercase tracking-wider">
+                    Hệ Sinh Thái 7 Thiết Bị Studio 2.4K (MacBook · Windows · Z Fold · iPad · iPhone Duo · S26 Ultra)
+                  </div>
+                  <div className="text-[11px] text-slate-300">
+                    Đồng bộ tức thì qua Cloudflare Edge Worker &amp; Bảo mật Zero-Knowledge AES-256-GCM
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href="#showcase"
+                  onClick={onClose}
+                  className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-white/10"
+                >
+                  Sân Khấu 3D (#showcase)
+                </a>
+                <a
+                  href="/pitch-deck/"
+                  className="py-1.5 px-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-black text-xs"
+                >
+                  Bộ 28 Ảnh Pitch Deck →
+                </a>
+              </div>
+            </div>
           </motion.div>
         </div>
       )}

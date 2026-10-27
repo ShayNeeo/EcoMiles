@@ -209,6 +209,20 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     return () => window.clearInterval(timerId);
   }, [isAutoTour]);
 
+  const stepDeviceCamera = (delta: -1 | 1) => {
+    setIsAutoTour(false);
+    setClusterOverride(null);
+    clusterRef.current = 'none';
+    const currentIdx = DEVICE_3D_SPECS.findIndex((d) => d.id === selectedIdRef.current);
+    const nextIdx =
+      currentIdx === -1
+        ? delta > 0
+          ? 0
+          : DEVICE_3D_SPECS.length - 1
+        : (currentIdx + delta + DEVICE_3D_SPECS.length) % DEVICE_3D_SPECS.length;
+    onSelectDevice(DEVICE_3D_SPECS[nextIdx].id);
+  };
+
   const applyClusterPreset = (preset: Exclude<ClusterPresetId, 'none'>) => {
     setIsAutoTour(false);
     setClusterOverride({ preset, forDeviceId: selectedDeviceId });
@@ -775,17 +789,35 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
             3 Điện Thoại Tài Xế
           </button>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsAutoTour((prev) => !prev)}
-          className={`px-2 py-0.5 rounded-lg font-extrabold cursor-pointer transition-colors ${
-            isAutoTour
-              ? 'bg-emerald-400 text-slate-950 shadow-sm'
-              : 'bg-ecomiles-lime/15 text-ecomiles-lime border border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
-          }`}
-        >
-          {isAutoTour ? '⏸ Đang Bay' : '▶ Bay Tự Động'}
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => stepDeviceCamera(-1)}
+            className="px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors bg-slate-900 text-slate-300 hover:text-white border border-white/10"
+            title="Bay tới thiết bị trước"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => stepDeviceCamera(1)}
+            className="px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors bg-slate-900 text-slate-300 hover:text-white border border-white/10"
+            title="Bay tới thiết bị tiếp theo"
+          >
+            ›
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsAutoTour((prev) => !prev)}
+            className={`px-2 py-0.5 rounded-lg font-extrabold cursor-pointer transition-colors ${
+              isAutoTour
+                ? 'bg-emerald-400 text-slate-950 shadow-sm'
+                : 'bg-ecomiles-lime/15 text-ecomiles-lime border border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
+            }`}
+          >
+            {isAutoTour ? '⏸ Đang Bay' : '▶ Bay Tự Động'}
+          </button>
+        </div>
       </div>
     </div>
   );

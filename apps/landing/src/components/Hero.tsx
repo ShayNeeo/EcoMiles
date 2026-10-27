@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { useGSAP } from '@gsap/react';
 import {
   ArrowUpRight,
@@ -15,9 +16,19 @@ import {
 import { HcmcThreeNetworkStage } from './HcmcThreeNetworkStage';
 import { HeroMultiDeviceStage } from './HeroMultiDeviceStage';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
 
 const EXPO_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const STUDIO_24K_HOTSPOTS = [
+  { id: 'macbook_pro', label: 'MacBook Pro 16"' },
+  { id: 'windows_xps', label: 'Windows XPS 16' },
+  { id: 'galaxy_zfold', label: 'Galaxy Z Fold' },
+  { id: 'iphone_18_pro_max', label: 'iPhone 18 Pro Max' },
+  { id: 'iphone_duo', label: 'iPhone Duo' },
+  { id: 'galaxy_s26_ultra', label: 'Galaxy S26 Ultra' },
+  { id: 'ipad_pro', label: 'iPad Pro M4' },
+] as const;
 
 interface HeroProps {
   onOpenPilotModal: () => void;
@@ -31,6 +42,22 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
   const fgPlaneRef = useRef<HTMLDivElement | null>(null);
 
+
+  const handleSelectStudioDevice = (deviceId: string) => {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent('ecomiles:select-device', { detail: { deviceId } }));
+    const target = document.querySelector('#showcase');
+    if (!target) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      target.scrollIntoView({ behavior: 'instant' });
+    } else {
+      gsap.to(window, {
+        duration: 0.85,
+        scrollTo: { y: target, offsetY: 64 },
+        ease: 'power3.inOut',
+      });
+    }
+  };
   // Layer 2: GSAP ScrollTrigger Dimensional Parallax across Background, Midground, and Foreground Planes
   useGSAP(
     () => {
@@ -240,6 +267,18 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                   className="w-full h-auto max-h-[340px] object-contain mx-auto rounded-xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
+                <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
+                  {STUDIO_24K_HOTSPOTS.map((spot) => (
+                    <button
+                      key={spot.id}
+                      type="button"
+                      onClick={() => handleSelectStudioDevice(spot.id)}
+                      className="px-2 py-0.5 rounded-lg bg-slate-900/90 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[9.5px] font-bold transition-colors cursor-pointer"
+                    >
+                      {spot.label}
+                    </button>
+                  ))}
+                </div>
                 <div className="w-full flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-ecomiles-lime/30 text-[10.5px] text-slate-300">
                   <span className="font-bold text-ecomiles-lime">
                     Ảnh Bìa Studio 2.4K (2400×1120) · Phản Chiếu Sàn Gương 7 Thiết Bị
