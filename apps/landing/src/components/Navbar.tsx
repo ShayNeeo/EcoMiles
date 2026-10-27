@@ -132,6 +132,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+  useEffect(() => {
+    if (navbarLightboxIdx === null) return undefined;
+    const total = NAVBAR_LIGHTBOX_ASSETS.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setNavbarLightboxIdx(null);
+      else if (e.key === 'ArrowLeft') setNavbarLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setNavbarLightboxIdx((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [navbarLightboxIdx]);
 
   const handleSmoothNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, sectionId: string) => {
     if (typeof window === 'undefined') return;

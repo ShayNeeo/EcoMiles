@@ -318,10 +318,30 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
   };
 
   useEffect(() => {
-    if (selectedDeviceId === 'all_banner') return;
+    if (!isLightboxOpen && selectedDeviceId === 'all_banner') return;
+    const allIds: DeviceBannerFocusId[] = [
+      'all_banner',
+      ...DIRECT_JUMP_DEVICES.map((d) => d.id),
+    ];
     const onKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (isLightboxOpen) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          setIsLightboxOpen(false);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          const delta = e.key === 'ArrowRight' ? 1 : -1;
+          const curIdx = Math.max(0, allIds.indexOf(selectedIdRef.current));
+          const nextId = allIds[(curIdx + delta + allIds.length) % allIds.length];
+          setIsAutoTour(false);
+          setClusterOverride(null);
+          clusterRef.current = 'none';
+          onSelectRef.current(nextId);
+        }
+        return;
+      }
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         const currentIdx = DEVICE_3D_SPECS.findIndex((d) => d.id === selectedIdRef.current);
@@ -345,7 +365,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selectedDeviceId]);
+  }, [selectedDeviceId, isLightboxOpen]);
 
   const applyClusterPreset = (preset: Exclude<ClusterPresetId, 'none'>) => {
     setIsAutoTour(false);

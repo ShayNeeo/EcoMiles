@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
@@ -76,6 +76,17 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
     const idx = PRICING_LIGHTBOX_ASSETS.findIndex((asset) => asset.id === deviceId);
     setPricingLightboxIdx(idx >= 0 ? idx : 0);
   };
+  useEffect(() => {
+    if (pricingLightboxIdx === null) return undefined;
+    const total = PRICING_LIGHTBOX_ASSETS.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPricingLightboxIdx(null);
+      else if (e.key === 'ArrowLeft') setPricingLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setPricingLightboxIdx((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [pricingLightboxIdx]);
   const [monthlyOrders, setMonthlyOrders] = useState<number>(100);
   const [averageWeight, setAverageWeight] = useState<number>(50);
   const [averageDistance, setAverageDistance] = useState<number>(20);

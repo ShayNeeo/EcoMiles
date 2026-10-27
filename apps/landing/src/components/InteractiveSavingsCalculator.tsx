@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
@@ -98,6 +98,23 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
     href: string;
     cta: string;
   } | null>(null);
+  useEffect(() => {
+    if (!calcLightboxAsset) return undefined;
+    const total = CALC_HARDWARE_MOCKUP_ASSETS.length;
+    const foundIdx = CALC_HARDWARE_MOCKUP_ASSETS.findIndex(
+      (a) => a.src === calcLightboxAsset.src
+    );
+    const safeIdx = foundIdx >= 0 ? foundIdx : 0;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setCalcLightboxAsset(null);
+      else if (e.key === 'ArrowLeft')
+        setCalcLightboxAsset(CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx - 1 + total) % total]);
+      else if (e.key === 'ArrowRight')
+        setCalcLightboxAsset(CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx + 1) % total]);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [calcLightboxAsset]);
   const moneyNumRef = useRef<HTMLSpanElement | null>(null);
   const litersNumRef = useRef<HTMLSpanElement | null>(null);
   const co2NumRef = useRef<HTMLSpanElement | null>(null);

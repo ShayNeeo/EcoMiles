@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle2, ShieldCheck, Sparkles, Building2, Phone, Mail, User, Truck, ClipboardList } from 'lucide-react';
@@ -70,6 +70,17 @@ const PILOT_LIGHTBOX_ASSETS = [
 export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initialInterest }) => {
   const [submitted, setSubmitted] = useState(false);
   const [pilotLightboxIdx, setPilotLightboxIdx] = useState<number | null>(null);
+  useEffect(() => {
+    if (pilotLightboxIdx === null) return undefined;
+    const total = PILOT_LIGHTBOX_ASSETS.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPilotLightboxIdx(null);
+      else if (e.key === 'ArrowLeft') setPilotLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setPilotLightboxIdx((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [pilotLightboxIdx]);
   const [formData, setFormData] = useState({
     name: '',
     company: '',

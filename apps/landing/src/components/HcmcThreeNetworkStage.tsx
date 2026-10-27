@@ -193,6 +193,25 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       overwrite: 'auto',
     });
   };
+  useEffect(() => {
+    if (!isDeviceLightboxOpen) return undefined;
+    const total = HCMC_LIGHTBOX_NODES.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsDeviceLightboxOpen(false);
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        setIsAutoHubTour(false);
+        const delta = e.key === 'ArrowRight' ? 1 : -1;
+        const idx = Math.max(
+          0,
+          HCMC_LIGHTBOX_NODES.findIndex((n) => n.id === selectedNodeRef.current.id)
+        );
+        const nextNode = HCMC_LIGHTBOX_NODES[(idx + delta + total) % total];
+        if (nextNode) focusHcmcNode(nextNode);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isDeviceLightboxOpen]);
 
   useEffect(() => {
     if (!isAutoHubTour) return;

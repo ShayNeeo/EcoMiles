@@ -140,6 +140,19 @@ export const WorkflowShowcase: React.FC = () => {
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
   const [activeMockupDevice, setActiveMockupDevice] = useState<string | null>(null);
   const [progress, setProgress] = useState<number>(0);
+  useEffect(() => {
+    if (!activeMockupDevice) return undefined;
+    const keys = Object.keys(HARDWARE_EXECUTION_MOCKUPS);
+    const total = keys.length;
+    const idx = Math.max(0, keys.indexOf(activeMockupDevice));
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveMockupDevice(null);
+      else if (e.key === 'ArrowLeft') setActiveMockupDevice(keys[(idx - 1 + total) % total]);
+      else if (e.key === 'ArrowRight') setActiveMockupDevice(keys[(idx + 1) % total]);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [activeMockupDevice]);
 
   // Auto-Play 8-Step Tour timer (4.5s per step with 50ms smooth ticker)
   useEffect(() => {

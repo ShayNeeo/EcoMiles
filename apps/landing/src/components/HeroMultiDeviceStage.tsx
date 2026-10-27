@@ -120,6 +120,23 @@ export const HeroMultiDeviceStage: React.FC = () => {
     }, 2800);
     return () => window.clearInterval(interval);
   }, [isAutoSpotlight, isPointerInside, inspectedDevice]);
+  useEffect(() => {
+    if (!fullscreenDevice) return undefined;
+    const total = HERO_LIGHTBOX_ASSETS.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setFullscreenDevice(null);
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const delta = e.key === 'ArrowRight' ? 1 : -1;
+        setFullscreenDevice((prev) => {
+          if (!prev) return null;
+          const idx = Math.max(0, HERO_LIGHTBOX_ASSETS.findIndex((d) => d.id === prev.id));
+          return HERO_LIGHTBOX_ASSETS[(idx + delta + total) % total];
+        });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [fullscreenDevice]);
 
   const stepHeroDevice = (delta: -1 | 1) => {
     setIsAutoSpotlight(false);

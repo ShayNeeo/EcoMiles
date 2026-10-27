@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -71,6 +71,23 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
     href: string;
     cta: string;
   } | null>(null);
+  useEffect(() => {
+    if (!previewAsset) return undefined;
+    const total = ROLE_PORTAL_LIGHTBOX_ASSETS.length;
+    const idx = Math.max(
+      0,
+      ROLE_PORTAL_LIGHTBOX_ASSETS.findIndex((a) => a.src === previewAsset.src)
+    );
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPreviewAsset(null);
+      else if (e.key === 'ArrowLeft')
+        setPreviewAsset(ROLE_PORTAL_LIGHTBOX_ASSETS[(idx - 1 + total) % total]);
+      else if (e.key === 'ArrowRight')
+        setPreviewAsset(ROLE_PORTAL_LIGHTBOX_ASSETS[(idx + 1) % total]);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [previewAsset]);
 
   return (
     <>

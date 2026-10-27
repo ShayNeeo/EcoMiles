@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -69,6 +69,17 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
   const [footerLightboxIdx, setFooterLightboxIdx] = useState<number | null>(null);
+  useEffect(() => {
+    if (footerLightboxIdx === null) return undefined;
+    const total = FOOTER_LIGHTBOX_ASSETS.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setFooterLightboxIdx(null);
+      else if (e.key === 'ArrowLeft') setFooterLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setFooterLightboxIdx((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [footerLightboxIdx]);
   const handleSmoothFooterScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
     targetSelector: string,

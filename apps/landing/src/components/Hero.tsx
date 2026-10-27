@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
@@ -130,6 +130,25 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
   const fgPlaneRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    if (studioLightboxIdx === null) return undefined;
+    const total = HERO_STUDIO_LIGHTBOX_ASSETS.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setStudioLightboxIdx(null);
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const delta = e.key === 'ArrowRight' ? 1 : -1;
+        setStudioLightboxIdx((prev) => {
+          if (prev === null) return null;
+          const nextIdx = (prev + delta + total) % total;
+          if (nextIdx === 0) setStudioBannerVariant('clean_stage');
+          if (nextIdx === 1) setStudioBannerVariant('cover_banner');
+          return nextIdx;
+        });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [studioLightboxIdx]);
 
   const handleSelectStudioDevice = (deviceId: string) => {
     if (typeof window === 'undefined') return;

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import gsap from 'gsap';
@@ -72,6 +72,17 @@ export const Solutions: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (lightboxIndex === null) return undefined;
+    const total = SOLUTIONS_LIGHTBOX_ASSETS.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxIndex(null);
+      else if (e.key === 'ArrowLeft') setLightboxIndex((p) => ((p ?? 0) - 1 + total) % total);
+      else if (e.key === 'ArrowRight') setLightboxIndex((p) => ((p ?? 0) + 1) % total);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxIndex]);
 
   const handleScrollToShowcase = (e: React.MouseEvent<HTMLAnchorElement>, deviceId?: string) => {
     if (typeof window === 'undefined') return;

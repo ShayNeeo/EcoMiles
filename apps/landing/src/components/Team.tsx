@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -121,6 +121,18 @@ const members: TeamMember[] = [
 export const Team: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [activeLightboxMember, setActiveLightboxMember] = useState<TeamMember | null>(null);
+  useEffect(() => {
+    if (!activeLightboxMember) return undefined;
+    const total = members.length;
+    const idx = Math.max(0, members.findIndex((m) => m.name === activeLightboxMember.name));
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveLightboxMember(null);
+      else if (e.key === 'ArrowLeft') setActiveLightboxMember(members[(idx - 1 + total) % total]);
+      else if (e.key === 'ArrowRight') setActiveLightboxMember(members[(idx + 1) % total]);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [activeLightboxMember]);
 
   useGSAP(
     () => {
