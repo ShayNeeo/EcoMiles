@@ -179,9 +179,10 @@ const DEVICE_LABELS: Record<Exclude<DeviceBannerFocusId, 'all_banner'>, string> 
 };
 
 const DEVICE_LIVE_ROUTES: Record<
-  Exclude<DeviceBannerFocusId, 'all_banner'>,
+  DeviceBannerFocusId,
   { href: string; label: string }
 > = {
+  all_banner: { href: '/dashboard/', label: 'Mở Trung Tâm B2B (/dashboard) ↗' },
   macbook_pro: { href: '/dashboard/', label: 'Mở Trung Tâm B2B (/dashboard) ↗' },
   windows_xps: { href: '/benchmark/', label: 'Mở Phòng Đối Chứng (/benchmark) ↗' },
   galaxy_zfold: { href: '/maps/?vehicle=0&mode=navigate', label: 'Mở Bản Đồ Xe Tải (/maps) ↗' },
@@ -192,9 +193,15 @@ const DEVICE_LIVE_ROUTES: Record<
 };
 
 const DEVICE_2D_MOCKUPS: Record<
-  Exclude<DeviceBannerFocusId, 'all_banner'>,
+  DeviceBannerFocusId,
   { src: string; title: string; subtitle: string; resolution: string }
 > = {
+  all_banner: {
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    title: 'Sân Khấu 7 Thiết Bị EcoMiles · Studio 2.4K',
+    subtitle: 'Toàn Cảnh 7 Thiết Bị Đồng Bộ Thời Gian Thực (<50ms)',
+    resolution: '2400 × 1120 (Ultra-Wide High-DPI Stage)',
+  },
   macbook_pro: {
     src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
     title: 'MacBook Pro 16" · M3 Max',
@@ -1059,24 +1066,22 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
                 : null}
         </div>
       )}
-      {selectedDeviceId !== 'all_banner' && (
-        <div className="absolute top-2 right-2.5 z-20 flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => setIsLightboxOpen(true)}
-            className="px-2.5 py-1 rounded-lg bg-slate-900/95 hover:bg-slate-800 border border-ecomiles-lime/60 text-ecomiles-lime text-[10.5px] font-extrabold shadow-lg backdrop-blur-md transition-all cursor-pointer"
-            title="Phóng to màn hình thiết bị độ phân giải 2.4K"
-          >
-            🔍 Phóng To 2.4K
-          </button>
-          <a
-            href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
-            className="px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-[10.5px] font-extrabold shadow-lg transition-colors"
-          >
-            {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
-          </a>
-        </div>
-      )}
+      <div className="absolute top-2 right-2.5 z-20 flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => setIsLightboxOpen(true)}
+          className="px-2.5 py-1 rounded-lg bg-slate-900/95 hover:bg-slate-800 border border-ecomiles-lime/60 text-ecomiles-lime text-[10.5px] font-extrabold shadow-lg backdrop-blur-md transition-all cursor-pointer"
+          title="Phóng to màn hình thiết bị độ phân giải 2.4K"
+        >
+          🔍 Phóng To 2.4K
+        </button>
+        <a
+          href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
+          className="px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-[10.5px] font-extrabold shadow-lg transition-colors"
+        >
+          {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
+        </a>
+      </div>
       <div
         ref={mountRef}
         className="w-full h-[350px] sm:h-[385px] cursor-pointer rounded-xl overflow-hidden"
@@ -1194,62 +1199,116 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         })}
       </div>
       {isLightboxOpen &&
-        selectedDeviceId !== 'all_banner' &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="High-DPI Hardware Mockup Lightbox"
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 sm:p-6"
-            onClick={() => setIsLightboxOpen(false)}
-          >
+        (() => {
+          const allIds: DeviceBannerFocusId[] = [
+            'all_banner',
+            ...DIRECT_JUMP_DEVICES.map((d) => d.id),
+          ];
+          const curIdx = Math.max(0, allIds.indexOf(selectedDeviceId));
+          const stepLightbox = (delta: 1 | -1) => {
+            const nextId = allIds[(curIdx + delta + allIds.length) % allIds.length];
+            setIsAutoTour(false);
+            setClusterOverride(null);
+            clusterRef.current = 'none';
+            onSelectDevice(nextId);
+          };
+          return createPortal(
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/40 bg-slate-900/95 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="High-DPI Hardware Mockup Lightbox"
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setIsLightboxOpen(false)}
             >
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/80">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="w-2.5 h-2.5 rounded-full bg-ecomiles-lime animate-pulse shrink-0" />
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-bold text-white truncate">
-                      {DEVICE_2D_MOCKUPS[selectedDeviceId].title}
-                    </h3>
-                    <p className="text-[11px] text-slate-400 truncate">
-                      {DEVICE_2D_MOCKUPS[selectedDeviceId].subtitle} ·{' '}
-                      <span className="text-ecomiles-lime font-mono">
-                        {DEVICE_2D_MOCKUPS[selectedDeviceId].resolution}
-                      </span>
-                    </p>
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-ecomiles-lime animate-pulse shrink-0" />
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-bold text-white truncate">
+                        [{curIdx + 1}/{allIds.length}] {DEVICE_2D_MOCKUPS[selectedDeviceId].title}
+                      </h3>
+                      <p className="text-[11px] text-slate-400 truncate">
+                        {DEVICE_2D_MOCKUPS[selectedDeviceId].subtitle} ·{' '}
+                        <span className="text-ecomiles-lime font-mono">
+                          {DEVICE_2D_MOCKUPS[selectedDeviceId].resolution}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => stepLightbox(-1)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => stepLightbox(1)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-xs font-extrabold transition-colors"
+                    >
+                      {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setIsLightboxOpen(false)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 transition-colors cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <a
-                    href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
-                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-xs font-bold transition-colors"
-                  >
-                    {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
-                  </a>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={DEVICE_2D_MOCKUPS[selectedDeviceId].src}
+                    alt={DEVICE_2D_MOCKUPS[selectedDeviceId].title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
                   <button
                     type="button"
-                    onClick={() => setIsLightboxOpen(false)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 transition-colors cursor-pointer"
+                    onClick={() => onSelectDevice('all_banner')}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                      selectedDeviceId === 'all_banner'
+                        ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                        : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                    }`}
                   >
-                    ✕ Đóng
+                    0. Studio 7 Thiết Bị
                   </button>
+                  {DIRECT_JUMP_DEVICES.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => onSelectDevice(item.id)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        selectedDeviceId === item.id
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={DEVICE_2D_MOCKUPS[selectedDeviceId].src}
-                  alt={DEVICE_2D_MOCKUPS[selectedDeviceId].title}
-                  className="max-h-[74vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </div>
   );
 };

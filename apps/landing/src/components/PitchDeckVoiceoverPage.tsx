@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ExternalLink,
   Download,
@@ -45,6 +46,16 @@ const GALLERY_LIGHTBOX_ASSETS = [
   '18_slide_composite_driver_and_maps_mobile_tablet.png',
   '19_slide_composite_dispatcher_and_evsim_benchmark.png',
   '20_slide_composite_4role_enterprise_architecture.png',
+] as const;
+const ECOSYSTEM_8_PILLS = [
+  { file: '00_ecomiles_clean_devices_hero_stage.png', label: 'Studio 7 Thiết Bị' },
+  { file: '26_mockup_macbook_pro_16_b2b_tms.png', label: 'MacBook Pro 16"' },
+  { file: '27_mockup_windows_xps_16_evsim_dual.png', label: 'Windows 11 XPS 16' },
+  { file: '24_mockup_samsung_zfold_tablet_cockpit.png', label: 'Galaxy Z Fold' },
+  { file: '25_mockup_ipad_pro_tablet_tms.png', label: 'iPad Pro M4' },
+  { file: '23_mockup_iphone_duo_dual_screen.png', label: 'iPhone Duo' },
+  { file: '21_mockup_iphone_18_pro_max_driver.png', label: 'iPhone 18 Pro Max' },
+  { file: '22_mockup_samsung_s26_ultra_maps_live.png', label: 'Galaxy S26 Ultra' },
 ] as const;
 
 interface SlideItem {
@@ -440,6 +451,14 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
               <span className="hidden xl:inline">{isFullscreen ? 'Thu nhỏ' : 'Toàn màn hình'}</span>
             </button>
 
+            <button
+              type="button"
+              onClick={() => setLightboxAsset('00_ecomiles_clean_devices_hero_stage.png')}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-ecomiles-lime/55 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 px-2.5 py-1.5 text-xs font-extrabold text-ecomiles-lime transition cursor-pointer"
+              title="Phóng to Sân Khấu 7 Thiết Bị Đồng Bộ Độ Phân Giải 2.4K (2400×1120)"
+            >
+              <span>🔍 Sân Khấu 7 Thiết Bị 2.4K</span>
+            </button>
             <a
               href="/app/"
               target="_blank"
@@ -2566,71 +2585,93 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
         </div>
       </footer>
 
-      {lightboxAsset && (
-        <div
-          onClick={() => setLightboxAsset(null)}
-          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-6 cursor-zoom-out"
-        >
+      {lightboxAsset &&
+        typeof document !== 'undefined' &&
+        createPortal(
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="max-w-6xl w-full bg-slate-900 border border-white/20 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 cursor-default"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`High-DPI 2.4K Mockup Lightbox: ${lightboxAsset}`}
+            onClick={() => setLightboxAsset(null)}
+            className="fixed inset-0 z-[120] bg-slate-950/92 backdrop-blur-xl flex flex-col items-center justify-center p-3 sm:p-6 cursor-zoom-out"
           >
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10 text-xs">
-              <span className="font-mono font-bold text-ecomiles-lime truncate">{lightboxAsset}</span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const idx = GALLERY_LIGHTBOX_ASSETS.indexOf(
-                      lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
-                    );
-                    const nextIdx =
-                      (idx - 1 + GALLERY_LIGHTBOX_ASSETS.length) % GALLERY_LIGHTBOX_ASSETS.length;
-                    setLightboxAsset(GALLERY_LIGHTBOX_ASSETS[nextIdx]);
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
-                >
-                  ‹ Ảnh trước
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const idx = GALLERY_LIGHTBOX_ASSETS.indexOf(
-                      lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
-                    );
-                    const nextIdx = (idx + 1) % GALLERY_LIGHTBOX_ASSETS.length;
-                    setLightboxAsset(GALLERY_LIGHTBOX_ASSETS[nextIdx]);
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
-                >
-                  Ảnh tiếp ›
-                </button>
-                <a
-                  href={`/pitch-deck-screenshots/${lightboxAsset}`}
-                  download={lightboxAsset}
-                  className="px-3 py-1 rounded-lg bg-ecomiles-lime text-slate-950 font-extrabold"
-                >
-                  Tải PNG
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setLightboxAsset(null)}
-                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold cursor-pointer"
-                >
-                  ✕ Đóng
-                </button>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-5xl w-full max-h-[92vh] flex flex-col bg-slate-900/95 border border-ecomiles-lime/45 rounded-2xl overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.95)] cursor-default"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90 text-xs">
+                <span className="font-mono font-bold text-ecomiles-lime truncate">{lightboxAsset}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const idx = GALLERY_LIGHTBOX_ASSETS.indexOf(
+                        lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
+                      );
+                      const nextIdx =
+                        (idx - 1 + GALLERY_LIGHTBOX_ASSETS.length) % GALLERY_LIGHTBOX_ASSETS.length;
+                      setLightboxAsset(GALLERY_LIGHTBOX_ASSETS[nextIdx]);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer border border-white/10"
+                  >
+                    ‹ Ảnh trước
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const idx = GALLERY_LIGHTBOX_ASSETS.indexOf(
+                        lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
+                      );
+                      const nextIdx = (idx + 1) % GALLERY_LIGHTBOX_ASSETS.length;
+                      setLightboxAsset(GALLERY_LIGHTBOX_ASSETS[nextIdx]);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer border border-white/10"
+                  >
+                    Ảnh tiếp ›
+                  </button>
+                  <a
+                    href={`/pitch-deck-screenshots/${lightboxAsset}`}
+                    download={lightboxAsset}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime text-slate-950 font-extrabold"
+                  >
+                    Tải PNG
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setLightboxAsset(null)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold cursor-pointer border border-white/10"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={`/pitch-deck-screenshots/${lightboxAsset}`}
+                  alt={lightboxAsset}
+                  className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+              <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                {ECOSYSTEM_8_PILLS.map((pill) => (
+                  <button
+                    key={pill.file}
+                    type="button"
+                    onClick={() => setLightboxAsset(pill.file)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                      lightboxAsset === pill.file
+                        ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                        : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                    }`}
+                  >
+                    {pill.label}
+                  </button>
+                ))}
               </div>
             </div>
-            <div className="flex items-center justify-center max-h-[78vh] overflow-auto">
-              <img
-                src={`/pitch-deck-screenshots/${lightboxAsset}`}
-                alt={lightboxAsset}
-                className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl shadow-2xl"
-              />
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
