@@ -29,6 +29,23 @@ import {
   Layers,
   Printer
 } from 'lucide-react';
+import { ThreeDeviceEcosystemBanner, type DeviceBannerFocusId } from './ThreeDeviceEcosystemBanner';
+
+const GALLERY_LIGHTBOX_ASSETS = [
+  '00_ecomiles_clean_devices_hero_stage.png',
+  '00_ecomiles_flagship_cover_banner.png',
+  '26_mockup_macbook_pro_16_b2b_tms.png',
+  '27_mockup_windows_xps_16_evsim_dual.png',
+  '24_mockup_samsung_zfold_tablet_cockpit.png',
+  '25_mockup_ipad_pro_tablet_tms.png',
+  '23_mockup_iphone_duo_dual_screen.png',
+  '21_mockup_iphone_18_pro_max_driver.png',
+  '22_mockup_samsung_s26_ultra_maps_live.png',
+  '17_slide_composite_all_devices_hero_trio.png',
+  '18_slide_composite_driver_and_maps_mobile_tablet.png',
+  '19_slide_composite_dispatcher_and_evsim_benchmark.png',
+  '20_slide_composite_4role_enterprise_architecture.png',
+] as const;
 
 interface SlideItem {
   id: number;
@@ -173,6 +190,9 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
   // Interactive state for Slide 6 (Live Console tabs)
   const [activeConsoleTab, setActiveConsoleTab] = useState<'both' | 'dispatcher' | 'driver'>('both');
 
+  const [galleryStageMode, setGalleryStageMode] = useState<'studio_24k' | 'webgl_3d'>('studio_24k');
+  const [deckWebglFocusId, setDeckWebglFocusId] = useState<DeviceBannerFocusId>('all_banner');
+  const [lightboxAsset, setLightboxAsset] = useState<string | null>(null);
   const slideRefs = useRef<(HTMLElement | null)[]>([]);
 
   const scrollToSlide = (slideId: number) => {
@@ -1850,51 +1870,84 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                   Bộ Ảnh Chụp Màn Hình &amp; Mockup 7 Thiết Bị (Desktop · Tablet · Mobile)
                 </h2>
               </div>
-              <a
-                href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                download="00_ecomiles_flagship_cover_banner.png"
-                className="px-4 py-2.5 rounded-xl bg-ecomiles-lime text-slate-950 font-extrabold text-xs self-start sm:self-auto"
-              >
-                Tải Ảnh Bìa 7 Thiết Bị (2400x1260 PNG)
-              </a>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="inline-flex rounded-xl p-1 bg-slate-950 border border-white/10 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setGalleryStageMode('studio_24k')}
+                    className={`px-3 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                      galleryStageMode === 'studio_24k'
+                        ? 'bg-ecomiles-lime text-slate-950'
+                        : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    1. Ảnh Bìa Studio 2.4K (PNG)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setGalleryStageMode('webgl_3d')}
+                    className={`px-3 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                      galleryStageMode === 'webgl_3d'
+                        ? 'bg-ecomiles-lime text-slate-950'
+                        : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    2. Sân Khấu 3D WebGL (7 Thiết Bị)
+                  </button>
+                </div>
+                <a
+                  href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                  download="00_ecomiles_flagship_cover_banner.png"
+                  className="px-4 py-2 rounded-xl bg-ecomiles-lime text-slate-950 font-extrabold text-xs"
+                >
+                  Tải Ảnh Bìa 7 Thiết Bị (2400x1260 PNG)
+                </a>
+              </div>
             </div>
 
             {/* Featured Master Cover Banners (00 & 00_clean) + 7 Hardware Mockups (21..27) + 4 Slide Composites (17..20) */}
             <div className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <a
-                  href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block rounded-2xl overflow-hidden border border-ecomiles-lime/40 bg-slate-950 p-2 hover:border-ecomiles-lime transition-colors"
-                >
-                  <img
-                    src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                    alt="00_clean - Pure 7-Device Studio Stage with Floor Reflections (2400x1120)"
-                    className="w-full h-auto rounded-xl"
-                    loading="lazy"
+              {galleryStageMode === 'webgl_3d' ? (
+                <div className="rounded-2xl border border-ecomiles-lime/40 bg-slate-950 p-3">
+                  <ThreeDeviceEcosystemBanner
+                    selectedDeviceId={deckWebglFocusId}
+                    onSelectDevice={setDeckWebglFocusId}
                   />
-                  <div className="text-[11px] font-mono text-ecomiles-lime mt-2 px-1 truncate">
-                    00_ecomiles_clean_devices_hero_stage.png (Pure 7-Device V-Formation Stage · 2400×1120)
-                  </div>
-                </a>
-                <a
-                  href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block rounded-2xl overflow-hidden border border-white/15 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors"
-                >
-                  <img
-                    src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                    alt="00 - Master 7-Device Flagship Cover Banner (2400x1260)"
-                    className="w-full h-auto rounded-xl"
-                    loading="lazy"
-                  />
-                  <div className="text-[11px] font-mono text-slate-300 mt-2 px-1 truncate">
-                    00_ecomiles_flagship_cover_banner.png (OpenGraph / Social Cover · 2400×1260)
-                  </div>
-                </a>
-              </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setLightboxAsset('00_ecomiles_clean_devices_hero_stage.png')}
+                    className="text-left block rounded-2xl overflow-hidden border border-ecomiles-lime/40 bg-slate-950 p-2 hover:border-ecomiles-lime transition-colors cursor-zoom-in"
+                  >
+                    <img
+                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                      alt="00_clean - Pure 7-Device Studio Stage with Floor Reflections (2400x1120)"
+                      className="w-full h-auto rounded-xl"
+                      loading="lazy"
+                    />
+                    <div className="text-[11px] font-mono text-ecomiles-lime mt-2 px-1 truncate">
+                      00_ecomiles_clean_devices_hero_stage.png (Bấm để phóng to High-DPI · 2400×1120)
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLightboxAsset('00_ecomiles_flagship_cover_banner.png')}
+                    className="text-left block rounded-2xl overflow-hidden border border-white/15 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors cursor-zoom-in"
+                  >
+                    <img
+                      src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                      alt="00 - Master 7-Device Flagship Cover Banner (2400x1260)"
+                      className="w-full h-auto rounded-xl"
+                      loading="lazy"
+                    />
+                    <div className="text-[11px] font-mono text-slate-300 mt-2 px-1 truncate">
+                      00_ecomiles_flagship_cover_banner.png (Bấm để phóng to High-DPI · 2400×1260)
+                    </div>
+                  </button>
+                </div>
+              )}
 
               {/* 7 Individual Hardware Mockups (21..27) */}
               <div>
@@ -1911,12 +1964,11 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                     '21_mockup_iphone_18_pro_max_driver.png',
                     '22_mockup_samsung_s26_ultra_maps_live.png',
                   ].map((fname) => (
-                    <a
+                    <button
                       key={fname}
-                      href={`/pitch-deck-screenshots/${fname}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex flex-col justify-between rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors"
+                      type="button"
+                      onClick={() => setLightboxAsset(fname)}
+                      className="text-left flex flex-col justify-between rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors cursor-zoom-in"
                     >
                       <img
                         src={`/pitch-deck-screenshots/${fname}`}
@@ -1925,7 +1977,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                         loading="lazy"
                       />
                       <div className="text-[10px] font-mono text-slate-300 mt-2 px-1 truncate">{fname}</div>
-                    </a>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -1938,12 +1990,11 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                   '19_slide_composite_dispatcher_and_evsim_benchmark.png',
                   '20_slide_composite_4role_enterprise_architecture.png',
                 ].map((fname) => (
-                  <a
+                  <button
                     key={fname}
-                    href={`/pitch-deck-screenshots/${fname}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors"
+                    type="button"
+                    onClick={() => setLightboxAsset(fname)}
+                    className="text-left block rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-2 hover:border-ecomiles-lime/50 transition-colors cursor-zoom-in"
                   >
                     <img
                       src={`/pitch-deck-screenshots/${fname}`}
@@ -1952,7 +2003,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                       loading="lazy"
                     />
                     <div className="text-[11px] font-mono text-slate-300 mt-2 px-1 truncate">{fname}</div>
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>
@@ -2007,6 +2058,72 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
           </div>
         </div>
       </footer>
+
+      {lightboxAsset && (
+        <div
+          onClick={() => setLightboxAsset(null)}
+          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-6 cursor-zoom-out"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="max-w-6xl w-full bg-slate-900 border border-white/20 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 cursor-default"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10 text-xs">
+              <span className="font-mono font-bold text-ecomiles-lime truncate">{lightboxAsset}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const idx = GALLERY_LIGHTBOX_ASSETS.indexOf(
+                      lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
+                    );
+                    const nextIdx =
+                      (idx - 1 + GALLERY_LIGHTBOX_ASSETS.length) % GALLERY_LIGHTBOX_ASSETS.length;
+                    setLightboxAsset(GALLERY_LIGHTBOX_ASSETS[nextIdx]);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
+                >
+                  ‹ Ảnh trước
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const idx = GALLERY_LIGHTBOX_ASSETS.indexOf(
+                      lightboxAsset as (typeof GALLERY_LIGHTBOX_ASSETS)[number]
+                    );
+                    const nextIdx = (idx + 1) % GALLERY_LIGHTBOX_ASSETS.length;
+                    setLightboxAsset(GALLERY_LIGHTBOX_ASSETS[nextIdx]);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
+                >
+                  Ảnh tiếp ›
+                </button>
+                <a
+                  href={`/pitch-deck-screenshots/${lightboxAsset}`}
+                  download={lightboxAsset}
+                  className="px-3 py-1 rounded-lg bg-ecomiles-lime text-slate-950 font-extrabold"
+                >
+                  Tải PNG
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setLightboxAsset(null)}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold cursor-pointer"
+                >
+                  ✕ Đóng
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center justify-center max-h-[78vh] overflow-auto">
+              <img
+                src={`/pitch-deck-screenshots/${lightboxAsset}`}
+                alt={lightboxAsset}
+                className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

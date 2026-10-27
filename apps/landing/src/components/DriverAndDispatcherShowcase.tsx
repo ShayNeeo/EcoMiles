@@ -226,6 +226,38 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     window.addEventListener('ecomiles:select-device', handleSelectDevice);
     return () => window.removeEventListener('ecomiles:select-device', handleSelectDevice);
   }, [tiltRotateX, tiltRotateY]);
+
+  useEffect(() => {
+    if (selectedDeviceId === 'all_banner') return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const nextDev = hardwareDevices[wrapHardwareIndex(activeHardwareIndex - 1)];
+        if (nextDev) {
+          tiltRotateX.set(0);
+          tiltRotateY.set(0);
+          setSelectedDeviceId(nextDev.id);
+        }
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextDev = hardwareDevices[wrapHardwareIndex(activeHardwareIndex + 1)];
+        if (nextDev) {
+          tiltRotateX.set(0);
+          tiltRotateY.set(0);
+          setSelectedDeviceId(nextDev.id);
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        tiltRotateX.set(0);
+        tiltRotateY.set(0);
+        setSelectedDeviceId('all_banner');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedDeviceId, activeHardwareIndex, hardwareDevices, wrapHardwareIndex, tiltRotateX, tiltRotateY]);
   // GSAP ScrollTrigger 4-Beat Spatial Fan-Out (Office -> Handover -> Field -> Outcome)
   useGSAP(
     () => {

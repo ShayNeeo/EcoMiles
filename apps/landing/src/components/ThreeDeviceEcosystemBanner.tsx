@@ -433,6 +433,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     const deviceMeshes: THREE.Mesh[] = [];
     const chassisMeshes: THREE.Mesh[] = [];
+    const rimBarMeshes: THREE.Mesh[] = [];
     const reflectionMeshes: THREE.Mesh[] = [];
     const loadedTextures: THREE.Texture[] = [];
 
@@ -482,6 +483,21 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       chassis.userData = { deviceId: spec.id, baseY: spec.pos[1], baseRotY: spec.rotY };
       stageGroup.add(chassis);
       chassisMeshes.push(chassis);
+      // 3D Glowing Top Telemetry Rim Bar above each device
+      const rimGeo = new THREE.BoxGeometry(spec.width * 0.42, 0.022, 0.052);
+      const rimMat = new THREE.MeshBasicMaterial({
+        color: 0xd6f65a,
+        transparent: true,
+        opacity: 0.88,
+      });
+      const rimBaseY = spec.pos[1] + spec.height / 2 + 0.018;
+      const rimBar = new THREE.Mesh(rimGeo, rimMat);
+      rimBar.position.set(spec.pos[0], rimBaseY, spec.pos[2]);
+      rimBar.rotation.y = spec.rotY;
+      rimBar.userData = { deviceId: spec.id, rimBaseY, baseRotY: spec.rotY };
+      stageGroup.add(rimBar);
+      rimBarMeshes.push(rimBar);
+
 
       const geo = new THREE.PlaneGeometry(spec.width, spec.height);
       const mat = new THREE.MeshBasicMaterial({
@@ -654,6 +670,15 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           ch.rotation.y = m.rotation.y;
           ch.scale.setScalar(nextScale);
         }
+        const rim = rimBarMeshes[i];
+        if (rim) {
+          const rimMat = rim.material as THREE.MeshBasicMaterial;
+          rimMat.color.setHex(isHovered ? 0xffffff : 0xd6f65a);
+          rimMat.opacity = THREE.MathUtils.lerp(rimMat.opacity, isHovered ? 1.0 : isFocused ? 0.9 : 0.15, 0.12);
+          rim.rotation.y = m.rotation.y;
+          rim.scale.setScalar(nextScale);
+        }
+
 
         const refl = reflectionMeshes[i];
         if (refl) {
@@ -672,6 +697,9 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           const nextY = baseY + bob;
           m.position.y = nextY;
           if (ch) ch.position.y = nextY;
+          if (rim) {
+            rim.position.y = (rim.userData.rimBaseY as number) + bob;
+          }
           if (refl) {
             refl.position.y = (refl.userData.reflBaseY as number) - bob * 0.5;
           }
@@ -714,6 +742,10 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       chassisMeshes.forEach((c) => {
         c.geometry.dispose();
         (c.material as THREE.Material).dispose();
+      });
+      rimBarMeshes.forEach((rb) => {
+        rb.geometry.dispose();
+        (rb.material as THREE.Material).dispose();
       });
       reflectionMeshes.forEach((r) => {
         r.geometry.dispose();

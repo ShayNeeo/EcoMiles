@@ -19,8 +19,21 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
     fleetSize: '5-15 xe',
     area: 'TP. Hồ Chí Minh (Ưu tiên đợt 1)',
     notes: '',
+    deviceMix: [
+      'MacBook / Windows B2B TMS',
+      'Galaxy Z Fold / iPad Pro Kho Vận',
+      'iPhone Duo / 18 Pro Max / S26 Ultra Tài Xế',
+    ],
   });
 
+  const toggleDeviceMix = (chip: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      deviceMix: prev.deviceMix.includes(chip)
+        ? prev.deviceMix.filter((c) => c !== chip)
+        : [...prev.deviceMix, chip],
+    }));
+  };
   // initialInterest is already seeded in useState above
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,6 +79,23 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
               <p className="text-xs text-slate-300 mb-5 leading-relaxed">
                 Chọn nội dung doanh nghiệp quan tâm. Chương trình dùng thử 4 - 6 tuần ưu tiên <strong>3 - 5 doanh nghiệp đầu tiên tại TP.HCM</strong>.
               </p>
+
+              {/* 7-Device Studio Cover Banner Strip inside Pilot Modal */}
+              <div className="mb-4 p-2.5 rounded-2xl bg-slate-950/90 border border-white/10 flex items-center gap-3">
+                <img
+                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  alt="EcoMiles 7-Device Flagship Studio Cover"
+                  className="h-10 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0"
+                />
+                <div className="min-w-0">
+                  <div className="text-[10.5px] font-black text-ecomiles-lime uppercase tracking-wider truncate">
+                    Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực
+                  </div>
+                  <div className="text-[10px] text-slate-400 truncate">
+                    MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · S26 Ultra
+                  </div>
+                </div>
+              </div>
 
               <form onSubmit={handleSubmit} className="space-y-3.5">
                 <div>
@@ -205,6 +235,36 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                       <option value="Bình Dương / Đồng Nai">Bình Dương / Đồng Nai</option>
                       <option value="Đà Nẵng">Đà Nẵng</option>
                     </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    Thiết bị vận hành đang sử dụng (Chọn nhiều)
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      'MacBook / Windows B2B TMS',
+                      'Galaxy Z Fold / iPad Pro Kho Vận',
+                      'iPhone Duo / 18 Pro Max / S26 Ultra Tài Xế',
+                    ].map((chip) => {
+                      const active = formData.deviceMix.includes(chip);
+                      return (
+                        <button
+                          key={chip}
+                          type="button"
+                          onClick={() => toggleDeviceMix(chip)}
+                          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition-all border cursor-pointer ${
+                            active
+                              ? 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40'
+                              : 'bg-slate-950 text-slate-400 border-white/10 hover:border-white/20'
+                          }`}
+                        >
+                          {active ? '✓ ' : '+ '}
+                          {chip}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
