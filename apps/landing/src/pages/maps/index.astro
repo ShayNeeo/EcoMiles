@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EcoMilesTruckMapNavigator } from '../../islands/EcoMilesTruckMapNavigator';
+export const prerender = true;
+---
+
+<BaseLayout
+  title="EcoMiles OpenTruck Maps (/maps): Bản Đồ Dẫn Đường Xe Tải, Vùng Cấm Tải QĐ 23/2018 & Chế Độ Lái Trực Tiếp"
+  description="Bản đồ dẫn đường chuyên dụng cho xe tải chặng giữa (>500kg) tại TP.HCM: hiển thị vùng cấm tải QĐ 23/2018, giới hạn cầu đường (13T/4.5m), lộ trình chi tiết từng chặng và chế độ dẫn đường trực tiếp (Live Moving Mode)."
+>
+  <EcoMilesTruckMapNavigator client:only="react" />
+</BaseLayout>

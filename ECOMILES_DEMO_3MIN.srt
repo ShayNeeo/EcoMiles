@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:18,000
+Chào mừng bạn đến với EcoMiles, hệ thống quản trị vận tải đô thị B2B và kiểm kê phát thải các-bon tự động. Ngay khi truy cập, Cổng đăng nhập nhanh bốn vai trò đã điền sẵn khóa xác thực A-P-I và tài khoản mẫu. Chỉ với một cú click vào vai trò Điều phối viên, hệ thống tự động kết nối máy chủ trong mười lăm mili-giây.
+
+2
+00:00:18,000 --> 00:00:36,000
+Tại không gian Quản lý điều phối doanh nghiệp của Chuỗi Lạnh Nam Việt, thanh điều hướng bên trái tách biệt sáu phân hệ nghiệp vụ. Dải năm chỉ số K-P-I trung tâm hiển thị rõ bảy xe đang hoạt động, giảm bốn mươi bốn phẩy một phần trăm tổng quãng đường, hạ tỷ lệ chạy rỗng từ ba mươi hai phẩy tám phần trăm xuống chỉ còn năm phẩy bốn phần trăm nhờ mười chín đơn hàng ghép chiều về.
+
+3
+00:00:36,000 --> 00:00:54,000
+Chuyển sang phân hệ Điều phối và Thuật toán, khi bấm nút Chạy tối ưu và Phát hành xuống tài xế, thuật toán phân vùng cánh cung Gillett Miller và A-L-N-S lập tức chia bảy lộ trình không chồng chéo trên đường bộ Thành phố Hồ Chí Minh. Bảng nhật ký bên phải tự động dời hai mươi tám đơn vi phạm khung giờ cấm tải Quyết định hai mươi ba sang khung giờ hợp pháp.
+
+4
+00:00:54,000 --> 00:01:10,000
+Ở phân hệ Đơn hàng và Cột Excel, bộ giải mã thông minh tự động nhận diện mọi tên cột tiếng Việt hoặc tiếng Anh từ file E-R-P của doanh nghiệp. Chế độ bảo vệ dữ liệu cá nhân theo Nghị định mười ba tự động che số điện thoại và tên người nhận ngay trên giao diện.
+
+5
+00:01:10,000 --> 00:01:28,000
+Tại mục Báo cáo E-S-G tự động, doanh nghiệp không còn mất hàng giờ nhập liệu thủ công. Chỉ với một cú click vào nút Xuất Báo Cáo Excel Ba Sheet, hệ thống lập tức đóng gói sổ cái phát thải C-O-2 theo chuẩn quốc tế I-S-O một bốn không tám ba và khung G-L-E-C ba chấm hai kèm chữ ký kiểm toán S-H-A hai năm sáu.
+
+6
+00:01:28,000 --> 00:01:52,000
+Tiếp theo là Buồng mô phỏng đối chứng hai bên kiểu E-V-S-I-M dành cho giám khảo và khách hàng kiểm thử. Khi nạp file Excel thực tế, hai bản đồ Thành phố Hồ Chí Minh chạy song song từ sáu giờ sáng đến hai mươi giờ tối. Bên trái là cách chia tuyến thủ công bị phạt hai mươi tám lỗi giờ cấm và chạy rỗng hơn ba mươi hai phần trăm. Bên phải, các xe tải EcoMiles bám sát đường bộ OpenStreetMap, ghép mười chín đơn hàng chiều về, tiết kiệm một trăm sáu mươi lăm ki-lô-mét và không có bất kỳ lỗi giờ cấm nào.
+
+7
+00:01:52,000 --> 00:02:10,000
+Chuyển sang Vai trò ba, Ứng dụng Tài xế được thiết kế hai chế độ dẫn đường hoàn toàn miễn phí A-P-I. Với xe tải chặng giữa trên năm trăm ki-lô-gam, hệ thống khóa Google Maps vì Google không có chế độ xe tải và đẩy xe vào đường cấm. Ngược lại, với ô tô van chặng cuối dưới năm trăm ki-lô-gam, hệ thống nhúng tọa độ trung gian Waypoints thẳng vào Google Maps miễn phí để ép đi đúng lộ trình tối ưu.
+
+8
+00:02:10,000 --> 00:02:28,000
+Khi tài xế xe tải chặng giữa bấm Mở Bản Đồ Vùng Cấm xuyệt maps, chế độ Tổng quan hiển thị trực quan các vùng đỏ cấm tải theo Quyết định hai mươi ba tại lõi Quận một, Quận ba, Phú Nhuận và cửa ngõ sân bay. Tuyến đường màu xanh của EcoMiles vòng qua đường Trường Chinh và Cầu Bình Lợi cho phép mười ba tấn, kèm giải thích chi tiết lý do né đường cấm ở từng chặng.
+
+9
+00:02:28,000 --> 00:02:46,000
+Ngay khi tài xế bấm nút Bắt đầu dẫn đường trực tiếp giống như nút Start trên Google Maps, camera tự động phóng to cấp độ mặt đường và khóa tâm bám sát theo xe tải đang di chuyển ba mươi sáu ki-lô-mét trên giờ. Thanh điều hướng màu xanh phía trên đếm ngược từng mét đến ngã rẽ tiếp theo và phát giọng nói tiếng Việt dẫn đường an toàn tuyệt đối.
+
+10
+00:02:46,000 --> 00:03:00,000
+Cuối cùng, tại Phòng giám sát hệ thống của Quản trị viên EcoMiles, toàn bộ dữ liệu đơn hàng của từng công ty đều được mã hóa mù A-E-S hai năm sáu G-C-M bằng khóa riêng của khách hàng. EcoMiles sẵn sàng đồng hành cùng doanh nghiệp vận tải Việt Nam tối ưu chi phí và chuyển đổi xanh bền vững.

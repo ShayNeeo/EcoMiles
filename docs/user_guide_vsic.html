@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tài Liệu Hướng Dẫn Sử Dụng Toàn Diện — EcoMiles B2B TMS &amp; OpenTruck Maps (OLYMPIC KHỞI NGHIỆP VSIC 2026)</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 13mm 13mm 15mm 13mm;
+      @bottom-right {
+        content: "Trang " counter(page) " / " counter(pages);
+        font-family: 'Noto Sans', sans-serif;
+        font-size: 8.5pt;
+        color: #64748b;
+      }
+      @bottom-left {
+        content: "EcoMiles B2B Logistics TMS, EVSIM & OpenTruck Maps (/maps) · (OLYMPIC KHỞI NGHIỆP VSIC 2026)";
+        font-family: 'Noto Sans', sans-serif;
+        font-size: 8.5pt;
+        color: #64748b;
+      }
+    }
+    body {
+      font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #111827;
+      line-height: 1.46;
+      font-size: 9.5pt;
+      margin: 0;
+      padding: 0;
+    }
+    .page-break { page-break-before: always; }
+    .cover-banner {
+      background: linear-gradient(135deg, #14532d 0%, #0f3f22 65%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 22px 24px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+    .cover-tag {
+      display: inline-block;
+      background: #d6f65a;
+      color: #14532d;
+      font-weight: 800;
+      font-size: 8.5pt;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 14.5pt;
+      color: #14532d;
+      border-bottom: 2.5px solid #247b50;
+      padding-bottom: 4px;
+      margin: 10px 0 8px 0;
+    }
+    h2 {
+      font-size: 11pt;
+      color: #1f3a5f;
+      margin: 8px 0 5px 0;
+    }
+    .fig-card {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      padding: 7px;
+      margin: 6px 0 10px 0;
+      text-align: center;
+    }
+    .fig-img {
+      width: 100%;
+      max-height: 315px;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    .fig-caption {
+      font-size: 8.3pt;
+      color: #475569;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 10px 0;
+      font-size: 8.8pt;
+    }
+    th {
+      background: #14532d;
+      color: #ffffff;
+      text-align: left;
+      padding: 5px 7px;
+      font-weight: 700;
+    }
+    td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 7px;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .badge-num {
+      display: inline-block;
+      width: 17px;
+      height: 17px;
+      line-height: 17px;
+      text-align: center;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 800;
+      font-size: 8pt;
+      margin-right: 4px;
+    }
+    .b-blue { background: #1971c2; }
+    .b-green { background: #2f9e44; }
+    .b-amber { background: #e67700; }
+    .b-red { background: #e11d48; }
+    .zoom-note {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 8.8pt;
+      margin: 6px 0;
+    }
+    .tech-note {
+      background: #eef7ee;
+      border-left: 4px solid #2f9e44;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 8.8pt;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: COVER & 4-ROLE FAST-LOGIN GATE -->
+  <div class="cover-banner">
+    <span class="cover-tag">HƯỚNG DẪN SỬ DỤNG TRỰC QUAN · KÈM CHỈ BÁO &amp; PHÓNG TO ĐIỂM BẤM (1.9× ZOOM)</span>
+    <h1 style="color:#ffffff; border:none; font-size:19pt; margin:7px 0 4px 0;">HỆ THỐNG QUẢN TRỊ VẬN TẢI ĐÔ THỊ B2B ECOMILES</h1>
+    <div style="font-size:10pt; color:#d6f65a; font-weight:700;">
+      4 Vai Trò B2B · Mô Phỏng Đối Chứng EVSIM 2 Bên · Bản Đồ Dẫn Đường Xe Tải &amp; Vùng Cấm Tải (/maps) · Báo Cáo CO₂e ISO 14083
+    </div>
+    <div style="font-size:8.5pt; color:#e2e8f0; margin-top:5px;">
+      Dashboard: <b>https://ecomiles.pages.dev/dashboard</b> &nbsp;|&nbsp; EVSIM: <b>https://ecomiles.pages.dev/benchmark</b> &nbsp;|&nbsp; Bản đồ Xe tải: <b>https://ecomiles.pages.dev/maps</b>
+    </div>
+  </div>
+
+  <h1>1. CỔNG ĐĂNG NHẬP NHANH 4 VAI TRÒ (FAST-LOGIN MVP GATE)</h1>
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig1_role_portal.png" class="fig-img" alt="Cổng đăng nhập nhanh 4 vai trò EcoMiles" />
+    <div class="fig-caption">Hình 1: Cổng Đăng Nhập Nhanh 4 Vai Trò kèm hộp kính lúp phóng to (1.9× Zoom) tại nút bấm thực thi API.</div>
+  </div>
+
+  <table>
+    <tr>
+      <th style="width:18%;">Chỉ báo</th>
+      <th style="width:28%;">Vai trò &amp; Nút thao tác</th>
+      <th style="width:54%;">Hiệu ứng khi Click &amp; Xác thực API thực tế</th>
+    </tr>
+    <tr>
+      <td><span class="badge-num b-blue">1</span> <b>Vai trò 1 (User)</b></td>
+      <td><b>Điều Phối Viên Công Ty (CRM / TMS)</b></td>
+      <td>Chọn doanh nghiệp B2B (Chuỗi Lạnh Nam Việt, Bách Hóa Xanh, WinCommerce), gọi <code>GET /api/vehicles</code> và mở Bàn điều phối 6 phân hệ.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-num b-green">2</span> <b>Vai trò 2 (Tester)</b></td>
+      <td><b>Mô Phỏng Đối Chứng EVSIM 2 Bên</b></td>
+      <td>Gọi <code>GET /api/report</code> và mở Buồng mô phỏng song song 2 bản đồ TP.HCM (Baseline vs. EcoMiles v2.1) chạy theo thời gian thực 60 FPS.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-num b-amber">3</span> <b>Vai trò 3 (Driver)</b></td>
+      <td><b>Ứng Dụng Tài Xế Giao Hàng</b></td>
+      <td>Điền sẵn biển số xe (<code>51C-000.08</code>) + mã <code>PIN: 0000</code>, mở giao diện Dẫn đường 2 chế độ: <b>Chặng Giữa (&gt;500kg)</b> và <b>Chặng Cuối (≤500kg)</b>.</td>
+    </tr>
+    <tr>
+      <td><span class="badge-num b-red">4</span> <b>Vai trò 4 (Admin)</b></td>
+      <td><b>Phòng Giám Sát Hạ Tầng (Zero-Knowledge)</b></td>
+      <td>Kiểm tra độ trễ máy chủ, cấp phát khóa KMS khách hàng và chứng minh cơ chế <b>Mã hóa mù AES-256-GCM</b> (<code>admin_can_decrypt = false</code>).</td>
+    </tr>
+  </table>
+
+  <!-- PAGE 2: ROLE 1 OVERVIEW & ROUTING WORKBENCH -->
+  <div class="page-break"></div>
+  <h1>2. VAI TRÒ 1: QUẢN LÝ ĐIỀU PHỐI DOANH NGHIỆP (B2B CRM / TMS)</h1>
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig2_dispatcher_dashboard.png" class="fig-img" alt="Tổng quan đội xe B2B CRM/TMS" />
+    <div class="fig-caption">Hình 2: Giao diện Quản lý Điều phối B2B (Ban ngày) với thanh điều hướng trái 6 phân hệ và kính lúp phóng to nút Mở App Tài xế.</div>
+  </div>
+
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig3_dispatcher_stops_bans.png" class="fig-img" alt="Bàn điều phối tuyến xe và nhật ký QĐ 23/2018" />
+    <div class="fig-caption">Hình 3: Bản đồ đường bộ TP.HCM (OpenStreetMap + OSRM) với xe tải di chuyển bám sát mặt đường và Nhật ký dời giờ cấm QĐ 23/2018.</div>
+  </div>
+
+  <div class="zoom-note">
+    <b>Phóng to Điểm bấm (Hình 2 &amp; Hình 3):</b> Nút <b>"Chạy Tối Ưu &amp; Phát Hành Xuống Tài Xế"</b> kích hoạt thuật toán Gillett-Miller Angular Sweep + Carbon-Aware ALNS để phân vùng địa lý không chồng chéo và tự động dời các đơn vi phạm khung giờ cấm tải QĐ 23/2018 (06:00–09:00 &amp; 16:00–20:00) sang khung giờ hợp pháp.
+  </div>
+
+  <!-- PAGE 3: ROLE 2 EVSIM DUAL SIMULATOR & DRIVER APP -->
+  <div class="page-break"></div>
+  <h1>3. VAI TRÒ 2: MÔ PHỎNG ĐỐI CHỨNG 2 BÊN (EVSIM DUAL SIMULATOR)</h1>
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig5_evsim_dual_simulator.png" class="fig-img" alt="Mô phỏng đối chứng 2 bên EVSIM Dual Simulator" />
+    <div class="fig-caption">Hình 4: Buồng mô phỏng đối chứng song song 2 bản đồ TP.HCM (Baseline vs. EcoMiles v2.1) với đồng hồ thời gian thực 06:00–20:00.</div>
+  </div>
+
+  <h1>4. VAI TRÒ 3: ỨNG DỤNG TÀI XẾ 2 CHẾ ĐỘ (CHẶNG GIỮA XE TẢI &amp; CHẶNG CUỐI Ô TÔ — $0 API)</h1>
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig4_driver_mobile_pwa.png" class="fig-img" alt="Ứng dụng Tài xế Chặng giữa Xe tải (>500kg)" />
+    <div class="fig-caption">Hình 5: Ứng dụng Tài xế (/driver) phân tách rõ Chặng Giữa (Xe tải &gt;500kg mở thẳng sang /maps) và Chặng Cuối (Ô tô ≤500kg khóa Waypoints Google Maps).</div>
+  </div>
+
+  <!-- PAGE 4: DEDICATED /MAPS OPENTRUCK NAVIGATOR (2 VIEWS: OVERVIEW + BANNED ZONES vs LIVE MOVING START) -->
+  <div class="page-break"></div>
+  <h1>5. BẢN ĐỒ DẪN ĐƯỜNG XE TẢI CHUYÊN DỤNG (/MAPS): 2 CHẾ ĐỘ XEM</h1>
+  <p>
+    Khi tài xế xe tải chặng giữa (&gt;500kg) bấm nút <b>"Mở Bản Đồ Vùng Cấm (/maps)"</b> hoặc <b>"▶ Bắt Đầu Lái (/maps Live)"</b> trên màn hình Tài xế, hệ thống mở phân hệ <b>EcoMiles OpenTruck Maps (https://ecomiles.pages.dev/maps)</b> gồm 2 chế độ:
+  </p>
+
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig9_maps_overview_banned_zones.png" class="fig-img" alt="/maps Chế độ 1: Tổng quan lộ trình & Vùng cấm tải QĐ 23/2018" />
+    <div class="fig-caption">Hình 6: Chế độ 1 (/maps?mode=overview) — Hiển thị toàn cảnh các Vùng Đỏ Cấm Tải QĐ 23/2018, giới hạn cầu (≤13T / ≤4.5m) và lý do chọn đường từng chặng.</div>
+  </div>
+
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig10_maps_live_navigation.png" class="fig-img" alt="/maps Chế độ 2: Dẫn đường trực tiếp (Live Moving Start Mode)" />
+    <div class="fig-caption">Hình 7: Chế độ 2 (/maps?mode=navigate) — Sau khi bấm "▶ BẮT ĐẦU DẪN ĐƯỜNG (START LIVE)", camera bám sát theo xe tải 36 km/h kèm bảng chỉ hướng từng mét như Google Maps.</div>
+  </div>
+
+  <!-- PAGE 5: ADMIN ZERO-KNOWLEDGE MONITOR ROOM -->
+  <div class="page-break"></div>
+  <h1>6. VAI TRÒ 4: PHÒNG GIÁM SÁT HẠ TẦNG &amp; BẢO MẬT MÙ ZERO-KNOWLEDGE (AES-256-GCM)</h1>
+  <div class="fig-card">
+    <img src="/home/shayneeo/Downloads/Documents/Coding/RND_to_Startup/docs/assets/annotated/fig8_admin_zero_knowledge.png" class="fig-img" alt="Phòng giám sát Admin Zero-Knowledge" />
+    <div class="fig-caption">Hình 8: Phòng Giám sát Hệ thống (Admin) chứng minh quyền giải mã dữ liệu doanh nghiệp = 0% (Chỉ thấy bản mã aes256gcm$iv=...).</div>
+  </div>
+
+  <div class="tech-note">
+    <b>Cam kết Bảo mật Đa Doanh nghiệp (Zero-Knowledge &amp; Nghị định 13/2023/NĐ-CP):</b> Mỗi công ty vận tải sở hữu khóa KMS riêng. Quản trị viên EcoMiles hoàn toàn không thể xem danh sách khách hàng, số điện thoại hay tọa độ giao hàng của doanh nghiệp.
+  </div>
+
+</body>
+</html>
