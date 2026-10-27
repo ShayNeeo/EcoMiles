@@ -155,6 +155,19 @@ const CLUSTER_MEMBERS: Record<Exclude<ClusterPresetId, 'none'>, DeviceBannerFocu
   field: ['iphone_18_pro_max', 'iphone_duo', 'galaxy_s26_ultra'],
 };
 
+const DIRECT_JUMP_DEVICES: ReadonlyArray<{
+  id: Exclude<DeviceBannerFocusId, 'all_banner'>;
+  shortLabel: string;
+}> = [
+  { id: 'macbook_pro', shortLabel: '1. MacBook' },
+  { id: 'windows_xps', shortLabel: '2. XPS 16' },
+  { id: 'galaxy_zfold', shortLabel: '3. Z Fold' },
+  { id: 'iphone_18_pro_max', shortLabel: '4. 18 Pro Max' },
+  { id: 'iphone_duo', shortLabel: '5. iPhone Duo' },
+  { id: 'galaxy_s26_ultra', shortLabel: '6. S26 Ultra' },
+  { id: 'ipad_pro', shortLabel: '7. iPad Pro' },
+];
+
 const DEVICE_LABELS: Record<Exclude<DeviceBannerFocusId, 'all_banner'>, string> = {
   macbook_pro: 'MacBook Pro 16" (Trung Tâm Điều Phối B2B)',
   windows_xps: 'Windows 11 XPS 16 (Đối Chứng EVSIM)',
@@ -586,6 +599,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     const chassisMeshes: THREE.Mesh[] = [];
     const rimBarMeshes: THREE.Mesh[] = [];
     const reflectionMeshes: THREE.Mesh[] = [];
+    const pedestalRingMeshes: THREE.Mesh[] = [];
     const loadedTextures: THREE.Texture[] = [];
 
     const reflVertexShader = `
@@ -690,6 +704,22 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       reflMesh.userData = { reflBaseY };
       stageGroup.add(reflMesh);
       reflectionMeshes.push(reflMesh);
+
+      // Per-Device 3D Floor Pedestal Ring
+      const pedGeo = new THREE.RingGeometry(0.28, 0.35, 32);
+      pedGeo.rotateX(-Math.PI / 2);
+      const pedMat = new THREE.MeshBasicMaterial({
+        color: 0xd6f65a,
+        transparent: true,
+        opacity: 0.28,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      });
+      const pedRing = new THREE.Mesh(pedGeo, pedMat);
+      pedRing.position.set(spec.pos[0], 0.004, spec.pos[2]);
+      pedRing.userData = { deviceId: spec.id };
+      stageGroup.add(pedRing);
+      pedestalRingMeshes.push(pedRing);
     });
 
     // Pointer parallax & Raycaster click picking
@@ -895,6 +925,22 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           refl.rotation.y = m.rotation.y;
           refl.scale.x = nextScale;
         }
+        const ped = pedestalRingMeshes[i];
+        if (ped) {
+          const pedMat = ped.material as THREE.MeshBasicMaterial;
+          const isPedestalHighlighted =
+            isHovered ||
+            sel === devId ||
+            (activeCluster !== 'none' && CLUSTER_MEMBERS[activeCluster].includes(devId));
+          pedMat.color.setHex(isHovered ? 0xffffff : 0xd6f65a);
+          pedMat.opacity = THREE.MathUtils.lerp(
+            pedMat.opacity,
+            isPedestalHighlighted ? 0.85 : sel === 'all_banner' && activeCluster === 'none' ? 0.28 : 0.1,
+            0.14
+          );
+          const pedScale = isHovered ? 1.18 : isPedestalHighlighted ? 1.08 : 1.0;
+          ped.scale.setScalar(THREE.MathUtils.lerp(ped.scale.x, pedScale, 0.14));
+        }
 
         if (!prefersReducedMotion) {
           const bob = Math.sin(elapsed * 1.5 + i * 0.7) * 0.03;
@@ -983,6 +1029,10 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       reflectionMeshes.forEach((r) => {
         r.geometry.dispose();
         (r.material as THREE.Material).dispose();
+      });
+      pedestalRingMeshes.forEach((pr) => {
+        pr.geometry.dispose();
+        (pr.material as THREE.Material).dispose();
       });
       loadedTextures.forEach((t) => t.dispose());
       renderer.dispose();
@@ -1113,6 +1163,35 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
             {isAutoTour ? '⏸ Đang Bay' : '▶ Bay Tự Động'}
           </button>
         </div>
+      </div>
+      <div className="grid grid-cols-4 sm:grid-cols-7 gap-1 px-1.5 py-1 rounded-xl bg-slate-950/90 border border-white/10 text-[9.5px]">
+        {DIRECT_JUMP_DEVICES.map((item) => {
+          const isDirectSelected = clusterPreset === 'none' && selectedDeviceId === item.id;
+          const isInCluster =
+            clusterPreset !== 'none' && CLUSTER_MEMBERS[clusterPreset].includes(item.id);
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => {
+                setIsAutoTour(false);
+                setClusterOverride(null);
+                clusterRef.current = 'none';
+                onSelectDevice(isDirectSelected ? 'all_banner' : item.id);
+              }}
+              className={`px-1.5 py-0.5 rounded-md font-bold truncate cursor-pointer transition-colors ${
+                isDirectSelected
+                  ? 'bg-ecomiles-lime text-slate-950 shadow-sm'
+                  : isInCluster
+                    ? 'bg-ecomiles-lime/20 text-ecomiles-lime border border-ecomiles-lime/50'
+                    : 'bg-slate-900/90 text-slate-300 hover:text-white border border-white/10'
+              }`}
+              title={DEVICE_LABELS[item.id]}
+            >
+              {item.shortLabel}
+            </button>
+          );
+        })}
       </div>
       {isLightboxOpen &&
         selectedDeviceId !== 'all_banner' &&

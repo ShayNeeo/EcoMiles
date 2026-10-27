@@ -379,6 +379,39 @@ export const HeroMultiDeviceStage: React.FC = () => {
             <ArrowUpRight className="w-3.5 h-3.5 text-ecomiles-lime" />
           </a>
         </div>
+        {/* 1-Row 7-Device Direct Selector Strip */}
+        <div className="w-full pt-1.5 border-t border-white/5 grid grid-cols-4 sm:grid-cols-7 gap-1">
+          {HERO_DEVICES.map((dev, idx) => {
+            const isSelected = hoveredDevice.id === dev.id;
+            const selectorLabels = [
+              '1. MacBook',
+              '2. XPS 16',
+              '3. Z Fold',
+              '4. 18 Pro Max',
+              '5. iPhone Duo',
+              '6. S26 Ultra',
+              '7. iPad Pro',
+            ];
+            return (
+              <button
+                key={dev.id}
+                type="button"
+                onClick={() => {
+                  setIsAutoSpotlight(false);
+                  setHoveredDevice(dev);
+                  setInspectedDevice((prev) => (prev ? dev : null));
+                }}
+                className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold transition-all cursor-pointer truncate ${
+                  isSelected
+                    ? 'bg-ecomiles-lime text-slate-950 shadow-sm font-extrabold'
+                    : 'bg-slate-900/90 text-slate-300 hover:text-white border border-white/10'
+                }`}
+              >
+                {selectorLabels[idx]}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Quick-Inspect Lightbox Overlay inside Hero */}
