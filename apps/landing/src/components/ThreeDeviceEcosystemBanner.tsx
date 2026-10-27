@@ -746,8 +746,15 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         const hov = hoveredIdRef.current;
         const isArcActive =
           (hov !== null && (hov === fromId || hov === toId)) ||
+          (activeCluster !== 'none' &&
+            (CLUSTER_MEMBERS[activeCluster].includes(fromId) ||
+              CLUSTER_MEMBERS[activeCluster].includes(toId))) ||
           (sel !== 'all_banner' && (sel === fromId || sel === toId));
-        const targetArcOpacity = isArcActive ? 0.88 : sel === 'all_banner' ? 0.38 : 0.14;
+        const targetArcOpacity = isArcActive
+          ? 0.88
+          : sel === 'all_banner' && activeCluster === 'none'
+            ? 0.38
+            : 0.14;
         const tubeMat = syncTubeMats[idx];
         if (tubeMat) {
           tubeMat.opacity = THREE.MathUtils.lerp(tubeMat.opacity, targetArcOpacity, 0.12);

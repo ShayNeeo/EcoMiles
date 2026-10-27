@@ -165,6 +165,36 @@ export const HeroMultiDeviceStage: React.FC = () => {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(180deg,transparent_0%,rgba(214,246,90,0.09)_100%)] border-t border-ecomiles-lime/20"
       />
 
+      {/* Animated SVG Data-Sync Bezier Network connecting Rear Office Laptops to Foreground Field Devices */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 600 320"
+        preserveAspectRatio="none"
+        className="pointer-events-none absolute inset-0 w-full h-full z-15"
+      >
+        {[
+          { from: 'macbook_pro', to: 'galaxy_zfold', d: 'M 185 85 C 120 120, 85 180, 70 235' },
+          { from: 'macbook_pro', to: 'iphone_18_pro_max', d: 'M 185 85 C 185 135, 185 190, 185 240' },
+          { from: 'macbook_pro', to: 'iphone_duo', d: 'M 185 85 C 235 130, 275 185, 300 235' },
+          { from: 'windows_xps', to: 'iphone_duo', d: 'M 415 85 C 365 130, 325 185, 300 235' },
+          { from: 'windows_xps', to: 'galaxy_s26_ultra', d: 'M 415 85 C 415 135, 415 190, 415 240' },
+          { from: 'windows_xps', to: 'ipad_pro', d: 'M 415 85 C 480 120, 515 180, 530 235' },
+        ].map((arc, idx) => {
+          const isActive = hoveredDevice.id === arc.from || hoveredDevice.id === arc.to;
+          return (
+            <path
+              key={idx}
+              d={arc.d}
+              fill="none"
+              stroke={isActive ? '#d6f65a' : '#34d399'}
+              strokeWidth={isActive ? 2.2 : 1.15}
+              strokeOpacity={isActive ? 0.92 : 0.28}
+              strokeDasharray="6 6"
+            />
+          );
+        })}
+      </svg>
+
       {/* 3-Plane Layered Hardware V-Formation with True Depth Occlusion (-mt-8 sm:-mt-11) */}
       <div className="relative z-10">
         {/* Plane 1 (Rear Office Plane, z-10): MacBook Pro 16" + Windows 11 XPS 16 */}

@@ -984,6 +984,39 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </button>
             </div>
 
+            {/* 7-Device Studio Cover Banner Strip inside Fast-Login Modal */}
+            <div className="bg-[#060d14] border-b border-emerald-900/60 px-5 py-2 flex items-center justify-between gap-3 text-white">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <img
+                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  alt="EcoMiles 7 Thiết Bị Đồng Bộ"
+                  className="h-9 w-auto object-contain rounded-md border border-white/15 bg-black/50 p-0.5 shrink-0"
+                />
+                <div className="min-w-0">
+                  <div className="text-[10.5px] font-bold text-[#d6f65a] uppercase tracking-wider truncate">
+                    Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)
+                  </div>
+                  <div className="text-[10.5px] text-slate-300 truncate">
+                    MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] font-bold shrink-0">
+                <a
+                  href="/maps/"
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                >
+                  Bản Đồ (/maps)
+                </a>
+                <a
+                  href="/pitch-deck/"
+                  className="px-2.5 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
+                >
+                  Bộ 28 Ảnh Pitch Deck →
+                </a>
+              </div>
+            </div>
+
             {/* 4 Prefilled Role Cards */}
             <div className="p-5 sm:p-6 space-y-5 bg-[#f3f4f6]">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -997,6 +1030,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <span className="text-[11px] font-mono text-[#247b50] font-semibold">
                         API: Bearer DEMO
                       </span>
+                    </div>
+                    <div className="text-[11px] font-bold text-[#1971c2]">
+                      Thiết bị: MacBook Pro 16&quot; &amp; iPad Pro M4
                     </div>
                     <h3 className="text-base font-bold text-[#111827]">
                       Điều Phối Viên Vận Tải Công Ty (CRM / TMS)
@@ -1056,6 +1092,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         EVSIM Dual Engine
                       </span>
                     </div>
+                    <div className="text-[11px] font-bold text-[#247b50]">
+                      Thiết bị: Windows 11 XPS 16 (EVSIM Dual Engine)
+                    </div>
                     <h3 className="text-base font-bold text-[#111827]">
                       Mô Phỏng Đối Chứng 2 Bên Kiểu EVSIM (Baseline vs. EcoMiles)
                     </h3>
@@ -1103,6 +1142,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <span className="text-[11px] font-mono text-[#92400e] font-semibold">
                         X-Driver-Pin: 0000
                       </span>
+                    </div>
+                    <div className="text-[11px] font-bold text-[#92400e]">
+                      Thiết bị: iPhone Duo, iPhone 18 Pro Max &amp; Galaxy S26 Ultra
                     </div>
                     <h3 className="text-base font-bold text-[#111827]">
                       Ứng Dụng Tài Xế Giao Hàng &amp; Dẫn Đường Ô Tô
@@ -1155,6 +1197,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <span className="text-[11px] font-mono text-[#831c1e] font-semibold">
                         admin_can_decrypt = false
                       </span>
+                    </div>
+                    <div className="text-[11px] font-bold text-[#831c1e]">
+                      Thiết bị: Samsung Galaxy Z Fold &amp; Zero-Knowledge Audit
                     </div>
                     <h3 className="text-base font-bold text-[#111827]">
                       Phòng Giám Sát Hạ Tầng &amp; Quản Lý Tenant (Zero-Knowledge)
