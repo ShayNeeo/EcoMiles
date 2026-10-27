@@ -121,26 +121,13 @@ function HcmcSingleRouteMapCanvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [tileTick, setTileTick] = useState<number>(0);
-  const [animPhase, setAnimPhase] = useState<number>(0.18);
+  const animPhaseRef = useRef<number>(0.18);
   const [view, setView] = useState<{ zoom: number; panX: number; panY: number }>({
     zoom: 12.7,
     panX: 0,
     panY: 0,
   });
   const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
-
-  useEffect(() => {
-    let raf = 0;
-    let last = performance.now();
-    const step = (now: number) => {
-      const dt = (now - last) / 1000;
-      last = now;
-      setAnimPhase((p) => (p + dt / 18.0) % 1);
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, []);
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -159,6 +146,18 @@ function HcmcSingleRouteMapCanvas({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let raf = 0;
+    let last = performance.now();
+
+    const drawFrame = (now: number) => {
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      if (!prefersReducedMotion && !document.hidden) {
+        animPhaseRef.current = (animPhaseRef.current + dt / 18.0) % 1;
+      }
     const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
     const cw = canvas.clientWidth || 560;
     const ch = canvas.clientHeight || 300;
@@ -247,7 +246,7 @@ function HcmcSingleRouteMapCanvas({
 
       // Live Moving Truck Puck + Directional Arrow riding 100% on `activeRoadPath`
       if (activeRoadPath.length >= 2) {
-        const frac = (animPhase + rIdx * 0.17) % 1;
+        const frac = (animPhaseRef.current + rIdx * 0.17) % 1;
         const { lng: curLng, lat: curLat, dx, dy } = interpolateAlongStreetPathWithHeading(
           activeRoadPath,
           frac
@@ -304,8 +303,17 @@ function HcmcSingleRouteMapCanvas({
     ctx.textAlign = 'left';
     ctx.fillText('Kho Tân Bình (364 Cộng Hòa)', dx + 12, dy + 4);
 
-    ctx.restore();
-  }, [result, strategy, selectedRouteId, view, tileTick, animPhase]);
+      ctx.restore();
+      if (!prefersReducedMotion) {
+        raf = requestAnimationFrame(drawFrame);
+      }
+    };
+
+    drawFrame(performance.now());
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [result, strategy, selectedRouteId, view, tileTick]);
 
   return (
     <div className="relative w-full h-[290px] rounded-lg overflow-hidden border border-[#d8cfbd] bg-[#ebe5d9]">
@@ -358,7 +366,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
   const [enforceQd23Ban, setEnforceQd23Ban] = useState<boolean>(true);
   const [enableBackhaul, setEnableBackhaul] = useState<boolean>(true);
   const [statusBanner, setStatusBanner] = useState<string>('');
-  const [showLoginGate, setShowLoginGate] = useState<boolean>(true);
+  const [showLoginGate, setShowLoginGate] = useState<boolean>(
+    pathname === '/dashboard' || pathname === '/app' || pathname === '/portal'
+  );
   const [loginLoadingRole, setLoginLoadingRole] = useState<AppRole | null>(null);
   const [authSessionInfo, setAuthSessionInfo] = useState<{
     token: string;
@@ -1194,7 +1204,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
             {userTab === 'overview' && (
               <div className="space-y-5">
                 {/* Page Title Row */}
-                <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 sm:p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-3 sm:gap-4">
                   <div>
                     <h1 className="text-[22px] font-bold text-[#111827] tracking-tight">
                       Bảng Điều Khiển Đội Xe &amp; Tiến Độ Hoàn Thành Đơn Hàng
@@ -2269,20 +2279,20 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
 
                   {/* 2 DISTINCT DRIVER NAVIGATION MODES: MIDDLE-MILE TRUCK vs LAST-MILE CAR ($0 COST TIER) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-[#e5e7eb]">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 pt-2 border-t border-[#e5e7eb]">
                     <button
                       type="button"
                       onClick={() => setDriverMileTier('middle_mile_truck')}
-                      className={`text-left p-3.5 rounded-xl border transition-all cursor-pointer ${
+                      className={`text-left p-2.5 sm:p-3.5 rounded-xl border transition-all cursor-pointer ${
                         driverMileTier === 'middle_mile_truck'
                           ? 'bg-[#14532d] text-white border-[#14532d] shadow-sm'
                           : 'bg-[#f9fafb] text-[#111827] border-[#d1d5db] hover:bg-white'
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-extrabold uppercase tracking-wide flex items-center gap-1.5">
-                          <Truck className="w-4 h-4" />
-                          1. Chặng Giữa (Middle-Mile) · Dẫn Đường Xe Tải (&gt;500kg)
+                      <div className="flex flex-wrap items-center justify-between gap-1.5">
+                        <span className="text-[11px] sm:text-xs font-extrabold uppercase tracking-wide flex items-center gap-1.5">
+                          <Truck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                          <span>1. Chặng Giữa (&gt;500kg) · Bản Đồ Xe Tải</span>
                         </span>
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -2291,11 +2301,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               : 'bg-[#e5e7eb] text-[#374151]'
                           }`}
                         >
-                          Open-Source In-App + GPX ($0)
+                          OpenTruck + GPX ($0)
                         </span>
                       </div>
                       <p
-                        className={`text-[11px] mt-1.5 leading-relaxed ${
+                        className={`hidden sm:block text-[11px] mt-1.5 leading-relaxed ${
                           driverMileTier === 'middle_mile_truck' ? 'text-emerald-100' : 'text-[#5f6368]'
                         }`}
                       >
@@ -2306,16 +2316,16 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <button
                       type="button"
                       onClick={() => setDriverMileTier('last_mile_car')}
-                      className={`text-left p-3.5 rounded-xl border transition-all cursor-pointer ${
+                      className={`text-left p-2.5 sm:p-3.5 rounded-xl border transition-all cursor-pointer ${
                         driverMileTier === 'last_mile_car'
                           ? 'bg-[#1f3a5f] text-white border-[#1f3a5f] shadow-sm'
                           : 'bg-[#f9fafb] text-[#111827] border-[#d1d5db] hover:bg-white'
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-extrabold uppercase tracking-wide flex items-center gap-1.5">
-                          <Navigation className="w-4 h-4" />
-                          2. Chặng Cuối (Last-Mile) · Ô Tô Con / Xe Van (≤500kg)
+                      <div className="flex flex-wrap items-center justify-between gap-1.5">
+                        <span className="text-[11px] sm:text-xs font-extrabold uppercase tracking-wide flex items-center gap-1.5">
+                          <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                          <span>2. Chặng Cuối (≤500kg) · Ô Tô / Xe Van</span>
                         </span>
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -2324,11 +2334,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               : 'bg-[#e5e7eb] text-[#374151]'
                           }`}
                         >
-                          EcoMiles Waypoints + Google Maps ($0)
+                          Waypoints + Google Maps ($0)
                         </span>
                       </div>
                       <p
-                        className={`text-[11px] mt-1.5 leading-relaxed ${
+                        className={`hidden sm:block text-[11px] mt-1.5 leading-relaxed ${
                           driverMileTier === 'last_mile_car' ? 'text-blue-100' : 'text-[#5f6368]'
                         }`}
                       >
