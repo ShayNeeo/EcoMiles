@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import {
   UploadCloud,
   Download,
@@ -341,6 +342,65 @@ export function EvsimDualSimulator({
   const [showColumnModal, setShowColumnModal] = useState<boolean>(false);
   const [columnInspection, setColumnInspection] = useState<ColumnMappingInspection[]>([]);
   const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
+  const [evsimLightboxIdx, setEvsimLightboxIdx] = useState<number | null>(null);
+  const EVSIM_HARDWARE_MOCKUP_ASSETS = [
+    {
+      id: '00_clean',
+      shortLabel: 'Studio 7 Thiết Bị',
+      title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
+      spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
+      src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    },
+    {
+      id: '24_zfold',
+      shortLabel: 'Galaxy Z Fold (Cabin /maps)',
+      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+      spec: '2160×1856 · Buồng lái rảnh tay · Né vùng cấm QĐ 23/2018',
+      src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    },
+    {
+      id: '23_duo',
+      shortLabel: 'iPhone Duo (Gập Đôi)',
+      title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+      spec: '2420×1080 · Trái: Danh sách đơn (/driver) · Phải: Dẫn đường (/maps)',
+      src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    },
+    {
+      id: '21_iphone18',
+      shortLabel: 'iPhone 18 Pro Max (Nắng Gắt)',
+      title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+      spec: '2868×1320 · Chặng giữa (>500kg) & ghép đơn chiều về (2.7% chạy rỗng)',
+      src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    },
+    {
+      id: '22_s26',
+      shortLabel: 'Galaxy S26 Ultra (Waypoints)',
+      title: 'Samsung Galaxy S26 Ultra · Dẫn Đường Trực Tiếp & Waypoints ($0)',
+      spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+      src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    },
+    {
+      id: '25_ipad',
+      shortLabel: 'iPad Pro M4 (Taplo Kho)',
+      title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+      spec: '2752×2064 · Taplo kho bãi · Điều phối cảm ứng',
+      src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    },
+    {
+      id: '26_macbook',
+      shortLabel: 'MacBook Pro 16" (TMS)',
+      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+      spec: '3456×2234 · Điều phối B2B · 120 đơn / 7 tuyến ALNS',
+      src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    },
+    {
+      id: '27_xps',
+      shortLabel: 'Windows 11 XPS 16 (EVSIM)',
+      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+      spec: '3840×2400 · Đối chứng kép 374.4 km vs 243.7 km (-34.9%)',
+      src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    },
+  ] as const;
   const [uploadNotice, setUploadNotice] = useState<string>('');
   const [viewTransform, setViewTransform] = useState<{ zoom: number; panX: number; panY: number }>({
     zoom: 1,
@@ -1083,7 +1143,8 @@ export function EvsimDualSimulator({
               <img
                 src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                 alt="EcoMiles 7-Device Studio Stage"
-                className="h-12 sm:h-14 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0"
+                onClick={() => setEvsimLightboxIdx(0)}
+                className="h-12 sm:h-14 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
               />
               <div>
                 <div className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#d6f65a]">
@@ -1281,9 +1342,15 @@ export function EvsimDualSimulator({
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-1.5 text-[10px]">
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded font-bold bg-[#e8f0fb] text-[#1971c2] border border-[#c9d6e8]/60 truncate">
-                          {pairedDevice}
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setEvsimLightboxIdx((rIdx % 7) + 1)}
+                          title={`Phóng to mockup 2.4K: ${pairedDevice}`}
+                          className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold bg-[#e8f0fb] hover:bg-[#d0e2ff] text-[#1971c2] border border-[#c9d6e8]/60 truncate cursor-pointer transition-colors"
+                        >
+                          <span>{pairedDevice}</span>
+                          <span className="text-[9px] opacity-75">🔍</span>
+                        </button>
                         <span className="text-[#6b6f78] shrink-0 font-medium">
                           {nonDepotCount} điểm ·{' '}
                           {route.ban_conflicts > 0 ? (
@@ -1587,6 +1654,90 @@ export function EvsimDualSimulator({
           </div>
         </div>
       )}
+      {evsimLightboxIdx !== null &&
+        typeof document !== 'undefined' &&
+        (() => {
+          const total = EVSIM_HARDWARE_MOCKUP_ASSETS.length;
+          const safeIdx = ((evsimLightboxIdx % total) + total) % total;
+          const activeAsset = EVSIM_HARDWARE_MOCKUP_ASSETS[safeIdx];
+          return createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={activeAsset.title}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setEvsimLightboxIdx(null)}
+            >
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-[#d6f65a]/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-[#d6f65a] truncate">
+                      [{safeIdx + 1}/{total}] {activeAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setEvsimLightboxIdx((safeIdx - 1 + total) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEvsimLightboxIdx((safeIdx + 1) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={activeAsset.src}
+                      download
+                      className="px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
+                    >
+                      Tải PNG 2.4K
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setEvsimLightboxIdx(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeAsset.src}
+                    alt={activeAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {EVSIM_HARDWARE_MOCKUP_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setEvsimLightboxIdx(idx)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-[#d6f65a] text-slate-950 border-[#d6f65a]'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>,
+            document.body
+          );
+        })()}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArrowUpRight,
   Check,
@@ -62,11 +63,74 @@ interface WorkflowStepSpec {
   outcomes: string[];
 }
 
+const HARDWARE_EXECUTION_MOCKUPS: Record<
+  string,
+  { file: string; title: string; resolution: string; spec: string; liveHref: string; liveCta: string }
+> = {
+  'MacBook Pro 16"': {
+    file: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
+    resolution: '3456 × 2234 (Liquid Retina XDR)',
+    spec: '120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
+    liveHref: '/dashboard/',
+    liveCta: 'Mở /dashboard',
+  },
+  'Windows 11 XPS 16': {
+    file: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM',
+    resolution: '3840 × 2400 (4K OLED)',
+    spec: 'Đối chứng kép 374.4 km vs 243.7 km (-34.9%)',
+    liveHref: '/benchmark/',
+    liveCta: 'Mở /benchmark',
+  },
+  'Galaxy Z Fold': {
+    file: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+    resolution: '2160 × 1856 (Dynamic AMOLED 2X)',
+    spec: 'Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
+    liveCta: 'Mở /maps Live',
+  },
+  'iPad Pro M4': {
+    file: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    resolution: '2752 × 2064 (Ultra Retina XDR)',
+    spec: 'Quản lý bến xuất & ghép đơn chiều về (2.7% rỗng)',
+    liveHref: '/dashboard/',
+    liveCta: 'Mở /dashboard',
+  },
+  'iPhone Duo': {
+    file: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+    resolution: '2420 × 1080 (Dual Mobile OLED)',
+    spec: 'Màn 1: Danh sách đơn (/driver) · Màn 2: Dẫn đường (/maps)',
+    liveHref: '/driver/',
+    liveCta: 'Mở /driver',
+  },
+  'iPhone 18 Pro Max': {
+    file: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    resolution: '2868 × 1320 (Super Retina XDR)',
+    spec: 'Giao hàng 1-chạm & ghép đơn chiều về',
+    liveHref: '/driver/',
+    liveCta: 'Mở /driver',
+  },
+  'Galaxy S26 Ultra': {
+    file: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    title: 'Samsung Galaxy S26 Ultra · Dẫn Đường & Waypoints ($0 API)',
+    resolution: '3120 × 1440 (Dynamic AMOLED 2X 120Hz)',
+    spec: 'Waypoints + Google Maps Ô tô miễn phí ($0)',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
+    liveCta: 'Mở /maps Live',
+  },
+};
+
 export const WorkflowShowcase: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
+  const [activeMockupDevice, setActiveMockupDevice] = useState<string | null>(null);
   const [progress, setProgress] = useState<number>(0);
 
   // Auto-Play 8-Step Tour timer (4.5s per step with 50ms smooth ticker)
@@ -446,16 +510,19 @@ export const WorkflowShowcase: React.FC = () => {
                   ].map((device) => {
                     const isActiveDevice = current.devices.includes(device);
                     return (
-                      <span
+                      <button
                         key={device}
-                        className={`px-2 py-0.5 rounded-full text-[10.5px] font-semibold border transition-colors ${
+                        type="button"
+                        onClick={() => setActiveMockupDevice(device)}
+                        title={`Xem ảnh phần cứng 2.4K: ${device}`}
+                        className={`px-2 py-0.5 rounded-full text-[10.5px] font-semibold border transition-colors cursor-pointer ${
                           isActiveDevice
-                            ? 'bg-ecomiles-lime/15 border-ecomiles-lime/50 text-ecomiles-lime shadow-sm'
-                            : 'bg-slate-950/50 border-white/5 text-slate-500'
+                            ? 'bg-ecomiles-lime/15 hover:bg-ecomiles-lime/25 border-ecomiles-lime/50 text-ecomiles-lime shadow-sm'
+                            : 'bg-slate-950/50 hover:bg-slate-900 border-white/5 hover:border-white/20 text-slate-400 hover:text-white'
                         }`}
                       >
-                        {isActiveDevice ? '● ' : ''}{device}
-                      </span>
+                        {isActiveDevice ? '● ' : ''}{device} 🔍
+                      </button>
                     );
                   })}
                 </div>
@@ -628,6 +695,58 @@ export const WorkflowShowcase: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      {activeMockupDevice &&
+        HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice] &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].title}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setActiveMockupDevice(null)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].title}
+                  </div>
+                  <div className="text-[11px] text-slate-300 truncate">
+                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].resolution} ·{' '}
+                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].spec}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].liveHref}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                  >
+                    {HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].liveCta} ↗
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setActiveMockupDevice(null)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].file}
+                  alt={HARDWARE_EXECUTION_MOCKUPS[activeMockupDevice].title}
+                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 };
