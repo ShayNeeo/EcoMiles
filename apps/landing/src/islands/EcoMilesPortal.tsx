@@ -1611,19 +1611,27 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                     <div className="font-bold text-[#111827]">{r.plate}</div>
                                     <div className="text-[11.5px] text-[#5f6368]">{driverName}</div>
                                     <div className="mt-0.5">
-                                      <span className="inline-block px-1.5 py-0.5 rounded bg-[#e8f0fb] text-[#1f3a5f] text-[10px] font-bold">
-                                        {
-                                          [
-                                            'iPhone Duo Gập Đôi',
-                                            'Samsung Galaxy Z Fold',
-                                            'iPhone 18 Pro Max',
-                                            'Samsung Galaxy S26 Ultra',
-                                            'iPad Pro M4',
-                                            'MacBook Pro 16"',
-                                            'Windows 11 XPS 16',
-                                          ][idx % 7]
-                                        }
-                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => setPortalLightboxIdx([5, 3, 6, 7, 4, 1, 2][idx % 7])}
+                                        title="Xem ảnh thực tế thiết bị 2.4K"
+                                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#e8f0fb] hover:bg-[#dbeafe] text-[#1f3a5f] border border-[#bfdbfe] text-[10px] font-bold cursor-pointer transition-colors"
+                                      >
+                                        <span>
+                                          {
+                                            [
+                                              'iPhone Duo Gập Đôi',
+                                              'Samsung Galaxy Z Fold',
+                                              'iPhone 18 Pro Max',
+                                              'Samsung Galaxy S26 Ultra',
+                                              'iPad Pro M4',
+                                              'MacBook Pro 16"',
+                                              'Windows 11 XPS 16',
+                                            ][idx % 7]
+                                          }
+                                        </span>
+                                        <span className="text-[9px] opacity-75">🔍</span>
+                                      </button>
                                     </div>
                                   </div>
                                 </div>
@@ -1804,16 +1812,21 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <img
                       src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                       alt="Đồng Bộ 7 Thiết Bị Thực Nghiệm EVSIM"
-                      className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0"
+                      onClick={() => setPortalLightboxIdx(0)}
+                      className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
                     />
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-[11.5px] font-bold text-[#d6f65a] uppercase tracking-wide">
                           Môi Trường Đối Chứng Thuật Toán EVSIM Trên 7 Thiết Bị Phần Cứng
                         </span>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                          Windows 11 XPS 16 &amp; MacBook Pro 16&quot; Dual-Engine
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setPortalLightboxIdx(0)}
+                          className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 cursor-pointer transition-colors"
+                        >
+                          🔍 Xem Mockup 2.4K
+                        </button>
                       </div>
                       <p className="text-[11.5px] text-slate-300 mt-0.5">
                         MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
@@ -2272,20 +2285,28 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             Tài xế: {DRIVER_NAMES[idx % DRIVER_NAMES.length]}
                           </div>
                           <div className="mt-1">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#e8f0fb] text-[#1f3a5f] border border-[#bfdbfe] text-[10.5px] font-bold">
-                              Thiết bị:{' '}
-                              {
-                                [
-                                  'iPhone Duo Gập Đôi',
-                                  'Samsung Galaxy Z Fold',
-                                  'iPhone 18 Pro Max',
-                                  'Samsung Galaxy S26 Ultra',
-                                  'iPad Pro M4',
-                                  'MacBook Pro 16"',
-                                  'Windows 11 XPS 16',
-                                ][idx % 7]
-                              }
-                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setPortalLightboxIdx([5, 3, 6, 7, 4, 1, 2][idx % 7])}
+                              title="Xem ảnh thực tế thiết bị 2.4K"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#e8f0fb] hover:bg-[#dbeafe] text-[#1f3a5f] border border-[#bfdbfe] text-[10.5px] font-bold cursor-pointer transition-colors"
+                            >
+                              <span>
+                                Thiết bị:{' '}
+                                {
+                                  [
+                                    'iPhone Duo Gập Đôi',
+                                    'Samsung Galaxy Z Fold',
+                                    'iPhone 18 Pro Max',
+                                    'Samsung Galaxy S26 Ultra',
+                                    'iPad Pro M4',
+                                    'MacBook Pro 16"',
+                                    'Windows 11 XPS 16',
+                                  ][idx % 7]
+                                }
+                              </span>
+                              <span className="text-[9.5px] opacity-75">🔍</span>
+                            </button>
                           </div>
                         </div>
                         <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#04250e] text-xs font-bold">
@@ -2356,7 +2377,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <img
                         src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                         alt="EcoMiles 7-Device ESG Telemetry Pipeline"
-                        className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0"
+                        onClick={() => setPortalLightboxIdx(0)}
+                        className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0 cursor-zoom-in"
                       />
                       <div>
                         <span className="text-xs font-bold uppercase tracking-wider text-[#d6f65a] block">
@@ -2367,9 +2389,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         </span>
                       </div>
                     </div>
-                    <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
-                      7/7 Thiết Bị Đã Đồng Bộ
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setPortalLightboxIdx(0)}
+                      className="px-2.5 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] text-[11px] font-bold border border-[#d6f65a]/40 cursor-pointer transition-colors"
+                    >
+                      🔍 Xem Mockup 2.4K (7/7 Thiết Bị)
+                    </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                     <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-1">
@@ -2589,11 +2615,17 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       { name: 'iPhone Duo', policy: 'PIN 0000 + Che SĐT NĐ 13' },
                       { name: 'iPhone 18 Pro Max', policy: 'PIN 0000 + PoD Mã hóa' },
                       { name: 'Galaxy S26 Ultra', policy: 'GPS ẩn danh khách nhận' },
-                    ].map((ep) => (
-                      <div key={ep.name} className="p-2 rounded-lg bg-white/5 border border-white/10">
-                        <div className="font-bold text-white truncate">{ep.name}</div>
+                    ].map((ep, idx) => (
+                      <button
+                        key={ep.name}
+                        type="button"
+                        onClick={() => setPortalLightboxIdx(idx + 1)}
+                        className="p-2 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-left cursor-pointer transition-colors"
+                        title="Nhấn để phóng to ảnh thiết bị 2.4K"
+                      >
+                        <div className="font-bold text-white truncate">{ep.name} 🔍</div>
                         <div className="text-[10px] text-emerald-300 mt-0.5 truncate">{ep.policy}</div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -2677,7 +2709,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 <img
                   src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                   alt="EcoMiles 7-Device Studio Stage"
-                  className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0"
+                  onClick={() => setPortalLightboxIdx(0)}
+                  className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0 cursor-zoom-in"
                 />
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#d6f65a] block">
@@ -2689,6 +2722,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => setPortalLightboxIdx(0)}
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 font-extrabold cursor-pointer transition-colors"
+                >
+                  🔍 Xem Mockup 2.4K
+                </button>
                 <a
                   href="/#showcase"
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-bold transition-colors"
@@ -3486,12 +3526,26 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       route: '/maps',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
-                  ].map((ep) => (
-                    <tr key={ep.device} className="hover:bg-[#f9fafb]">
-                      <td className="py-2 px-3 font-bold text-[#111827]">{ep.device}</td>
+                  ].map((ep, idx) => (
+                    <tr
+                      key={ep.device}
+                      onClick={() => setPortalLightboxIdx(idx + 1)}
+                      title="Nhấn để phóng to ảnh thiết bị 2.4K"
+                      className="hover:bg-[#f0f7ff] cursor-pointer transition-colors"
+                    >
+                      <td className="py-2 px-3 font-bold text-[#111827]">
+                        <span className="inline-flex items-center gap-1.5 text-[#1971c2] hover:underline">
+                          <span>{ep.device}</span>
+                          <span className="text-[10px]">🔍</span>
+                        </span>
+                      </td>
                       <td className="py-2 px-3 text-[#5f6368]">{ep.role}</td>
                       <td className="py-2 px-3 font-mono font-bold text-[#1971c2]">
-                        <a href={ep.route} className="hover:underline">
+                        <a
+                          href={ep.route}
+                          onClick={(e) => e.stopPropagation()}
+                          className="hover:underline"
+                        >
                           {ep.route}
                         </a>
                       </td>
