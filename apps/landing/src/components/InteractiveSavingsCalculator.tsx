@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -16,6 +17,13 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
   const [dailyKm, setDailyKm] = useState<number>(85);
   const [fuelConsumption, setFuelConsumption] = useState<number>(11); // L/100km
   const [savingsRate, setSavingsRate] = useState<number>(25); // %
+  const [calcLightboxAsset, setCalcLightboxAsset] = useState<{
+    src: string;
+    title: string;
+    spec: string;
+    href: string;
+    cta: string;
+  } | null>(null);
   const moneyNumRef = useRef<HTMLSpanElement | null>(null);
   const litersNumRef = useRef<HTMLSpanElement | null>(null);
   const co2NumRef = useRef<HTMLSpanElement | null>(null);
@@ -374,7 +382,16 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     <img
                       src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                       alt="EcoMiles 7-Device Studio Stage"
-                      className="h-8 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0"
+                      onClick={() =>
+                        setCalcLightboxAsset({
+                          src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+                          title: `Hệ Sinh Thái 7 Thiết Bị Đồng Bộ (${fleetSize} Xe · ${totalHardwareUnits} Thiết Bị)`,
+                          spec: '2400×1120 · Đồng bộ thời gian thực <50ms · $0 Map API',
+                          href: '/dashboard/',
+                          cta: 'Mở Trung Tâm B2B (/dashboard)',
+                        })
+                      }
+                      className="h-8 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0 cursor-zoom-in"
                     />
                     <span className="text-[11px] font-extrabold text-white truncate">
                       Cấu Hình 7 Thiết Bị ({fleetSize} Xe)
@@ -385,22 +402,70 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[10.5px]">
-                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
-                    <div className="font-bold text-ecomiles-lime">{dispatcherUnits} Trạm Điều Phối</div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCalcLightboxAsset({
+                        src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+                        title: `${dispatcherUnits} Trạm Điều Phối · MacBook Pro 16" & Windows 11 XPS 16`,
+                        spec: '3456×2234 · Điều phối B2B TMS & Đối chứng EVSIM',
+                        href: '/dashboard/',
+                        cta: 'Mở /dashboard',
+                      })
+                    }
+                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-ecomiles-lime/40 text-left cursor-pointer transition-colors"
+                  >
+                    <div className="font-bold text-ecomiles-lime">{dispatcherUnits} Trạm Điều Phối 🔍</div>
                     <div className="text-slate-400 truncate">MacBook Pro 16&quot; · XPS 16</div>
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
-                    <div className="font-bold text-emerald-300">{warehouseTablets} Tablet Kho Bãi</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCalcLightboxAsset({
+                        src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+                        title: `${warehouseTablets} Tablet Kho Bãi · iPad Pro M4 (Taplo 13")`,
+                        spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+                        href: '/dashboard/',
+                        cta: 'Mở /dashboard',
+                      })
+                    }
+                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-emerald-400/40 text-left cursor-pointer transition-colors"
+                  >
+                    <div className="font-bold text-emerald-300">{warehouseTablets} Tablet Kho Bãi 🔍</div>
                     <div className="text-slate-400 truncate">iPad Pro M4 (Taplo 13&quot;)</div>
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
-                    <div className="font-bold text-cyan-300">{cabinFoldUnits} Màn Hình Buồng Lái</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCalcLightboxAsset({
+                        src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+                        title: `${cabinFoldUnits} Màn Hình Buồng Lái · Samsung Galaxy Z Fold`,
+                        spec: '2160×1856 · Bản đồ xe tải mở OpenTruck (/maps)',
+                        href: '/maps/?vehicle=0&mode=navigate',
+                        cta: 'Mở /maps Live',
+                      })
+                    }
+                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-cyan-400/40 text-left cursor-pointer transition-colors"
+                  >
+                    <div className="font-bold text-cyan-300">{cabinFoldUnits} Màn Hình Buồng Lái 🔍</div>
                     <div className="text-slate-400 truncate">Galaxy Z Fold (/maps)</div>
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
-                    <div className="font-bold text-white">{driverHandheldUnits} Máy Tài Xế Giao Điểm</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCalcLightboxAsset({
+                        src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+                        title: `${driverHandheldUnits} Máy Tài Xế Giao Điểm · iPhone Duo, 18 Pro Max & S26 Ultra`,
+                        spec: '2420×1080 · App Tài Xế 2 Chặng ($0 Map API)',
+                        href: '/driver/',
+                        cta: 'Mở /driver',
+                      })
+                    }
+                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-white/25 text-left cursor-pointer transition-colors"
+                  >
+                    <div className="font-bold text-white">{driverHandheldUnits} Máy Tài Xế Giao Điểm 🔍</div>
                     <div className="text-slate-400 truncate">iPhone Duo · 18 Pro Max · S26</div>
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -416,6 +481,54 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
           </div>
         </div>
       </div>
+      {calcLightboxAsset &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={calcLightboxAsset.title}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setCalcLightboxAsset(null)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    {calcLightboxAsset.title}
+                  </div>
+                  <div className="text-[11px] text-slate-300 truncate">{calcLightboxAsset.spec}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={calcLightboxAsset.href}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                  >
+                    {calcLightboxAsset.cta} ↗
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setCalcLightboxAsset(null)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={calcLightboxAsset.src}
+                  alt={calcLightboxAsset.title}
+                  className="max-h-[74vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 };

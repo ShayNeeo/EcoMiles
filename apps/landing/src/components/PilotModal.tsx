@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle2, ShieldCheck, Sparkles, Building2, Phone, Mail, User, Truck, ClipboardList } from 'lucide-react';
 
@@ -10,6 +11,7 @@ interface PilotModalProps {
 
 export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initialInterest }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [isPilotBannerZoomed, setIsPilotBannerZoomed] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -45,7 +47,8 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
   if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
+    <>
+      <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         <motion.div
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -82,20 +85,30 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
               </p>
 
               {/* 7-Device Studio Cover Banner Strip inside Pilot Modal */}
-              <div className="mb-4 p-2.5 rounded-2xl bg-slate-950/90 border border-white/10 flex items-center gap-3">
-                <img
-                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  alt="EcoMiles 7-Device Flagship Studio Cover"
-                  className="h-10 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0"
-                />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-ecomiles-lime uppercase tracking-wider truncate">
-                    Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">
-                    MacBook Pro 16&quot; · Windows XPS 16 · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
+              <div className="mb-4 p-2.5 rounded-2xl bg-slate-950/90 border border-white/10 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <img
+                    src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                    alt="EcoMiles 7-Device Flagship Studio Cover"
+                    onClick={() => setIsPilotBannerZoomed(true)}
+                    className="h-10 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
+                  />
+                  <div className="min-w-0">
+                    <div className="text-[10.5px] font-black text-ecomiles-lime uppercase tracking-wider truncate">
+                      Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực
+                    </div>
+                    <div className="text-[10px] text-slate-400 truncate">
+                      MacBook Pro 16&quot; · Windows XPS 16 · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
+                    </div>
                   </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setIsPilotBannerZoomed(true)}
+                  className="px-2 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 text-[10px] font-extrabold shrink-0 cursor-pointer transition-colors"
+                >
+                  🔍 2.4K
+                </button>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -307,7 +320,50 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
             </div>
           )}
         </motion.div>
-      </div>
-    </AnimatePresence>
+        </div>
+      </AnimatePresence>
+      {isPilotBannerZoomed &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Hệ Sinh Thái 7 Thiết Bị Studio 2.4K"
+            className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setIsPilotBannerZoomed(false)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)
+                  </div>
+                  <div className="text-[11px] text-slate-300 truncate">
+                    MacBook Pro 16&quot; · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · S26 Ultra
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsPilotBannerZoomed(false)}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                >
+                  ✕ Đóng
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  alt="EcoMiles 7-Device Flagship Studio Cover"
+                  className="max-h-[74vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
+    </>
   );
 };
