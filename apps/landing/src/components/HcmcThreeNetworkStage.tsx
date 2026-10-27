@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { ShieldCheck, Truck, Zap } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck, Truck, Zap } from 'lucide-react';
 
 interface HcmcNodeSpec {
   id: string;
@@ -12,6 +13,8 @@ interface HcmcNodeSpec {
   kind: 'depot' | 'hub' | 'ban';
   deviceLabel: string;
   stats: string;
+  mockupSrc: string;
+  liveHref: string;
 }
 
 const HCMC_3D_NODES: HcmcNodeSpec[] = [
@@ -24,6 +27,8 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     kind: 'depot',
     deviceLabel: 'MacBook Pro 16" & Windows XPS 16',
     stats: '120 đơn · 7 tuyến ALNS · Xuất phát 05:30',
+    mockupSrc: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    liveHref: '/dashboard/',
   },
   {
     id: 'govap',
@@ -34,6 +39,8 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     kind: 'hub',
     deviceLabel: 'iPhone 18 Pro Max',
     stats: '18 đơn · Bắc Sài Gòn · ETA 06:45',
+    mockupSrc: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    liveHref: '/driver/',
   },
   {
     id: 'binhthanh',
@@ -42,8 +49,10 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     x: 0.9,
     z: -0.9,
     kind: 'hub',
-    deviceLabel: 'iPhone Duo Dual-Screen',
+    deviceLabel: 'Samsung Galaxy Z Fold',
     stats: 'Cầu 13T · Chuyển tải Đông-Bắc · 100% đúng tải',
+    mockupSrc: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
   },
   {
     id: 'thuduc',
@@ -52,8 +61,10 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     x: 2.4,
     z: -1.4,
     kind: 'hub',
-    deviceLabel: 'Samsung Galaxy Z Fold',
+    deviceLabel: 'iPhone Duo Dual-Screen',
     stats: '24 đơn · Xa Lộ Hà Nội · Ghép đơn chiều về',
+    mockupSrc: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    liveHref: '/driver/',
   },
   {
     id: 'quan7',
@@ -62,8 +73,10 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     x: 1.3,
     z: 1.9,
     kind: 'hub',
-    deviceLabel: 'iPad Pro M4',
+    deviceLabel: 'Samsung Galaxy S26 Ultra',
     stats: '19 đơn · Nam Sài Gòn · Phối hợp Cảng Hiệp Phước',
+    mockupSrc: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
   },
   {
     id: 'binhtan',
@@ -72,8 +85,10 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     x: -2.3,
     z: 1.5,
     kind: 'hub',
-    deviceLabel: 'Samsung Galaxy S26 Ultra',
+    deviceLabel: 'iPad Pro M4',
     stats: '22 đơn · Quốc Lộ 1A · Tải trọng 94.2%',
+    mockupSrc: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    liveHref: '/dashboard/',
   },
   {
     id: 'q1_ban',
@@ -84,6 +99,8 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
     kind: 'ban',
     deviceLabel: 'OpenTruck HUD · 0 Vi Phạm',
     stats: 'Khung cấm 06-09h & 16-20h · Định tuyến vòng 100%',
+    mockupSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
   },
 ];
 
@@ -136,6 +153,7 @@ export const HcmcThreeNetworkStage: React.FC = () => {
   const [isAutoHubTour, setIsAutoHubTour] = useState<boolean>(false);
   const [hoveredNode, setHoveredNode] = useState<HcmcNodeSpec | null>(null);
   const hoveredNodeRef = useRef<HcmcNodeSpec | null>(null);
+  const [isDeviceLightboxOpen, setIsDeviceLightboxOpen] = useState<boolean>(false);
 
   const focusHcmcNode = (node: HcmcNodeSpec) => {
     selectedNodeRef.current = node;
@@ -325,10 +343,28 @@ export const HcmcThreeNetworkStage: React.FC = () => {
 
     const nodeGeo = new THREE.CylinderGeometry(0.14, 0.18, 0.24, 24);
     const depotGeo = new THREE.BoxGeometry(0.34, 0.38, 0.34);
+    const beaconGeo = new THREE.CylinderGeometry(0.05, 0.13, 0.65, 24, 1, true);
+    const beaconMeshes: THREE.Mesh[] = [];
 
     HCMC_3D_NODES.forEach((n) => {
-      if (n.kind === 'ban') return;
       const isDepot = n.kind === 'depot';
+      const isBan = n.kind === 'ban';
+      const beaconColor = isBan ? 0xef4444 : isDepot ? 0xd6f65a : 0x34d399;
+
+      const beaconMat = new THREE.MeshBasicMaterial({
+        color: beaconColor,
+        transparent: true,
+        opacity: isDepot ? 0.42 : 0.24,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      });
+      const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
+      beaconMesh.position.set(n.x, isDepot ? 0.56 : 0.48, n.z);
+      beaconMesh.userData = { nodeSpec: n };
+      worldGroup.add(beaconMesh);
+      beaconMeshes.push(beaconMesh);
+
+      if (isBan) return;
       const mat = new THREE.MeshStandardMaterial({
         color: isDepot ? 0xd6f65a : 0x10b981,
         emissive: isDepot ? 0xd6f65a : 0x059669,
@@ -476,6 +512,21 @@ export const HcmcThreeNetworkStage: React.FC = () => {
         const nextScale = THREE.MathUtils.lerp(m.scale.x, isHov ? 1.24 : 1.0, 0.16);
         m.scale.setScalar(nextScale);
       });
+      beaconMeshes.forEach((beacon, idx) => {
+        const spec = beacon.userData.nodeSpec as HcmcNodeSpec | undefined;
+        const isSelected = spec && selectedNodeRef.current.id === spec.id;
+        const isHovered = spec && hoveredNodeRef.current?.id === spec.id;
+        const isHighlighted = Boolean(isSelected || isHovered);
+        const bMat = beacon.material as THREE.MeshBasicMaterial;
+        const pulse = prefersReducedMotion ? 0 : Math.sin(elapsed * 4.2 + idx * 0.9) * 0.08;
+        const targetOpacity = (isHovered ? 0.85 : isSelected ? 0.72 : 0.22) + pulse;
+        bMat.opacity = THREE.MathUtils.lerp(bMat.opacity, THREE.MathUtils.clamp(targetOpacity, 0.12, 0.96), 0.16);
+        const targetRadialScale = isHovered ? 1.38 : isSelected ? 1.22 : 1.0;
+        const targetHeightScale = isHighlighted ? 1.22 : 0.92;
+        beacon.scale.x = THREE.MathUtils.lerp(beacon.scale.x, targetRadialScale, 0.16);
+        beacon.scale.z = THREE.MathUtils.lerp(beacon.scale.z, targetRadialScale, 0.16);
+        beacon.scale.y = THREE.MathUtils.lerp(beacon.scale.y, targetHeightScale, 0.16);
+      });
       truckPucks.forEach((puck, idx) => {
         const cIdx = puck.userData.curveIdx as number;
         const offset = puck.userData.offset as number;
@@ -502,6 +553,7 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       container.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       gridHelper.dispose();
+      beaconGeo.dispose();
       worldGroup.traverse((obj) => {
         const mesh = obj as THREE.Mesh;
         if (mesh.isMesh) {
@@ -596,17 +648,29 @@ export const HcmcThreeNetworkStage: React.FC = () => {
               );
             })}
           </div>
-          <button
-            type="button"
-            onClick={() => setIsAutoHubTour((prev) => !prev)}
-            className={`px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border ${
-              isAutoHubTour
-                ? 'bg-emerald-400 text-slate-950 border-emerald-400'
-                : 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
-            }`}
-          >
-            {isAutoHubTour ? '⏸ Đang Quét' : '▶ Quét 7 Trạm'}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                setIsAutoHubTour(false);
+                setIsDeviceLightboxOpen(true);
+              }}
+              className="px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border bg-slate-950 text-ecomiles-lime border-ecomiles-lime/50 hover:bg-ecomiles-lime hover:text-slate-950"
+            >
+              🔍 Xem Thiết Bị 2.4K
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsAutoHubTour((prev) => !prev)}
+              className={`px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border ${
+                isAutoHubTour
+                  ? 'bg-emerald-400 text-slate-950 border-emerald-400'
+                  : 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
+              }`}
+            >
+              {isAutoHubTour ? '⏸ Đang Quét' : '▶ Quét 7 Trạm'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -639,6 +703,78 @@ export const HcmcThreeNetworkStage: React.FC = () => {
           </div>
         </div>
       </div>
+      {isDeviceLightboxOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Thiết bị 2.4K tại ${selectedNode.label}`}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setIsDeviceLightboxOpen(false)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    {selectedNode.label} · {selectedNode.deviceLabel}
+                  </div>
+                  <div className="text-[11px] text-slate-300 truncate">{selectedNode.stats}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const idx = HCMC_3D_NODES.findIndex((n) => n.id === selectedNode.id);
+                      const prev = HCMC_3D_NODES[(idx - 1 + HCMC_3D_NODES.length) % HCMC_3D_NODES.length];
+                      if (prev) focusHcmcNode(prev);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                  >
+                    ‹ Trạm trước
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const idx = HCMC_3D_NODES.findIndex((n) => n.id === selectedNode.id);
+                      const next = HCMC_3D_NODES[(idx + 1) % HCMC_3D_NODES.length];
+                      if (next) focusHcmcNode(next);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                  >
+                    Trạm tiếp ›
+                  </button>
+                  <a
+                    href={selectedNode.liveHref}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
+                  >
+                    <span>Mở App ({selectedNode.liveHref})</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setIsDeviceLightboxOpen(false)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    aria-label="Đóng phóng to 2.4K"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={selectedNode.mockupSrc}
+                  alt={`${selectedNode.label} - ${selectedNode.deviceLabel}`}
+                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

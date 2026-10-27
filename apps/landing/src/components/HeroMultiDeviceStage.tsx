@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
 import { ArrowUpRight, Laptop, Smartphone, SplitSquareVertical, Tablet, X } from 'lucide-react';
 
@@ -89,6 +90,7 @@ const HERO_DEVICES: HeroDeviceSpec[] = [
 export const HeroMultiDeviceStage: React.FC = () => {
   const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]);
   const [inspectedDevice, setInspectedDevice] = useState<HeroDeviceSpec | null>(null);
+  const [fullscreenDevice, setFullscreenDevice] = useState<HeroDeviceSpec | null>(null);
   const [isPointerInside, setIsPointerInside] = useState<boolean>(false);
   const [isAutoSpotlight, setIsAutoSpotlight] = useState<boolean>(true);
   const shouldReduceMotion = useReducedMotion();
@@ -371,6 +373,14 @@ export const HeroMultiDeviceStage: React.FC = () => {
           >
             Phóng to màn hình
           </button>
+          <button
+            type="button"
+            onClick={() => setFullscreenDevice(hoveredDevice)}
+            className="px-2 py-0.5 rounded bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold text-[10px] cursor-pointer transition-colors"
+            title="Phóng to toàn màn hình 2.4K"
+          >
+            🔍 2.4K
+          </button>
           <a
             href={hoveredDevice.liveHref}
             className="font-extrabold text-white hover:text-ecomiles-lime flex items-center gap-1"
@@ -459,6 +469,16 @@ export const HeroMultiDeviceStage: React.FC = () => {
                 >
                   #showcase
                 </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFullscreenDevice(inspectedDevice);
+                    setInspectedDevice(null);
+                  }}
+                  className="px-2 py-1 rounded-lg bg-ecomiles-lime/20 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-bold text-[11px] cursor-pointer whitespace-nowrap transition-colors"
+                >
+                  🔍 Toàn Màn Hình 2.4K
+                </button>
                 <a
                   href={inspectedDevice.liveHref}
                   className="px-2.5 py-1 rounded-lg bg-ecomiles-lime text-slate-950 font-extrabold text-[11px] flex items-center gap-1 whitespace-nowrap"
@@ -486,6 +506,77 @@ export const HeroMultiDeviceStage: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {fullscreenDevice &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Chi tiết Mockup 2.4K ${fullscreenDevice.name}`}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setFullscreenDevice(null)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    {fullscreenDevice.name}
+                  </div>
+                  <div className="text-[11px] text-slate-300 truncate">{fullscreenDevice.roleLabel}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const idx = HERO_DEVICES.findIndex((d) => d.id === fullscreenDevice.id);
+                      setFullscreenDevice(HERO_DEVICES[(idx - 1 + HERO_DEVICES.length) % HERO_DEVICES.length]);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                  >
+                    ‹ Trước
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const idx = HERO_DEVICES.findIndex((d) => d.id === fullscreenDevice.id);
+                      setFullscreenDevice(HERO_DEVICES[(idx + 1) % HERO_DEVICES.length]);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                  >
+                    Tiếp ›
+                  </button>
+                  <a
+                    href={fullscreenDevice.liveHref}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
+                  >
+                    <span>{fullscreenDevice.liveText}</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setFullscreenDevice(null)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    aria-label="Đóng toàn màn hình"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={fullscreenDevice.imgSrc}
+                  alt={fullscreenDevice.name}
+                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };
