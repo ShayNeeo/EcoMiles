@@ -900,6 +900,50 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             </div>
                           </div>
                         </div>
+
+                        {/* 7-Device Pain-to-Solution Telemetry Strip */}
+                        <div className="rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-4 space-y-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
+                            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+                              7 Thiết Bị Giải Quyết Trực Tiếp Lãng Phí Đội Xe ({fleetSize} Xe)
+                            </span>
+                            <div className="flex flex-wrap gap-2 text-xs font-bold">
+                              <a href="/benchmark/" className="text-emerald-400 hover:underline">
+                                Đối Chứng EVSIM (/benchmark) ↗
+                              </a>
+                              <a href="/dashboard/" className="text-cyan-400 hover:underline">
+                                Bàn Điều Hành (/dashboard) ↗
+                              </a>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                            {[
+                              { name: 'MacBook Pro 16"', file: '26_mockup_macbook_pro_16_b2b_tms.png', role: 'Xóa Bỏ Excel' },
+                              { name: 'Windows 11 XPS 16', file: '27_mockup_windows_xps_16_evsim_dual.png', role: 'Đo Lường -35% Km' },
+                              { name: 'Galaxy Z Fold', file: '24_mockup_samsung_zfold_tablet_cockpit.png', role: 'Né Cấm Tải QĐ 23' },
+                              { name: 'iPad Pro M4', file: '25_mockup_ipad_pro_tablet_tms.png', role: 'Ghép Đơn Tại Kho' },
+                              { name: 'iPhone Duo', file: '23_mockup_iphone_duo_dual_screen.png', role: '2 Màn Hình Ghép Về' },
+                              { name: 'iPhone 18 Pro Max', file: '21_mockup_iphone_18_pro_max_driver.png', role: 'Chống Chạy Rỗng' },
+                              { name: 'Galaxy S26 Ultra', file: '22_mockup_samsung_s26_ultra_maps_live.png', role: 'Kiểm Toán CO₂ GLEC' },
+                            ].map((dev) => (
+                              <button
+                                key={dev.name}
+                                type="button"
+                                onClick={() => setLightboxAsset(dev.file)}
+                                className="group rounded-xl border border-white/10 bg-slate-900/90 p-2 text-left hover:border-emerald-400/50 transition-all cursor-zoom-in"
+                              >
+                                <img
+                                  src={`/pitch-deck-screenshots/${dev.file}`}
+                                  alt={dev.name}
+                                  className="w-full h-14 object-contain rounded-lg bg-slate-950 p-1"
+                                  loading="lazy"
+                                />
+                                <div className="text-[10px] font-bold text-white truncate mt-1.5">{dev.name}</div>
+                                <div className="text-[9.5px] text-emerald-400 truncate">{dev.role}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -1041,6 +1085,47 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             </p>
                           </div>
                         </div>
+
+                        {/* Founder-to-7-Device Ownership Matrix */}
+                        <div className="rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-4 space-y-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
+                            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+                              Năng Lực Thực Thi: 5 Thành Viên Vận Hành Hệ Sinh Thái 7 Thiết Bị
+                            </span>
+                            <div className="flex flex-wrap gap-2 text-xs font-bold">
+                              <a href="/dashboard/" className="text-emerald-400 hover:underline">/dashboard ↗</a>
+                              <a href="/driver/" className="text-cyan-400 hover:underline">/driver ↗</a>
+                              <a href="/portal/audit/" className="text-amber-400 hover:underline">/portal/audit ↗</a>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                            {[
+                              { name: 'MacBook Pro 16"', file: '26_mockup_macbook_pro_16_b2b_tms.png', role: 'Thu Thuỷ · B2B TMS' },
+                              { name: 'Windows 11 XPS 16', file: '27_mockup_windows_xps_16_evsim_dual.png', role: 'Quốc Thanh · VRPTW' },
+                              { name: 'Galaxy Z Fold', file: '24_mockup_samsung_zfold_tablet_cockpit.png', role: 'Quốc Thanh · /maps' },
+                              { name: 'iPad Pro M4', file: '25_mockup_ipad_pro_tablet_tms.png', role: 'Hồng Phúc · CFO ROI' },
+                              { name: 'iPhone Duo', file: '23_mockup_iphone_duo_dual_screen.png', role: 'Hoàng Ngân · E-Com' },
+                              { name: 'iPhone 18 Pro Max', file: '21_mockup_iphone_18_pro_max_driver.png', role: 'Quốc Thanh · PWA' },
+                              { name: 'Galaxy S26 Ultra', file: '22_mockup_samsung_s26_ultra_maps_live.png', role: 'Khánh Phương · ESG' },
+                            ].map((dev) => (
+                              <button
+                                key={dev.name}
+                                type="button"
+                                onClick={() => setLightboxAsset(dev.file)}
+                                className="group rounded-xl border border-white/10 bg-slate-900/90 p-2 text-left hover:border-emerald-400/50 transition-all cursor-zoom-in"
+                              >
+                                <img
+                                  src={`/pitch-deck-screenshots/${dev.file}`}
+                                  alt={dev.name}
+                                  className="w-full h-14 object-contain rounded-lg bg-slate-950 p-1"
+                                  loading="lazy"
+                                />
+                                <div className="text-[10px] font-bold text-white truncate mt-1.5">{dev.name}</div>
+                                <div className="text-[9.5px] text-emerald-400 truncate">{dev.role}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -1113,6 +1198,46 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 Thương mại hóa lượng CO2 cắt giảm được thành chứng chỉ carbon xanh phục vụ bù trừ phát thải Net Zero.
                               </p>
                             </div>
+                          </div>
+                        </div>
+
+                        {/* Dual-Transition 7-Device Infrastructure Strip */}
+                        <div className="rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-4 space-y-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
+                            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+                              Hạ Tầng Chuyển Đổi Kép (Số Hóa + Xanh Hóa) Trên 7 Thiết Bị (2026 - 2030)
+                            </span>
+                            <div className="flex flex-wrap gap-2 text-xs font-bold">
+                              <a href="/portal/audit/" className="text-emerald-400 hover:underline">Kiểm Toán NĐ 06 (/audit) ↗</a>
+                              <a href="/benchmark/" className="text-cyan-400 hover:underline">Mô Phỏng Net Zero (/benchmark) ↗</a>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                            {[
+                              { name: 'MacBook Pro 16"', file: '26_mockup_macbook_pro_16_b2b_tms.png', role: '2026 · Điều Phối SME' },
+                              { name: 'Windows 11 XPS 16', file: '27_mockup_windows_xps_16_evsim_dual.png', role: '2026 · Đối Chứng CO₂' },
+                              { name: 'Galaxy Z Fold', file: '24_mockup_samsung_zfold_tablet_cockpit.png', role: '2026 · Nội Đô Xanh' },
+                              { name: 'iPad Pro M4', file: '25_mockup_ipad_pro_tablet_tms.png', role: '2028 · Hub Liên Vùng' },
+                              { name: 'iPhone Duo', file: '23_mockup_iphone_duo_dual_screen.png', role: '2028 · Ghép Đơn Về' },
+                              { name: 'iPhone 18 Pro Max', file: '21_mockup_iphone_18_pro_max_driver.png', role: '2028 · Vận Tải Xanh' },
+                              { name: 'Galaxy S26 Ultra', file: '22_mockup_samsung_s26_ultra_maps_live.png', role: '2030 · Tín Chỉ Carbon' },
+                            ].map((dev) => (
+                              <button
+                                key={dev.name}
+                                type="button"
+                                onClick={() => setLightboxAsset(dev.file)}
+                                className="group rounded-xl border border-white/10 bg-slate-900/90 p-2 text-left hover:border-emerald-400/50 transition-all cursor-zoom-in"
+                              >
+                                <img
+                                  src={`/pitch-deck-screenshots/${dev.file}`}
+                                  alt={dev.name}
+                                  className="w-full h-14 object-contain rounded-lg bg-slate-950 p-1"
+                                  loading="lazy"
+                                />
+                                <div className="text-[10px] font-bold text-white truncate mt-1.5">{dev.name}</div>
+                                <div className="text-[9.5px] text-emerald-400 truncate">{dev.role}</div>
+                              </button>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -2046,6 +2171,46 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                               SDG 13: Hành Động Vì Khí Hậu
                             </span>
+                          </div>
+                        </div>
+
+                        {/* Human-Centric & SDG Impact Across All 7 Devices */}
+                        <div className="rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-4 space-y-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
+                            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+                              Trải Nghiệm Nhân Văn Cho Tài Xế &amp; Doanh Nghiệp Trên 7 Thiết Bị
+                            </span>
+                            <div className="flex flex-wrap gap-2 text-xs font-bold">
+                              <a href="/driver/" className="text-emerald-400 hover:underline">App Tài Xế (/driver) ↗</a>
+                              <a href="/maps/?vehicle=0&mode=navigate" className="text-cyan-400 hover:underline">Buồng Lái (/maps) ↗</a>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                            {[
+                              { name: 'MacBook Pro 16"', file: '26_mockup_macbook_pro_16_b2b_tms.png', role: 'SDG 9 · B2B TMS' },
+                              { name: 'Windows 11 XPS 16', file: '27_mockup_windows_xps_16_evsim_dual.png', role: 'SDG 13 · Giảm CO₂' },
+                              { name: 'Galaxy Z Fold', file: '24_mockup_samsung_zfold_tablet_cockpit.png', role: 'SDG 11 · Giảm Ùn Tắc' },
+                              { name: 'iPad Pro M4', file: '25_mockup_ipad_pro_tablet_tms.png', role: 'SDG 12 · Kho Xanh' },
+                              { name: 'iPhone Duo', file: '23_mockup_iphone_duo_dual_screen.png', role: 'Tan Ca Sớm 45 Phút' },
+                              { name: 'iPhone 18 Pro Max', file: '21_mockup_iphone_18_pro_max_driver.png', role: 'Chữ Lớn Chống Chói' },
+                              { name: 'Galaxy S26 Ultra', file: '22_mockup_samsung_s26_ultra_maps_live.png', role: 'Không Sợ Phạt QĐ 23' },
+                            ].map((dev) => (
+                              <button
+                                key={dev.name}
+                                type="button"
+                                onClick={() => setLightboxAsset(dev.file)}
+                                className="group rounded-xl border border-white/10 bg-slate-900/90 p-2 text-left hover:border-emerald-400/50 transition-all cursor-zoom-in"
+                              >
+                                <img
+                                  src={`/pitch-deck-screenshots/${dev.file}`}
+                                  alt={dev.name}
+                                  className="w-full h-14 object-contain rounded-lg bg-slate-950 p-1"
+                                  loading="lazy"
+                                />
+                                <div className="text-[10px] font-bold text-white truncate mt-1.5">{dev.name}</div>
+                                <div className="text-[9.5px] text-emerald-400 truncate">{dev.role}</div>
+                              </button>
+                            ))}
                           </div>
                         </div>
                       </div>

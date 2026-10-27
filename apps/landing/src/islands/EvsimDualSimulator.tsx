@@ -1237,6 +1237,67 @@ export function EvsimDualSimulator({
 
             {/* Bottom 72px Timeline Sparkline Canvas (canvas.chart) */}
             <canvas ref={panel.sparkRef} className="w-full h-[72px] block border-t border-[#d8cfbd]" />
+
+            {/* Per-Truck Route Breakdown with Paired 7-Device Hardware Badges */}
+            <div className="border-t border-[#d8cfbd] bg-[#fffdf8] p-2.5">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[11px] font-bold text-[#6b6f78] uppercase tracking-wider">
+                  Chi Tiết {panel.st.routes.length} Chuyến Xe &amp; 7 Thiết Bị Đồng Bộ
+                </span>
+                <span className="text-[10.5px] font-semibold text-[#1971c2]">
+                  {panel.isEco ? 'EcoALNS v2.1' : baseSt.name}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[156px] overflow-y-auto pr-1">
+                {panel.st.routes.map((route, rIdx) => {
+                  const pairedDevice = [
+                    'Galaxy Z Fold (Cabin /maps)',
+                    'iPhone Duo (Gập Đôi)',
+                    'iPhone 18 Pro Max (Nắng Gắt)',
+                    'Galaxy S26 Ultra (Waypoints)',
+                    'iPad Pro M4 (Taplo Kho)',
+                    'MacBook Pro 16" (TMS)',
+                    'Windows 11 XPS 16 (EVSIM)',
+                  ][rIdx % 7];
+                  const nonDepotCount = route.stops.filter((s) => s.kind !== 'depot').length;
+                  return (
+                    <div
+                      key={`${route.plate}-${rIdx}`}
+                      className="flex flex-col gap-1 p-2 rounded-lg bg-white border border-[#e3dcd0] text-[11px]"
+                    >
+                      <div className="flex items-center justify-between gap-1.5 min-w-0">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: route.color }}
+                          />
+                          <span className="font-bold text-[#2f3440]">Xe {rIdx + 1}</span>
+                          <span className="font-mono text-[10px] px-1 rounded bg-slate-100 text-slate-700 font-semibold">
+                            {route.plate}
+                          </span>
+                        </div>
+                        <span className="font-mono font-bold text-[#2f3440]">
+                          {route.km.toFixed(1)} km
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-1.5 text-[10px]">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded font-bold bg-[#e8f0fb] text-[#1971c2] border border-[#c9d6e8]/60 truncate">
+                          {pairedDevice}
+                        </span>
+                        <span className="text-[#6b6f78] shrink-0 font-medium">
+                          {nonDepotCount} điểm ·{' '}
+                          {route.ban_conflicts > 0 ? (
+                            <b className="text-[#e03131]">{route.ban_conflicts} lỗi QĐ23</b>
+                          ) : (
+                            <b className="text-[#2f9e44]">0 vi phạm</b>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </section>
         ))}
       </div>
