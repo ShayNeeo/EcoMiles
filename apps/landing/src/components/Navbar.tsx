@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { Leaf, Menu, X, ArrowRight, Calculator, LayoutDashboard } from 'lucide-react';
@@ -112,16 +113,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                   href={link.href}
                   onClick={(e) => handleSmoothNavClick(e, link.href, link.id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative whitespace-nowrap rounded-full px-2.5 py-2 text-xs font-semibold transition-all duration-300 xl:px-3 ${
+                  className={`relative whitespace-nowrap rounded-full px-2.5 py-2 text-xs font-semibold transition-colors duration-200 xl:px-3 ${
                     isActive
-                      ? 'bg-ecomiles-lime text-slate-950 font-bold shadow-md shadow-ecomiles-lime/20'
+                      ? 'text-slate-950 font-bold'
                       : 'text-slate-300 hover:text-ecomiles-lime hover:bg-white/5 active:bg-white/10'
                   }`}
                 >
-                  {link.name}
                   {isActive && (
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-ecomiles-lime shadow-[0_0_8px_#ffd400]" />
+                    <motion.span
+                      layoutId="navbarActiveSectionPill"
+                      transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                      className="absolute inset-0 rounded-full bg-ecomiles-lime shadow-md shadow-ecomiles-lime/20"
+                    />
                   )}
+                  <span className="relative z-10">{link.name}</span>
                 </a>
               );
             })}
@@ -131,6 +136,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
           <div className="hidden sm:flex items-center gap-2 sm:gap-2.5 shrink-0">
             <a
               href="#calculator"
+              onClick={(e) => handleSmoothNavClick(e, '#calculator', 'calculator')}
               className={`whitespace-nowrap px-3.5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                 activeSection === 'calculator'
                   ? 'bg-ecomiles-lime text-slate-950 shadow-md'

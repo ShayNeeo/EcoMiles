@@ -178,9 +178,13 @@ export const HeroMultiDeviceStage: React.FC = () => {
               type="button"
               onMouseEnter={() => setHoveredDevice(dev)}
               onClick={() => setInspectedDevice(dev)}
-              whileHover={{ y: -8, scale: 1.03, zIndex: 35 }}
+              animate={{
+                y: hoveredDevice.id === dev.id ? -6 : 0,
+                scale: hoveredDevice.id === dev.id ? 1.03 : 1,
+              }}
+              whileHover={{ y: -8, scale: 1.04, zIndex: 35 }}
               whileTap={{ scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 24 }}
               className="group relative text-center cursor-pointer focus:outline-none"
             >
               <div
@@ -220,9 +224,13 @@ export const HeroMultiDeviceStage: React.FC = () => {
                   type="button"
                   onMouseEnter={() => setHoveredDevice(dev)}
                   onClick={() => setInspectedDevice(dev)}
+                  animate={{
+                    y: hoveredDevice.id === dev.id ? -7 : 0,
+                    scale: hoveredDevice.id === dev.id ? 1.045 : 1,
+                  }}
                   whileHover={{ y: -10, scale: 1.07, zIndex: 40 }}
                   whileTap={{ scale: 0.97 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 24 }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 24 }}
                   className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
                 >
                   <img

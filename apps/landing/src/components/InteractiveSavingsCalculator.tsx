@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -287,6 +288,31 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   <div className="text-[11px] text-slate-400 mt-0.5">
                     Giảm mài mòn &amp; bảo trì xe
                   </div>
+                </div>
+              </div>
+
+              {/* Animated Before vs After Monthly Fuel & Distance Comparison Bar */}
+              <div className="mb-6 p-4 rounded-2xl bg-slate-900/75 border border-white/10 space-y-2.5 text-xs">
+                <div className="flex items-center justify-between text-[11px] font-bold">
+                  <span className="text-slate-400">Trước tối ưu ({totalMonthlyKm.toLocaleString('vi-VN')} km/tháng)</span>
+                  <span className="text-ecomiles-lime">
+                    Sau EcoMiles ({Math.round(totalMonthlyKm - kmSaved).toLocaleString('vi-VN')} km · -{savingsRate}%)
+                  </span>
+                </div>
+                <div className="h-3 w-full rounded-full bg-slate-800 overflow-hidden flex">
+                  <motion.div
+                    initial={false}
+                    animate={{ width: `${100 - savingsRate}%` }}
+                    transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+                    className="h-full bg-gradient-to-r from-emerald-500 to-ecomiles-lime rounded-l-full"
+                  />
+                  <motion.div
+                    initial={false}
+                    animate={{ width: `${savingsRate}%` }}
+                    transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+                    className="h-full bg-rose-500/35 border-l border-white/30"
+                    title={`Cắt giảm ${savingsRate}% quãng đường thừa`}
+                  />
                 </div>
               </div>
             </div>
