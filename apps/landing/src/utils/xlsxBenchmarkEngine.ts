@@ -775,55 +775,6 @@ function clockwiseLoopOrder(orders: UploadedOrder[]): UploadedOrder[] {
   return seq;
 }
 
-function twoOptOrder(orders: UploadedOrder[], weightAware = false): UploadedOrder[] {
-  const route = [...orders];
-  const n = route.length;
-  if (n < 4) return route;
-
-  const tourCost = (seq: UploadedOrder[]) => {
-    let lat = DEPOT.lat;
-    let lng = DEPOT.lng;
-    let remainingKg = seq.reduce((s, o) => s + o.kg, 0);
-    let cost = 0;
-    for (const o of seq) {
-      const d = roadKm(lat, lng, o.lat, o.lng);
-      // Load-dependent PRP physics: heavier early legs burn more fuel per km
-      const loadMultiplier = weightAware ? 1 + (remainingKg / 1500) * 0.18 : 1;
-      cost += d * loadMultiplier;
-      remainingKg -= o.kg;
-      lat = o.lat;
-      lng = o.lng;
-    }
-    cost += roadKm(lat, lng, DEPOT.lat, DEPOT.lng);
-    return cost;
-  };
-
-  let improved = true;
-  let iters = 0;
-  let current = tourCost(route);
-  while (improved && iters < 120) {
-    improved = false;
-    iters++;
-    for (let i = 0; i < n - 1; i++) {
-      for (let k = i + 2; k < n; k++) {
-        const candidate = [
-          ...route.slice(0, i + 1),
-          ...route.slice(i + 1, k + 1).reverse(),
-          ...route.slice(k + 1),
-        ];
-        const c = tourCost(candidate);
-        if (c < current - 1e-6) {
-          route.splice(0, route.length, ...candidate);
-          current = c;
-          improved = true;
-          break;
-        }
-      }
-      if (improved) break;
-    }
-  }
-  return route;
-}
 
 function summarizeStrategy(
   id: StrategySummary['id'],

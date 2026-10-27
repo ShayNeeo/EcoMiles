@@ -83,6 +83,7 @@ export interface PortalProps {
 
 type UserSidebarTab =
   | 'overview'
+  | 'evsim_compare'
   | 'routing'
   | 'orders_schema'
   | 'fleet_backhaul'
@@ -553,6 +554,12 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       icon: <LayoutDashboard className="w-4 h-4" />,
     },
     {
+      id: 'evsim_compare',
+      label: 'Đối chứng 2 Bên (EVSIM)',
+      sublabel: 'So sánh Baseline vs. EcoMiles',
+      icon: <SplitSquareVertical className="w-4 h-4" />,
+    },
+    {
       id: 'routing',
       label: 'Điều phối & Thuật toán',
       sublabel: 'Chia tuyến, né giờ cấm QĐ 23',
@@ -687,8 +694,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           ===================================================================== */}
       <header className="sticky top-0 z-40 bg-white border-b border-[#e5e7eb] px-4 sm:px-6 py-2.5">
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
-          {/* Left: Brand Mark + Active B2B Company Switcher */}
-          <div className="flex flex-wrap items-center gap-4">
+          {/* Left: Brand Mark + Role-Isolated Workspace Context */}
+          <div className="flex flex-wrap items-center gap-3.5">
             <a href="/" className="flex items-center gap-2.5 group" title="Về trang giới thiệu EcoMiles">
               <div className="w-8 h-8 rounded-lg bg-[#14532d] text-[#d6f65a] flex items-center justify-center font-black text-sm">
                 EM
@@ -697,15 +704,25 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 <div className="font-extrabold text-sm text-[#111827] leading-none">
                   EcoMiles <span className="text-[#2f9e44]">TMS</span>
                 </div>
-                <div className="text-[11px] text-[#5f6368] mt-0.5">Hệ thống Quản trị Vận tải B2B</div>
+                <div className="text-[11px] text-[#5f6368] mt-0.5">
+                  {activeRole === 'user'
+                    ? 'Không gian Điều phối Doanh nghiệp'
+                    : activeRole === 'tester'
+                    ? 'Buồng Kiểm thử Đối chứng EVSIM'
+                    : activeRole === 'driver'
+                    ? 'Buồng lái Tài xế Giao hàng'
+                    : 'Phòng Giám sát Hạ tầng (Zero-Knowledge)'}
+                </div>
               </div>
             </a>
 
-            {/* Company Selector (Only relevant for Company User & Driver; Blinded for Admin) */}
-            {activeRole !== 'admin' && (
+            <div className="h-5 w-px bg-[#e5e7eb] hidden sm:block" />
+
+            {/* Role-Specific Context Control (Isolated by Role) */}
+            {(activeRole === 'user' || activeRole === 'tester') && (
               <div className="flex items-center gap-2 bg-[#f9fafb] border border-[#d1d5db] rounded-lg px-2.5 py-1">
                 <Building2 className="w-4 h-4 text-[#1971c2] shrink-0" />
-                <div className="text-[11px] text-[#5f6368] font-medium hidden sm:inline">Doanh nghiệp:</div>
+                <span className="text-[11px] text-[#5f6368] font-medium hidden sm:inline">Doanh nghiệp:</span>
                 <select
                   value={selectedTenantId}
                   onChange={(e) => {
@@ -725,76 +742,89 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 </select>
               </div>
             )}
+
+            {activeRole === 'driver' && (
+              <div className="flex items-center gap-2 bg-[#f9fafb] border border-[#d1d5db] rounded-lg px-2.5 py-1 text-xs">
+                <Truck className="w-4 h-4 text-[#14532d] shrink-0" />
+                <span className="font-bold text-[#111827]">
+                  Xe {activeStrategy.routes[selectedDriverRouteIdx]?.plate || '51C-000.09'}
+                </span>
+                <span className="text-[#5f6368]">·</span>
+                <span className="font-mono font-semibold text-[#247b50]">PIN: 0000</span>
+              </div>
+            )}
+
+            {activeRole === 'admin' && (
+              <div className="flex items-center gap-1.5 bg-[#ffedea] border border-[#f5c2c7] rounded-lg px-2.5 py-1 text-xs font-bold text-[#831c1e]">
+                <Lock className="w-3.5 h-3.5 shrink-0" />
+                <span>Zero-Knowledge: Quyền giải mã dữ liệu khách hàng = 0%</span>
+              </div>
+            )}
           </div>
 
-          {/* Center: 4 Role Switcher Pills (User / Tester / Driver / Admin) */}
-          <nav
-            aria-label="Chuyển đổi vai trò sử dụng"
-            className="flex flex-wrap items-center gap-1 bg-[#f3f4f6] p-1 rounded-lg border border-[#e5e7eb]"
-          >
-            {(
-              [
-                {
-                  role: 'user',
-                  label: '1. Quản lý Điều phối (Doanh nghiệp)',
-                  icon: <LayoutDashboard className="w-3.5 h-3.5" />,
-                },
-                {
-                  role: 'tester',
-                  label: '2. Kiểm thử Đối chứng (EVSIM 2 Bên)',
-                  icon: <SplitSquareVertical className="w-3.5 h-3.5" />,
-                },
-                {
-                  role: 'driver',
-                  label: '3. Ứng dụng Tài xế (Bản đồ & Giao nhận)',
-                  icon: <Navigation className="w-3.5 h-3.5" />,
-                },
-                {
-                  role: 'admin',
-                  label: '4. Quản trị Hệ thống (Phòng Giám sát)',
-                  icon: <Activity className="w-3.5 h-3.5" />,
-                },
-              ] as const
-            ).map((item) => {
-              const isCurrent = activeRole === item.role;
-              return (
+          {/* Right: Role-Scoped Actions, Active Session Identity & Account Switcher */}
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            {activeRole === 'user' && (
+              <div className="hidden md:inline-flex items-center bg-[#f3f4f6] p-0.5 rounded-lg border border-[#e5e7eb]">
                 <button
-                  key={item.role}
-                  onClick={() => switchRole(item.role)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                    isCurrent
-                      ? 'bg-[#111827] text-white shadow-xs'
-                      : 'text-[#5f6368] hover:text-[#111827] hover:bg-white/60'
+                  type="button"
+                  onClick={() => setUserTab('overview')}
+                  className={`px-2.5 py-1 rounded-md font-bold flex items-center gap-1.5 cursor-pointer transition-colors ${
+                    userTab !== 'evsim_compare'
+                      ? 'bg-white text-[#111827] shadow-2xs'
+                      : 'text-[#5f6368] hover:text-[#111827]'
                   }`}
                 >
-                  {item.icon}
-                  <span>{item.label}</span>
+                  <LayoutDashboard className="w-3.5 h-3.5 text-[#1971c2]" />
+                  <span>1. Bảng điều khiển Đội xe</span>
                 </button>
-              );
-            })}
-          </nav>
+                <button
+                  type="button"
+                  onClick={() => setUserTab('evsim_compare')}
+                  className={`px-2.5 py-1 rounded-md font-bold flex items-center gap-1.5 cursor-pointer transition-colors ${
+                    userTab === 'evsim_compare'
+                      ? 'bg-[#14532d] text-[#d6f65a] shadow-2xs'
+                      : 'text-[#5f6368] hover:text-[#111827]'
+                  }`}
+                >
+                  <SplitSquareVertical className="w-3.5 h-3.5" />
+                  <span>2. Đối chứng 2 Bên (EVSIM)</span>
+                </button>
+              </div>
+            )}
 
-          {/* Right: Security Status & Home Link */}
-          {/* Right: Active API Session & Fast-Login Switcher */}
-          <div className="flex items-center gap-2.5 text-xs">
+            {activeRole === 'driver' && (
+              <a
+                href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
+                className="px-3 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] font-bold flex items-center gap-1.5"
+              >
+                <Navigation className="w-3.5 h-3.5" />
+                <span>Bản đồ Dẫn đường Xe tải (/maps)</span>
+              </a>
+            )}
+
             <span className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#dcfae5] text-[#04250e] font-semibold">
               <Lock className="w-3.5 h-3.5 text-[#247b50]" />
               <span>
                 {activeRole === 'admin'
-                  ? 'Zero-Knowledge: Đã khóa dữ liệu khách hàng'
+                  ? 'sysadmin@ecomiles-ops.vn'
                   : `${authSessionInfo.account} (${activeCompany.code})`}
               </span>
             </span>
+
             <button
+              type="button"
               onClick={() => setShowLoginGate(true)}
-              className="px-3 py-1.5 rounded-md bg-[#1971c2] hover:bg-[#155ca0] text-white font-bold flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-white text-[#111827] font-bold flex items-center gap-1.5 cursor-pointer"
+              title="Chuyển đổi tài khoản hoặc vai trò đăng nhập"
             >
-              <KeyRound className="w-3.5 h-3.5" />
-              <span>Đổi Tài Khoản (4 Vai Trò)</span>
+              <KeyRound className="w-3.5 h-3.5 text-[#1971c2]" />
+              <span>Đổi Tài Khoản</span>
             </button>
+
             <a
               href="/"
-              className="px-2.5 py-1.5 rounded-md border border-[#d1d5db] bg-white hover:bg-[#f9fafb] text-[#111827] font-semibold"
+              className="px-2.5 py-1.5 rounded-lg border border-[#d1d5db] bg-white hover:bg-[#f9fafb] text-[#5f6368] hover:text-[#111827] font-semibold"
             >
               Trang chủ
             </a>
@@ -1129,11 +1159,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 <span>Nhập bảng tính .XLSX mới</span>
               </button>
               <button
-                onClick={() => switchRole('tester')}
+                type="button"
+                onClick={() => setUserTab(userTab === 'evsim_compare' ? 'overview' : 'evsim_compare')}
                 className="w-full py-2 px-3 rounded-lg border border-[#d1d5db] bg-white hover:bg-[#f9fafb] text-[#111827] text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <SplitSquareVertical className="w-3.5 h-3.5 text-[#1971c2]" />
-                <span>Mở mô phỏng 2 bên (EVSIM)</span>
+                <span>
+                  {userTab === 'evsim_compare' ? 'Về Tổng quan Đội xe' : 'Mở Đối chứng 2 bên (EVSIM)'}
+                </span>
               </button>
             </div>
           </aside>
@@ -1344,15 +1377,24 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 {r.kg_co2_ttw} kg
                               </td>
                               <td className="py-3 px-3 text-right">
-                                <button
-                                  onClick={() => {
-                                    setSelectedDriverRouteIdx(idx);
-                                    switchRole('driver');
-                                  }}
-                                  className="px-2.5 py-1 rounded border border-[#d1d5db] bg-white hover:bg-[#f3f4f6] text-xs font-semibold text-[#1971c2] cursor-pointer"
-                                >
-                                  Mở App xe này
-                                </button>
+                                <div className="inline-flex items-center gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedRouteId(r.route_id);
+                                      setUserTab('routing');
+                                    }}
+                                    className="px-2.5 py-1 rounded border border-[#d1d5db] bg-white hover:bg-[#f3f4f6] text-xs font-semibold text-[#1971c2] cursor-pointer"
+                                  >
+                                    Xem tuyến
+                                  </button>
+                                  <a
+                                    href={`/maps?vehicle=${idx}&mode=overview`}
+                                    className="px-2 py-1 rounded bg-[#eef7ee] hover:bg-[#dcfae5] border border-[#b9dfbf] text-xs font-bold text-[#14532d]"
+                                  >
+                                    /maps
+                                  </a>
+                                </div>
                               </td>
                             </tr>
                           );
@@ -1456,6 +1498,18 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     />
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* ===============================================================
+                TAB 1B: EMBEDDED EVSIM 2-SIDE COMPARISON DASHBOARD (Inside User CRM/TMS)
+                =============================================================== */}
+            {userTab === 'evsim_compare' && (
+              <div className="space-y-4">
+                <EvsimDualSimulator
+                  initialResult={result}
+                  onResultChange={(newRes) => setResult(newRes)}
+                />
               </div>
             )}
 
@@ -1981,10 +2035,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       Bảng Phê Duyệt Quyền Truy Cập Dữ Liệu Nội Bộ ({activeCompany.short_name})
                     </h2>
                     <button
-                      onClick={() => switchRole('admin')}
+                      type="button"
+                      onClick={() => setShowLoginGate(true)}
                       className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-[#eeeeee] text-xs font-bold text-[#1971c2] cursor-pointer"
                     >
-                      Kiểm tra góc nhìn bị khóa của Admin Hệ thống →
+                      Mở Cổng Đổi Tài Khoản để kiểm tra góc nhìn Admin →
                     </button>
                   </div>
 
