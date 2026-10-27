@@ -861,9 +861,9 @@ export function EcoMilesTruckMapNavigator({
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f4ef] text-[#111827] flex flex-col">
+    <div className="min-h-screen bg-[#f3f4ef] text-[#111827] flex flex-col overflow-x-hidden">
       {/* TOP BAR: ECOMILES OPENTRUCK NAVIGATOR HEADER & 2-VIEW SWITCHER */}
-      <header className="sticky top-0 z-30 bg-white border-b border-[#d8cfbd] px-4 py-2.5 shadow-xs">
+      <header className="sticky top-0 z-30 bg-white border-b border-[#d8cfbd] px-3 sm:px-4 py-2 shadow-xs">
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <a
@@ -953,7 +953,7 @@ export function EcoMilesTruckMapNavigator({
           {/* GOOGLE-MAPS-STYLE TOP TURN-BY-TURN GREEN NAVIGATION BANNER */}
           {currentLiveStep && (
             <div
-              className={`rounded-2xl p-4 text-white shadow-md border transition-all ${
+              className={`rounded-2xl p-3 sm:p-4 text-white shadow-md border transition-all ${
                 navMode === 'navigate'
                   ? 'bg-[#14532d] border-[#0f3f22]'
                   : 'bg-[#1f3a5f] border-[#162a45]'
@@ -1038,11 +1038,11 @@ export function EcoMilesTruckMapNavigator({
           )}
 
           {/* LAYER TOGGLE PILLS ABOVE MAP (Lucide Icons Only) */}
-          <div className="bg-white border border-[#d8cfbd] rounded-xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <div className="flex flex-wrap items-center gap-3">
+          <div className="bg-white border border-[#d8cfbd] rounded-xl px-3 sm:px-3.5 py-1.5 sm:py-2 flex flex-wrap items-center justify-between gap-2 text-[11px] sm:text-xs">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <span className="font-bold text-[#374151] flex items-center gap-1">
                 <Layers className="w-3.5 h-3.5 text-[#1971c2]" />
-                <span>Lớp bản đồ Xe tải:</span>
+                <span>Lớp bản đồ:</span>
               </span>
               <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#991b1b]">
                 <input
@@ -1051,7 +1051,7 @@ export function EcoMilesTruckMapNavigator({
                   onChange={(e) => setShowBanZones(e.target.checked)}
                 />
                 <Ban className="w-3.5 h-3.5 text-[#991b1b]" />
-                <span>Vùng &amp; Tuyến đường cấm tải QĐ 23/2018 (Đỏ)</span>
+                <span>Cấm tải QĐ 23/2018 (Đỏ)</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#14532d]">
                 <input
@@ -1060,7 +1060,7 @@ export function EcoMilesTruckMapNavigator({
                   onChange={(e) => setShowBridges(e.target.checked)}
                 />
                 <Landmark className="w-3.5 h-3.5 text-[#14532d]" />
-                <span>Giới hạn tải trọng &amp; độ cao cầu (13T / 4.5m)</span>
+                <span>Cầu (13T / 4.5m)</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#4b5563]">
                 <input
@@ -1068,7 +1068,7 @@ export function EcoMilesTruckMapNavigator({
                   checked={showAllFleetRoutes}
                   onChange={(e) => setShowAllFleetRoutes(e.target.checked)}
                 />
-                <span>Hiển thị cả 7 tuyến đội xe</span>
+                <span>Cả 7 tuyến</span>
               </label>
             </div>
 
@@ -1078,12 +1078,12 @@ export function EcoMilesTruckMapNavigator({
               className="px-2.5 py-1 rounded-lg bg-[#f3f4f6] hover:bg-[#e5e7eb] border border-[#d1d5db] font-bold text-[#111827] flex items-center gap-1 cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-[#14532d]" />
-              <span>Tải GPX (OsmAnd Truck)</span>
+              <span>Tải GPX (OsmAnd)</span>
             </button>
           </div>
 
           {/* INTERACTIVE HTML5 WEB MERCATOR OPENSTREETMAP TRUCK CANVAS */}
-          <div className="relative w-full h-[470px] sm:h-[520px] rounded-2xl overflow-hidden border-2 border-[#d8cfbd] bg-[#ebe5d9] shadow-xs">
+          <div className="relative w-full h-[380px] sm:h-[490px] lg:h-[520px] rounded-2xl overflow-hidden border-2 border-[#d8cfbd] bg-[#ebe5d9] shadow-xs">
             <canvas
               ref={canvasRef}
               onPointerDown={(e) => {
@@ -1111,32 +1111,32 @@ export function EcoMilesTruckMapNavigator({
             />
 
             {/* Floating Speedometer & Mode Badge in Top-Left of Map (Lucide Icons Only) */}
-            <div className="absolute top-3 left-3 bg-[#111827]/90 text-white px-3.5 py-2.5 rounded-xl border border-white/15 shadow-md flex items-center gap-3">
-              <div className="text-center border-r border-white/20 pr-3">
-                <div className="text-xl font-black text-[#d6f65a] leading-none">
+            <div className="absolute top-2.5 left-2.5 max-w-[calc(100%-150px)] bg-[#111827]/90 text-white px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-xl border border-white/15 shadow-md flex items-center gap-2 sm:gap-3">
+              <div className="text-center border-r border-white/20 pr-2.5 sm:pr-3 shrink-0">
+                <div className="text-lg sm:text-xl font-black text-[#d6f65a] leading-none">
                   {playing ? '36' : '0'}
                 </div>
-                <div className="text-[9.5px] uppercase tracking-wider text-white/75 mt-0.5">
+                <div className="text-[9px] uppercase tracking-wider text-white/75 mt-0.5">
                   km/h
                 </div>
               </div>
-              <div className="text-xs space-y-0.5">
-                <div className="font-extrabold text-white flex items-center gap-1.5">
+              <div className="text-[11px] sm:text-xs space-y-0.5 min-w-0">
+                <div className="font-extrabold text-white flex items-center gap-1.5 truncate">
                   {navMode === 'navigate' ? (
                     <>
-                      <Compass className="w-3.5 h-3.5 text-[#d6f65a]" />
-                      <span>Chế độ Dẫn Đường Trực Tiếp (Follow-Truck)</span>
+                      <Compass className="w-3.5 h-3.5 text-[#d6f65a] shrink-0" />
+                      <span className="truncate">Dẫn Đường Trực Tiếp (Follow-Truck)</span>
                     </>
                   ) : (
                     <>
-                      <MapIcon className="w-3.5 h-3.5 text-[#d6f65a]" />
-                      <span>Chế độ Tổng Quan &amp; Vùng Cấm Tải</span>
+                      <MapIcon className="w-3.5 h-3.5 text-[#d6f65a] shrink-0" />
+                      <span className="truncate">Tổng Quan &amp; Vùng Cấm Tải</span>
                     </>
                   )}
                 </div>
-                <div className="text-[11px] text-emerald-300 font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                  <span>0 lỗi QĐ 23/2018 · Cầu tối đa 13T Hợp lệ</span>
+                <div className="text-[10.5px] sm:text-[11px] text-emerald-300 font-semibold flex items-center gap-1 truncate">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <span className="truncate">0 lỗi QĐ 23/2018 · Cầu tối đa 13T</span>
                 </div>
               </div>
             </div>
@@ -1151,7 +1151,8 @@ export function EcoMilesTruckMapNavigator({
                 className="px-2.5 py-1.5 rounded-lg bg-white/95 hover:bg-white border border-[#d1d5db] text-xs font-bold text-[#111827] shadow-xs flex items-center gap-1 cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Căn giữa bản đồ</span>
+                <span className="hidden sm:inline">Căn giữa bản đồ</span>
+                <span className="sm:hidden">Căn giữa</span>
               </button>
             </div>
           </div>

@@ -77,7 +77,7 @@ export const B2B_COMPANIES: CompanyTenant[] = [
 // 1. TWO-TIER VIETNAMESE PII REDACTION ENGINE (privacy-by-design skill)
 // =============================================================================
 export interface PiiRedaction {
-  kind: 'phone' | 'cccd' | 'email' | 'bank_account' | 'otp';
+  kind: 'phone' | 'cccd' | 'email' | 'bank_account' | 'otp' | 'address';
   original_masked: string;
   position: number;
 }
@@ -123,6 +123,12 @@ export function redactVietnamesePii(input: string): {
   text = text.replace(/\b([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})\b/g, (match, user, domain, offset) => {
     const masked = `${String(user).slice(0, 2)}***@${domain}`;
     redactions.push({ kind: 'email', original_masked: masked, position: Number(offset) });
+    return masked;
+  });
+  // 4. Vietnamese Street House Numbers (e.g. "22 Ngô Gia Tự" -> "** Ngô Gia Tự")
+  text = text.replace(/^(\d+[A-Za-z0-9/-]*)\s+/g, (match, numPart, offset) => {
+    const masked = `${'*'.repeat(Math.min(3, String(numPart).length))} `;
+    redactions.push({ kind: 'address', original_masked: masked.trim(), position: Number(offset) });
     return masked;
   });
 

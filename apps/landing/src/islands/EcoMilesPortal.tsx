@@ -675,7 +675,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
   return (
     <div
       data-ui="ecomiles-b2b-management-app"
-      className="min-h-screen bg-[#f3f4f6] text-[#111827] antialiased flex flex-col"
+      className="min-h-screen bg-[#f3f4f6] text-[#111827] antialiased flex flex-col overflow-x-hidden"
       style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif' }}
     >
       <input
@@ -834,14 +834,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
       {/* Status Notice Banner */}
       {statusBanner && (
-        <div className="bg-[#dcfae5] border-b border-[#b9dfbf] px-4 sm:px-6 py-2 text-xs text-[#04250e] flex items-center justify-between">
-          <div className="flex items-center gap-2 font-semibold">
+        <div className="bg-[#dcfae5] border-b border-[#b9dfbf] px-3 sm:px-6 py-1.5 text-xs text-[#04250e] flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 font-semibold min-w-0">
             <CheckCircle2 className="w-4 h-4 text-[#247b50] shrink-0" />
-            <span>{statusBanner}</span>
+            <span className="truncate sm:whitespace-normal">{statusBanner}</span>
           </div>
           <button
             onClick={() => setStatusBanner('')}
-            className="text-xs font-bold underline cursor-pointer ml-4"
+            className="text-xs font-bold underline cursor-pointer shrink-0"
           >
             Đóng
           </button>
@@ -876,7 +876,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 onClick={() => setShowLoginGate(false)}
                 className="px-3 py-1.5 rounded-lg border border-white/30 text-white hover:bg-white/10 text-xs font-semibold cursor-pointer"
               >
-                Tiếp tục với vai trò hiện tại ✕
+                Tiếp tục với vai trò hiện tại
               </button>
             </div>
 
@@ -1103,43 +1103,58 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           Left Sidebar Navigation (CRM/TMS style) + Daylight Framed Sheet
           ===================================================================== */}
       {activeRole === 'user' && (
-        <div className="flex-1 max-w-[1600px] w-full mx-auto flex flex-col lg:flex-row gap-4 p-4 sm:p-6">
-          {/* Left CRM/TMS Sidebar Rail */}
-          <aside className="w-full lg:w-64 shrink-0 flex flex-col justify-between bg-white border border-[#e5e7eb] rounded-xl p-3 space-y-4 self-start">
-            <div className="space-y-3">
-              {/* Company Workspace Card */}
-              <div className="p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] space-y-1">
-                <div className="text-[11px] font-semibold text-[#5f6368] uppercase">
-                  Không gian doanh nghiệp
+        <div className="flex-1 max-w-[1600px] w-full mx-auto flex flex-col lg:flex-row gap-3 sm:gap-4 p-3 sm:p-6">
+          {/* Responsive CRM/TMS Navigation: Horizontal Touch Strip on Mobile/Tablet, Left Sidebar Rail on Desktop */}
+          <aside className="w-full lg:w-64 shrink-0 flex flex-col justify-between bg-white border border-[#e5e7eb] rounded-xl p-2.5 lg:p-3 space-y-2.5 lg:space-y-4 self-start">
+            <div className="space-y-2.5 lg:space-y-3">
+              {/* Company Workspace Card (Compact inline on mobile/tablet, full card on desktop) */}
+              <div className="p-2.5 lg:p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] flex lg:block items-center justify-between gap-2 lg:space-y-1">
+                <div className="min-w-0">
+                  <div className="text-[10px] lg:text-[11px] font-semibold text-[#5f6368] uppercase">
+                    Không gian doanh nghiệp
+                  </div>
+                  <div className="text-xs lg:text-sm font-bold text-[#111827] truncate">
+                    {activeCompany.short_name}
+                  </div>
+                  <div className="hidden lg:block text-[11.5px] text-[#5f6368]">
+                    {activeCompany.depot_name}
+                  </div>
                 </div>
-                <div className="text-sm font-bold text-[#111827]">{activeCompany.short_name}</div>
-                <div className="text-[11.5px] text-[#5f6368]">{activeCompany.depot_name}</div>
-                <div className="pt-1 flex items-center gap-1.5 text-[11px] font-mono text-[#247b50]">
+                <div className="lg:pt-1 flex items-center gap-1 text-[10.5px] lg:text-[11px] font-mono text-[#247b50] shrink-0">
                   <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                  <span>{activeCompany.key_fingerprint}</span>
+                  <span className="hidden sm:inline">{activeCompany.key_fingerprint}</span>
                 </div>
               </div>
 
-              {/* Left Sidebar Menu Items */}
-              <nav aria-label="Chức năng quản trị vận tải" className="space-y-1">
+              {/* Navigation Items: Horizontal Scrollable Touch Pills on <lg, Vertical Rail on lg+ */}
+              <nav
+                aria-label="Chức năng quản trị vận tải"
+                className="flex lg:flex-col overflow-x-auto gap-1.5 lg:gap-0 lg:space-y-1 pb-1 lg:pb-0"
+              >
                 {USER_SIDEBAR_ITEMS.map((item) => {
                   const isActive = userTab === item.id;
                   return (
                     <button
                       key={item.id}
                       onClick={() => setUserTab(item.id)}
-                      className={`w-full text-left px-3 py-2.5 rounded-lg flex items-start gap-2.5 transition-colors cursor-pointer ${
+                      className={`shrink-0 lg:w-full text-left px-3 py-2 lg:py-2.5 rounded-lg flex items-center lg:items-start gap-2 lg:gap-2.5 transition-colors cursor-pointer ${
                         isActive
-                          ? 'bg-[#eeeeee] text-[#111827] font-bold border-l-[3px] border-[#1971c2]'
-                          : 'text-[#5f6368] hover:bg-[#f9fafb] hover:text-[#111827]'
+                          ? 'bg-[#111827] lg:bg-[#eeeeee] text-white lg:text-[#111827] font-bold lg:border-l-[3px] lg:border-[#1971c2]'
+                          : 'bg-[#f9fafb] lg:bg-transparent text-[#5f6368] hover:bg-[#f3f4f6] hover:text-[#111827]'
                       }`}
                     >
-                      <span className={`mt-0.5 ${isActive ? 'text-[#1971c2]' : 'text-[#5f6368]'}`}>
+                      <span
+                        className={`lg:mt-0.5 shrink-0 ${
+                          isActive ? 'text-[#d6f65a] lg:text-[#1971c2]' : 'text-[#5f6368]'
+                        }`}
+                      >
                         {item.icon}
                       </span>
-                      <span className="flex-1 min-w-0">
-                        <span className="block text-[13px] leading-tight">{item.label}</span>
-                        <span className="block text-[11px] text-[#6b6b6b] truncate mt-0.5">
+                      <span className="min-w-0">
+                        <span className="block text-xs lg:text-[13px] leading-tight whitespace-nowrap lg:whitespace-normal">
+                          {item.label}
+                        </span>
+                        <span className="hidden lg:block text-[11px] text-[#6b6b6b] truncate mt-0.5">
                           {item.sublabel}
                         </span>
                       </span>
@@ -1149,8 +1164,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </nav>
             </div>
 
-            {/* Quick Actions at Bottom of Sidebar */}
-            <div className="pt-3 border-t border-[#e5e7eb] space-y-2">
+            {/* Quick Actions at Bottom of Sidebar (Desktop lg+) */}
+            <div className="hidden lg:block pt-3 border-t border-[#e5e7eb] space-y-2">
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="w-full py-2 px-3 rounded-lg bg-[#111827] hover:bg-[#1f2937] text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
@@ -1186,7 +1201,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     </h1>
                     <p className="text-[13px] text-[#5f6368] mt-0.5">
                       {activeCompany.name} · Đang vận hành {activeStrategy.vehicles_used}/{activeCompany.fleet_count} xe tải trên tập dữ liệu{' '}
-                      <strong className="text-[#111827]">{result.file_name}</strong> ({result.rows_valid} điểm giao).
+                      <strong className="text-[#111827] break-all sm:break-normal">{result.file_name}</strong> ({result.rows_valid} điểm giao).
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 shrink-0">
@@ -1789,13 +1804,16 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             const redactedPhone = maskPii
                               ? redactVietnamesePii(o.phone).text
                               : o.phone;
+                            const redactedAddress = maskPii
+                              ? redactVietnamesePii(o.address).text
+                              : o.address;
                             return (
                               <tr key={o.external_id} className="hover:bg-[#f9fafb]">
                                 <td className="py-2 px-3 font-mono font-bold text-[#1971c2]">
                                   {o.external_id}
                                 </td>
                                 <td className="py-2 px-3 font-semibold">{o.district}</td>
-                                <td className="py-2 px-3 max-w-xs truncate">{o.address}</td>
+                                <td className="py-2 px-3 max-w-xs truncate">{redactedAddress}</td>
                                 <td className="py-2 px-3 text-[#5f6368]">
                                   {maskPii ? `${o.receiver.slice(0, 8)}***` : o.receiver} ·{' '}
                                   <span className="font-mono">{redactedPhone}</span>
@@ -2178,16 +2196,22 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   : driverRoute.stops.flatMap((s) =>
                       s.leg_path && s.leg_path.length > 0 ? s.leg_path : ([[s.lng, s.lat]] as LngLat[])
                     );
+              const escXmlTag = (v: string | number) =>
+                String(v)
+                  .replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;');
               const wptXml = customerStops
                 .map(
                   (s) =>
-                    `  <wpt lat="${s.lat.toFixed(5)}" lon="${s.lng.toFixed(5)}"><name>#${s.seq} ${s.order_id}</name><desc>${s.address} (${s.kg}kg)</desc></wpt>`
+                    `  <wpt lat="${s.lat.toFixed(5)}" lon="${s.lng.toFixed(5)}"><name>#${s.seq} ${escXmlTag(s.order_id)}</name><desc>${escXmlTag(s.address)} (${s.kg}kg)</desc></wpt>`
                 )
                 .join('\n');
               const trkXml = trackPts
                 .map(([lng, lat]) => `      <trkpt lat="${lat.toFixed(5)}" lon="${lng.toFixed(5)}" />`)
                 .join('\n');
-              const gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="EcoMiles OpenTruck Router ($0 Tier)" xmlns="http://www.topografix.com/GPX/1/1">\n  <metadata><name>EcoMiles Truck Route ${driverRoute.plate}</name><desc>Middle-Mile Truck Corridor (QD 23/2018 Compliant)</desc></metadata>\n${wptXml}\n  <trk>\n    <name>${driverRoute.plate} - EcoMiles Truck Track</name>\n    <trkseg>\n${trkXml}\n    </trkseg>\n  </trk>\n</gpx>`;
+              const gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="EcoMiles OpenTruck Router ($0 Tier)" xmlns="http://www.topografix.com/GPX/1/1">\n  <metadata><name>EcoMiles Truck Route ${escXmlTag(driverRoute.plate)}</name><desc>Middle-Mile Truck Corridor (QD 23/2018 Compliant)</desc></metadata>\n${wptXml}\n  <trk>\n    <name>${escXmlTag(driverRoute.plate)} - EcoMiles Truck Track</name>\n    <trkseg>\n${trkXml}\n    </trkseg>\n  </trk>\n</gpx>`;
               const blob = new Blob([gpx], { type: 'application/gpx+xml;charset=utf-8' });
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');

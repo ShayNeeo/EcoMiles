@@ -487,7 +487,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                 <div className="text-[11px] text-amber-300 font-bold">Phát thải &amp; Giờ cấm</div>
                 <div className="text-xl font-black text-white mt-0.5">{humanSt.kg_co2_ttw.toFixed(1)} kg CO₂</div>
                 <div className="text-[11px] text-amber-400 font-bold mt-0.5">
-                  ⚠️ {humanSt.ban_violations} đơn dính giờ cấm QĐ 23
+                  Cảnh báo: {humanSt.ban_violations} đơn dính giờ cấm QĐ 23
                 </div>
               </div>
             </div>

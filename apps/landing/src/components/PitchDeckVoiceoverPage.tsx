@@ -1174,7 +1174,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 </div>
                               </div>
                               <div className="p-4 rounded-xl bg-slate-900 border border-amber-500/30 font-mono text-xs text-slate-300 space-y-2">
-                                <div className="text-amber-400 font-bold">⚠️ Tín Hiệu Cảnh Báo Lệch Tuyến</div>
+                                <div className="text-amber-400 font-bold">Tín Hiệu Cảnh Báo Lệch Tuyến</div>
                                 <div>Xe 51C-000.01 chệch khỏi tuyến Cách Mạng Tháng 8 (+2.4km)</div>
                                 <div>Nguyên nhân: Ùn tắc cục bộ ngã 6 Dân Chủ</div>
                                 <div className="text-emerald-400 pt-2 border-t border-slate-800">
@@ -1206,7 +1206,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 </div>
                               </div>
                               <div className="p-4 rounded-xl bg-slate-900 border border-cyan-500/30 font-mono text-xs text-slate-300 space-y-2">
-                                <div className="text-cyan-400 font-bold">🔄 Ghép Chiều Về Thành Công</div>
+                                <div className="text-cyan-400 font-bold">Ghép Chiều Về Thành Công</div>
                                 <div>Xe 51C-000.02 vừa hoàn tất 18 đơn tại Thủ Đức</div>
                                 <div>Hệ thống phát hiện: 6 đơn trả hàng tại Bình Thạnh trên đường về</div>
                                 <div className="text-cyan-300 pt-2 border-t border-slate-800">
@@ -1238,7 +1238,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 </div>
                               </div>
                               <div className="p-4 rounded-xl bg-slate-900 border border-emerald-500/30 font-mono text-xs text-slate-300 space-y-2">
-                                <div className="text-emerald-400 font-bold">📊 Mẫu Báo Cáo Phát Thải GLEC</div>
+                                <div className="text-emerald-400 font-bold">Mẫu Báo Cáo Phát Thải GLEC</div>
                                 <div>Tổng số kiện giao: 80 đơn hàng</div>
                                 <div>Tổng phát thải thực tế: 17.6 kg CO₂e (Chuẩn cũ: 142.4 kg)</div>
                                 <div className="text-emerald-400 pt-2 border-t border-slate-800">
