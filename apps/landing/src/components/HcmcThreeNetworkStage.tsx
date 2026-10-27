@@ -132,8 +132,11 @@ export const HcmcThreeNetworkStage: React.FC = () => {
   const lookTargetRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
   const lookCurrentRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
   const [selectedNode, setSelectedNode] = useState<HcmcNodeSpec>(HCMC_3D_NODES[0]);
+  const selectedNodeRef = useRef<HcmcNodeSpec>(HCMC_3D_NODES[0]);
+  const [isAutoHubTour, setIsAutoHubTour] = useState<boolean>(false);
 
   const focusHcmcNode = (node: HcmcNodeSpec) => {
+    selectedNodeRef.current = node;
     setSelectedNode(node);
     const dur =
       typeof window !== 'undefined' &&
@@ -157,6 +160,16 @@ export const HcmcThreeNetworkStage: React.FC = () => {
       overwrite: 'auto',
     });
   };
+
+  useEffect(() => {
+    if (!isAutoHubTour) return;
+    const timerId = window.setInterval(() => {
+      const idx = HCMC_3D_NODES.findIndex((n) => n.id === selectedNodeRef.current.id);
+      const nextNode = HCMC_3D_NODES[(idx + 1) % HCMC_3D_NODES.length];
+      if (nextNode) focusHcmcNode(nextNode);
+    }, 2800);
+    return () => window.clearInterval(timerId);
+  }, [isAutoHubTour]);
 
   useEffect(() => {
     activeClusterRef.current = activeCluster;
@@ -521,24 +534,40 @@ export const HcmcThreeNetworkStage: React.FC = () => {
           </span>
           <span className="text-slate-300 font-medium">{selectedNode.stats}</span>
         </div>
-        <div className="flex flex-wrap items-center gap-1">
-          {HCMC_3D_NODES.map((node) => {
-            const isSel = selectedNode.id === node.id;
-            return (
-              <button
-                key={node.id}
-                type="button"
-                onClick={() => focusHcmcNode(node)}
-                className={`px-2 py-0.5 rounded font-bold cursor-pointer transition-colors ${
-                  isSel
-                    ? 'bg-ecomiles-lime text-slate-950'
-                    : 'bg-slate-950 text-slate-300 hover:text-white border border-white/10'
-                }`}
-              >
-                {node.shortName}
-              </button>
-            );
-          })}
+        <div className="flex flex-wrap items-center justify-between gap-1">
+          <div className="flex flex-wrap items-center gap-1">
+            {HCMC_3D_NODES.map((node) => {
+              const isSel = selectedNode.id === node.id;
+              return (
+                <button
+                  key={node.id}
+                  type="button"
+                  onClick={() => {
+                    setIsAutoHubTour(false);
+                    focusHcmcNode(node);
+                  }}
+                  className={`px-2 py-0.5 rounded font-bold cursor-pointer transition-colors ${
+                    isSel
+                      ? 'bg-ecomiles-lime text-slate-950'
+                      : 'bg-slate-950 text-slate-300 hover:text-white border border-white/10'
+                  }`}
+                >
+                  {node.shortName}
+                </button>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsAutoHubTour((prev) => !prev)}
+            className={`px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border ${
+              isAutoHubTour
+                ? 'bg-emerald-400 text-slate-950 border-emerald-400'
+                : 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
+            }`}
+          >
+            {isAutoHubTour ? '⏸ Đang Quét' : '▶ Quét 7 Trạm'}
+          </button>
         </div>
       </div>
 

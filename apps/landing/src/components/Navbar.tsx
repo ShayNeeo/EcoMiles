@@ -202,7 +202,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                   <a
                     key={link.name}
                     href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => handleSmoothNavClick(e, link.href, link.id)}
                     aria-current={isActive ? 'page' : undefined}
                     className={`whitespace-nowrap px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                       isActive
@@ -217,12 +217,42 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
               <div className="pt-3 mt-1 border-t border-slate-800 flex flex-col gap-2">
                 <a
                   href="#calculator"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleSmoothNavClick(e, '#calculator', 'calculator')}
                   className="w-full py-2.5 rounded-xl text-center text-xs font-bold text-ecomiles-lime bg-ecomiles-lime/10 flex items-center justify-center gap-1.5"
                 >
                   <Calculator className="w-3.5 h-3.5 text-ecomiles-lime" />
                   <span>Tính mức tiết kiệm và lượng CO₂ giảm</span>
                 </a>
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href="/dashboard/"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 flex items-center justify-center gap-1.5"
+                  >
+                    <span>Trung Tâm B2B (/dashboard)</span>
+                  </a>
+                  <a
+                    href="/maps/?vehicle=0&mode=navigate"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 flex items-center justify-center gap-1.5"
+                  >
+                    <span>Bản Đồ Xe Tải (/maps)</span>
+                  </a>
+                  <a
+                    href="/driver/"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 flex items-center justify-center gap-1.5"
+                  >
+                    <span>App Tài Xế (/driver)</span>
+                  </a>
+                  <a
+                    href="/pitch-deck/"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-ecomiles-lime/15 border border-ecomiles-lime/40 text-ecomiles-lime flex items-center justify-center gap-1.5"
+                  >
+                    <span>Pitch Deck (28 Ảnh)</span>
+                  </a>
+                </div>
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);

@@ -619,6 +619,33 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       if (hoveredIdRef.current !== hitId) {
         hoveredIdRef.current = hitId;
         setHoveredDeviceId(hitId);
+        if (selectedIdRef.current === 'all_banner' && clusterRef.current === 'none') {
+          const dur = prefersReducedMotion ? 0 : 0.45;
+          if (hitId) {
+            const hoveredSpec = DEVICE_3D_SPECS.find((d) => d.id === hitId);
+            if (hoveredSpec) {
+              gsap.to(focusRingTargetRef.current, {
+                x: hoveredSpec.pos[0],
+                z: hoveredSpec.pos[2],
+                scale: hoveredSpec.width > 2 ? 1.85 : hoveredSpec.width > 1.2 ? 1.15 : 0.8,
+                opacity: 0.75,
+                duration: dur,
+                ease: 'power3.out',
+                overwrite: 'auto',
+              });
+            }
+          } else {
+            gsap.to(focusRingTargetRef.current, {
+              x: 0,
+              z: 0,
+              scale: 0.2,
+              opacity: 0,
+              duration: dur,
+              ease: 'power3.out',
+              overwrite: 'auto',
+            });
+          }
+        }
       }
     };
 
@@ -628,6 +655,17 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       if (hoveredIdRef.current !== null) {
         hoveredIdRef.current = null;
         setHoveredDeviceId(null);
+        if (selectedIdRef.current === 'all_banner' && clusterRef.current === 'none') {
+          gsap.to(focusRingTargetRef.current, {
+            x: 0,
+            z: 0,
+            scale: 0.2,
+            opacity: 0,
+            duration: prefersReducedMotion ? 0 : 0.45,
+            ease: 'power3.out',
+            overwrite: 'auto',
+          });
+        }
       }
     };
 
