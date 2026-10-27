@@ -2137,19 +2137,36 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               fromLng: number,
               stopObj: (typeof customerStops)[number]
             ) => {
-              const pts = stopObj.leg_path || [];
+              const pts = (stopObj.leg_path || []).filter(
+                ([lng, lat]) =>
+                  Math.hypot(lat - fromLat, lng - fromLng) > 0.0025 &&
+                  Math.hypot(lat - stopObj.lat, lng - stopObj.lng) > 0.0025
+              );
               const mids =
-                pts.length >= 4
-                  ? [pts[Math.floor(pts.length * 0.33)], pts[Math.floor(pts.length * 0.66)]]
-                  : pts.length >= 3
-                  ? [pts[1]]
+                pts.length >= 2
+                  ? [pts[Math.floor(pts.length * 0.35)], pts[Math.floor(pts.length * 0.7)]]
+                  : pts.length === 1
+                  ? [pts[0]]
                   : [];
-              const viaStr = mids
-                .map(([lng, lat]) => `via:${lat.toFixed(5)},${lng.toFixed(5)}`)
+              // Google Maps Universal URL (?api=1) requires plain `lat,lng|lat,lng` (NO `via:` prefix!)
+              const wpStr = mids
+                .map(([lng, lat]) => `${lat.toFixed(5)},${lng.toFixed(5)}`)
                 .join('|');
-              const wpParam = viaStr ? `&waypoints=${encodeURIComponent(viaStr)}` : '';
+              const wpParam = wpStr ? `&waypoints=${encodeURIComponent(wpStr)}` : '';
               return `https://www.google.com/maps/dir/?api=1&origin=${fromLat.toFixed(5)},${fromLng.toFixed(5)}&destination=${stopObj.lat.toFixed(5)},${stopObj.lng.toFixed(5)}${wpParam}&travelmode=driving&dir_action=navigate`;
             };
+
+            const fullMultiStopCarMapsUrl = (() => {
+              const tourSlice = customerStops.slice(0, 8);
+              const wpList = tourSlice
+                .map((s) => `${s.lat.toFixed(5)},${s.lng.toFixed(5)}`)
+                .join('|');
+              const lastStop = customerStops[Math.min(customerStops.length - 1, 8)] || {
+                lat: 10.8018,
+                lng: 106.6385,
+              };
+              return `https://www.google.com/maps/dir/?api=1&origin=10.80180,106.63850&destination=${lastStop.lat.toFixed(5)},${lastStop.lng.toFixed(5)}${wpList ? `&waypoints=${encodeURIComponent(wpList)}` : ''}&travelmode=driving&dir_action=navigate`;
+            })();
 
             const downloadOsmAndTruckGpx = () => {
               if (!driverRoute) return;
@@ -2291,7 +2308,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           driverMileTier === 'last_mile_car' ? 'text-blue-100' : 'text-[#5f6368]'
                         }`}
                       >
-                        <strong>Xe ≤ 500kg / Ô tô con không bị cấm tải QĐ 23:</strong> Kết hợp dẫn đường nội bộ OpenStreetMap ($0) và <strong>nhúng tọa độ trung gian (<code>waypoints=via:...</code>) của thuật toán EcoALNS thẳng vào URL Google Maps Ô tô miễn phí ($0)</strong>.
+                        <strong>Xe ≤ 500kg / Ô tô con không bị cấm tải QĐ 23:</strong> Kết hợp dẫn đường nội bộ OpenStreetMap ($0) và <strong>nhúng tọa độ trung gian (<code>waypoints=lat,lng</code>) của thuật toán EcoALNS thẳng vào URL Google Maps Ô tô miễn phí ($0)</strong>.
                       </p>
                     </button>
                   </div>
@@ -2410,11 +2427,24 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           </span>
                         </div>
                       ) : (
-                        <div className="p-3 rounded-lg bg-[#e8f0fb] border border-[#bfdbfe] text-xs text-[#1e3a8a] flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-                          <span>
-                            <strong>Chế độ Ô Tô / Van Chặng Cuối (≤500kg), Khóa tọa độ trung gian (<code>waypoints=via:</code>) vào Google Maps ($0):</strong> Vì xe ≤500kg được phép đi đường ô tô nội đô, EcoMiles trích xuất các điểm uốn mặt đường từ thuật toán EcoALNS nhúng thẳng vào tham số <code>waypoints=via:lat,lng</code> của URL Google Maps miễn phí để ép Google đi đúng tuyến đã tối ưu.
-                          </span>
+                        <div className="p-3 rounded-lg bg-[#e8f0fb] border border-[#bfdbfe] text-xs text-[#1e3a8a] space-y-2">
+                          <div className="flex items-start gap-2">
+                            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                            <span>
+                              <strong>Chế độ Ô Tô / Van Chặng Cuối (≤500kg), Khóa tọa độ trung gian (<code>waypoints=lat,lng</code>) vào Google Maps ($0):</strong> Vì xe ≤500kg được phép đi đường ô tô nội đô, EcoMiles nhúng thẳng tọa độ mặt đường <code>lat,lng</code> chuẩn vào tham số <code>waypoints</code> của Google Maps để ép đi đúng lộ trình đã tối ưu.
+                            </span>
+                          </div>
+                          <div>
+                            <a
+                              href={fullMultiStopCarMapsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1971c2] hover:bg-[#155ca0] text-white font-bold text-xs"
+                            >
+                              <Navigation className="w-3.5 h-3.5" />
+                              <span>Mở Toàn Bộ Tuyến Nhiều Điểm Dừng Trên Google Maps Ô Tô ($0)</span>
+                            </a>
+                          </div>
                         </div>
                       )}
 
