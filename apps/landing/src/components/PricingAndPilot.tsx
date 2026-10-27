@@ -51,6 +51,10 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Hỗ trợ thiết lập và bắt đầu sử dụng',
         'Vượt mức: +100.000đ/tài xế/tháng',
       ],
+      hardwareEndpoints: [
+        { label: 'MacBook / Windows TMS', deviceId: 'macbook_pro' },
+        { label: 'iPhone / S26 Ultra Driver', deviceId: 'galaxy_s26_ultra' },
+      ],
       highlight: activeDrivers <= 10,
       badge: activeDrivers <= 10 ? 'ĐỀ XUẤT CHO BẠN' : undefined,
     },
@@ -65,6 +69,11 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Tích hợp dữ liệu giao thông thời gian thực',
         'Theo dõi tài xế và tiến độ đơn hàng',
         'Vượt mức: +75.000đ/tài xế/tháng',
+      ],
+      hardwareEndpoints: [
+        { label: 'MacBook / Windows TMS', deviceId: 'macbook_pro' },
+        { label: 'iPad / Z Fold Taplo', deviceId: 'galaxy_zfold' },
+        { label: 'iPhone Duo / 18 Pro Max / S26', deviceId: 'iphone_18_pro_max' },
       ],
       highlight: activeDrivers >= 11 && activeDrivers <= 20,
       badge: activeDrivers >= 11 && activeDrivers <= 20 ? 'ĐỀ XUẤT · PHỔ BIẾN NHẤT' : undefined,
@@ -81,6 +90,11 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Báo cáo nhiên liệu và lượng CO₂',
         'Vượt mức: +50.000đ/tài xế/tháng',
       ],
+      hardwareEndpoints: [
+        { label: 'MacBook / Windows TMS', deviceId: 'windows_xps' },
+        { label: 'iPad / Z Fold Taplo', deviceId: 'ipad_pro' },
+        { label: 'iPhone Duo / 18 Pro Max / S26', deviceId: 'iphone_duo' },
+      ],
       highlight: activeDrivers >= 21 && activeDrivers <= 100,
       badge: activeDrivers >= 21 && activeDrivers <= 100 ? 'ĐỀ XUẤT CHO BẠN' : undefined,
     },
@@ -95,6 +109,11 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         'Hạ tầng vận hành theo nhu cầu doanh nghiệp',
         'Hỗ trợ kỹ thuật và đào tạo ưu tiên',
         'Vượt mức: +50.000đ/tài xế/tháng',
+      ],
+      hardwareEndpoints: [
+        { label: 'MacBook / Windows TMS', deviceId: 'macbook_pro' },
+        { label: 'iPad / Z Fold Taplo', deviceId: 'galaxy_zfold' },
+        { label: 'iPhone Duo / 18 Pro Max / S26', deviceId: 'iphone_duo' },
       ],
       highlight: activeDrivers > 100,
       badge: activeDrivers > 100 ? 'ĐỀ XUẤT CHO BẠN' : undefined,
@@ -173,12 +192,37 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 <p className="mb-6 text-xs leading-relaxed text-slate-400">{tier.desc}</p>
 
                 {/* Price Display */}
-                <div className="pb-6 mb-6 border-b border-white/10">
+                <div className="pb-5 mb-5 border-b border-white/10">
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                     <span className="text-2xl sm:text-3xl font-extrabold text-white">{tier.price}</span>
                     <span className="text-xs text-slate-400 font-semibold">{tier.unit}</span>
                   </div>
                   <div className="text-xs font-bold text-ecomiles-lime mt-1.5">{tier.vehicles}</div>
+                  <div className="mt-3.5 pt-3 border-t border-white/5">
+                    <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5">
+                      Thiết bị hỗ trợ (7-Device Ecosystem)
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {tier.hardwareEndpoints.map((ep) => (
+                        <a
+                          key={ep.label}
+                          href="#showcase"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.dispatchEvent(
+                              new CustomEvent('ecomiles:select-device', { detail: { deviceId: ep.deviceId } })
+                            );
+                            document.querySelector('#showcase')?.scrollIntoView({ behavior: 'smooth' });
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/90 border border-white/10 hover:border-ecomiles-lime/40 text-[10px] font-bold text-slate-300 hover:text-ecomiles-lime transition-colors"
+                          title="Xem mô hình thiết bị trên Sân khấu 7 Thiết Bị (#showcase)"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-ecomiles-lime shrink-0" />
+                          <span>{ep.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Features List */}

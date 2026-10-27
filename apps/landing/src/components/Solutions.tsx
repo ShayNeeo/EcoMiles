@@ -68,11 +68,15 @@ export const Solutions: React.FC = () => {
         'Sử dụng 7/10 xe thay vì 12 chuyến rời rạc (Lấp đầy tải 101.5%)',
         'Rút ngắn thời gian lập kế hoạch từ 90 phút xuống < 1 giây',
       ],
-      liveHref: '/dashboard/',
-      liveLabel: 'Kiểm tra Bảng Điều Khiển Đội Xe (/dashboard)',
+      liveLinks: [
+        { href: '/dashboard/', label: 'Bảng Điều Khiển Đội Xe (/dashboard)' },
+        { href: '/benchmark/', label: 'Đối Chứng EVSIM (/benchmark)' },
+      ],
       gradient: 'from-yellow-400/10 to-emerald-400/5',
-      deviceTag: 'MacBook Pro 16" & Windows XPS 16',
-      deviceId: 'macbook_pro',
+      devices: [
+        { id: 'macbook_pro', label: 'MacBook Pro 16"' },
+        { id: 'windows_xps', label: 'Windows 11 XPS 16' },
+      ],
     },
     {
       id: '02',
@@ -86,11 +90,14 @@ export const Solutions: React.FC = () => {
         'Bản đồ Mở OpenTruck (/maps) hiển thị rõ vùng cấm đỏ & cầu giới hạn',
         'Hỗ trợ cả Chặng Giữa (>500kg) và Chặng Cuối (<=500kg Google Maps $0)',
       ],
-      liveHref: '/maps/?vehicle=0&mode=overview',
-      liveLabel: 'Xem Bản Đồ Vùng Cấm QĐ 23 (/maps)',
+      liveLinks: [
+        { href: '/maps/?vehicle=0&mode=overview', label: 'Bản Đồ Vùng Cấm QĐ 23 (/maps)' },
+      ],
       gradient: 'from-emerald-500/10 to-teal-500/5',
-      deviceTag: 'Samsung Galaxy Z Fold & iPad Pro M4',
-      deviceId: 'galaxy_zfold',
+      devices: [
+        { id: 'galaxy_zfold', label: 'Galaxy Z Fold' },
+        { id: 'ipad_pro', label: 'iPad Pro M4' },
+      ],
     },
     {
       id: '03',
@@ -104,11 +111,15 @@ export const Solutions: React.FC = () => {
         'Tự động ghép 21 đơn chiều về, thu hồi 1,864.9 kg hàng về kho',
         'Tài xế nhận lệnh lấy hàng chiều về ngay trên ứng dụng web (/driver)',
       ],
-      liveHref: '/driver/',
-      liveLabel: 'Mở Ứng Dụng Tài Xế 2 Chặng (/driver)',
+      liveLinks: [
+        { href: '/driver/', label: 'Ứng Dụng Tài Xế 2 Chặng (/driver)' },
+      ],
       gradient: 'from-emerald-500/10 to-teal-500/5',
-      deviceTag: 'iPhone Duo Dual-Screen',
-      deviceId: 'iphone_duo',
+      devices: [
+        { id: 'iphone_duo', label: 'iPhone Duo' },
+        { id: 'iphone_18_pro_max', label: 'iPhone 18 Pro Max' },
+        { id: 'galaxy_s26_ultra', label: 'Galaxy S26 Ultra' },
+      ],
     },
     {
       id: '04',
@@ -122,11 +133,16 @@ export const Solutions: React.FC = () => {
         'Kết xuất tự động Báo cáo Excel 3 Sheet (.XLS), CSV và PDF kiểm toán',
         'Bảo mật Zero-Knowledge AES-256-GCM tuân thủ Nghị định 13/2023/NĐ-CP',
       ],
-      liveHref: '/benchmark/',
-      liveLabel: 'Mở Buồng Đối Chứng 2 Bên EVSIM (/benchmark)',
+      liveLinks: [
+        { href: '/portal/audit/', label: 'Cổng Kiểm Toán ISO 14083 (/portal/audit)' },
+        { href: '/benchmark/', label: 'Buồng Đối Chứng EVSIM (/benchmark)' },
+      ],
       gradient: 'from-yellow-400/10 to-emerald-500/5',
-      deviceTag: 'iPhone 18 Pro Max & Galaxy S26 Ultra',
-      deviceId: 'galaxy_s26_ultra',
+      devices: [
+        { id: 'macbook_pro', label: 'MacBook Pro 16"' },
+        { id: 'windows_xps', label: 'Windows 11 XPS 16' },
+        { id: 'ipad_pro', label: 'iPad Pro M4' },
+      ],
     },
   ];
 
@@ -191,23 +207,33 @@ export const Solutions: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="pt-2 flex flex-wrap items-center justify-between gap-2">
-                  <a
-                    href={item.liveHref}
-                    className="inline-flex items-center gap-1.5 text-xs font-extrabold text-ecomiles-lime hover:underline"
-                  >
-                    <span>{item.liveLabel}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
-                  <a
-                    href="#showcase"
-                    onClick={(e) => handleScrollToShowcase(e, item.deviceId)}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 hover:bg-ecomiles-lime/15 border border-white/10 hover:border-ecomiles-lime/40 text-[10.5px] font-bold text-slate-300 hover:text-ecomiles-lime transition-all cursor-pointer"
-                    title="Xem thiết bị trên Sân khấu 7 Thiết Bị (#showcase)"
-                  >
-                    <Monitor className="w-3 h-3 text-ecomiles-lime" />
-                    <span>{item.deviceTag}</span>
-                  </a>
+                <div className="pt-2 space-y-2.5">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                    {item.liveLinks.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        className="inline-flex items-center gap-1 text-xs font-extrabold text-ecomiles-lime hover:underline"
+                      >
+                        <span>{link.label}</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </a>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {item.devices.map((dev) => (
+                      <a
+                        key={dev.id}
+                        href="#showcase"
+                        onClick={(e) => handleScrollToShowcase(e, dev.id)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 hover:bg-ecomiles-lime/15 border border-white/10 hover:border-ecomiles-lime/40 text-[10.5px] font-bold text-slate-300 hover:text-ecomiles-lime transition-all cursor-pointer"
+                        title={`Xem ${dev.label} trên Sân khấu 7 Thiết Bị (#showcase)`}
+                      >
+                        <Monitor className="w-3 h-3 text-ecomiles-lime" />
+                        <span>{dev.label}</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>

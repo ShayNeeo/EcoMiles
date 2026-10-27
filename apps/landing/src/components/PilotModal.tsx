@@ -20,9 +20,10 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
     area: 'TP. Hồ Chí Minh (Ưu tiên đợt 1)',
     notes: '',
     deviceMix: [
-      'MacBook / Windows B2B TMS',
-      'Galaxy Z Fold / iPad Pro Kho Vận',
-      'iPhone Duo / 18 Pro Max / S26 Ultra Tài Xế',
+      'MacBook / Windows (B2B TMS & EVSIM)',
+      'iPad / Tablet (Kho Vận & Cross-dock)',
+      'Galaxy Z Fold / Gập Đôi (Cockpit /maps)',
+      'iPhone / Samsung Android (App Tài Xế)',
     ],
   });
 
@@ -92,7 +93,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                     Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực
                   </div>
                   <div className="text-[10px] text-slate-400 truncate">
-                    MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · S26 Ultra
+                    MacBook Pro 16&quot; · Windows XPS 16 · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
                   </div>
                 </div>
               </div>
@@ -239,14 +240,18 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                    Thiết bị vận hành đang sử dụng (Chọn nhiều)
-                  </label>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-300">
+                      Thiết bị vận hành đang sử dụng ({formData.deviceMix.length}/4 nhóm)
+                    </label>
+                    <span className="text-[10px] text-ecomiles-lime font-bold">$0 Map API</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                     {[
-                      'MacBook / Windows B2B TMS',
-                      'Galaxy Z Fold / iPad Pro Kho Vận',
-                      'iPhone Duo / 18 Pro Max / S26 Ultra Tài Xế',
+                      'MacBook / Windows (B2B TMS & EVSIM)',
+                      'iPad / Tablet (Kho Vận & Cross-dock)',
+                      'Galaxy Z Fold / Gập Đôi (Cockpit /maps)',
+                      'iPhone / Samsung Android (App Tài Xế)',
                     ].map((chip) => {
                       const active = formData.deviceMix.includes(chip);
                       return (
@@ -254,7 +259,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                           key={chip}
                           type="button"
                           onClick={() => toggleDeviceMix(chip)}
-                          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition-all border cursor-pointer ${
+                          className={`px-2.5 py-1.5 rounded-xl text-left text-[11px] font-semibold transition-all border cursor-pointer ${
                             active
                               ? 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40'
                               : 'bg-slate-950 text-slate-400 border-white/10 hover:border-white/20'

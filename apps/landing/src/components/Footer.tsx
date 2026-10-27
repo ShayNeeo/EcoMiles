@@ -52,27 +52,54 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0 max-w-2xl">
             <a
               href="/dashboard/"
-              className="px-4 py-2.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-lg transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-lg transition-colors"
             >
-              <FileSpreadsheet className="w-4 h-4" />
+              <FileSpreadsheet className="w-3.5 h-3.5" />
               <span>Trung Tâm B2B (/dashboard)</span>
             </a>
             <a
               href="/maps/?vehicle=0&mode=navigate"
-              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
             >
-              <Compass className="w-4 h-4 text-ecomiles-lime" />
+              <Compass className="w-3.5 h-3.5 text-ecomiles-lime" />
               <span>Bản Đồ Xe Tải (/maps)</span>
             </a>
             <a
               href="/driver/"
-              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
             >
-              <Truck className="w-4 h-4 text-emerald-400" />
+              <Truck className="w-3.5 h-3.5 text-emerald-400" />
               <span>App Tài Xế (/driver)</span>
+            </a>
+            <a
+              href="/benchmark/"
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
+            >
+              <span>Đối Chứng EVSIM (/benchmark)</span>
+            </a>
+            <a
+              href="/portal/audit/"
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Phòng Audit (/portal/audit)</span>
+            </a>
+            <a
+              href="/pitch-deck/"
+              className="px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold text-xs flex items-center gap-1.5 transition-colors"
+            >
+              <span>Slide Deck (/pitch-deck)</span>
+            </a>
+            <a
+              href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+              download="00_ecomiles_clean_devices_hero_stage.png"
+              className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/15 font-semibold text-xs flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5 text-ecomiles-lime" />
+              <span>Banner 2.4K (.PNG)</span>
             </a>
           </div>
         </div>
@@ -179,6 +206,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   className="hover:text-ecomiles-lime transition-colors"
                 >
                   Bảng giá SaaS &amp; Gói Pilot 4 - 6 tuần
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/pitch-deck/"
+                  className="hover:text-ecomiles-lime transition-colors text-slate-300 font-semibold flex items-center gap-1"
+                >
+                  <span>Bộ 28 ảnh &amp; Slide Thuyết Trình (/pitch-deck)</span>
                 </a>
               </li>
               <li>
