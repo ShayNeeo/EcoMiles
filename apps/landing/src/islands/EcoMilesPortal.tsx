@@ -2494,6 +2494,54 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           ===================================================================== */}
       {activeRole === 'tester' && (
         <div className="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-5 space-y-3">
+          {/* 7-Device Benchmark & Telemetry Verification Strip */}
+          <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 text-white space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
+              <div className="flex items-center gap-2.5">
+                <img
+                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                  alt="EcoMiles 7-Device Studio Stage"
+                  className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0"
+                />
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#d6f65a] block">
+                    Trạm Đối Chứng &amp; Kiểm Định Dữ Liệu 7 Thiết Bị (120 Đơn Hàng TP.HCM)
+                  </span>
+                  <span className="text-[11px] text-slate-300">
+                    MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                <a
+                  href="/#showcase"
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-bold transition-colors"
+                >
+                  Sân Khấu 7 Thiết Bị (#showcase)
+                </a>
+                <a
+                  href="/pitch-deck/"
+                  className="px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
+                >
+                  Bộ 28 Ảnh Pitch Deck ↗
+                </a>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+              <div className="p-2 rounded-lg bg-white/5 border border-emerald-500/30">
+                <div className="text-[10px] font-bold text-[#d6f65a] uppercase">1. Đối Chứng Song Song (Master)</div>
+                <div className="font-bold text-white mt-0.5">Windows 11 XPS 16 (EVSIM) · MacBook Pro 16&quot; (TMS)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                <div className="text-[10px] font-bold text-emerald-300 uppercase">2. Bến Bãi &amp; Buồng Lái Xe Tải</div>
+                <div className="font-bold text-white mt-0.5">Galaxy Z Fold (/maps) · iPad Pro M4 (Taplo 13&quot;)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                <div className="text-[10px] font-bold text-sky-300 uppercase">3. Thực Địa Giao Điểm ($0 API)</div>
+                <div className="font-bold text-white mt-0.5">iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra</div>
+              </div>
+            </div>
+          </div>
           <EvsimDualSimulator
             initialResult={result}
             onResultChange={(newRes) => setResult(newRes)}

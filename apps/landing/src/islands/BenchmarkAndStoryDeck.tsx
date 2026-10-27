@@ -325,6 +325,38 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
 
   return (
     <div className="space-y-6 pb-16 tabular-nums">
+      {/* 7-Device Studio Cover Banner & Verification Strip */}
+      <div className="p-4 rounded-3xl bg-slate-900/95 border border-ecomiles-lime/35 flex flex-col md:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <img
+            src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+            alt="EcoMiles 7-Device Studio Cover Banner"
+            className="h-12 sm:h-14 w-auto object-contain rounded-xl border border-white/15 bg-black/40 p-0.5 shrink-0"
+          />
+          <div>
+            <div className="text-[11px] font-extrabold uppercase tracking-wider text-ecomiles-lime">
+              Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thực Nghiệm (2400×1120 Studio Stage)
+            </div>
+            <div className="text-xs text-slate-300">
+              MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
+          <a
+            href="/#showcase"
+            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-white/10 transition-colors"
+          >
+            Sân Khấu 7 Thiết Bị (#showcase)
+          </a>
+          <a
+            href="/pitch-deck/"
+            className="px-3 py-1.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold transition-colors"
+          >
+            Bộ 28 Ảnh Pitch Deck ↗
+          </a>
+        </div>
+      </div>
       {/* =====================================================================
           ZONE 1: ULTRA-CLEAN INPUT & SAMPLE SWITCHER BAR
           "Upload your .xlsx or pick a real HCMC scenario -> See the difference"

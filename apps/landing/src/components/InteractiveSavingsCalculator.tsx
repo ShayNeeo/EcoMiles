@@ -38,7 +38,12 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
   const litersSaved = (kmSaved * fuelConsumption) / 100;
   const moneySavedVND = litersSaved * fuelPrice;
   const co2SavedKg = litersSaved * emissionFactor;
-
+  const dispatcherUnits = Math.max(2, Math.ceil(fleetSize / 12));
+  const warehouseTablets = Math.max(1, Math.ceil(fleetSize / 8));
+  const cabinFoldUnits = Math.max(1, Math.round(fleetSize * 0.35));
+  const driverHandheldUnits = Math.max(1, fleetSize - cabinFoldUnits);
+  const totalHardwareUnits =
+    dispatcherUnits + warehouseTablets + cabinFoldUnits + driverHandheldUnits;
   useGSAP(
     () => {
       const prefersReducedMotion =
@@ -359,6 +364,43 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     className="h-full bg-rose-500/35 border-l border-white/30"
                     title={`Cắt giảm ${savingsRate}% quãng đường thừa`}
                   />
+                </div>
+              </div>
+
+              {/* Dynamic 7-Device Fleet Hardware Provisioning Matrix */}
+              <div className="mb-6 p-3.5 rounded-2xl bg-slate-900/85 border border-ecomiles-lime/25 space-y-2.5 text-xs">
+                <div className="flex items-center justify-between gap-2 pb-2 border-b border-white/10">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <img
+                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                      alt="EcoMiles 7-Device Studio Stage"
+                      className="h-8 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0"
+                    />
+                    <span className="text-[11px] font-extrabold text-white truncate">
+                      Cấu Hình 7 Thiết Bị ({fleetSize} Xe)
+                    </span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-ecomiles-lime/15 border border-ecomiles-lime/35 text-[10px] font-bold text-ecomiles-lime shrink-0">
+                    {totalHardwareUnits} thiết bị · $0 Map API
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[10.5px]">
+                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
+                    <div className="font-bold text-ecomiles-lime">{dispatcherUnits} Trạm Điều Phối</div>
+                    <div className="text-slate-400 truncate">MacBook Pro 16&quot; · XPS 16</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
+                    <div className="font-bold text-emerald-300">{warehouseTablets} Tablet Kho Bãi</div>
+                    <div className="text-slate-400 truncate">iPad Pro M4 (Taplo 13&quot;)</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
+                    <div className="font-bold text-cyan-300">{cabinFoldUnits} Màn Hình Buồng Lái</div>
+                    <div className="text-slate-400 truncate">Galaxy Z Fold (/maps)</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-950/80 border border-white/5">
+                    <div className="font-bold text-white">{driverHandheldUnits} Máy Tài Xế Giao Điểm</div>
+                    <div className="text-slate-400 truncate">iPhone Duo · 18 Pro Max · S26</div>
+                  </div>
                 </div>
               </div>
             </div>
