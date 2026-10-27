@@ -260,17 +260,35 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       syncPulses.push(pulse);
     });
 
-    // Load 7 Real Device Textures (threejs-textures: tag SRGBColorSpace + maxAnisotropy)
+    // Load 7 Real Device Textures (threejs-textures: SRGBColorSpace + LinearFilter + 3D Physical Chassis Backing)
     const loader = new THREE.TextureLoader();
     const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     const deviceMeshes: THREE.Mesh[] = [];
+    const chassisMeshes: THREE.Mesh[] = [];
     const loadedTextures: THREE.Texture[] = [];
 
     DEVICE_3D_SPECS.forEach((spec) => {
       const tex = loader.load(spec.textureUrl);
       tex.colorSpace = THREE.SRGBColorSpace;
+      tex.generateMipmaps = false;
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
       tex.anisotropy = maxAniso;
       loadedTextures.push(tex);
+
+      // 3D Physical Metallic Chassis Backing Plate behind each screen
+      const chassisGeo = new THREE.BoxGeometry(spec.width + 0.06, spec.height + 0.06, 0.045);
+      const chassisMat = new THREE.MeshBasicMaterial({
+        color: 0x1e293b,
+        transparent: true,
+        opacity: 0.92,
+      });
+      const chassis = new THREE.Mesh(chassisGeo, chassisMat);
+      chassis.position.set(spec.pos[0], spec.pos[1], spec.pos[2] - 0.026);
+      chassis.rotation.y = spec.rotY;
+      chassis.userData = { deviceId: spec.id, baseY: spec.pos[1], baseRotY: spec.rotY };
+      stageGroup.add(chassis);
+      chassisMeshes.push(chassis);
 
       const geo = new THREE.PlaneGeometry(spec.width, spec.height);
       const mat = new THREE.MeshBasicMaterial({
@@ -371,8 +389,17 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           0.1
         );
 
+        const ch = chassisMeshes[i];
+        if (ch) {
+          const chMat = ch.material as THREE.MeshBasicMaterial;
+          chMat.opacity = THREE.MathUtils.lerp(chMat.opacity, isFocused ? 0.92 : 0.12, 0.12);
+          ch.rotation.y = m.rotation.y;
+        }
+
         if (!prefersReducedMotion) {
-          m.position.y = baseY + Math.sin(elapsed * 1.5 + i * 0.7) * 0.03;
+          const nextY = baseY + Math.sin(elapsed * 1.5 + i * 0.7) * 0.03;
+          m.position.y = nextY;
+          if (ch) ch.position.y = nextY;
         }
       });
 
@@ -403,6 +430,10 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       deviceMeshes.forEach((m) => {
         m.geometry.dispose();
         (m.material as THREE.Material).dispose();
+      });
+      chassisMeshes.forEach((c) => {
+        c.geometry.dispose();
+        (c.material as THREE.Material).dispose();
       });
       loadedTextures.forEach((t) => t.dispose());
       renderer.dispose();

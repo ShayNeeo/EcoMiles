@@ -354,7 +354,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 ) : stageRenderMode === 'studio_banner' ? (
                   <div className="w-full flex items-center justify-center">
                     <img
-                      src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                       alt="EcoMiles 7-Device Flagship Studio Cover Banner with Floor Reflections"
                       className="max-h-[450px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.85)] rounded-xl"
                     />

@@ -721,9 +721,67 @@ def build_master_cover_banner() -> str:
     return p0
 
 
+def build_clean_devices_hero_stage() -> str:
+    """
+    Builds `00_ecomiles_clean_devices_hero_stage.png` (2400 x 1120):
+    Pure 7-Device Hardware V-Formation Studio Stage with ZERO baked-in headline or KPI boxes
+    (scroll-craft rule: never duplicate baked-in text inside a hero image when real HTML markup carries the headline).
+    Features larger hardware frames, volumetric emerald spotlight, perspective studio floor grid, and glossy floor reflections.
+    """
+    W, H = 2400, 1120
+    floor_y = 885
+    stage = Image.new("RGBA", (W, H), (5, 10, 17, 255))
+
+    glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse([220, 40, 2180, 980], fill=(16, 82, 48, 135))
+    gd.ellipse([680, 140, 1720, 860], fill=(214, 246, 90, 48))
+    glow = glow.filter(ImageFilter.GaussianBlur(90))
+    stage = Image.alpha_composite(stage, glow)
+
+    bd = ImageDraw.Draw(stage)
+    bd.rectangle([0, floor_y, W, H], fill=(4, 8, 14, 248))
+    for gx in range(-400, W + 400, 150):
+        bd.line([(W // 2 + (gx - W // 2) // 2, floor_y), (gx, H)], fill=(34, 197, 94, 26), width=1)
+    for gy in [floor_y + 35, floor_y + 85, floor_y + 150, floor_y + 215]:
+        bd.line([(0, gy), (W, gy)], fill=(34, 197, 94, 20), width=1)
+    bd.line([(0, floor_y), (W, floor_y)], fill=(214, 246, 90, 125), width=2)
+
+    # Tier 1 (Rear Apex — Larger Laptops): MacBook Pro 16" + Windows 11 XPS 16
+    mbp = render_macbook_pro_16(os.path.join(SHOT_DIR, "01_desktop_b2b_tms_fleet_overview.png"), 820, 512)
+    xps = render_windows_xps_laptop(os.path.join(SHOT_DIR, "02_desktop_b2b_tms_evsim_dual_simulator.png"), 820, 512)
+    paste_studio_device_with_reflection(stage, mbp, (270, 72), floor_y, "MacBook Pro 16\" · Điều Phối Đội Xe B2B", "top")
+    paste_studio_device_with_reflection(stage, xps, (1245, 72), floor_y, "Windows 11 XPS 16 · Đối Chứng 2 Bên EVSIM", "top")
+
+    # Tier 2 (Mid Wings — Larger Tablets): Samsung Galaxy Z Fold + iPad Pro M4
+    zfold = render_samsung_zfold_tablet(os.path.join(SHOT_DIR, "11_tablet_maps_live_navigate_cockpit.png"), 414, 552)
+    ipad = render_ipad_pro_tablet(os.path.join(SHOT_DIR, "09_tablet_b2b_tms_fleet_overview.png"), 414, 552)
+    paste_studio_device_with_reflection(stage, zfold, (38, 285), floor_y, "Galaxy Z Fold · Bản Đồ (/maps)", "bottom")
+    paste_studio_device_with_reflection(stage, ipad, (1905, 285), floor_y, "iPad Pro M4 · Quản Trị Kho Vận", "bottom")
+
+    # Tier 3 (Foreground Center Focal Trio — Larger Phones): iPhone 18 Pro Max + iPhone Duo + Galaxy S26 Ultra
+    ip18 = render_iphone_18_pro_max(os.path.join(SHOT_DIR, "13_mobile_driver_middle_mile_hud.png"), 252, 545)
+    duo = render_iphone_duo_dual_screen(
+        os.path.join(SHOT_DIR, "13_mobile_driver_middle_mile_hud.png"),
+        os.path.join(SHOT_DIR, "15_mobile_maps_live_follow_truck_nav.png"),
+        252,
+        545,
+    )
+    s26 = render_samsung_s26_ultra(os.path.join(SHOT_DIR, "14_mobile_driver_last_mile_gmaps_waypoints.png"), 252, 545)
+
+    paste_studio_device_with_reflection(stage, ip18, (545, 305), floor_y, "iPhone 18 Pro Max · Chặng Giữa", "bottom")
+    paste_studio_device_with_reflection(stage, duo, (922, 305), floor_y, "iPhone Duo Dual-Screen · /driver + /maps", "bottom")
+    paste_studio_device_with_reflection(stage, s26, (1535, 305), floor_y, "Galaxy S26 Ultra · Chặng Cuối", "bottom")
+
+    p_clean = os.path.join(SHOT_DIR, "00_ecomiles_clean_devices_hero_stage.png")
+    stage.convert("RGB").save(p_clean, quality=95)
+    return p_clean
+
+
 def build_all() -> list[str]:
     built = []
     built.append(build_master_cover_banner())
+    built.append(build_clean_devices_hero_stage())
 
     m_ip18 = render_iphone_18_pro_max(os.path.join(SHOT_DIR, "13_mobile_driver_middle_mile_hud.png"), 390, 844)
     p21 = os.path.join(SHOT_DIR, "21_mockup_iphone_18_pro_max_driver.png")

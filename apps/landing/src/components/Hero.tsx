@@ -252,7 +252,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               >
                 <a href="#showcase" className="block relative overflow-hidden rounded-2xl">
                   <img
-                    src="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
+                    src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                     alt="EcoMiles 7-Device Flagship Cover Banner: MacBook Pro, Windows XPS, Galaxy Z Fold, iPad Pro, iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra"
                     className="w-full h-auto block rounded-2xl transition-transform duration-500 group-hover:scale-[1.015]"
                   />
