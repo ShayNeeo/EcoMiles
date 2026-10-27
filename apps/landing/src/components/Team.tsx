@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -16,6 +17,8 @@ interface TeamMember {
   liveSubsystemHref: string;
   secondaryLabel?: string;
   secondaryHref?: string;
+  mockupSrc: string;
+  mockupTitle: string;
 }
 
 const members: TeamMember[] = [
@@ -34,6 +37,8 @@ const members: TeamMember[] = [
     imagePosition: 'center 20%',
     liveSubsystemLabel: 'Điều Phối B2B TMS (/dashboard)',
     liveSubsystemHref: '/dashboard/',
+    mockupSrc: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    mockupTitle: 'MacBook Pro 16" · Điều Phối B2B TMS & Luồng 120 Đơn',
   },
   {
     name: 'Phạm Quốc Thanh',
@@ -52,6 +57,8 @@ const members: TeamMember[] = [
     liveSubsystemHref: '/portal/audit/',
     secondaryLabel: '28 Ảnh Pitch Deck ↗',
     secondaryHref: '/pitch-deck/',
+    mockupSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    mockupTitle: 'Full 7-Device Studio Stage · VRPTW/ALNS, 3D WebGL & AES-256-GCM (2400×1120)',
   },
   {
     name: 'Nguyễn Ngọc Khánh Phương',
@@ -68,6 +75,8 @@ const members: TeamMember[] = [
     imagePosition: 'center 28%',
     liveSubsystemLabel: 'Đối Chứng EVSIM & ESG (/benchmark)',
     liveSubsystemHref: '/benchmark/',
+    mockupSrc: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    mockupTitle: 'Windows 11 XPS 16 · Kiểm Định Đối Chứng EVSIM & ESG 3-Sheet',
   },
   {
     name: 'Nguyễn Hồng Phúc',
@@ -86,6 +95,8 @@ const members: TeamMember[] = [
     liveSubsystemHref: '/maps/?vehicle=0&mode=navigate',
     secondaryLabel: 'Hồ Sơ Gọi Vốn ↗',
     secondaryHref: '/pitch-deck/',
+    mockupSrc: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    mockupTitle: 'Samsung Galaxy Z Fold · Bản Đồ Xe Tải $0 API & Mô Hình Tài Chính',
   },
   {
     name: 'Lê Thị Hoàng Ngân',
@@ -102,11 +113,14 @@ const members: TeamMember[] = [
     imagePosition: 'center 25%',
     liveSubsystemLabel: 'App Tài Xế 2 Chặng (/driver)',
     liveSubsystemHref: '/driver/',
+    mockupSrc: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    mockupTitle: 'iPhone Duo Dual-Screen · App Tài Xế 2 Chặng & Bản Đồ Live',
   },
 ];
 
 export const Team: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const [activeLightboxMember, setActiveLightboxMember] = useState<TeamMember | null>(null);
 
   useGSAP(
     () => {
@@ -224,10 +238,21 @@ export const Team: React.FC = () => {
                 <p className="mt-2 min-h-[40px] text-xs font-bold leading-5 text-ecomiles-lime sm:text-[13px] text-balance">
                   {member.role}
                 </p>
-                <div className="mt-2 rounded-xl border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-[10px] leading-4 text-slate-300">
-                  <div className="font-bold text-white">{member.ownershipBadge}</div>
-                  <div className="mt-0.5 font-mono text-[9.5px] text-emerald-300">{member.hardwareEndpoints}</div>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveLightboxMember(member)}
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.04] hover:border-ecomiles-lime/55 hover:bg-white/[0.08] px-2.5 py-1.5 text-left text-[10px] leading-4 text-slate-300 transition-all cursor-pointer"
+                >
+                  <div className="flex items-center justify-between gap-1.5">
+                    <span className="font-bold text-white truncate">{member.ownershipBadge}</span>
+                    <span className="shrink-0 rounded bg-ecomiles-lime/15 border border-ecomiles-lime/35 px-1.5 py-0.5 font-mono text-[9px] font-extrabold text-ecomiles-lime">
+                      🔍 2.4K
+                    </span>
+                  </div>
+                  <div className="mt-0.5 font-mono text-[9.5px] text-emerald-300 truncate">
+                    {member.hardwareEndpoints}
+                  </div>
+                </button>
                 <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5">
                   <a
                     href={member.liveSubsystemHref}
@@ -251,6 +276,54 @@ export const Team: React.FC = () => {
         </div>
 
       </div>
+      {activeLightboxMember &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Mockup 2.4K: ${activeLightboxMember.name}`}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setActiveLightboxMember(null)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    {activeLightboxMember.name} · {activeLightboxMember.ownershipBadge}
+                  </div>
+                  <div className="text-[11px] text-slate-300 truncate">{activeLightboxMember.mockupTitle}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={activeLightboxMember.liveSubsystemHref}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                  >
+                    {activeLightboxMember.liveSubsystemLabel} ↗
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setActiveLightboxMember(null)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={activeLightboxMember.mockupSrc}
+                  alt={activeLightboxMember.mockupTitle}
+                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 };

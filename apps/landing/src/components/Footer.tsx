@@ -1,14 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ArrowRight, Compass, Download, FileSpreadsheet, Leaf, Mail, MapPin, Phone, ShieldCheck, Truck } from 'lucide-react';
 
 gsap.registerPlugin(ScrollToPlugin);
+const FOOTER_LIGHTBOX_ASSETS = [
+  {
+    id: 'studio_stage',
+    shortLabel: 'Studio 7 Thiết Bị',
+    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
+    spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+  },
+  {
+    id: 'macbook_pro',
+    shortLabel: 'MacBook Pro 16"',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+    spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+  },
+  {
+    id: 'windows_xps',
+    shortLabel: 'Windows 11 XPS 16',
+    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+    spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+  },
+  {
+    id: 'galaxy_zfold',
+    shortLabel: 'Galaxy Z Fold',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+    spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+  },
+  {
+    id: 'ipad_pro',
+    shortLabel: 'iPad Pro M4',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+  },
+  {
+    id: 'iphone_duo',
+    shortLabel: 'iPhone Duo (Gập Đôi)',
+    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+    spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+  },
+  {
+    id: 'iphone_18_pro_max',
+    shortLabel: 'iPhone 18 Pro Max',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+  },
+  {
+    id: 'galaxy_s26_ultra',
+    shortLabel: 'Galaxy S26 Ultra',
+    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+    spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+  },
+] as const;
 interface FooterProps {
   onOpenPilotModal: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
+  const [footerLightboxIdx, setFooterLightboxIdx] = useState<number | null>(null);
   const handleSmoothFooterScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
     targetSelector: string,
@@ -93,6 +153,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
             >
               <span>Slide Deck (/pitch-deck)</span>
             </a>
+            <button
+              type="button"
+              onClick={() => setFooterLightboxIdx(0)}
+              className="px-3.5 py-2 rounded-xl bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <span>🔍 Xem Sân Khấu 2.4K</span>
+            </button>
             <a
               href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
               download="00_ecomiles_clean_devices_hero_stage.png"
@@ -292,6 +359,90 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
           </div>
         </div>
       </div>
+      {footerLightboxIdx !== null &&
+        typeof document !== 'undefined' &&
+        (() => {
+          const total = FOOTER_LIGHTBOX_ASSETS.length;
+          const safeIdx = ((footerLightboxIdx % total) + total) % total;
+          const activeAsset = FOOTER_LIGHTBOX_ASSETS[safeIdx];
+          return createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={activeAsset.title}
+              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setFooterLightboxIdx(null)}
+            >
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{safeIdx + 1}/{total}] {activeAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setFooterLightboxIdx((safeIdx - 1 + total) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFooterLightboxIdx((safeIdx + 1) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={activeAsset.src}
+                      download
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                    >
+                      Tải PNG 2.4K
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setFooterLightboxIdx(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeAsset.src}
+                    alt={activeAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {FOOTER_LIGHTBOX_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setFooterLightboxIdx(idx)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>,
+            document.body
+          );
+        })()}
     </footer>
   );
 };
