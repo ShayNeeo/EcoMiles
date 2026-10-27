@@ -190,6 +190,9 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     if (nextDev) {
       tiltRotateX.set(0);
       tiltRotateY.set(0);
+      if (stageRenderMode === 'studio_banner') {
+        setStageRenderMode('spatial_2d');
+      }
       setSelectedDeviceId(nextDev.id);
     }
   };
@@ -908,6 +911,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
               <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
                 <div className="min-w-0">
                   <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    [{activeFlagshipIndex + 1}/{FLAGSHIP_DEVICES.length}]{' '}
                     {stageRenderMode === 'studio_banner'
                       ? studioBannerVariant === 'clean_stage'
                         ? 'Ảnh Bìa Sân Khấu 7 Thiết Bị (2400×1120) · Phản Chiếu Sàn'
@@ -917,7 +921,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   <div className="text-[11px] text-slate-300 truncate">
                     {stageRenderMode === 'studio_banner'
                       ? 'Studio High-DPI Dual-Banner'
-                      : `${activeDevice.roleBadge} · (${activeFlagshipIndex + 1} / ${FLAGSHIP_DEVICES.length})`}
+                      : activeDevice.roleBadge}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -962,8 +966,34 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                       : activeDevice.imageSrc
                   }
                   alt={activeDevice.deviceTitle}
-                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_45px_rgba(0,0,0,0.9)]"
+                  className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_45px_rgba(0,0,0,0.9)]"
                 />
+              </div>
+              <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                {FLAGSHIP_DEVICES.map((dev, idx) => {
+                  const isActive = dev.id === activeDevice.id && stageRenderMode !== 'studio_banner';
+                  return (
+                    <button
+                      key={dev.id}
+                      type="button"
+                      onClick={() => {
+                        tiltRotateX.set(0);
+                        tiltRotateY.set(0);
+                        if (stageRenderMode === 'studio_banner') {
+                          setStageRenderMode('spatial_2d');
+                        }
+                        setSelectedDeviceId(dev.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        isActive
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {idx + 1}. {dev.shortLabel}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>,

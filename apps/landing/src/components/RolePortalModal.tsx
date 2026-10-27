@@ -18,6 +18,50 @@ interface RolePortalModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+const ROLE_PORTAL_LIGHTBOX_ASSETS = [
+  {
+    shortLabel: '0. Studio 7 Thiết Bị',
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    title: 'Hệ Sinh Thái 7 Thiết Bị Studio 2.4K Đồng Bộ Thời Gian Thực',
+    href: '/pitch-deck/',
+    cta: 'Bộ 28 Ảnh Pitch Deck →',
+  },
+  {
+    shortLabel: '1. MacBook Pro 16" (User)',
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối Đội Xe B2B TMS',
+    href: '/dashboard/',
+    cta: 'Mở /dashboard',
+  },
+  {
+    shortLabel: '2. Windows XPS 16 (Tester)',
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    title: 'Dell Windows 11 XPS 16 · Phòng Đối Chứng Kép EVSIM Simulator',
+    href: '/benchmark/',
+    cta: 'Mở /benchmark',
+  },
+  {
+    shortLabel: '3. iPhone Duo (Driver)',
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    title: 'iPhone Duo Dual-Screen · App Tài Xế 2 Chặng & Bản Đồ Live',
+    href: '/driver/',
+    cta: 'Mở /driver (PIN 0000)',
+  },
+  {
+    shortLabel: '4. Zero-Knowledge (Admin)',
+    src: '/pitch-deck-screenshots/07_desktop_admin_zero_knowledge_audit.png',
+    title: 'Desktop Admin · Giám Sát Hạ Tầng Zero-Knowledge & KMS',
+    href: '/portal/audit/',
+    cta: 'Mở /portal/audit',
+  },
+  {
+    shortLabel: '5. Galaxy Z Fold (/maps)',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Bản Đồ Dẫn Đường Xe Tải Mở (/maps)',
+    href: '/maps/?vehicle=0&mode=navigate',
+    cta: 'Bắt Đầu Lái (/maps Live)',
+  },
+] as const;
 
 export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClose }) => {
   const [selectedPlate, setSelectedPlate] = useState('51C-000.09');
@@ -369,61 +413,106 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
       </AnimatePresence>
       {previewAsset &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={previewAsset.title}
-            className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-            onClick={() => setPreviewAsset(null)}
-          >
+        (() => {
+          const total = ROLE_PORTAL_LIGHTBOX_ASSETS.length;
+          const activeIdx = Math.max(
+            0,
+            ROLE_PORTAL_LIGHTBOX_ASSETS.findIndex((a) => a.src === previewAsset.src)
+          );
+          return createPortal(
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={previewAsset.title}
+              className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setPreviewAsset(null)}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                <div className="min-w-0">
-                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    {previewAsset.title}
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{activeIdx + 1}/{total}] {previewAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300">Mockup Thiết Bị 2.4K Độ Phân Giải Cao</div>
                   </div>
-                  <div className="text-[11px] text-slate-300">Mockup Thiết Bị 2.4K Độ Phân Giải Cao</div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPreviewAsset(
+                          ROLE_PORTAL_LIGHTBOX_ASSETS[(activeIdx - 1 + total) % total]
+                        )
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPreviewAsset(
+                          ROLE_PORTAL_LIGHTBOX_ASSETS[(activeIdx + 1) % total]
+                        )
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <a
+                      href={previewAsset.src}
+                      download
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                    >
+                      Tải PNG
+                    </a>
+                    <a
+                      href={previewAsset.href}
+                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5"
+                    >
+                      <span>{previewAsset.cta}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewAsset(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      aria-label="Đóng xem trước"
+                    >
+                      ✕ Đóng
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <a
-                    href={previewAsset.src}
-                    download
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
-                  >
-                    Tải PNG
-                  </a>
-                  <a
-                    href={previewAsset.href}
-                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5"
-                  >
-                    <span>{previewAsset.cta}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setPreviewAsset(null)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    aria-label="Đóng xem trước"
-                  >
-                    ✕ Đóng
-                  </button>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={previewAsset.src}
+                    alt={previewAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {ROLE_PORTAL_LIGHTBOX_ASSETS.map((item) => (
+                    <button
+                      key={item.src}
+                      type="button"
+                      onClick={() => setPreviewAsset(item)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        item.src === previewAsset.src
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={previewAsset.src}
-                  alt={previewAsset.title}
-                  className="max-h-[72vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </>
   );
 };

@@ -8,10 +8,68 @@ interface PilotModalProps {
   onClose: () => void;
   initialInterest?: string;
 }
+const PILOT_LIGHTBOX_ASSETS = [
+  {
+    id: 'studio_stage',
+    shortLabel: '0. Studio 7 Thiết Bị',
+    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
+    subtitle: 'MacBook Pro 16" · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · 18 Pro Max · S26 Ultra',
+    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+  },
+  {
+    id: 'macbook_pro',
+    shortLabel: '1. MacBook Pro 16"',
+    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+    subtitle: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
+    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+  },
+  {
+    id: 'windows_xps',
+    shortLabel: '2. Windows XPS 16',
+    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+    subtitle: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
+    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+  },
+  {
+    id: 'galaxy_zfold',
+    shortLabel: '3. Galaxy Z Fold',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+    subtitle: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+  },
+  {
+    id: 'ipad_pro',
+    shortLabel: '4. iPad Pro M4',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    subtitle: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+  },
+  {
+    id: 'iphone_duo',
+    shortLabel: '5. iPhone Duo',
+    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
+    subtitle: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+  },
+  {
+    id: 'iphone_18_pro_max',
+    shortLabel: '6. iPhone 18 Pro Max',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    subtitle: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+  },
+  {
+    id: 'galaxy_s26_ultra',
+    shortLabel: '7. Galaxy S26 Ultra',
+    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+    subtitle: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+  },
+] as const;
 
 export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initialInterest }) => {
   const [submitted, setSubmitted] = useState(false);
-  const [isPilotBannerZoomed, setIsPilotBannerZoomed] = useState(false);
+  const [pilotLightboxIdx, setPilotLightboxIdx] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -90,7 +148,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                   <img
                     src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                     alt="EcoMiles 7-Device Flagship Studio Cover"
-                    onClick={() => setIsPilotBannerZoomed(true)}
+                    onClick={() => setPilotLightboxIdx(0)}
                     className="h-10 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
                   />
                   <div className="min-w-0">
@@ -104,7 +162,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                 </div>
                 <button
                   type="button"
-                  onClick={() => setIsPilotBannerZoomed(true)}
+                  onClick={() => setPilotLightboxIdx(0)}
                   className="px-2 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 text-[10px] font-extrabold shrink-0 cursor-pointer transition-colors"
                 >
                   🔍 2.4K
@@ -261,26 +319,38 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                     {[
-                      'MacBook / Windows (B2B TMS & EVSIM)',
-                      'iPad / Tablet (Kho Vận & Cross-dock)',
-                      'Galaxy Z Fold / Gập Đôi (Cockpit /maps)',
-                      'iPhone / Samsung Android (App Tài Xế)',
-                    ].map((chip) => {
+                      { chip: 'MacBook / Windows (B2B TMS & EVSIM)', idx: 1 },
+                      { chip: 'iPad / Tablet (Kho Vận & Cross-dock)', idx: 4 },
+                      { chip: 'Galaxy Z Fold / Gập Đôi (Cockpit /maps)', idx: 3 },
+                      { chip: 'iPhone / Samsung Android (App Tài Xế)', idx: 5 },
+                    ].map(({ chip, idx }) => {
                       const active = formData.deviceMix.includes(chip);
                       return (
-                        <button
+                        <div
                           key={chip}
-                          type="button"
-                          onClick={() => toggleDeviceMix(chip)}
-                          className={`px-2.5 py-1.5 rounded-xl text-left text-[11px] font-semibold transition-all border cursor-pointer ${
+                          className={`rounded-xl text-[11px] font-semibold transition-all border flex items-center justify-between ${
                             active
                               ? 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40'
                               : 'bg-slate-950 text-slate-400 border-white/10 hover:border-white/20'
                           }`}
                         >
-                          {active ? '✓ ' : '+ '}
-                          {chip}
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleDeviceMix(chip)}
+                            className="flex-1 px-2.5 py-1.5 text-left truncate cursor-pointer"
+                          >
+                            {active ? '✓ ' : '+ '}
+                            {chip}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPilotLightboxIdx(idx)}
+                            title={`Phóng to Mockup 2.4K: ${chip}`}
+                            className="px-2 py-1.5 text-[10px] font-mono font-extrabold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 rounded-r-xl transition-colors cursor-zoom-in shrink-0"
+                          >
+                            🔍
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -322,48 +392,83 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
         </motion.div>
         </div>
       </AnimatePresence>
-      {isPilotBannerZoomed &&
+      {pilotLightboxIdx !== null &&
         typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Hệ Sinh Thái 7 Thiết Bị Studio 2.4K"
-            className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-            onClick={() => setIsPilotBannerZoomed(false)}
-          >
+        (() => {
+          const total = PILOT_LIGHTBOX_ASSETS.length;
+          const safeIdx = ((pilotLightboxIdx % total) + total) % total;
+          const activeAsset = PILOT_LIGHTBOX_ASSETS[safeIdx];
+          return createPortal(
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={activeAsset.title}
+              className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+              onClick={() => setPilotLightboxIdx(null)}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                <div className="min-w-0">
-                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)
+              <div
+                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                  <div className="min-w-0">
+                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                      [{safeIdx + 1}/{total}] {activeAsset.title}
+                    </div>
+                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.subtitle}</div>
                   </div>
-                  <div className="text-[11px] text-slate-300 truncate">
-                    MacBook Pro 16&quot; · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · S26 Ultra
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setPilotLightboxIdx((safeIdx - 1 + total) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      ‹ Trước
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPilotLightboxIdx((safeIdx + 1) % total)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    >
+                      Tiếp ›
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPilotLightboxIdx(null)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    >
+                      ✕ Đóng
+                    </button>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setIsPilotBannerZoomed(false)}
-                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                >
-                  ✕ Đóng
-                </button>
+                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                  <img
+                    src={activeAsset.src}
+                    alt={activeAsset.title}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                  {PILOT_LIGHTBOX_ASSETS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setPilotLightboxIdx(idx)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                        idx === safeIdx
+                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                      }`}
+                    >
+                      {item.shortLabel}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  alt="EcoMiles 7-Device Flagship Studio Cover"
-                  className="max-h-[74vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          );
+        })()}
     </>
   );
 };
