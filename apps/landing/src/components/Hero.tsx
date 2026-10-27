@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -40,6 +41,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const [heroStageMode, setHeroStageMode] = useState<'devices_banner' | 'webgl_7devices' | 'studio_24k' | 'three_network'>('devices_banner');
   const [heroWebglDeviceId, setHeroWebglDeviceId] = useState<DeviceBannerFocusId>('all_banner');
   const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
+  const [isStudioLightboxOpen, setIsStudioLightboxOpen] = useState<boolean>(false);
   const heroRef = useRef<HTMLElement | null>(null);
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
@@ -308,21 +310,30 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       B. Ảnh Bìa OpenGraph 2400×1260
                     </button>
                   </div>
-                  <a
-                    href={
-                      studioBannerVariant === 'clean_stage'
-                        ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                        : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                    }
-                    download={
-                      studioBannerVariant === 'clean_stage'
-                        ? '00_ecomiles_clean_devices_hero_stage.png'
-                        : '00_ecomiles_flagship_cover_banner.png'
-                    }
-                    className="font-extrabold text-ecomiles-lime hover:underline"
-                  >
-                    Tải PNG 2.4K →
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsStudioLightboxOpen(true)}
+                      className="px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
+                    >
+                      🔍 Phóng To 2.4K
+                    </button>
+                    <a
+                      href={
+                        studioBannerVariant === 'clean_stage'
+                          ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                          : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                      }
+                      download={
+                        studioBannerVariant === 'clean_stage'
+                          ? '00_ecomiles_clean_devices_hero_stage.png'
+                          : '00_ecomiles_flagship_cover_banner.png'
+                      }
+                      className="font-extrabold text-ecomiles-lime hover:underline"
+                    >
+                      Tải PNG 2.4K →
+                    </a>
+                  </div>
                 </div>
                 <img
                   src={
@@ -335,7 +346,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       ? 'EcoMiles 7-Device Clean Studio Stage (2400x1120) with Floor Reflections'
                       : 'EcoMiles 7-Device OpenGraph Flagship Cover Banner (2400x1260)'
                   }
-                  className="w-full h-auto max-h-[310px] object-contain mx-auto rounded-xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
+                  onClick={() => setIsStudioLightboxOpen(true)}
+                  title="Nhấn để phóng to 2.4K toàn màn hình"
+                  className="w-full h-auto max-h-[310px] object-contain mx-auto rounded-xl cursor-zoom-in drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
                 <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
@@ -465,6 +478,90 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
           </motion.div>
         </div>
       </div>
+      {isStudioLightboxOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Phóng to Ảnh Bìa Studio 2.4K"
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setIsStudioLightboxOpen(false)}
+          >
+            <div
+              className="relative max-w-6xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="inline-flex flex-wrap items-center gap-1 p-0.5 rounded-xl bg-slate-900 border border-white/10 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setStudioBannerVariant('clean_stage')}
+                    className={`px-3 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                      studioBannerVariant === 'clean_stage'
+                        ? 'bg-ecomiles-lime text-slate-950'
+                        : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    A. Sân Khấu 7 Thiết Bị 2400×1120
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStudioBannerVariant('cover_banner')}
+                    className={`px-3 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
+                      studioBannerVariant === 'cover_banner'
+                        ? 'bg-ecomiles-lime text-slate-950'
+                        : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    B. Ảnh Bìa OpenGraph 2400×1260
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={
+                      studioBannerVariant === 'clean_stage'
+                        ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                        : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                    }
+                    download={
+                      studioBannerVariant === 'clean_stage'
+                        ? '00_ecomiles_clean_devices_hero_stage.png'
+                        : '00_ecomiles_flagship_cover_banner.png'
+                    }
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                  >
+                    Tải PNG 2.4K →
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setIsStudioLightboxOpen(false)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    aria-label="Đóng phóng to 2.4K"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={
+                    studioBannerVariant === 'clean_stage'
+                      ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                      : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                  }
+                  alt={
+                    studioBannerVariant === 'clean_stage'
+                      ? 'EcoMiles 7-Device Clean Studio Stage (2400x1120) with Floor Reflections'
+                      : 'EcoMiles 7-Device OpenGraph Flagship Cover Banner (2400x1260)'
+                  }
+                  className="max-h-[76vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useMotionValue, useReducedMotion, useSpring } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -178,6 +179,20 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
   const [isShowcaseAutoTour, setIsShowcaseAutoTour] = useState<boolean>(false);
   const shouldReduceMotion = useReducedMotion();
+  const [isShowcaseLightboxOpen, setIsShowcaseLightboxOpen] = useState<boolean>(false);
+  const activeFlagshipIndex = Math.max(
+    0,
+    FLAGSHIP_DEVICES.findIndex((d) => d.id === selectedDeviceId)
+  );
+  const wrapFlagshipIndex = gsap.utils.wrap(0, FLAGSHIP_DEVICES.length);
+  const stepFlagshipDevice = (delta: -1 | 1) => {
+    const nextDev = FLAGSHIP_DEVICES[wrapFlagshipIndex(activeFlagshipIndex + delta)];
+    if (nextDev) {
+      tiltRotateX.set(0);
+      tiltRotateY.set(0);
+      setSelectedDeviceId(nextDev.id);
+    }
+  };
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageCardRef = useRef<HTMLDivElement | null>(null);
   const multiStageRef = useRef<HTMLDivElement | null>(null);
@@ -492,17 +507,26 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           B. Ảnh Bìa OpenGraph / Pitch Deck (2400×1260)
                         </button>
                       </div>
-                      <a
-                        href={
-                          studioBannerVariant === 'clean_stage'
-                            ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                            : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                        }
-                        download
-                        className="font-extrabold text-ecomiles-lime hover:underline"
-                      >
-                        Tải PNG 2.4K →
-                      </a>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setIsShowcaseLightboxOpen(true)}
+                          className="px-2 py-0.5 rounded-md bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-extrabold text-[10.5px] cursor-pointer transition-colors"
+                        >
+                          🔍 Phóng To 2.4K
+                        </button>
+                        <a
+                          href={
+                            studioBannerVariant === 'clean_stage'
+                              ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                              : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                          }
+                          download
+                          className="font-extrabold text-ecomiles-lime hover:underline"
+                        >
+                          Tải PNG 2.4K →
+                        </a>
+                      </div>
                     </div>
                     <img
                       src={
@@ -511,7 +535,8 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
                       }
                       alt="EcoMiles 7-Device Flagship Studio Cover Banner with Floor Reflections"
-                      className="max-h-[380px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.85)] rounded-xl"
+                      onClick={() => setIsShowcaseLightboxOpen(true)}
+                      className="max-h-[380px] w-auto max-w-full mx-auto block object-contain cursor-zoom-in drop-shadow-[0_20px_44px_rgba(0,0,0,0.85)] rounded-xl"
                     />
                     <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
                       {hardwareDevices.map((dev, idx) => (
@@ -752,6 +777,13 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                         >
                           Thiết bị tiếp ›
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsShowcaseLightboxOpen(true)}
+                          className="px-2.5 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
+                        >
+                          🔍 Phóng To 2.4K
+                        </button>
                       </div>
                     </div>
 
@@ -773,7 +805,8 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                       <img
                         src={activeDevice.imageSrc}
                         alt={activeDevice.deviceTitle}
-                        className="max-h-[420px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_22px_48px_rgba(0,0,0,0.85)] rounded-xl"
+                        onClick={() => setIsShowcaseLightboxOpen(true)}
+                        className="max-h-[420px] w-auto max-w-full mx-auto block object-contain cursor-zoom-in drop-shadow-[0_22px_48px_rgba(0,0,0,0.85)] rounded-xl"
                       />
                     </motion.div>
                   </div>
@@ -858,6 +891,84 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
           </div>
         </div>
       </div>
+      {isShowcaseLightboxOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Chi tiết Mockup 2.4K ${activeDevice.deviceTitle}`}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            onClick={() => setIsShowcaseLightboxOpen(false)}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-ecomiles-lime truncate">
+                    {stageRenderMode === 'studio_banner'
+                      ? studioBannerVariant === 'clean_stage'
+                        ? 'Ảnh Bìa Sân Khấu 7 Thiết Bị (2400×1120) · Phản Chiếu Sàn'
+                        : 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260)'
+                      : activeDevice.deviceTitle}
+                  </div>
+                  <div className="text-[11px] text-slate-300 truncate">
+                    {stageRenderMode === 'studio_banner'
+                      ? 'Studio High-DPI Dual-Banner'
+                      : `${activeDevice.roleBadge} · (${activeFlagshipIndex + 1} / ${FLAGSHIP_DEVICES.length})`}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => stepFlagshipDevice(-1)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                  >
+                    ‹ Trước
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => stepFlagshipDevice(1)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                  >
+                    Tiếp ›
+                  </button>
+                  <a
+                    href={activeDevice.liveRouteUrl}
+                    className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
+                  >
+                    <span>{activeDevice.liveRouteLabel}</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setIsShowcaseLightboxOpen(false)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    aria-label="Đóng toàn màn hình"
+                  >
+                    ✕ Đóng
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
+                <img
+                  src={
+                    stageRenderMode === 'studio_banner'
+                      ? studioBannerVariant === 'clean_stage'
+                        ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                        : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                      : activeDevice.imageSrc
+                  }
+                  alt={activeDevice.deviceTitle}
+                  className="max-h-[75vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_45px_rgba(0,0,0,0.9)]"
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 };
