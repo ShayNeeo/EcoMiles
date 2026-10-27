@@ -19,7 +19,7 @@ interface RoadNode {
 
 // 88 Real Ho Chi Minh City Street Intersections & Bridge Crossings (Verified WGS84)
 export const HCMC_ROAD_NODES: RoadNode[] = [
-  // Tân Bình & Tân Phú Corridor (South/West of Tân Sơn Nhất Airport — strictly outside runway)
+  // Tân Bình & Tân Phú Corridor (South/West of Tân Sơn Nhất Airport, strictly outside runway)
   { id: 'DEPOT_TB', name: 'Kho Tân Bình (364 Cộng Hòa)', lng: 106.6385, lat: 10.8018 },
   { id: 'TB_MUI_TAU', name: 'Mũi Tàu Cộng Hòa - Trường Chinh', lng: 106.6318, lat: 10.8065 },
   { id: 'TB_HOANG_HOA_THAM', name: 'Cộng Hòa - Hoàng Hoa Thám', lng: 106.6462, lat: 10.8014 },
@@ -449,6 +449,164 @@ export function interpolateAlongStreetPathWithHeading(
   return { lng: last[0], lat: last[1], dx: rawDx / norm, dy: rawDy / norm };
 }
 
+/**
+ * Removes hairpin U-turn spikes, dead-end median turnaround tails, and acute fold-back vertices
+ * from a route polyline so the road line flows smoothly without long break tails.
+ */
+export function cleanRoutePolylineSpikes(rawPath: LngLat[]): LngLat[] {
+  if (rawPath.length <= 2) return rawPath;
+
+  // Step 1: Deduplicate identical consecutive points and densify long straight street segments
+  // to ~35m (0.00032 deg) spacing so U-turn necks can be clipped right at the intersection (<130m)
+  // without EVER drawing a long chord across city blocks.
+  const dense: LngLat[] = [rawPath[0]];
+  for (let i = 1; i < rawPath.length; i++) {
+    const p0 = dense[dense.length - 1];
+    const p1 = rawPath[i];
+    const d = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
+    if (d <= 1e-6) continue;
+    const steps = Math.min(25, Math.ceil(d / 0.00032));
+    for (let s = 1; s <= steps; s++) {
+      const u = s / steps;
+      dense.push([
+        Number((p0[0] + (p1[0] - p0[0]) * u).toFixed(5)),
+        Number((p0[1] + (p1[1] - p0[1]) * u).toFixed(5)),
+      ]);
+    }
+  }
+
+  let pts = dense;
+
+  // Step 2: Collapse narrow out-and-back U-turn tails where the neck width `chord` <= 0.0013 (~140m,
+  // the width of a single intersection/median) while the out-and-back loop `arc` >= 3.0 * chord.
+  for (let pass = 0; pass < 8; pass++) {
+    let changed = false;
+    const n = pts.length;
+    if (n <= 4) break;
+    const cumArc: number[] = [0];
+    for (let i = 1; i < n; i++) {
+      cumArc.push(
+        cumArc[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])
+      );
+    }
+    const maxSpan = Math.min(180, Math.floor(n * 0.45));
+    for (let i = 0; i < n - 2; i++) {
+      let pruneTo = -1;
+      for (let j = Math.min(n - 1, i + maxSpan); j >= i + 2; j--) {
+        if (i <= 2 && j >= n - 3) continue;
+        const chord = Math.hypot(pts[j][0] - pts[i][0], pts[j][1] - pts[i][1]);
+        const arc = cumArc[j] - cumArc[i];
+        if (chord <= 0.00135 && arc >= Math.max(chord * 2.8, 0.0012)) {
+          pruneTo = j;
+          break;
+        }
+      }
+      if (pruneTo > i + 1) {
+        pts.splice(i + 1, pruneTo - i - 1);
+        changed = true;
+        break;
+      }
+    }
+    if (!changed) break;
+  }
+
+  // Step 3: Remove only tiny micro-reversal hairpins (< 70m segments that fold back > 140 deg)
+  for (let pass = 0; pass < 4; pass++) {
+    let removed = false;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const ux = p1[0] - p0[0];
+      const uy = p1[1] - p0[1];
+      const vx = p2[0] - p1[0];
+      const vy = p2[1] - p1[1];
+      const lenU = Math.hypot(ux, uy);
+      const lenV = Math.hypot(vx, vy);
+      if (lenU > 1e-6 && lenV > 1e-6 && lenU < 0.00065 && lenV < 0.00065) {
+        const cosTheta = (ux * vx + uy * vy) / (lenU * lenV);
+        if (cosTheta < -0.75) {
+          pts.splice(i, 1);
+          removed = true;
+          break;
+        }
+      }
+    }
+    if (!removed) break;
+  }
+
+  return pts;
+}
+
+/**
+ * Returns the exact sub-polyline of `path` between arc-length fractions `startFrac` and `endFrac` in [0, 1],
+ * preserving every intermediate street vertex so the traveled trail never cuts across corners.
+ */
+export function slicePolylineByFraction(
+  path: LngLat[],
+  startFrac: number,
+  endFrac: number
+): LngLat[] {
+  if (path.length < 2) return path;
+  const f0 = Math.max(0, Math.min(1, startFrac));
+  const f1 = Math.max(f0, Math.min(1, endFrac));
+  if (f1 - f0 <= 1e-6) {
+    const p = interpolateAlongStreetPath(path, f0);
+    return [p, p];
+  }
+
+  const segLengths: number[] = [];
+  let totalLen = 0;
+  for (let i = 1; i < path.length; i++) {
+    const d = Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]);
+    segLengths.push(d);
+    totalLen += d;
+  }
+  if (totalLen <= 1e-9) return [path[0], path[path.length - 1]];
+
+  const dStart = f0 * totalLen;
+  const dEnd = f1 * totalLen;
+  const out: LngLat[] = [interpolateAlongStreetPath(path, f0)];
+
+  let acc = 0;
+  for (let i = 0; i < segLengths.length; i++) {
+    const nextAcc = acc + segLengths[i];
+    if (nextAcc > dStart + 1e-7 && nextAcc < dEnd - 1e-7) {
+      out.push(path[i + 1]);
+    }
+    acc = nextAcc;
+  }
+  out.push(interpolateAlongStreetPath(path, f1));
+  return out;
+}
+
+/**
+ * Projects `[lng, lat]` onto the closest point along `path` so stop pins sit directly on the road line.
+ */
+export function snapPointToPolyline(lng: number, lat: number, path: LngLat[]): LngLat {
+  if (path.length === 0) return [lng, lat];
+  if (path.length === 1) return path[0];
+  let bestPt: LngLat = path[0];
+  let bestDistSq = Infinity;
+  for (let i = 0; i < path.length - 1; i++) {
+    const [x1, y1] = path[i];
+    const [x2, y2] = path[i + 1];
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const lenSq = dx * dx + dy * dy;
+    let t = lenSq > 1e-12 ? ((lng - x1) * dx + (lat - y1) * dy) / lenSq : 0;
+    t = Math.max(0, Math.min(1, t));
+    const px = x1 + t * dx;
+    const py = y1 + t * dy;
+    const dSq = (lng - px) ** 2 + (lat - py) ** 2;
+    if (dSq < bestDistSq) {
+      bestDistSq = dSq;
+      bestPt = [px, py];
+    }
+  }
+  return bestPt;
+}
+
 // =============================================================================
 // 64 REAL, VERIFIED HCMC COMMERCIAL STORE CORRIDORS (NEVER ON AIRPORT OR WATER)
 // =============================================================================
@@ -498,7 +656,7 @@ export const REAL_HCMC_STORE_LOCATIONS: RealHcmcLocation[] = [
   { district: 'Quận 6', street: 'Kinh Dương Vương, Phường 12', lat: 10.7512, lng: 106.6348 },
   { district: 'Quận 6', street: 'Bình Tiên, Phường 3', lat: 10.7468, lng: 106.6498 },
 
-  // Tân Bình & Tân Phú (8 locations — strictly SOUTH/WEST of Cộng Hòa, zero points on Airport!)
+  // Tân Bình & Tân Phú (8 locations, strictly SOUTH/WEST of Cộng Hòa, zero points on Airport!)
   { district: 'Tân Bình', street: 'Cộng Hòa, Phường 13', lat: 10.8012, lng: 106.6415 },
   { district: 'Tân Bình', street: 'Hoàng Văn Thụ, Phường 4', lat: 10.7975, lng: 106.6568 },
   { district: 'Tân Bình', street: 'Lý Thường Kiệt, Phường 8', lat: 10.7865, lng: 106.6538 },
@@ -566,7 +724,7 @@ function ensurePreseededOsrmCache(onLoaded?: () => void): void {
   if (preseedStatus === 'loading') return;
 
   preseedStatus = 'loading';
-  fetch('/samples/hcmc_osrm_legs_cache.json')
+  fetch('/samples/hcmc_osrm_legs_cache.json?v=8', { cache: 'no-store' })
     .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
     .then((data: Record<string, LngLat[][]>) => {
       if (data && typeof data === 'object') {
@@ -609,9 +767,8 @@ function drainOsrmQueue(): void {
     }
     const url =
       next.mode === 'legs'
-        ? `https://router.project-osrm.org/route/v1/driving/${next.key}?overview=simplified&geometries=geojson&steps=true`
-        : `https://router.project-osrm.org/route/v1/driving/${next.key}?overview=full&geometries=geojson`;
-
+        ? `https://router.project-osrm.org/route/v1/driving/${next.key}?overview=simplified&geometries=geojson&steps=true&continue_straight=false`
+        : `https://router.project-osrm.org/route/v1/driving/${next.key}?overview=full&geometries=geojson&continue_straight=false`;
     fetch(url)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((data) => {

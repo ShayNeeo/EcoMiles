@@ -61,7 +61,7 @@ const SLIDES: SlideItem[] = [
     targetSeconds: 12,
     tag: "Nỗi Đau Thị Trường · Market Pain",
     voiceover:
-      "“Câu chuyện đó không phải cá biệt. Logistics Việt Nam đang tiêu tốn tới 17% GDP - gấp rưỡi mức bình quân thế giới - trong khi 80% phát thải CO₂ ngành giao thông đến từ đường bộ, và có tới 30–35% xe chạy rỗng mỗi ngày.”",
+      "\"Câu chuyện đó không phải cá biệt. Logistics Việt Nam đang tiêu tốn tới 17% GDP, gấp rưỡi mức bình quân thế giới, trong khi 80% phát thải CO₂ ngành giao thông đến từ đường bộ, và có tới 30 - 35% xe chạy rỗng mỗi ngày.\"",
     slideImage: "/slides/slide-02.jpg"
   },
   {
@@ -72,7 +72,7 @@ const SLIDES: SlideItem[] = [
     targetSeconds: 10,
     tag: "Năng Lực Thực Thi · Team & Execution",
     voiceover:
-      "“Đứng sau bài toán đó là 5 sinh viên đa ngành - công nghệ, tài chính, marketing, logistics, thương mại điện tử - cùng chung một mục tiêu: xanh hoá logistics Việt Nam.”",
+      "\"Đứng sau bài toán đó là 5 sinh viên đa ngành: công nghệ, tài chính, marketing, logistics, thương mại điện tử, cùng chung một mục tiêu xanh hoá logistics Việt Nam.\"",
     slideImage: "/slides/slide-03.jpg"
   },
   {
@@ -83,7 +83,7 @@ const SLIDES: SlideItem[] = [
     targetSeconds: 15,
     tag: "Tầm Nhìn Vĩ Mô · Macro Alignment",
     voiceover:
-      "“Với chúng tôi, logistics xanh không phải một lựa chọn xa xỉ, mà là con đường tất yếu để doanh nghiệp Việt Nam phát triển bền vững. Đó cũng là lý do EcoMiles hướng tới trở thành nền tảng quản trị vận tải và phát thải hàng đầu Việt Nam, đồng hành cùng mục tiêu Net Zero 2050.”",
+      "\"Với chúng tôi, logistics xanh không phải một lựa chọn xa xỉ, mà là con đường tất yếu để doanh nghiệp Việt Nam phát triển bền vững. Đó cũng là lý do EcoMiles hướng tới trở thành nền tảng quản trị vận tải và phát thải hàng đầu Việt Nam, đồng hành cùng mục tiêu Net Zero 2050.\"",
     slideImage: "/slides/slide-04.jpg"
   },
   {
@@ -94,7 +94,7 @@ const SLIDES: SlideItem[] = [
     targetSeconds: 20,
     tag: "Công Nghệ Lõi · Core Engine",
     voiceover:
-      "“Vậy EcoMiles giải quyết bài toán đó như thế nào? Nền tảng tự động sắp tuyến, chủ động cảnh báo lệch tuyến, ghép đơn chiều về để giảm xe chạy rỗng, và tự động đo lường – báo cáo CO₂ theo chuẩn quốc tế GLEC và GHG Protocol - tất cả trên cùng một hệ thống.”",
+      "\"Vậy EcoMiles giải quyết bài toán đó như thế nào? Nền tảng tự động sắp tuyến, chủ động cảnh báo lệch tuyến, ghép đơn chiều về để giảm xe chạy rỗng, và tự động đo lường, báo cáo CO₂ theo chuẩn quốc tế GLEC và GHG Protocol trên cùng một hệ thống.\"",
     slideImage: "/slides/slide-05.jpg"
   },
   {
@@ -719,7 +719,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                               {simStep === 'running'
                                 ? 'Đang giải bài toán VRPTW 80 đơn...'
                                 : simStep === 'completed'
-                                ? '✓ Đã mô phỏng 80 đơn/10 xe (Bấm để chạy lại)'
+                                ? 'Đã mô phỏng 80 đơn/10 xe (Bấm để chạy lại)'
                                 : 'Mô phỏng gom 80 đơn / 10 xe ngay lập tức'}
                             </span>
                           </button>
@@ -768,7 +768,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
 
                           <div className="rounded-2xl border border-cyan-500/30 bg-cyan-950/20 p-6 text-center">
                             <div className="text-4xl sm:text-5xl font-black text-cyan-400 font-mono tracking-tight">
-                              30–35%
+                              30 - 35%
                             </div>
                             <div className="text-xs uppercase font-extrabold tracking-wider text-cyan-300 mt-2">
                               Xe Chạy Rỗng Mỗi Ngày
@@ -1032,7 +1032,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
 
                         <div className="rounded-2xl border border-white/10 bg-slate-950 p-6">
                           <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 text-emerald-400">
-                            Lộ Trình Tầm Nhìn Chiến Lược 2026 – 2030
+                            Lộ Trình Tầm Nhìn Chiến Lược 2026 - 2030
                           </h4>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="p-4 rounded-xl bg-slate-900/60 border border-white/5 relative">
@@ -1129,7 +1129,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                   Tự Động Gom Cụm &amp; Sắp Tuyến Đa Trạm Dưới 2 Giây
                                 </h4>
                                 <p className="text-xs sm:text-sm text-slate-300 mt-3 leading-relaxed">
-                                  Thay vì mất 45 phút điều phối viên sắp thủ công trên Excel, EcoMiles phân tích đồng thời 80–500 đơn hàng, tự động tránh khung giờ cấm tải TP.HCM (6h–9h &amp; 16h–20h theo QĐ 23/2019) và tính toán khoảng cách thực tế trên bản đồ số OSRM.
+                                  Thay vì mất 45 phút điều phối viên sắp thủ công trên Excel, EcoMiles phân tích đồng thời 80 - 500 đơn hàng, tự động tránh khung giờ cấm tải TP.HCM (6h - 9h &amp; 16h - 20h theo QĐ 23/2018) và tính toán khoảng cách thực tế trên bản đồ số OSRM.
                                 </p>
                                 <div className="mt-4 flex flex-wrap gap-2 text-xs font-mono">
                                   <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-emerald-300">
@@ -1146,7 +1146,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 <div>[Xe 51C-000.02]: Thủ Đức → Bình Thạnh (18 đơn)</div>
                                 <div>[Xe 51C-000.03]: Quận 7 → Nhà Bè (15 đơn)</div>
                                 <div className="text-emerald-300 pt-2 border-t border-slate-800">
-                                  ✓ Không vi phạm giờ cấm tải · Giảm 35% quãng đường
+                                  Không vi phạm giờ cấm tải · Giảm 35% quãng đường
                                 </div>
                               </div>
                             </div>
@@ -1194,11 +1194,11 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                   Biến Xe Chạy Rỗng Thành Doanh Thu Thuần
                                 </h4>
                                 <p className="text-xs sm:text-sm text-slate-300 mt-3 leading-relaxed">
-                                  Tự động gom các đơn thu hồi hàng hoàn, đơn luân chuyển nội bộ hoặc đơn mới từ các kho lân cận trên cung đường xe quay về bãi. Biến 30–35% tỷ lệ xe chạy rỗng thành năng suất giao nhận hữu ích.
+                                  Tự động gom các đơn thu hồi hàng hoàn, đơn luân chuyển nội bộ hoặc đơn mới từ các kho lân cận trên cung đường xe quay về bãi. Biến 30 - 35% tỷ lệ xe chạy rỗng thành năng suất giao nhận hữu ích.
                                 </p>
                                 <div className="mt-4 flex flex-wrap gap-2 text-xs font-mono">
                                   <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-cyan-300">
-                                    Giảm chạy rỗng: 25–35%
+                                    Giảm chạy rỗng: 25 - 35%
                                   </span>
                                   <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-cyan-300">
                                     Tăng thu nhập tài xế: +15%
@@ -1242,7 +1242,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 <div>Tổng số kiện giao: 80 đơn hàng</div>
                                 <div>Tổng phát thải thực tế: 17.6 kg CO₂e (Chuẩn cũ: 142.4 kg)</div>
                                 <div className="text-emerald-400 pt-2 border-t border-slate-800">
-                                  ★ Cắt giảm ước tính: -88% CO₂e (tham chiếu GLEC, chưa chứng nhận)
+                                  Cắt giảm ước tính: -88% CO₂e (tham chiếu GLEC, chưa chứng nhận)
                                 </div>
                               </div>
                             </div>
@@ -1415,7 +1415,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                 </div>
                                 <div className="rounded-xl bg-slate-900/90 border border-slate-800 p-3">
                                   <div className="text-cyan-400 font-bold mb-1">2. Cảnh Báo Giờ Cấm Tải TP.HCM</div>
-                                  <p className="text-slate-300">Tự động cảnh báo vi phạm khung giờ cấm tải theo QĐ 23/2018 (khung 06h–09h &amp; 16h–20h).</p>
+                                  <p className="text-slate-300">Tự động cảnh báo vi phạm khung giờ cấm tải theo QĐ 23/2018 (khung 06h - 09h &amp; 16h - 20h).</p>
                                 </div>
                                 <div className="rounded-xl bg-slate-900/90 border border-slate-800 p-3">
                                   <div className="text-amber-400 font-bold mb-1">3. Đồng Bộ Điện Thoại &lt;0.2s</div>
@@ -1477,7 +1477,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                      <span>Cảnh báo giờ cấm tải TP.HCM (06h–09h &amp; 16h–20h)</span>
+                                      <span>Cảnh báo giờ cấm tải TP.HCM (06h - 09h &amp; 16h - 20h)</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
@@ -1533,7 +1533,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                               <tr className="border-b border-slate-800 text-slate-400">
                                 <th className="py-3 px-4 font-bold text-white">Tiêu Chí Đánh Giá</th>
                                 <th className="py-3 px-4 font-black text-emerald-400 bg-emerald-500/10 rounded-t-xl">
-                                  ★ EcoMiles
+                                  EcoMiles
                                 </th>
                                 <th className="py-3 px-4 font-semibold text-slate-300">File Excel / Zalo</th>
                                 <th className="py-3 px-4 font-semibold text-slate-300">TMS Truyền Thống</th>
@@ -1546,21 +1546,21 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                   Tối ưu tuyến tự động thời gian thực (VRPTW)
                                 </td>
                                 <td className="py-3 px-4 font-bold text-emerald-400 bg-emerald-500/5">
-                                  ✓ &lt; 2 Giây (AI OSRM)
+                                  &lt; 2 Giây (AI OSRM)
                                 </td>
-                                <td className="py-3 px-4 text-red-400">✗ Thủ công (30-60p)</td>
+                                <td className="py-3 px-4 text-red-400">Thủ công (30-60p)</td>
                                 <td className="py-3 px-4 text-amber-300">Có (Nhưng chậm)</td>
-                                <td className="py-3 px-4 text-red-400">✗ Ghép đơn lẻ điểm</td>
+                                <td className="py-3 px-4 text-red-400">Ghép đơn lẻ điểm</td>
                               </tr>
                               <tr>
                                 <td className="py-3 px-4 font-sans font-medium text-slate-200">
                                   Xử lý giờ cấm tải TP.HCM (QĐ 23/2019)
                                 </td>
                                 <td className="py-3 px-4 font-bold text-emerald-400 bg-emerald-500/5">
-                                  ✓ Tự động cảnh báo
+                                  Tự động cảnh báo
                                 </td>
-                                <td className="py-3 px-4 text-red-400">✗ Dễ dính phạt</td>
-                                <td className="py-3 px-4 text-red-400">✗ Không có dữ liệu VN</td>
+                                <td className="py-3 px-4 text-red-400">Dễ dính phạt</td>
+                                <td className="py-3 px-4 text-red-400">Không có dữ liệu VN</td>
                                 <td className="py-3 px-4 text-amber-300">Tài xế tự né</td>
                               </tr>
                               <tr>
@@ -1568,29 +1568,29 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                                   Báo cáo CO₂ chuẩn GLEC / GHG Protocol
                                 </td>
                                 <td className="py-3 px-4 font-bold text-emerald-400 bg-emerald-500/5">
-                                  ✓ Từng kiện hàng
+                                  Từng kiện hàng
                                 </td>
-                                <td className="py-3 px-4 text-red-400">✗ Không có</td>
-                                <td className="py-3 px-4 text-red-400">✗ Không có</td>
-                                <td className="py-3 px-4 text-red-400">✗ Không có</td>
+                                <td className="py-3 px-4 text-red-400">Không có</td>
+                                <td className="py-3 px-4 text-red-400">Không có</td>
+                                <td className="py-3 px-4 text-red-400">Không có</td>
                               </tr>
                               <tr>
                                 <td className="py-3 px-4 font-sans font-medium text-slate-200">
                                   Ghép đơn chiều về giảm xe chạy rỗng
                                 </td>
                                 <td className="py-3 px-4 font-bold text-emerald-400 bg-emerald-500/5">
-                                  ✓ Giảm 30–35%
+                                  Giảm 30 - 35%
                                 </td>
-                                <td className="py-3 px-4 text-red-400">✗ Quay về rỗng</td>
+                                <td className="py-3 px-4 text-red-400">Quay về rỗng</td>
                                 <td className="py-3 px-4 text-amber-300">Hạn chế</td>
-                                <td className="py-3 px-4 text-red-400">✗ Không hỗ trợ</td>
+                                <td className="py-3 px-4 text-red-400">Không hỗ trợ</td>
                               </tr>
                               <tr>
                                 <td className="py-3 px-4 font-sans font-medium text-slate-200">
                                   Chi phí &amp; Triển khai cho SME
                                 </td>
                                 <td className="py-3 px-4 font-bold text-emerald-400 bg-emerald-500/5">
-                                  ✓ 199k/xe (Dùng thử 0đ)
+                                  199k/xe (Dùng thử 0đ)
                                 </td>
                                 <td className="py-3 px-4 text-emerald-400">Miễn phí</td>
                                 <td className="py-3 px-4 text-red-400">Đắt (&gt; 50-100tr)</td>
@@ -1650,10 +1650,10 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                           <div className="rounded-2xl bg-slate-950 border border-white/10 p-5">
                             <div className="text-xs font-bold text-emerald-400 uppercase">1. B2B SaaS Thuê Bao</div>
-                            <div className="text-xl font-black text-white mt-1">199.000đ – 399.000đ</div>
+                            <div className="text-xl font-black text-white mt-1">199.000đ - 399.000đ</div>
                             <div className="text-xs text-slate-400 mt-1">trên mỗi xe / tháng</div>
                             <p className="text-xs text-slate-300 mt-3 leading-relaxed">
-                              Chi phí cực thấp cho doanh nghiệp SME (so với tiết kiệm được 3–5 triệu tiền dầu/tháng). Dễ dàng chuyển đổi từ dùng thử miễn phí sang trả phí.
+                              Chi phí cực thấp cho doanh nghiệp SME (so với tiết kiệm được 3 - 5 triệu tiền dầu/tháng). Dễ dàng chuyển đổi từ dùng thử miễn phí sang trả phí.
                             </p>
                           </div>
 
@@ -1800,7 +1800,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             className="p-4 rounded-2xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-bold text-xs sm:text-sm flex flex-col items-center justify-center gap-2 transition shadow-lg shadow-ecomiles-lime/20"
                           >
                             <Zap className="w-5 h-5" />
-                            <span>Đăng Ký Pilot 4–6 Tuần</span>
+                            <span>Đăng Ký Pilot 4 - 6 Tuần</span>
                             <span className="text-[10px] opacity-80">Miễn Phí Thử Nghiệm</span>
                           </button>
                         </div>

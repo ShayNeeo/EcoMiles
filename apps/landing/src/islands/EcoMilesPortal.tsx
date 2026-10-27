@@ -33,6 +33,8 @@ import {
   Search,
   KeyRound,
   RefreshCw,
+  Play,
+  Zap,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -55,8 +57,10 @@ import { EvsimDualSimulator } from './EvsimDualSimulator';
 
 import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
 import {
+  cleanRoutePolylineSpikes,
   getOrFetchOsrmRouteGeometry,
   interpolateAlongStreetPathWithHeading,
+  snapPointToPolyline,
   type LngLat,
 } from '../utils/hcmcRoadGraph';
 interface EChartsInstance {
@@ -200,9 +204,9 @@ function HcmcSingleRouteMapCanvas({
       const fallbackPath: LngLat[] = r.stops.flatMap((s) =>
         s.leg_path && s.leg_path.length > 0 ? s.leg_path : ([[s.lng, s.lat]] as LngLat[])
       );
-      const activeRoadPath: LngLat[] =
-        osrmGeom && osrmGeom.length >= 2 ? osrmGeom : fallbackPath;
-
+      const activeRoadPath: LngLat[] = cleanRoutePolylineSpikes(
+        osrmGeom && osrmGeom.length >= 2 ? osrmGeom : fallbackPath
+      );
       ctx.beginPath();
       for (let i = 0; i < activeRoadPath.length; i++) {
         const [x, y] = toXY(activeRoadPath[i][0], activeRoadPath[i][1]);
@@ -222,7 +226,8 @@ function HcmcSingleRouteMapCanvas({
       // Compact Customer Store Nodes
       r.stops.forEach((s) => {
         if (s.kind === 'depot') return;
-        const [sx, sy] = toXY(s.lng, s.lat);
+        const [snappedLng, snappedLat] = snapPointToPolyline(s.lng, s.lat, activeRoadPath);
+        const [sx, sy] = toXY(snappedLng, snappedLat);
         const nodeSize = selectedRouteId === 'ALL' ? 3.0 : 4.2;
         ctx.fillStyle =
           s.kind === 'backhaul' ? '#1971c2' : s.qd23_ban_conflict ? '#f08c00' : '#2f9e44';
@@ -921,7 +926,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       Mô Phỏng Đối Chứng 2 Bên Kiểu EVSIM (Baseline vs. EcoMiles)
                     </h3>
                     <p className="text-xs text-[#5f6368] leading-relaxed">
-                      Hiển thị song song 2 bản đồ TP.HCM chạy theo thời gian thực (06:00–20:00): bên trái là cách chia tuyến thủ công + Google Maps, bên phải là EcoMiles v2.1. Cho phép tải lên file <code>.xlsx</code> thực tế để kiểm thử ngay.
+                      Hiển thị song song 2 bản đồ TP.HCM chạy theo thời gian thực (06:00 - 20:00): bên trái là cách chia tuyến thủ công + Google Maps, bên phải là EcoMiles v2.1. Cho phép tải lên file <code>.xlsx</code> thực tế để kiểm thử ngay.
                     </p>
 
                     <div className="p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] space-y-1.5 text-xs">
@@ -1364,7 +1369,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       1. Phân Bổ Đơn Hàng Theo Khung Giờ &amp; Khung Cấm Tải QĐ 23/2018
                     </h3>
                     <p className="text-[12px] text-[#5f6368]">
-                      Cột cam biểu thị khung giờ cấm xe tải nhẹ nội đô TP.HCM (06:00–09:00 &amp; 16:00–20:00).
+                      Cột cam biểu thị khung giờ cấm xe tải nhẹ nội đô TP.HCM (06:00 - 09:00 &amp; 16:00 - 20:00).
                     </p>
                     <EChartDaylight
                       height={230}
@@ -1521,7 +1526,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         className="w-4 h-4 accent-[#1971c2]"
                       />
                       <label htmlFor="chk-qd23" className="font-semibold text-[#111827] cursor-pointer">
-                        Tự động dời giờ cấm QĐ 23 (06–09h &amp; 16–20h)
+                        Tự động dời giờ cấm QĐ 23 (06h - 09h &amp; 16h - 20h)
                       </label>
                     </div>
 
@@ -1576,7 +1581,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       Nhật Ký Tự Động Dời Khung Giờ Cấm Tải QĐ 23/2018
                     </h2>
                     <p className="text-[12px] text-[#5f6368]">
-                      Các đơn hàng đặt nhầm vào giờ cấm (06:00–09:00 / 16:00–20:00) được dời sang khung hợp pháp:
+                      Các đơn hàng đặt nhầm vào giờ cấm (06:00 - 09:00 / 16:00 - 20:00) được dời sang khung hợp pháp:
                     </p>
                     <div className="overflow-y-auto max-h-[250px] border border-[#e5e7eb] rounded-lg">
                       <table className="w-full border-collapse text-xs">
@@ -1606,10 +1611,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   </td>
                                   <td className="py-2 px-2.5">{o.district}</td>
                                   <td className="py-2 px-2.5 font-mono text-[#c4242a]">
-                                    {o.window_start}–{o.window_end}
+                                    {o.window_start} - {o.window_end}
                                   </td>
                                   <td className="py-2 px-2.5 font-mono font-bold text-[#247b50]">
-                                    ✓ 09:05–11:30
+                                    <span className="inline-flex items-center gap-1">
+                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                      <span>09:05 - 11:30</span>
+                                    </span>
                                   </td>
                                 </tr>
                               ))
@@ -1664,8 +1672,18 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       >
                         <div className="font-mono font-bold text-[#111827]">{col.canonical_field}</div>
                         <div className="text-[11px] text-[#5f6368] truncate">{col.label_vi}</div>
-                        <div className="text-[11px] font-semibold text-[#247b50] mt-1">
-                          {col.matched_header ? `✓ Cột "${col.matched_header}"` : '⚡ Tự động nội suy'}
+                        <div className="text-[11px] font-semibold text-[#247b50] mt-1 flex items-center gap-1">
+                          {col.matched_header ? (
+                            <>
+                              <CheckCircle2 className="w-3 h-3 shrink-0" />
+                              <span>{`Cột "${col.matched_header}"`}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Zap className="w-3 h-3 shrink-0" />
+                              <span>Tự động nội suy</span>
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -1730,7 +1748,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 </td>
                                 <td className="py-2 px-3 text-right font-mono font-bold">{o.kg} kg</td>
                                 <td className="py-2 px-3 text-right font-mono">
-                                  {o.window_start}–{o.window_end}
+                                  {o.window_start} - {o.window_end}
                                 </td>
                                 <td className="py-2 px-3 text-right">
                                   {o.qd23_ban_conflict ? (
@@ -1738,7 +1756,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                       Đã dời sang 09:05
                                     </span>
                                   ) : (
-                                    <span className="text-[#247b50] font-semibold">✓ Hợp lệ</span>
+                                    <span className="text-[#247b50] font-semibold inline-flex items-center gap-1">
+                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                      <span>Hợp lệ</span>
+                                    </span>
                                   )}
                                 </td>
                               </tr>
@@ -1918,7 +1939,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         Bảo Mật Cách Ly Đa Doanh Nghiệp &amp; Mã Hóa Đầu-Cuối (Zero-Knowledge)
                       </h1>
                       <p className="text-[12.5px] text-[#5f6368]">
-                        Giải đáp trực tiếp câu hỏi: &ldquo;Nếu nhiều công ty cùng dùng chung hạ tầng cơ sở dữ liệu, làm sao đảm bảo công ty đối thủ và chính quản trị viên EcoMiles không xem được danh sách khách hàng của nhau?&rdquo;
+                        Giải đáp trực tiếp câu hỏi: "Nếu nhiều công ty cùng dùng chung hạ tầng cơ sở dữ liệu, làm sao đảm bảo công ty đối thủ và chính quản trị viên EcoMiles không xem được danh sách khách hàng của nhau?"
                       </p>
                     </div>
                   </div>
@@ -1983,8 +2004,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           <td className="py-2.5 px-3 text-[#5f6368]">{r.scope}</td>
                           <td className="py-2.5 px-3">
                             {r.approved ? (
-                              <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#04250e] font-bold">
-                                ✓ Đã cấp khóa đọc
+                              <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#04250e] font-bold inline-flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span>Đã cấp khóa đọc</span>
                               </span>
                             ) : (
                               <span className="px-2 py-0.5 rounded bg-[#ffedea] text-[#831c1e] font-bold">
@@ -2072,29 +2094,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 .join('|');
               const wpParam = viaStr ? `&waypoints=${encodeURIComponent(viaStr)}` : '';
               return `https://www.google.com/maps/dir/?api=1&origin=${fromLat.toFixed(5)},${fromLng.toFixed(5)}&destination=${stopObj.lat.toFixed(5)},${stopObj.lng.toFixed(5)}${wpParam}&travelmode=driving&dir_action=navigate`;
-            };
-
-            const triggerInAppTruckTurnByTurn = (stopObj: (typeof customerStops)[number]) => {
-              setActiveNavStopSeq(stopObj.seq);
-              const modeLabel =
-                driverMileTier === 'middle_mile_truck'
-                  ? `Chế độ Xe tải Chặng giữa (>500kg): Đi theo hành lang cho phép tải trọng ≤13 tấn, né giờ cấm QĐ 23/2018`
-                  : `Chế độ Ô tô / Van Chặng cuối (≤500kg): Đi theo lộ trình tối ưu EcoALNS`;
-              const msg = `Đang dẫn đường nội bộ đến điểm #${stopObj.seq}: ${stopObj.address} (${stopObj.district}). ${modeLabel}.`;
-              setVoiceNavNotice(msg);
-              if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-                try {
-                  window.speechSynthesis.cancel();
-                  const u = new SpeechSynthesisUtterance(
-                    `Bắt đầu dẫn đường xe tải đến điểm số ${stopObj.seq}, ${stopObj.address}. Đã kiểm tra hành lang cấm tải Quyết định 23.`
-                  );
-                  u.lang = 'vi-VN';
-                  u.rate = 1.05;
-                  window.speechSynthesis.speak(u);
-                } catch {
-                  // Speech synthesis optional
-                }
-              }
             };
 
             const downloadOsmAndTruckGpx = () => {
@@ -2275,8 +2274,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
                                 className="px-2.5 py-1 rounded-md bg-[#d6f65a] hover:bg-[#c5e847] text-[#14532d] text-[11px] font-extrabold flex items-center gap-1"
                               >
-                                <Navigation className="w-3 h-3 fill-current" />
-                                <span>▶ Bắt Đầu Lái (/maps Live)</span>
+                                <Play className="w-3 h-3 fill-current" />
+                                <span>Bắt Đầu Lái (/maps Live)</span>
                               </a>
                               <button
                                 type="button"
@@ -2303,10 +2302,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             </div>
                             <div className="p-2 rounded bg-black/20">
                               <div className="text-white/70">Giờ cấm QĐ 23/2018</div>
-                              <div className="font-bold text-emerald-300">
-                                {driverMileTier === 'middle_mile_truck'
-                                  ? '✓ Hành lang hợp pháp'
-                                  : '✓ Miễn trừ xe ≤ 500kg'}
+                              <div className="font-bold text-emerald-300 flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                                <span>
+                                  {driverMileTier === 'middle_mile_truck'
+                                    ? 'Hành lang hợp pháp'
+                                    : 'Miễn trừ xe ≤ 500kg'}
+                                </span>
                               </div>
                             </div>
                             <div className="p-2 rounded bg-black/20">
@@ -2327,10 +2329,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <h2 className="text-sm font-bold text-[#111827]">
                           Bản Đồ Tuyến Đường Của Xe {driverRoute?.plate}
                         </h2>
-                        <span className="text-xs font-semibold text-[#247b50]">
-                          {driverMileTier === 'middle_mile_truck'
-                            ? '✓ Đồ thị Xe tải EcoMiles + OSRM ($0)'
-                            : '✓ Đồ thị Ô tô Chặng cuối + Waypoints ($0)'}
+                        <span className="text-xs font-semibold text-[#247b50] flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>
+                            {driverMileTier === 'middle_mile_truck'
+                              ? 'Đồ thị Xe tải EcoMiles + OSRM ($0)'
+                              : 'Đồ thị Ô tô Chặng cuối + Waypoints ($0)'}
+                          </span>
                         </span>
                       </div>
 
@@ -2346,14 +2351,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <div className="p-3 rounded-lg bg-[#fffbeb] border border-[#fde68a] text-xs text-[#92400e] flex items-start gap-2">
                           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                           <span>
-                            <strong>Chế độ Xe Tải Chặng Giữa (&gt;500kg) — Đã khóa Google Maps thương mại:</strong> Google Maps không có chế độ dẫn đường xe tải (<code>travelmode=truck</code>) và không biết khung giờ cấm tải QĐ 23/2018. Tài xế dùng trực tiếp <strong>Bản đồ Mở EcoMiles ở trên</strong> hoặc bấm <strong>&ldquo;Xuất GPX (OsmAnd Truck)&rdquo;</strong> để dẫn đường giọng nói offline miễn phí 100%.
+                            <strong>Chế độ Xe Tải Chặng Giữa (&gt;500kg), Đã khóa Google Maps thương mại:</strong> Google Maps không có chế độ dẫn đường xe tải (<code>travelmode=truck</code>) và không biết khung giờ cấm tải QĐ 23/2018. Tài xế dùng trực tiếp <strong>Bản đồ Mở EcoMiles (/maps)</strong> hoặc bấm <strong>"Xuất GPX"</strong> để dẫn đường giọng nói offline miễn phí 100%.
                           </span>
                         </div>
                       ) : (
                         <div className="p-3 rounded-lg bg-[#e8f0fb] border border-[#bfdbfe] text-xs text-[#1e3a8a] flex items-start gap-2">
                           <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
                           <span>
-                            <strong>Chế độ Ô Tô / Van Chặng Cuối (≤500kg) — Khóa tọa độ trung gian (<code>waypoints=via:</code>) vào Google Maps ($0):</strong> Vì xe ≤500kg được phép đi đường ô tô nội đô, EcoMiles trích xuất các điểm uốn mặt đường từ thuật toán EcoALNS nhúng thẳng vào tham số <code>waypoints=via:lat,lng</code> của URL Google Maps miễn phí để ép Google đi đúng tuyến đã tối ưu.
+                            <strong>Chế độ Ô Tô / Van Chặng Cuối (≤500kg), Khóa tọa độ trung gian (<code>waypoints=via:</code>) vào Google Maps ($0):</strong> Vì xe ≤500kg được phép đi đường ô tô nội đô, EcoMiles trích xuất các điểm uốn mặt đường từ thuật toán EcoALNS nhúng thẳng vào tham số <code>waypoints=via:lat,lng</code> của URL Google Maps miễn phí để ép Google đi đúng tuyến đã tối ưu.
                           </span>
                         </div>
                       )}
@@ -2407,7 +2412,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   <div className="font-bold text-[#111827]">{stop.address}</div>
                                   <div className="text-[11px] text-[#5f6368] mt-0.5">
                                     Mã đơn: <code className="font-mono">{stop.order_id}</code> · Tải:{' '}
-                                    <strong>{stop.kg} kg</strong> · Khung giờ: {stop.window_start}–{stop.window_end}
+                                    <strong>{stop.kg} kg</strong> · Khung giờ: {stop.window_start} - {stop.window_end}
                                   </div>
                                 </div>
                               </div>
@@ -2424,7 +2429,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 }`}
                               >
                                 {status === 'delivered'
-                                  ? '✓ Đã giao'
+                                  ? 'Đã giao'
                                   : status === 'arrived'
                                   ? 'Đã đến nơi'
                                   : status === 'failed'
@@ -2440,8 +2445,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                     href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
                                     className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold text-center flex items-center justify-center gap-1.5"
                                   >
-                                    <Navigation className="w-3.5 h-3.5 text-[#d6f65a]" />
-                                    <span>▶ Bắt đầu Lái Xe Tải (/maps)</span>
+                                    <Play className="w-3.5 h-3.5 text-[#d6f65a] fill-current" />
+                                    <span>Bắt đầu Lái Xe Tải (/maps)</span>
                                   </a>
                                   <a
                                     href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=overview`}

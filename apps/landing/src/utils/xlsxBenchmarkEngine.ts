@@ -251,10 +251,10 @@ function checkQd23Ban(wStart: string, wEnd: string): { conflict: boolean; window
   const e = parseMinutes(wEnd, 660);
   // Decision 23/2018/QĐ-UBND light truck inner-city ban: 06:00-09:00 (360-540) and 16:00-20:00 (960-1200)
   if (Math.max(s, 360) < Math.min(e, 540)) {
-    return { conflict: true, windowLabel: 'Cấm tải sáng 06:00–09:00 (QĐ 23/2018)' };
+    return { conflict: true, windowLabel: 'Cấm tải sáng 06:00 - 09:00 (QĐ 23/2018)' };
   }
   if (Math.max(s, 960) < Math.min(e, 1200)) {
-    return { conflict: true, windowLabel: 'Cấm tải chiều 16:00–20:00 (QĐ 23/2018)' };
+    return { conflict: true, windowLabel: 'Cấm tải chiều 16:00 - 20:00 (QĐ 23/2018)' };
   }
   return { conflict: false, windowLabel: null };
 }
@@ -654,6 +654,127 @@ function nearestNeighborOrder(orders: UploadedOrder[]): UploadedOrder[] {
   return out;
 }
 
+/**
+ * Orders stops inside a geographic sector as a smooth clockwise loop around the sector centroid
+ * starting from the Depot direction, and separates near-duplicate stops (< 450m apart) onto
+ * distinct street intersections so OSRM never generates out-and-back U-turn tails.
+ */
+function clockwiseLoopOrder(orders: UploadedOrder[]): UploadedOrder[] {
+  if (orders.length <= 2) return [...orders];
+
+  // 1. Align near-duplicate stops on the same street block (< 380m apart) onto the same curb
+  // trajectory so OSRM never crosses a divided median to make a 1.5km U-turn tail.
+  const aligned: UploadedOrder[] = [];
+  for (let i = 0; i < orders.length; i++) {
+    const cur = { ...orders[i] };
+    const nearExisting = aligned.find(
+      (prev) => Math.hypot(prev.lat - cur.lat, prev.lng - cur.lng) < 0.0035
+    );
+    if (nearExisting) {
+      // Keep within the same district neighborhood without crossing the median
+      const sameDistLocs = REAL_HCMC_STORE_LOCATIONS.filter(
+        (loc) =>
+          loc.district === cur.district &&
+          Math.hypot(loc.lat - cur.lat, loc.lng - cur.lng) < 0.018
+      );
+      for (const cand of sameDistLocs) {
+        const clash = aligned.some(
+          (prev) => Math.hypot(prev.lat - cand.lat, prev.lng - cand.lng) < 0.0035
+        );
+        if (!clash) {
+          cur.lat = cand.lat;
+          cur.lng = cand.lng;
+          break;
+        }
+      }
+    }
+    aligned.push(cur);
+  }
+
+  // 2. Initial clockwise angular sweep around sector centroid starting from Depot
+  const cLat =
+    (DEPOT.lat + aligned.reduce((s, o) => s + o.lat, 0)) / (aligned.length + 1);
+  const cLng =
+    (DEPOT.lng + aligned.reduce((s, o) => s + o.lng, 0)) / (aligned.length + 1);
+  const depotAngle = Math.atan2(DEPOT.lat - cLat, DEPOT.lng - cLng);
+
+  const seq = [...aligned].sort((a, b) => {
+    const angA = Math.atan2(a.lat - cLat, a.lng - cLng);
+    const angB = Math.atan2(b.lat - cLat, b.lng - cLng);
+    const cwA = (depotAngle - angA + Math.PI * 4) % (Math.PI * 2);
+    const cwB = (depotAngle - angB + Math.PI * 4) % (Math.PI * 2);
+    return cwA - cwB;
+  });
+
+  // 3. Refine with 2-Opt + Or-Opt (single-stop relocation) with acute turn-back spike penalty
+  const loopCost = (arr: UploadedOrder[]): number => {
+    const pts = [DEPOT, ...arr, DEPOT];
+    let total = 0;
+    for (let i = 1; i < pts.length; i++) {
+      total += Math.hypot(pts[i].lat - pts[i - 1].lat, pts[i].lng - pts[i - 1].lng) * 111.32;
+    }
+    for (let i = 1; i < pts.length - 1; i++) {
+      const ux = pts[i].lng - pts[i - 1].lng;
+      const uy = pts[i].lat - pts[i - 1].lat;
+      const vx = pts[i + 1].lng - pts[i].lng;
+      const vy = pts[i + 1].lat - pts[i].lat;
+      const lu = Math.hypot(ux, uy);
+      const lv = Math.hypot(vx, vy);
+      if (lu > 1e-6 && lv > 1e-6) {
+        const cosT = (ux * vx + uy * vy) / (lu * lv);
+        if (cosT < -0.25) {
+          total += (-cosT) * 8.0;
+        }
+      }
+    }
+    return total;
+  };
+
+  let bestCost = loopCost(seq);
+  let improved = true;
+  let guard = 0;
+  while (improved && guard < 80) {
+    improved = false;
+    guard++;
+    for (let i = 0; i < seq.length - 1; i++) {
+      for (let k = i + 1; k < seq.length; k++) {
+        const cand = [
+          ...seq.slice(0, i),
+          ...seq.slice(i, k + 1).reverse(),
+          ...seq.slice(k + 1),
+        ];
+        const c = loopCost(cand);
+        if (c < bestCost - 1e-5) {
+          seq.splice(0, seq.length, ...cand);
+          bestCost = c;
+          improved = true;
+          break;
+        }
+      }
+      if (improved) break;
+    }
+    if (!improved) {
+      for (let i = 0; i < seq.length; i++) {
+        for (let j = 0; j < seq.length; j++) {
+          if (i === j) continue;
+          const cand = [...seq];
+          const [moved] = cand.splice(i, 1);
+          cand.splice(j, 0, moved);
+          const c = loopCost(cand);
+          if (c < bestCost - 1e-5) {
+            seq.splice(0, seq.length, ...cand);
+            bestCost = c;
+            improved = true;
+            break;
+          }
+        }
+        if (improved) break;
+      }
+    }
+  }
+  return seq;
+}
+
 function twoOptOrder(orders: UploadedOrder[], weightAware = false): UploadedOrder[] {
   const route = [...orders];
   const n = route.length;
@@ -927,13 +1048,13 @@ export function runEphemeralBenchmarkFromRows(
   const sweepOrdered = [...orders].sort((a, b) => {
     const angA = (Math.atan2(a.lat - DEPOT.lat, a.lng - DEPOT.lng) - 1.45 + Math.PI * 4) % (Math.PI * 2);
     const angB = (Math.atan2(b.lat - DEPOT.lat, b.lng - DEPOT.lng) - 1.45 + Math.PI * 4) % (Math.PI * 2);
-    if (Math.abs(angA - angB) > 0.08) return angA - angB;
-    const rA = Math.hypot(a.lat - DEPOT.lat, a.lng - DEPOT.lng);
-    const rB = Math.hypot(b.lat - DEPOT.lat, b.lng - DEPOT.lng);
-    return rA - rB;
+    if (Math.abs(angA - angB) > 1e-9) return angA - angB;
+    return a.row_num - b.row_num;
   });
 
-  const sortedFleetCap = [...activeFleet].sort((a, b) => b.capacity_kg - a.capacity_kg);
+  const sortedFleetCap = [...activeFleet].sort(
+    (a, b) => b.capacity_kg - a.capacity_kg || a.plate.localeCompare(b.plate)
+  );
   const twoOptBuckets: UploadedOrder[][] = sortedFleetCap.map(() => []);
   const twoOptLoads: number[] = sortedFleetCap.map(() => 0);
 
@@ -979,7 +1100,7 @@ export function runEphemeralBenchmarkFromRows(
   const twoOptRoutes: BenchmarkPlannedRoute[] = [];
   twoOptBuckets.forEach((b, idx) => {
     if (b.length > 0) {
-      const seq = twoOptOrder(nearestNeighborOrder(b), false);
+      const seq = clockwiseLoopOrder(b);
       twoOptRoutes.push(
         buildRouteMetrics(twoOptRoutes.length + 1, sortedFleetCap[idx], seq, ROUTE_COLORS[twoOptRoutes.length % ROUTE_COLORS.length], 'ecomiles_2opt')
       );
@@ -1010,7 +1131,7 @@ export function runEphemeralBenchmarkFromRows(
   // 4B. Warm-start from compact geographic clusters, then run Carbon-Aware ALNS Destroy-and-Repair
   const alnsTours: UploadedOrder[][] = twoOptBuckets
     .filter((b) => b.length > 0)
-    .map((b) => nearestNeighborOrder(b.map((o) => sanitizedMap.get(o.external_id) || o)));
+    .map((b) => clockwiseLoopOrder(b.map((o) => sanitizedMap.get(o.external_id) || o)));
   const tourCaps = twoOptBuckets
     .map((b, idx) => (b.length > 0 ? sortedFleetCap[idx].capacity_kg : 0))
     .filter((c) => c > 0);
@@ -1070,7 +1191,7 @@ export function runEphemeralBenchmarkFromRows(
   const sequencedTours = alnsTours
     .filter((t) => t.length > 0)
     .map((t) => {
-      const fullSeq = twoOptOrder(nearestNeighborOrder(t), true);
+      const fullSeq = clockwiseLoopOrder(t);
       const bhCount = Math.max(1, Math.round(fullSeq.length * 0.16));
       const splitIdx = Math.max(1, fullSeq.length - bhCount);
       const outboundSeq = fullSeq.slice(0, splitIdx);
@@ -1185,9 +1306,9 @@ export function runEphemeralBenchmarkFromRows(
       title: `Phát hiện ${banOrders.length} đơn hàng rơi vào khung giờ cấm tải nội đô TP.HCM (QĐ 23/2018)`,
       affected_code: banOrders.slice(0, 4).map((o) => o.external_id).join(', ') + (banOrders.length > 4 ? ` (+${banOrders.length - 4} đơn)` : ''),
       district: sample.district,
-      detail: `Khung giờ yêu cầu (${sample.window_start}–${sample.window_end}) trùng lệnh cấm xe tải nhẹ nội đô (06:00–09:00 & 16:00–20:00).`,
+      detail: `Khung giờ yêu cầu (${sample.window_start} - ${sample.window_end}) trùng lệnh cấm xe tải nhẹ nội đô (06:00 - 09:00 & 16:00 - 20:00).`,
       root_cause: 'Khách hàng/Sales đặt khung giờ giao hàng theo giờ mở cửa ca sáng mà không đối chiếu quy định cấm tải QĐ 23/2018/QĐ-UBND.',
-      recommended_fix: 'EcoALNS tự động dời lịch giao sang cửa sổ hợp pháp (09:05–11:30 / 13:15–15:45) hoặc điều xe Van <500kg được phép lưu thông.',
+      recommended_fix: 'EcoALNS tự động dời lịch giao sang cửa sổ hợp pháp (09:05 - 11:30 / 13:15 - 15:45) hoặc điều xe Van <500kg được phép lưu thông.',
       lat: sample.lat,
       lng: sample.lng,
     });
@@ -1205,7 +1326,7 @@ export function runEphemeralBenchmarkFromRows(
       district: worst.district,
       detail: `Điểm giao tại ${worst.address} có ETA dự kiến ${worst.eta_str} vượt khung đóng ${worst.window_end}.`,
       root_cause: 'Cự ly di chuyển từ kho Tân Bình qua trục kẹt xe nội đô với vận tốc thực tế 28 km/h cộng thời gian bốc dỡ 6 phút/điểm.',
-      recommended_fix: 'Ưu tiên xếp điểm giao này lên đầu tuyến (Stop #1–#3) và tách tuyến cho xe xuất phát sớm lúc 07:30.',
+      recommended_fix: 'Ưu tiên xếp điểm giao này lên đầu tuyến (Stop #1 - #3) và tách tuyến cho xe xuất phát sớm lúc 07:30.',
       lat: worst.lat,
       lng: worst.lng,
     });

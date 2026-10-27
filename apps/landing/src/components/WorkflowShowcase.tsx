@@ -58,7 +58,7 @@ export const WorkflowShowcase: React.FC = () => {
       num: '02',
       title: 'Khai Báo Đội Phương Tiện',
       icon: <Truck className="w-5 h-5 text-emerald-400" />,
-      summary: 'Khai báo thông số kỹ thuật 10+ xe: tải trọng 500kg – 2 tấn, loại nhiên liệu.',
+      summary: 'Khai báo thông số kỹ thuật 10+ xe: tải trọng 500kg - 2 tấn, loại nhiên liệu.',
       details:
         'Ghi nhận vị trí xuất phát hiện tại của xe, mức tiêu thụ lít/km và thời gian làm việc quy định của tài xế theo luật giao thông 2024.',
       badge: 'Cấu Hình Đội Xe',
@@ -69,7 +69,7 @@ export const WorkflowShowcase: React.FC = () => {
       icon: <MapPin className="w-5 h-5 text-emerald-300" />,
       summary: 'Thuật toán gom nhóm các điểm giao gần nhau thành cụm khoa học.',
       details:
-        'Ví dụ: Cụm Q.1 – Q.3 (15 đơn), Cụm Bình Thạnh – Phú Nhuận (18 đơn), Cụm Q.7 – Nhà Bè (17 đơn), Cụm Thủ Đức (20 đơn).',
+        'Ví dụ: Cụm Q.1 - Q.3 (15 đơn), Cụm Bình Thạnh - Phú Nhuận (18 đơn), Cụm Q.7 - Nhà Bè (17 đơn), Cụm Thủ Đức (20 đơn).',
       badge: 'Tự Động Gom Nhóm',
     },
     {
@@ -259,7 +259,7 @@ export const WorkflowShowcase: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 text-slate-200">
                 <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Rút ngắn 80–90% thời gian điều phối mỗi ngày</span>
+                <span>Rút ngắn 80 - 90% thời gian điều phối mỗi ngày</span>
               </div>
               <div className="flex items-center gap-2 text-slate-200">
                 <Check className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -298,18 +298,18 @@ export const WorkflowShowcase: React.FC = () => {
               <tbody className="divide-y divide-white/5 text-slate-300">
                 <tr>
                   <td className="py-3 px-4 font-bold text-white">Thời gian lập tuyến</td>
-                  <td className="py-3 px-4 text-slate-300">1.5 – 2 giờ/ngày (Phụ thuộc kinh nghiệm)</td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">10 – 20 phút, giảm 80–90% thời gian điều phối</td>
+                  <td className="py-3 px-4 text-slate-300">1.5 - 2 giờ/ngày (Phụ thuộc kinh nghiệm)</td>
+                  <td className="py-3 px-4 font-bold text-emerald-400">10 - 20 phút, giảm 80 - 90% thời gian điều phối</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-4 font-bold text-white">Tổng quãng đường di chuyển</td>
                   <td className="py-3 px-4 text-slate-300">Chồng chéo, nhiều km thừa</td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">Cắt giảm 20–30% tổng km</td>
+                  <td className="py-3 px-4 font-bold text-emerald-400">Cắt giảm 20 - 30% tổng km</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-4 font-bold text-white">Tỷ lệ xe chạy rỗng chiều về</td>
-                  <td className="py-3 px-4 text-slate-300">30–35% xe chạy rỗng sau khi giao</td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">Ghép đơn chiều về, đưa tỷ lệ xuống 5–10%</td>
+                  <td className="py-3 px-4 text-slate-300">30 - 35% xe chạy rỗng sau khi giao</td>
+                  <td className="py-3 px-4 font-bold text-emerald-400">Ghép đơn chiều về, đưa tỷ lệ xuống 5 - 10%</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-4 font-bold text-white">Đo lường phát thải CO₂</td>

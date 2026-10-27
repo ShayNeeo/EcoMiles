@@ -2,16 +2,24 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
   ArrowLeft,
+  ArrowUp,
+  Ban,
   CheckCircle2,
   Compass,
+  CornerUpLeft,
+  CornerUpRight,
   Download,
   Eye,
+  Flag,
+  Landmark,
   Layers,
+  Map as MapIcon,
   MapPin,
   Navigation,
   Pause,
   Play,
   RotateCcw,
+  Route as RouteIcon,
   ShieldCheck,
   Truck,
   Volume2,
@@ -29,20 +37,20 @@ import {
   type MercatorViewport,
 } from '../utils/hcmcMapTiles';
 import {
+  cleanRoutePolylineSpikes,
   getOrFetchOsrmLegPaths,
   interpolateAlongStreetPathWithHeading,
+  slicePolylineByFraction,
+  snapPointToPolyline,
   type LngLat,
 } from '../utils/hcmcRoadGraph';
 
-// =============================================================================
-// HCMC QĐ 23/2018/QĐ-UBND BANNED TRUCK ZONES, BANNED STREETS & BRIDGE CLEARANCES
-// =============================================================================
 interface BannedTruckZone {
   id: string;
   name: string;
   rule: string;
   fineVnd: string;
-  polygon: LngLat[]; // [lng, lat]
+  polygon: LngLat[];
   labelCoord: LngLat;
 }
 
@@ -68,9 +76,9 @@ interface BridgeClearanceMarker {
 const HCMC_QD23_BANNED_ZONES: BannedTruckZone[] = [
   {
     id: 'ZONE-CORE-Q1-Q3-PN',
-    name: 'Vùng Cấm Tải Lõi Trung Tâm (Q.1 · Q.3 · Phú Nhuận)',
-    rule: 'Cấm xe tải nhẹ 06:00–09:00 & 16:00–20:00 · Cấm xe tải >2.5T 06:00–22:00 (QĐ 23/2018)',
-    fineVnd: 'Phạt 5.000.000 ₫ + Tước GPLX 2 tháng (NĐ 168/2024)',
+    name: 'Vùng Cấm Tải Lõi Trung Tâm (Quận 1, Quận 3, Phú Nhuận)',
+    rule: 'Cấm xe tải nhẹ từ 06:00 đến 09:00 và từ 16:00 đến 20:00. Cấm xe trên 2.5 tấn từ 06:00 đến 22:00 (QĐ 23/2018)',
+    fineVnd: 'Phạt 5.000.000 đ và tước GPLX 2 tháng (NĐ 168/2024)',
     polygon: [
       [106.6655, 10.7995],
       [106.6885, 10.7985],
@@ -83,9 +91,9 @@ const HCMC_QD23_BANNED_ZONES: BannedTruckZone[] = [
   },
   {
     id: 'ZONE-AIRPORT-GATEWAY',
-    name: 'Hành Lang Cấm Giờ Cao Điểm Cửa Ngõ Sân Bay (Trường Sơn – Nguyễn Văn Trỗi)',
-    rule: 'Cấm xe tải >1.5T lưu thông hướng vào nội đô 06:00–09:00 & 16:00–20:00',
-    fineVnd: 'Camera phạt nguội tự động 5.000.000 ₫',
+    name: 'Hành Lang Cấm Giờ Cao Điểm Cửa Ngõ Sân Bay (Trường Sơn, Nguyễn Văn Trỗi)',
+    rule: 'Cấm xe tải trên 1.5 tấn lưu thông hướng vào nội đô từ 06:00 đến 09:00 và từ 16:00 đến 20:00',
+    fineVnd: 'Camera phạt nguội tự động 5.000.000 đ',
     polygon: [
       [106.6525, 10.8025],
       [106.6745, 10.8065],
@@ -96,9 +104,9 @@ const HCMC_QD23_BANNED_ZONES: BannedTruckZone[] = [
   },
   {
     id: 'ZONE-CHOLON-Q5-Q10',
-    name: 'Vùng Cấm Tải Nội Đô Chợ Lớn – Quận 5 / Quận 10',
-    rule: 'Cấm xe tải >500kg vào trục Ba Tháng Hai – Hùng Vương 06:00–09:00 & 16:00–20:00',
-    fineVnd: 'Phạt 5.000.000 ₫ (QĐ 23/2018/QĐ-UBND)',
+    name: 'Vùng Cấm Tải Nội Đô Chợ Lớn (Quận 5, Quận 10)',
+    rule: 'Cấm xe tải trên 500kg vào trục Ba Tháng Hai và Hùng Vương từ 06:00 đến 09:00 và từ 16:00 đến 20:00',
+    fineVnd: 'Phạt 5.000.000 đ (QĐ 23/2018/QĐ-UBND)',
     polygon: [
       [106.6515, 10.7765],
       [106.6755, 10.7755],
@@ -112,9 +120,9 @@ const HCMC_QD23_BANNED_ZONES: BannedTruckZone[] = [
 const HCMC_BANNED_STREETS: BannedStreetCorridor[] = [
   {
     id: 'BAN-NVT-NKKN',
-    streetName: 'Trục Nguyễn Văn Trỗi – Nam Kỳ Khởi Nghĩa',
-    banHours: 'Cấm tải 06:00–09:00 & 16:00–20:00',
-    reason: 'Trục ngoại giao sân bay Tân Sơn Nhất – Quận 1 (Camera phạt nguội 24/7)',
+    streetName: 'Trục Nguyễn Văn Trỗi và Nam Kỳ Khởi Nghĩa',
+    banHours: 'Cấm tải 06:00 đến 09:00 và 16:00 đến 20:00',
+    reason: 'Trục ngoại giao sân bay Tân Sơn Nhất về Quận 1 (Camera phạt nguội 24/7)',
     coords: [
       [106.6602, 10.7998],
       [106.6712, 10.7962],
@@ -124,9 +132,9 @@ const HCMC_BANNED_STREETS: BannedStreetCorridor[] = [
   },
   {
     id: 'BAN-CMT8',
-    streetName: 'Trục Cách Mạng Tháng 8 (Tân Bình → Quận 1)',
-    banHours: 'Cấm tải 06:00–09:00 & 16:00–20:00',
-    reason: 'Đường hẹp mật độ cao + Rào chắn Metro số 2',
+    streetName: 'Trục Cách Mạng Tháng 8 (Tân Bình đi Quận 1)',
+    banHours: 'Cấm tải 06:00 đến 09:00 và 16:00 đến 20:00',
+    reason: 'Đường hẹp mật độ cao và rào chắn thi công hạ tầng',
     coords: [
       [106.6532, 10.7918],
       [106.6665, 10.7845],
@@ -136,8 +144,8 @@ const HCMC_BANNED_STREETS: BannedStreetCorridor[] = [
   },
   {
     id: 'BAN-3THANG2',
-    streetName: 'Trục Ba Tháng Hai – Điện Biên Phủ Nội Đô',
-    banHours: 'Cấm tải >500kg giờ cao điểm',
+    streetName: 'Trục Ba Tháng Hai và Điện Biên Phủ Nội Đô',
+    banHours: 'Cấm tải trên 500kg giờ cao điểm',
     reason: 'Hành lang cấm tải nội đô theo QĐ 23/2018/QĐ-UBND',
     coords: [
       [106.6525, 10.7625],
@@ -157,7 +165,7 @@ const HCMC_BRIDGE_CLEARANCES: BridgeClearanceMarker[] = [
     maxWeightTons: 13.0,
     maxHeightM: 4.5,
     allowedForTruck: true,
-    note: 'Hành lang xe tải hợp pháp kết nối Gò Vấp ↔ TP. Thủ Đức',
+    note: 'Hành lang xe tải hợp pháp kết nối Gò Vấp và TP. Thủ Đức',
   },
   {
     id: 'BR-SAI-GON',
@@ -167,17 +175,17 @@ const HCMC_BRIDGE_CLEARANCES: BridgeClearanceMarker[] = [
     maxWeightTons: 30.0,
     maxHeightM: 4.5,
     allowedForTruck: true,
-    note: 'Trục huyết mạch Đông Bắc cho phép xe tải & chuỗi lạnh',
+    note: 'Trục huyết mạch Đông Bắc cho phép xe tải và chuỗi lạnh',
   },
   {
     id: 'BR-KENH-TE',
-    name: 'Cầu Kênh Tẻ (Quận 4 ↔ Quận 7)',
+    name: 'Cầu Kênh Tẻ (Quận 4 đi Quận 7)',
     lng: 106.7018,
     lat: 10.7518,
     maxWeightTons: 15.0,
     maxHeightM: 4.2,
     allowedForTruck: true,
-    note: 'Cho phép xe tải nhẹ ngoài khung giờ cấm cao điểm',
+    note: 'Cho phép xe tải nhẹ lưu thông ngoài khung giờ cấm cao điểm',
   },
   {
     id: 'BR-THU-THIEM-TUNNEL',
@@ -187,7 +195,7 @@ const HCMC_BRIDGE_CLEARANCES: BridgeClearanceMarker[] = [
     maxWeightTons: 0,
     maxHeightM: 3.5,
     allowedForTruck: false,
-    note: 'Cấm xe tải & xe chở hàng nguy hiểm đi qua hầm',
+    note: 'Cấm xe tải và xe chở hàng nguy hiểm đi qua hầm',
   },
 ];
 
@@ -197,7 +205,7 @@ interface DetailedTurnStep {
   fromLabel: string;
   toLabel: string;
   district: string;
-  maneuverIcon: '↑' | '↱' | '↰' | '⤴' | '🏁';
+  maneuverType: 'straight' | 'right' | 'left' | 'finish';
   instructionVi: string;
   streetCorridor: string;
   avoidedBanNote: string;
@@ -222,69 +230,69 @@ function buildDetailedTurnSteps(route: BenchmarkPlannedRoute): DetailedTurnStep[
     const dLat = s.lat - prevLat;
     const dLng = s.lng - prevLng;
     const distKm = Math.max(
-      0.45,
+      0.55,
       Number((Math.hypot(dLat, dLng) * 111.32 * 1.28).toFixed(2))
     );
     const durMin = Math.max(3, Math.round((distKm / 28.0) * 60));
 
-    const maneuverIcon: DetailedTurnStep['maneuverIcon'] =
+    const maneuverType: DetailedTurnStep['maneuverType'] =
       idx === 0
-        ? '↑'
+        ? 'straight'
         : dLng > 0.008 && dLat > 0.005
-        ? '↱'
+        ? 'right'
         : dLng < -0.008
-        ? '↰'
+        ? 'left'
         : idx % 2 === 0
-        ? '↱'
-        : '↰';
+        ? 'right'
+        : 'left';
 
     const corridorByDistrict: Record<string, { road: string; avoided: string; bridge: string }> = {
       'Gò Vấp': {
-        road: 'Trường Chinh → Phan Huy Ích → Quang Trung / Nguyễn Oanh',
-        avoided: 'Đã né đường cấm Nguyễn Văn Trỗi & Bạch Đằng nội đô (06–09h)',
-        bridge: 'Cầu vượt Ngã 6 Gò Vấp: Tải ≤ 13T · Cao ≤ 4.5m (Hợp lệ)',
+        road: 'Trường Chinh, Phan Huy Ích, Quang Trung và Nguyễn Oanh',
+        avoided: 'Đã né đường cấm Nguyễn Văn Trỗi và Bạch Đằng nội đô (06h đến 09h)',
+        bridge: 'Cầu vượt Ngã 6 Gò Vấp: Tải tối đa 13T, Cao 4.5m (Hợp lệ)',
       },
       'TP. Thủ Đức': {
-        road: 'Phan Văn Trị → Cầu Bình Lợi → Đại lộ Phạm Văn Đồng → Kha Vạn Cân',
-        avoided: 'Đã né trục cấm Điện Biên Phủ nội đô & Hầm Thủ Thiêm',
-        bridge: 'Cầu Bình Lợi: Tải ≤ 13T · Cao ≤ 4.5m (Hợp lệ 100%)',
+        road: 'Phan Văn Trị, Cầu Bình Lợi, Đại lộ Phạm Văn Đồng và Kha Vạn Cân',
+        avoided: 'Đã né trục cấm Điện Biên Phủ nội đô và Hầm Thủ Thiêm',
+        bridge: 'Cầu Bình Lợi: Tải tối đa 13T, Cao 4.5m (Hợp lệ 100%)',
       },
       'Bình Thạnh': {
-        road: 'Hoàng Hoa Thám → Phan Đăng Lưu → Xô Viết Nghệ Tĩnh (Khung giờ 09:05+)',
-        avoided: 'Tự động dời sau 09:00 để né khung cấm tải sáng 06:00–09:00',
-        bridge: 'Cầu Sài Gòn / Cầu Thị Nghè: Tải ≤ 15T (Hợp lệ)',
+        road: 'Hoàng Hoa Thám, Phan Đăng Lưu và Xô Viết Nghệ Tĩnh (Sau 09:05)',
+        avoided: 'Tự động dời sau 09:00 để né khung cấm tải sáng 06:00 đến 09:00',
+        bridge: 'Cầu Sài Gòn và Cầu Thị Nghè: Tải tối đa 15T (Hợp lệ)',
       },
       'Tân Phú': {
-        road: 'Cộng Hòa → Trường Chinh → Tân Kỳ Tân Quý / Lũy Bán Bích',
-        avoided: 'Đi hướng Tây ngoài vành đai cấm tải lõi Quận 1 / Quận 3',
-        bridge: 'Không qua cầu giới hạn tải · Mặt đường rộng ≥ 12m',
+        road: 'Cộng Hòa, Trường Chinh, Tân Kỳ Tân Quý và Lũy Bán Bích',
+        avoided: 'Đi hướng Tây ngoài vành đai cấm tải lõi Quận 1 và Quận 3',
+        bridge: 'Không qua cầu giới hạn tải, mặt đường rộng trên 12m',
       },
       'Tân Bình': {
-        road: 'Trục Cộng Hòa → Hoàng Hoa Thám → Bàu Cát (Khung hợp pháp 09:05+)',
+        road: 'Trục Cộng Hòa, Hoàng Hoa Thám và Bàu Cát (Khung hợp pháp 09:05+)',
         avoided: 'Né nhánh cấm rẽ Trường Sơn cửa ngõ sân bay Tân Sơn Nhất',
-        bridge: 'Cầu vượt Lăng Cha Cả: Tải ≤ 10T (Hợp lệ)',
+        bridge: 'Cầu vượt Lăng Cha Cả: Tải tối đa 10T (Hợp lệ)',
       },
       'Quận 10': {
-        road: 'Lý Thường Kiệt → Tô Hiến Thành → Sư Vạn Hạnh (Sau 09:05)',
-        avoided: 'Đã né khung giờ cấm 06–09h trên trục Ba Tháng Hai',
-        bridge: 'Đường bằng nội đô · Độ cao tĩnh không ≥ 4.2m',
+        road: 'Lý Thường Kiệt, Tô Hiến Thành và Sư Vạn Hạnh (Sau 09:05)',
+        avoided: 'Đã né khung giờ cấm 06h đến 09h trên trục Ba Tháng Hai',
+        bridge: 'Đường bằng nội đô, độ cao tĩnh không trên 4.2m',
       },
       'Quận 5': {
-        road: 'Lý Thường Kiệt → Hồng Bàng → Đại lộ Võ Văn Kiệt',
+        road: 'Lý Thường Kiệt, Hồng Bàng và Đại lộ Võ Văn Kiệt',
         avoided: 'Ưu tiên hành lang Đại lộ Võ Văn Kiệt thay vì đường hẹp Chợ Lớn',
-        bridge: 'Cầu Nguyễn Tri Phương: Tải ≤ 15T (Hợp lệ)',
+        bridge: 'Cầu Nguyễn Tri Phương: Tải tối đa 15T (Hợp lệ)',
       },
       'Quận 7': {
-        road: 'Đại lộ Võ Văn Kiệt → Cầu Kênh Tẻ → Nguyễn Hữu Thọ → Nguyễn Thị Thập',
-        avoided: 'Né lõi cấm tải Quận 1 (Nguyễn Huệ – Lê Lợi)',
-        bridge: 'Cầu Kênh Tẻ: Tải ≤ 15T · Cao ≤ 4.2m (Hợp lệ)',
+        road: 'Đại lộ Võ Văn Kiệt, Cầu Kênh Tẻ, Nguyễn Hữu Thọ và Nguyễn Thị Thập',
+        avoided: 'Né lõi cấm tải Quận 1 (Nguyễn Huệ và Lê Lợi)',
+        bridge: 'Cầu Kênh Tẻ: Tải tối đa 15T, Cao 4.2m (Hợp lệ)',
       },
     };
 
     const info = corridorByDistrict[s.district] || {
       road: `Hành lang đường bộ OSRM (${s.district})`,
-      avoided: 'Đã lọc khung giờ cấm tải QĐ 23/2018 (06:00–09:00 & 16:00–20:00)',
-      bridge: 'Tải trọng trục ≤ 13T · Chiều cao ≤ 3.8m (Hợp lệ)',
+      avoided: 'Đã lọc khung giờ cấm tải QĐ 23/2018 (06:00 đến 09:00 và 16:00 đến 20:00)',
+      bridge: 'Tải trọng trục tối đa 13T, Chiều cao 3.8m (Hợp lệ)',
     };
 
     steps.push({
@@ -293,7 +301,7 @@ function buildDetailedTurnSteps(route: BenchmarkPlannedRoute): DetailedTurnStep[
       fromLabel: prevLabel,
       toLabel: s.address,
       district: s.district,
-      maneuverIcon,
+      maneuverType,
       instructionVi:
         s.kind === 'backhaul'
           ? `Ghép đơn thu hồi chiều về tại ${s.address} (${s.district})`
@@ -306,7 +314,7 @@ function buildDetailedTurnSteps(route: BenchmarkPlannedRoute): DetailedTurnStep[
       targetCoord: [s.lng, s.lat],
       orderId: s.order_id,
       cargoKg: s.kg,
-      timeWindow: `${s.window_start}–${s.window_end}`,
+      timeWindow: `${s.window_start} đến ${s.window_end}`,
       isBackhaul: s.kind === 'backhaul',
     });
 
@@ -315,7 +323,6 @@ function buildDetailedTurnSteps(route: BenchmarkPlannedRoute): DetailedTurnStep[
     prevLng = s.lng;
   });
 
-  // Final return step back to Kho Tân Bình
   const retDistKm = Math.max(
     1.2,
     Number((Math.hypot(10.8018 - prevLat, 106.6385 - prevLng) * 111.32 * 1.28).toFixed(2))
@@ -326,9 +333,9 @@ function buildDetailedTurnSteps(route: BenchmarkPlannedRoute): DetailedTurnStep[
     fromLabel: prevLabel,
     toLabel: 'Kho Trung Tâm Tân Bình (364 Cộng Hòa, P.13)',
     district: 'Tân Bình',
-    maneuverIcon: '🏁',
+    maneuverType: 'finish',
     instructionVi: 'Quay về Kho Trung Tâm Tân Bình (364 Cộng Hòa) hoàn tất ca chạy',
-    streetCorridor: 'Đại lộ Phạm Văn Đồng / Trường Chinh → 364 Cộng Hòa',
+    streetCorridor: 'Đại lộ Phạm Văn Đồng và Trường Chinh về 364 Cộng Hòa',
     avoidedBanNote: 'Hành lang quay về kho ngoài giờ cấm tải QĐ 23/2018',
     bridgeCheckNote: 'Đầy tải hàng thu hồi chiều về (Không chạy rỗng)',
     distanceKm: retDistKm,
@@ -336,7 +343,7 @@ function buildDetailedTurnSteps(route: BenchmarkPlannedRoute): DetailedTurnStep[
     targetCoord: [106.6385, 10.8018],
     orderId: 'DEPOT-RETURN',
     cargoKg: route.backhaul_kg_recovered,
-    timeWindow: '15:00–17:30',
+    timeWindow: '15:00 đến 17:30',
     isBackhaul: true,
   });
 
@@ -357,7 +364,7 @@ export function EcoMilesTruckMapNavigator({
   const [navMode, setNavMode] = useState<'overview' | 'navigate'>(initialMode);
   const [playing, setPlaying] = useState<boolean>(true);
   const [simSpeed, setSimSpeed] = useState<number>(1.0);
-  const [progressFrac, setProgressFrac] = useState<number>(0.08);
+  const [progressFrac, setProgressFrac] = useState<number>(0.12);
   const [selectedStepIdx, setSelectedStepIdx] = useState<number>(1);
   const [showBanZones, setShowBanZones] = useState<boolean>(true);
   const [showBridges, setShowBridges] = useState<boolean>(true);
@@ -373,7 +380,6 @@ export function EcoMilesTruckMapNavigator({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
 
-  // Read URL params on mount (`?vehicle=0&mode=navigate`)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -388,7 +394,6 @@ export function EcoMilesTruckMapNavigator({
     }
   }, []);
 
-  // Load Cold-Chain 120 Orders workbook
   useEffect(() => {
     fetch('/samples/EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx')
       .then((r) => r.arrayBuffer())
@@ -414,7 +419,6 @@ export function EcoMilesTruckMapNavigator({
     return buildDetailedTurnSteps(activeRoute);
   }, [activeRoute]);
 
-  // Resolve exact OSRM street leg paths for the active route
   const { stopCoords, fallbackLegs } = useMemo(() => {
     if (!activeRoute) {
       return { stopCoords: [] as LngLat[], fallbackLegs: [] as LngLat[][] };
@@ -428,7 +432,6 @@ export function EcoMilesTruckMapNavigator({
     return { stopCoords: coords, fallbackLegs: fLegs };
   }, [activeRoute]);
 
-  // 60 FPS continuous driving loop along the route when playing
   useEffect(() => {
     if (!playing) return;
     let raf = 0;
@@ -436,8 +439,7 @@ export function EcoMilesTruckMapNavigator({
     const tick = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
-      // In Live Navigation Mode, advance smoothly at ~3.2% of route per second * simSpeed
-      const rate = navMode === 'navigate' ? 0.026 * simSpeed : 0.018 * simSpeed;
+      const rate = navMode === 'navigate' ? 0.024 * simSpeed : 0.016 * simSpeed;
       setProgressFrac((prev) => (prev + dt * rate) % 1);
       raf = requestAnimationFrame(tick);
     };
@@ -445,7 +447,6 @@ export function EcoMilesTruckMapNavigator({
     return () => cancelAnimationFrame(raf);
   }, [playing, navMode, simSpeed]);
 
-  // Attach non-passive wheel zoom listener
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -461,7 +462,6 @@ export function EcoMilesTruckMapNavigator({
     return () => canvas.removeEventListener('wheel', onWheel);
   }, [result]);
 
-  // Compute current active turn step from `progressFrac`
   const currentLiveStep = useMemo(() => {
     if (turnSteps.length === 0) return null;
     const idx = Math.min(
@@ -499,7 +499,7 @@ export function EcoMilesTruckMapNavigator({
   const downloadGpxFile = () => {
     if (!activeRoute) return;
     const legPaths = getOrFetchOsrmLegPaths(stopCoords, fallbackLegs);
-    const fullPts = legPaths.flat();
+    const fullPts = cleanRoutePolylineSpikes(legPaths.flat());
     const trkXml = fullPts
       .map(([lng, lat]) => `      <trkpt lat="${lat.toFixed(5)}" lon="${lng.toFixed(5)}" />`)
       .join('\n');
@@ -516,7 +516,6 @@ export function EcoMilesTruckMapNavigator({
     setVoiceBanner(`Đã tải file .GPX chuẩn Xe tải (${fullPts.length} tọa độ đường bộ) cho ${activeRoute.plate}.`);
   };
 
-  // Render the OpenStreetMap + Banned Truck Zones + OSRM Route + Moving Truck Cockpit
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !activeRoute || !strategy) return;
@@ -534,18 +533,15 @@ export function EcoMilesTruckMapNavigator({
     ctx.save();
     ctx.scale(dpr, dpr);
 
-    // Resolve OSRM street polyline for active route
+    // Resolve and clean the full route street polyline (zero hairpin U-turn tails!)
     const resolvedLegs = getOrFetchOsrmLegPaths(stopCoords, fallbackLegs, () =>
       setTileTick((n) => (n + 1) % 10000)
     );
-    const fullRoutePath: LngLat[] = resolvedLegs.flat();
+    const fullRoutePath: LngLat[] = cleanRoutePolylineSpikes(resolvedLegs.flat());
 
-    // Interpolate current live truck position and heading along `fullRoutePath`
+    // Interpolate current live truck position and heading along the spike-free `fullRoutePath`
     const truckPose = interpolateAlongStreetPathWithHeading(fullRoutePath, progressFrac);
 
-    // Determine Viewport:
-    // - In `overview` mode: center on the route's bounding box at `overviewTransform.zoom`
-    // - In `navigate` (Live Moving Mode): lock camera onto `truckPose` at street zoom `14.3`!
     const routeLats = activeRoute.stops.map((s) => s.lat).concat([10.8018]);
     const routeLngs = activeRoute.stops.map((s) => s.lng).concat([106.6385]);
     const overviewCenterLat = (Math.min(...routeLats) + Math.max(...routeLats)) / 2;
@@ -558,7 +554,7 @@ export function EcoMilesTruckMapNavigator({
             centerLng: truckPose.lng,
             zoom: 14.35,
             panX: 0,
-            panY: 35, // Slightly lower truck in cockpit view so more road ahead is visible
+            panY: 35,
             width: cw,
             height: ch,
           }
@@ -578,7 +574,7 @@ export function EcoMilesTruckMapNavigator({
     const toXY = (lng: number, lat: number): [number, number] =>
       projectLatLngToCanvas(lng, lat, vp);
 
-    // 2. Draw HCMC QĐ 23/2018 Banned Truck Zones (Red/Amber Shaded Polygons + Dashed Borders)
+    // 2. Draw HCMC QĐ 23/2018 Banned Truck Zones (Red Shaded Polygons + Vector Prohibition Icon)
     if (showBanZones) {
       for (const zone of HCMC_QD23_BANNED_ZONES) {
         ctx.save();
@@ -589,7 +585,7 @@ export function EcoMilesTruckMapNavigator({
           else ctx.lineTo(x, y);
         });
         ctx.closePath();
-        ctx.fillStyle = 'rgba(224, 49, 49, 0.16)';
+        ctx.fillStyle = 'rgba(224, 49, 49, 0.15)';
         ctx.fill();
         ctx.setLineDash([7, 5]);
         ctx.strokeStyle = 'rgba(224, 49, 49, 0.85)';
@@ -597,22 +593,41 @@ export function EcoMilesTruckMapNavigator({
         ctx.stroke();
         ctx.restore();
 
-        // Zone warning badge
+        // Vector Ban Badge (No raw emoji!)
         const [lx, ly] = toXY(zone.labelCoord[0], zone.labelCoord[1]);
-        const badgeText = `⛔ CẤM TẢI QĐ 23 (06-09h & 16-20h)`;
+        const badgeText = 'CẤM TẢI QĐ 23 (06-09h & 16-20h)';
         ctx.font = '700 10px system-ui, sans-serif';
         const tw = ctx.measureText(badgeText).width;
-        ctx.fillStyle = 'rgba(153, 27, 27, 0.88)';
-        ctx.fillRect(lx - tw / 2 - 6, ly - 9, tw + 12, 18);
+        const boxW = tw + 26;
+        const boxX = lx - boxW / 2;
+        const boxY = ly - 9;
+
+        ctx.fillStyle = 'rgba(153, 27, 27, 0.90)';
+        ctx.fillRect(boxX, boxY, boxW, 18);
         ctx.strokeStyle = '#fca5a5';
         ctx.lineWidth = 1;
-        ctx.strokeRect(lx - tw / 2 - 6, ly - 9, tw + 12, 18);
+        ctx.strokeRect(boxX, boxY, boxW, 18);
+
+        // Vector prohibition circle + minus bar
+        ctx.beginPath();
+        ctx.arc(boxX + 10, ly, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(boxX + 7.2, ly);
+        ctx.lineTo(boxX + 12.8, ly);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
         ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.fillText(badgeText, lx, ly + 3.5);
+        ctx.textAlign = 'left';
+        ctx.fillText(badgeText, boxX + 19, ly + 3.5);
       }
 
-      // Draw Banned Inner-City Street Corridors (Dashed Red Corridors)
       for (const bs of HCMC_BANNED_STREETS) {
         ctx.save();
         ctx.beginPath();
@@ -629,28 +644,30 @@ export function EcoMilesTruckMapNavigator({
       }
     }
 
-    // 3. Optionally draw faint sibling fleet routes if toggled
+    // 3. Optional sibling fleet routes
     if (showAllFleetRoutes) {
       for (const r of strategy.routes) {
         if (r.route_id === activeRoute.route_id) continue;
         const sCoords: LngLat[] = r.stops.map((s) => [s.lng, s.lat]);
         const fLegs: LngLat[][] = r.stops
           .slice(1)
-          .map((s) => (s.leg_path && s.leg_path.length >= 2 ? s.leg_path : [[106.6385, 10.8018], [s.lng, s.lat]]));
-        const pts = getOrFetchOsrmLegPaths(sCoords, fLegs).flat();
+          .map((s) =>
+            s.leg_path && s.leg_path.length >= 2 ? s.leg_path : [[106.6385, 10.8018], [s.lng, s.lat]]
+          );
+        const pts = cleanRoutePolylineSpikes(getOrFetchOsrmLegPaths(sCoords, fLegs).flat());
         ctx.beginPath();
         pts.forEach(([lng, lat], idx) => {
           const [x, y] = toXY(lng, lat);
           if (idx === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         });
-        ctx.strokeStyle = 'rgba(100, 116, 139, 0.38)';
+        ctx.strokeStyle = 'rgba(100, 116, 139, 0.36)';
         ctx.lineWidth = 2.0;
         ctx.stroke();
       }
     }
 
-    // 4. Draw Active Truck's Legal EcoMiles Street Route (Double Halo + Direction Chevrons)
+    // 4. Draw Active Truck's Spike-Free Legal Route (100% Vertex-Aligned, Zero Break Tails!)
     if (fullRoutePath.length >= 2) {
       // White outer casing
       ctx.beginPath();
@@ -660,69 +677,66 @@ export function EcoMilesTruckMapNavigator({
         else ctx.lineTo(x, y);
       });
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.94)';
-      ctx.lineWidth = navMode === 'navigate' ? 11.0 : 7.2;
+      ctx.lineWidth = navMode === 'navigate' ? 10.5 : 7.0;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.stroke();
 
-      // Remaining legal route in Google-Maps Navigation Blue/Emerald
+      // Upcoming route ahead of truck
       ctx.strokeStyle = navMode === 'navigate' ? '#1971c2' : '#15803d';
-      ctx.lineWidth = navMode === 'navigate' ? 6.8 : 4.2;
+      ctx.lineWidth = navMode === 'navigate' ? 6.4 : 4.2;
       ctx.stroke();
 
-      // Highlight the currently selected leg in Overview mode
-      const selStep = turnSteps.find((s) => s.stepIdx === selectedStepIdx);
-      if (selStep && resolvedLegs[selStep.legIdx]) {
-        const legPts = resolvedLegs[selStep.legIdx];
+      // Traveled portion behind truck: sliced along the EXACT vertices of `fullRoutePath`!
+      const traveledSlice = slicePolylineByFraction(fullRoutePath, 0, progressFrac);
+      if (traveledSlice.length >= 2) {
         ctx.beginPath();
-        legPts.forEach(([lng, lat], idx) => {
+        traveledSlice.forEach(([lng, lat], idx) => {
           const [x, y] = toXY(lng, lat);
           if (idx === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         });
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 5.5;
+        ctx.strokeStyle = '#22c55e';
+        ctx.lineWidth = navMode === 'navigate' ? 6.8 : 4.4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.stroke();
       }
-
-      // Traveled trail behind the truck (Bright Lime/Emerald Comet Trail)
-      const trailSamples = 40;
-      ctx.beginPath();
-      for (let i = 0; i <= trailSamples; i++) {
-        const f = (progressFrac * i) / trailSamples;
-        const pt = interpolateAlongStreetPathWithHeading(fullRoutePath, f);
-        const [x, y] = toXY(pt.lng, pt.lat);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = '#22c55e';
-      ctx.lineWidth = navMode === 'navigate' ? 7.2 : 4.6;
-      ctx.stroke();
     }
 
-    // 5. Draw Bridge Weight & Height Clearance Badges
+    // 5. Draw Bridge Weight & Height Clearance Badges (Vector Status Dot, No Raw Emoji!)
     if (showBridges) {
       for (const br of HCMC_BRIDGE_CLEARANCES) {
         const [bx, by] = toXY(br.lng, br.lat);
         const label = br.allowedForTruck
-          ? `🌉 ${br.name.split(' (')[0]}: ≤${br.maxWeightTons}T · ≤${br.maxHeightM}m ✓`
-          : `⛔ ${br.name.split(' (')[0]}: CẤM TẢI`;
+          ? `${br.name.split(' (')[0]}: Tối đa ${br.maxWeightTons}T, Cao ${br.maxHeightM}m`
+          : `${br.name.split(' (')[0]}: CẤM XE TẢI`;
         ctx.font = '700 9.5px system-ui, sans-serif';
         const tw = ctx.measureText(label).width;
+        const boxW = tw + 22;
+        const boxX = bx - boxW / 2;
+        const boxY = by - 22;
+
         ctx.fillStyle = br.allowedForTruck
-          ? 'rgba(20, 83, 45, 0.90)'
-          : 'rgba(153, 27, 27, 0.90)';
-        ctx.fillRect(bx - tw / 2 - 5, by - 22, tw + 10, 16);
+          ? 'rgba(20, 83, 45, 0.92)'
+          : 'rgba(153, 27, 27, 0.92)';
+        ctx.fillRect(boxX, boxY, boxW, 17);
         ctx.strokeStyle = br.allowedForTruck ? '#86efac' : '#fca5a5';
         ctx.lineWidth = 1;
-        ctx.strokeRect(bx - tw / 2 - 5, by - 22, tw + 10, 16);
+        ctx.strokeRect(boxX, boxY, boxW, 17);
+
+        ctx.beginPath();
+        ctx.arc(boxX + 8.5, boxY + 8.5, 3.8, 0, Math.PI * 2);
+        ctx.fillStyle = br.allowedForTruck ? '#4ade80' : '#f87171';
+        ctx.fill();
+
         ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.fillText(label, bx, by - 11);
+        ctx.textAlign = 'left';
+        ctx.fillText(label, boxX + 15.5, boxY + 11.5);
       }
     }
 
-    // 6. Draw Numbered Customer Stop Pins & Depot Hub
+    // 6. Draw Numbered Customer Stop Pins (Snapped directly onto `fullRoutePath` so zero off-road tails exist!)
     const [depX, depY] = toXY(106.6385, 10.8018);
     ctx.fillStyle = '#14532d';
     ctx.strokeStyle = '#ffffff';
@@ -736,7 +750,8 @@ export function EcoMilesTruckMapNavigator({
 
     activeRoute.stops.forEach((s: BenchmarkRouteStop) => {
       if (s.kind === 'depot') return;
-      const [sx, sy] = toXY(s.lng, s.lat);
+      const [snappedLng, snappedLat] = snapPointToPolyline(s.lng, s.lat, fullRoutePath);
+      const [sx, sy] = toXY(snappedLng, snappedLat);
       const isBackhaul = s.kind === 'backhaul';
       const r = navMode === 'navigate' ? 11 : 9;
 
@@ -754,44 +769,40 @@ export function EcoMilesTruckMapNavigator({
       ctx.fillText(String(s.seq), sx, sy + 3.5);
     });
 
-    // 7. Draw Active Moving Truck Cockpit Puck (Google-Maps Navigation Arrow Puck!)
+    // 7. Draw Active Moving Truck Cockpit Puck
     const [tx, ty] = toXY(truckPose.lng, truckPose.lat);
     const headingAngle = Math.atan2(truckPose.dy, truckPose.dx);
 
-    // Forward radar beam cone in Live Navigation Mode
     if (navMode === 'navigate') {
       ctx.save();
       ctx.translate(tx, ty);
       ctx.rotate(headingAngle);
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.arc(0, 0, 58, -0.42, 0.42);
+      ctx.arc(0, 0, 56, -0.40, 0.40);
       ctx.closePath();
       ctx.fillStyle = 'rgba(25, 113, 194, 0.22)';
       ctx.fill();
       ctx.restore();
     }
 
-    // Outer pulse ring
     ctx.beginPath();
-    ctx.arc(tx, ty, navMode === 'navigate' ? 19 : 13, 0, Math.PI * 2);
+    ctx.arc(tx, ty, navMode === 'navigate' ? 18 : 13, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(25, 113, 194, 0.24)';
     ctx.fill();
 
-    // Main Navigation Puck
     ctx.beginPath();
-    ctx.arc(tx, ty, navMode === 'navigate' ? 13 : 9.5, 0, Math.PI * 2);
+    ctx.arc(tx, ty, navMode === 'navigate' ? 12.5 : 9.5, 0, Math.PI * 2);
     ctx.fillStyle = '#1971c2';
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Directional Navigation Arrow inside the puck
     ctx.save();
     ctx.translate(tx, ty);
     ctx.rotate(headingAngle);
-    const sc = navMode === 'navigate' ? 1.45 : 1.05;
+    const sc = navMode === 'navigate' ? 1.4 : 1.05;
     ctx.scale(sc, sc);
     ctx.beginPath();
     ctx.moveTo(5.5, 0);
@@ -803,7 +814,6 @@ export function EcoMilesTruckMapNavigator({
     ctx.fill();
     ctx.restore();
 
-    // Truck Plate Pill next to moving truck
     const plateLabel = `${activeRoute.plate} · 36 km/h`;
     ctx.font = '800 10.5px system-ui, sans-serif';
     const ptw = ctx.measureText(plateLabel).width;
@@ -842,6 +852,13 @@ export function EcoMilesTruckMapNavigator({
 
   const remainingKm = Math.max(0.5, Number((activeRoute.km * (1 - progressFrac)).toFixed(1)));
   const remainingMin = Math.max(2, Math.round((remainingKm / 29.0) * 60));
+
+  const renderManeuverSvg = (type: DetailedTurnStep['maneuverType']) => {
+    if (type === 'right') return <CornerUpRight className="w-6 h-6 text-[#d6f65a]" />;
+    if (type === 'left') return <CornerUpLeft className="w-6 h-6 text-[#d6f65a]" />;
+    if (type === 'finish') return <Flag className="w-6 h-6 text-[#d6f65a]" />;
+    return <ArrowUp className="w-6 h-6 text-[#d6f65a]" />;
+  };
 
   return (
     <div className="min-h-screen bg-[#f3f4ef] text-[#111827] flex flex-col">
@@ -884,7 +901,7 @@ export function EcoMilesTruckMapNavigator({
               value={vehicleIdx}
               onChange={(e) => {
                 setVehicleIdx(Number(e.target.value));
-                setProgressFrac(0.05);
+                setProgressFrac(0.08);
                 setSelectedStepIdx(1);
               }}
               className="px-2.5 py-1.5 rounded-lg border border-[#d1d5db] bg-white text-xs font-bold text-[#111827]"
@@ -922,7 +939,7 @@ export function EcoMilesTruckMapNavigator({
                 }`}
               >
                 <Navigation className="w-3.5 h-3.5" />
-                <span>2. Dẫn Đường Trực Tiếp (Live Moving &ldquo;Bắt Đầu&rdquo;)</span>
+                <span>2. Dẫn Đường Trực Tiếp (Chế độ Bắt Đầu)</span>
               </button>
             </div>
           </div>
@@ -945,9 +962,7 @@ export function EcoMilesTruckMapNavigator({
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3.5">
                   <div className="w-14 h-14 rounded-2xl bg-white/15 border border-white/25 flex flex-col items-center justify-center shrink-0">
-                    <span className="text-2xl font-black text-[#d6f65a] leading-none">
-                      {currentLiveStep.maneuverIcon}
-                    </span>
+                    {renderManeuverSvg(currentLiveStep.maneuverType)}
                     <span className="text-[11px] font-mono font-extrabold text-white mt-1">
                       {stepFracRemainingMeters} m
                     </span>
@@ -959,15 +974,19 @@ export function EcoMilesTruckMapNavigator({
                           ? 'ĐANG DẪN ĐƯỜNG TRỰC TIẾP (CAMERA BÁM THEO XE)'
                           : `CHẶNG #${currentLiveStep.stepIdx}/${turnSteps.length} · XEM TỔNG QUAN`}
                       </span>
-                      <span className="text-xs font-semibold text-emerald-200">
-                        ✓ {currentLiveStep.bridgeCheckNote}
+                      <span className="text-xs font-semibold text-emerald-200 flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#d6f65a]" />
+                        <span>{currentLiveStep.bridgeCheckNote}</span>
                       </span>
                     </div>
                     <div className="text-base sm:text-lg font-extrabold mt-1 leading-snug">
                       {currentLiveStep.instructionVi}
                     </div>
-                    <div className="text-xs text-white/85 mt-0.5">
-                      ⛔ <strong>Lý do né đường cấm QĐ 23/2018:</strong> {currentLiveStep.avoidedBanNote}
+                    <div className="text-xs text-white/85 mt-0.5 flex items-center gap-1.5">
+                      <Ban className="w-3.5 h-3.5 text-rose-300 shrink-0" />
+                      <span>
+                        <strong>Lý do né đường cấm QĐ 23/2018:</strong> {currentLiveStep.avoidedBanNote}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -984,8 +1003,8 @@ export function EcoMilesTruckMapNavigator({
                       }}
                       className="px-4 py-2.5 rounded-xl bg-[#d6f65a] hover:bg-[#c5e847] text-[#14532d] font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm cursor-pointer"
                     >
-                      <Navigation className="w-4 h-4 fill-current" />
-                      <span>▶ BẮT ĐẦU DẪN ĐƯỜNG (START LIVE)</span>
+                      <Play className="w-4 h-4 fill-current" />
+                      <span>BẮT ĐẦU DẪN ĐƯỜNG (START LIVE)</span>
                     </button>
                   ) : (
                     <button
@@ -1012,12 +1031,13 @@ export function EcoMilesTruckMapNavigator({
           )}
 
           {voiceBanner && (
-            <div className="px-3.5 py-2 rounded-xl bg-[#eef7ee] border border-[#b9dfbf] text-xs font-bold text-[#14532d]">
-              🔊 {voiceBanner}
+            <div className="px-3.5 py-2 rounded-xl bg-[#eef7ee] border border-[#b9dfbf] text-xs font-bold text-[#14532d] flex items-center gap-2">
+              <Volume2 className="w-4 h-4 text-[#14532d] shrink-0" />
+              <span>{voiceBanner}</span>
             </div>
           )}
 
-          {/* LAYER TOGGLE PILLS ABOVE MAP */}
+          {/* LAYER TOGGLE PILLS ABOVE MAP (Lucide Icons Only) */}
           <div className="bg-white border border-[#d8cfbd] rounded-xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div className="flex flex-wrap items-center gap-3">
               <span className="font-bold text-[#374151] flex items-center gap-1">
@@ -1030,7 +1050,8 @@ export function EcoMilesTruckMapNavigator({
                   checked={showBanZones}
                   onChange={(e) => setShowBanZones(e.target.checked)}
                 />
-                <span>⛔ Vùng &amp; Tuyến đường cấm tải QĐ 23/2018 (Đỏ)</span>
+                <Ban className="w-3.5 h-3.5 text-[#991b1b]" />
+                <span>Vùng &amp; Tuyến đường cấm tải QĐ 23/2018 (Đỏ)</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#14532d]">
                 <input
@@ -1038,7 +1059,8 @@ export function EcoMilesTruckMapNavigator({
                   checked={showBridges}
                   onChange={(e) => setShowBridges(e.target.checked)}
                 />
-                <span>🌉 Giới hạn tải trọng &amp; độ cao cầu (13T / 4.5m)</span>
+                <Landmark className="w-3.5 h-3.5 text-[#14532d]" />
+                <span>Giới hạn tải trọng &amp; độ cao cầu (13T / 4.5m)</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#4b5563]">
                 <input
@@ -1088,7 +1110,7 @@ export function EcoMilesTruckMapNavigator({
               className="w-full h-full block cursor-grab active:cursor-grabbing"
             />
 
-            {/* Floating Speedometer & Mode Badge in Top-Left of Map */}
+            {/* Floating Speedometer & Mode Badge in Top-Left of Map (Lucide Icons Only) */}
             <div className="absolute top-3 left-3 bg-[#111827]/90 text-white px-3.5 py-2.5 rounded-xl border border-white/15 shadow-md flex items-center gap-3">
               <div className="text-center border-r border-white/20 pr-3">
                 <div className="text-xl font-black text-[#d6f65a] leading-none">
@@ -1098,14 +1120,23 @@ export function EcoMilesTruckMapNavigator({
                   km/h
                 </div>
               </div>
-              <div className="text-xs">
-                <div className="font-extrabold text-white">
-                  {navMode === 'navigate'
-                    ? '🧭 Chế độ Dẫn Đường Trực Tiếp (Follow-Truck)'
-                    : '🗺️ Chế độ Tổng Quan & Vùng Cấm Tải'}
+              <div className="text-xs space-y-0.5">
+                <div className="font-extrabold text-white flex items-center gap-1.5">
+                  {navMode === 'navigate' ? (
+                    <>
+                      <Compass className="w-3.5 h-3.5 text-[#d6f65a]" />
+                      <span>Chế độ Dẫn Đường Trực Tiếp (Follow-Truck)</span>
+                    </>
+                  ) : (
+                    <>
+                      <MapIcon className="w-3.5 h-3.5 text-[#d6f65a]" />
+                      <span>Chế độ Tổng Quan &amp; Vùng Cấm Tải</span>
+                    </>
+                  )}
                 </div>
-                <div className="text-[11px] text-emerald-300 font-semibold">
-                  ✓ 0 lỗi QĐ 23/2018 · Cầu ≤ 13T Hợp lệ
+                <div className="text-[11px] text-emerald-300 font-semibold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  <span>0 lỗi QĐ 23/2018 · Cầu tối đa 13T Hợp lệ</span>
                 </div>
               </div>
             </div>
@@ -1165,10 +1196,10 @@ export function EcoMilesTruckMapNavigator({
                 onChange={(e) => setSimSpeed(Number(e.target.value))}
                 className="px-2 py-1 rounded-lg border border-[#d1d5db] bg-[#f9fafb] text-xs font-bold text-[#111827]"
               >
-                <option value={0.5}>0.5× Chậm</option>
-                <option value={1}>1× Chuẩn</option>
-                <option value={2.5}>2.5× Nhanh</option>
-                <option value={5}>5× Tua nhanh</option>
+                <option value={0.5}>0.5x Chậm</option>
+                <option value={1}>1x Chuẩn</option>
+                <option value={2.5}>2.5x Nhanh</option>
+                <option value={5}>5x Tua nhanh</option>
               </select>
             </div>
           </div>
@@ -1193,7 +1224,10 @@ export function EcoMilesTruckMapNavigator({
                   key={z.id}
                   className="p-2.5 rounded-xl bg-[#fef2f2] border border-[#fecaca] space-y-0.5"
                 >
-                  <div className="font-bold text-[#991b1b]">⛔ {z.name}</div>
+                  <div className="font-bold text-[#991b1b] flex items-center gap-1.5">
+                    <Ban className="w-3.5 h-3.5 text-[#991b1b] shrink-0" />
+                    <span>{z.name}</span>
+                  </div>
                   <div className="text-[#7f1d1d]">{z.rule}</div>
                   <div className="text-[10.5px] font-semibold text-[#b91c1c]">{z.fineVnd}</div>
                 </div>
@@ -1210,7 +1244,7 @@ export function EcoMilesTruckMapNavigator({
                   <span>Chi Tiết Dẫn Đường Từng Chặng ({turnSteps.length} chặng)</span>
                 </h2>
                 <p className="text-[11px] text-[#5f6368]">
-                  Click vào bất kỳ chặng nào để đưa xe tải đến chặng đó &amp; xem lý do chọn đường
+                  Click vào bất kỳ chặng nào để đưa xe tải đến chặng đó và xem lý do chọn đường
                 </p>
               </div>
               <ShieldCheck className="w-5 h-5 text-[#15803d] shrink-0" />
@@ -1264,13 +1298,19 @@ export function EcoMilesTruckMapNavigator({
                     </div>
 
                     <div className="pl-8 space-y-1 text-[11px]">
-                      <div className="text-[#1f3a5f] font-semibold">
-                        🛣️ <strong>Lộ trình:</strong> {st.streetCorridor}
+                      <div className="text-[#1f3a5f] font-semibold flex items-center gap-1.5">
+                        <RouteIcon className="w-3.5 h-3.5 text-[#1971c2] shrink-0" />
+                        <span>
+                          <strong>Lộ trình:</strong> {st.streetCorridor}
+                        </span>
                       </div>
-                      <div className="text-[#991b1b]">
-                        ⛔ <strong>Né cấm tải:</strong> {st.avoidedBanNote}
+                      <div className="text-[#991b1b] flex items-center gap-1.5">
+                        <Ban className="w-3.5 h-3.5 text-[#991b1b] shrink-0" />
+                        <span>
+                          <strong>Né cấm tải:</strong> {st.avoidedBanNote}
+                        </span>
                       </div>
-                      <div className="text-[#15803d] flex items-center gap-1 font-semibold">
+                      <div className="text-[#15803d] flex items-center gap-1.5 font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                         <span>{st.bridgeCheckNote}</span>
                       </div>

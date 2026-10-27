@@ -251,7 +251,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
               <span>1. Cắt Giảm Xe Chạy Rỗng Chiều Về</span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Tự động khép vòng lộ trình về gần kho và ghép thêm đơn thu hồi hàng chiều về, kéo giảm tỷ lệ chạy rỗng từ mức trung bình ngành <strong>30–35% xuống còn ~10–12%</strong>.
+              Tự động khép vòng lộ trình về gần kho và ghép thêm đơn thu hồi hàng chiều về, kéo giảm tỷ lệ chạy rỗng từ mức trung bình ngành <strong>30 - 35% xuống còn ~10 - 12%</strong>.
             </p>
           </div>
 

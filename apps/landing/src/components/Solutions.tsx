@@ -11,9 +11,9 @@ export const Solutions: React.FC = () => {
       description:
         'Tự động gom các điểm giao gần nhau, tính theo tải trọng xe và khung giờ đã hẹn để tạo lộ trình hợp lý chỉ trong vài giây.',
       metrics: [
-        'Giảm 20–30% tổng quãng đường',
-        'Tiết kiệm 15–25% nhiên liệu & chi phí bảo trì',
-        'Rút ngắn 80–90% thời gian điều phối',
+        'Giảm 20 - 30% tổng quãng đường',
+        'Tiết kiệm 15 - 25% nhiên liệu & chi phí bảo trì',
+        'Rút ngắn 80 - 90% thời gian điều phối',
       ],
       gradient: 'from-yellow-400/10 to-emerald-400/5',
     },
@@ -35,7 +35,7 @@ export const Solutions: React.FC = () => {
       description:
         'Phát hiện và ghép các đơn lấy hàng chiều về khi xe hoàn thành tuyến giao tại điểm đích, giúp hạn chế quãng đường quay về không tải.',
       metrics: [
-        'Giảm tỷ lệ xe chạy rỗng từ 30–35% xuống 5–10%',
+        'Giảm tỷ lệ xe chạy rỗng từ 30 - 35% xuống 5 - 10%',
         'Tăng số đơn hoàn thành trên mỗi chuyến',
         'Nâng cao hiệu suất khai thác đội xe',
       ],
@@ -48,7 +48,7 @@ export const Solutions: React.FC = () => {
       title: 'Biết Mỗi Chuyến Xe Phát Thải Bao Nhiêu CO₂',
       description:
         'Tự động tính lượng CO₂ của từng chuyến xe và đơn hàng theo phương pháp quốc tế, giúp doanh nghiệp dễ tổng hợp báo cáo phát triển bền vững.',
-      metrics: ['Giảm 20–30% phát thải CO₂ / đơn hàng', 'Dễ tổng hợp báo cáo môi trường', 'Lập kế hoạch chuyển đổi xe điện'],
+      metrics: ['Giảm 20 - 30% phát thải CO₂ / đơn hàng', 'Dễ tổng hợp báo cáo môi trường', 'Lập kế hoạch chuyển đổi xe điện'],
       gradient: 'from-yellow-400/10 to-emerald-500/5',
     },
   ];

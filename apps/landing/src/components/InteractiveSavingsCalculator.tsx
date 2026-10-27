@@ -120,7 +120,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                 />
                 <div className="flex justify-between text-[11px] text-slate-500 mt-1">
                   <span>6L (Xe máy/Van nhỏ)</span>
-                  <span>12L (Xe tải 1–2T)</span>
+                  <span>12L (Xe tải 1 - 2T)</span>
                   <span>20L (Xe tải nặng)</span>
                 </div>
               </div>
@@ -220,7 +220,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               onClick={onOpenPilotModal}
               className="w-full py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 shadow-xl shadow-ecomiles-lime/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>Đăng Ký Dùng Thử Miễn Phí 4–6 Tuần</span>
+              <span>Đăng Ký Dùng Thử Miễn Phí 4 - 6 Tuần</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
             </button>
           </div>

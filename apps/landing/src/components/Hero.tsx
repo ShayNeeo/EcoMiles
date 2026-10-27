@@ -313,8 +313,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                     }}
                   >
                     <div className="text-white font-bold">tấn hàng hóa tối ưu tuyến</div>
-                    <div className="text-emerald-300">giảm 20–30% CO₂ / đơn hàng</div>
-                    <div className="text-white/90">đưa xe chạy rỗng về mức 5–10%</div>
+                    <div className="text-emerald-300">giảm 20 - 30% CO₂ / đơn hàng</div>
+                    <div className="text-white/90">đưa xe chạy rỗng về mức 5 - 10%</div>
                   </div>
 
                   <div

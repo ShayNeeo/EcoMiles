@@ -15,7 +15,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
     {
       name: 'Gói Starter',
       desc: 'Mức khởi đầu dễ tiếp cận cho đơn vị mới đưa hoạt động giao nhận lên hệ thống.',
-      price: '1,5 – 2,5 triệu',
+      price: '1,5 - 2,5 triệu',
       unit: '/ tháng',
       vehicles: 'Tối đa 10 tài xế',
       features: [
@@ -29,9 +29,9 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
     {
       name: 'Gói Nhỏ',
       desc: 'Phù hợp với đội giao nhận nhỏ cần theo dõi đơn hàng và tài xế tập trung.',
-      price: '3 – 5 triệu',
+      price: '3 - 5 triệu',
       unit: '/ tháng',
-      vehicles: 'Từ 11 – 20 tài xế',
+      vehicles: 'Từ 11 - 20 tài xế',
       features: [
         'Tất cả tính năng của gói Starter',
         'Tích hợp dữ liệu giao thông thời gian thực',
@@ -44,9 +44,9 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
     {
       name: 'Gói Vừa',
       desc: 'Dành cho doanh nghiệp có nhiều tuyến và cần kiểm soát hiệu quả vận hành sâu hơn.',
-      price: '8 – 15 triệu',
+      price: '8 - 15 triệu',
       unit: '/ tháng',
-      vehicles: 'Từ 21 – 100 tài xế',
+      vehicles: 'Từ 21 - 100 tài xế',
       features: [
         'Tất cả tính năng của gói Nhỏ',
         'Tự động ghép đơn cho chiều xe quay về',
@@ -58,7 +58,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
     {
       name: 'Gói Lớn',
       desc: 'Giải pháp linh hoạt cho mạng lưới giao nhận lớn hoặc có yêu cầu vận hành riêng.',
-      price: '20 – 40 triệu',
+      price: '20 - 40 triệu',
       unit: '/ tháng',
       vehicles: 'Trên 100 tài xế • Có thể thỏa thuận',
       features: [
@@ -327,18 +327,18 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           <div className="space-y-2 text-left">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ecomiles-lime/10 border border-ecomiles-lime/30 text-xs font-bold text-ecomiles-lime">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>CHƯƠNG TRÌNH DÙNG THỬ MIỄN PHÍ 4–6 TUẦN</span>
+              <span>CHƯƠNG TRÌNH DÙNG THỬ MIỄN PHÍ 4 - 6 TUẦN</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
               Trải Nghiệm Miễn Phí Trên Dữ Liệu Thực Tế
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Dành cho <strong>3–5 doanh nghiệp đầu tiên tại TP.HCM</strong> có đội xe từ 5–15 phương tiện. EcoMiles sẽ hỗ trợ chuẩn bị dữ liệu và đo mức tiết kiệm thực tế trước khi doanh nghiệp quyết định sử dụng.
+              Dành cho <strong>3 - 5 doanh nghiệp đầu tiên tại TP.HCM</strong> có đội xe từ 5 - 15 phương tiện. EcoMiles sẽ hỗ trợ chuẩn bị dữ liệu và đo mức tiết kiệm thực tế trước khi doanh nghiệp quyết định sử dụng.
             </p>
           </div>
 
           <button
-            onClick={() => onOpenPilotModal('Dùng thử miễn phí 4–6 tuần')}
+            onClick={() => onOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')}
             className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-ecomiles-lime px-6 py-3.5 text-xs font-extrabold text-slate-950 shadow-xl transition-all hover:bg-yellow-300 sm:w-auto sm:px-8 sm:text-sm md:shrink-0"
           >
             <span>Đăng Ký Dùng Thử Miễn Phí</span>

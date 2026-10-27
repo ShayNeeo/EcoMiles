@@ -9,6 +9,8 @@ import {
   Table2,
   X,
   CheckCircle2,
+  Star,
+  Zap,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -22,6 +24,7 @@ import {
 import { inspectExcelHeaderMapping, type ColumnMappingInspection } from '../utils/tenantPrivacyEngine';
 import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
 import {
+  cleanRoutePolylineSpikes,
   computeHcmcStreetPath,
   getOrFetchOsrmLegPaths,
   interpolateAlongStreetPathWithHeading,
@@ -521,7 +524,7 @@ export function EvsimDualSimulator({
       // 2. Planned Street-Following Route Polylines (drawn from `fullRoutePaths[rIdx]`)
       const fullRoutePaths: LngLat[][] = side.routeGeometries.map((rg, rIdx) => {
         const legPaths = resolvedRouteLegs[rIdx] || rg.fallbackLegs;
-        return legPaths.flat();
+        return cleanRoutePolylineSpikes(legPaths.flat());
       });
 
       side.routeGeometries.forEach((rg, rIdx) => {
@@ -544,7 +547,7 @@ export function EvsimDualSimulator({
         ctx.stroke();
       });
 
-      // 3. Customer Store Pins (Small Square Store Nodes & Star Diffs — Visually Distinct From Moving Trucks!)
+      // 3. Customer Store Pins (Small Square Store Nodes & Star Diffs)
       for (const ev of side.stopEvents) {
         const [sx, sy] = toXY(ev.lng, ev.lat);
         const delivered = ev.tSec <= timeSec;
@@ -599,7 +602,7 @@ export function EvsimDualSimulator({
       ctx.textAlign = 'left';
       ctx.fillText(`Kho Tân Bình (${side.strategy.vehicles_used} xe)`, depX + 12, depY + 4);
 
-      // 5. Active Moving Trucks — Guaranteed 100% Locked onto `fullRoutePaths[rIdx]` (Exact Same Vertex Array as Step 2!)
+      // 5. Active Moving Trucks: Guaranteed 100% Locked onto `fullRoutePaths[rIdx]`
       side.routeGeometries.forEach((rg, rIdx) => {
         const fullPath = fullRoutePaths[rIdx];
         if (!fullPath || fullPath.length < 2) return;
@@ -1175,7 +1178,7 @@ export function EvsimDualSimulator({
         </span>
         <span className="flex items-center gap-1.5">
           <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#f2c94c]" />
-          Tải trung bình (25–55%)
+          Tải trung bình (25 - 55%)
         </span>
         <span className="flex items-center gap-1.5">
           <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#1971c2]" />
@@ -1190,11 +1193,11 @@ export function EvsimDualSimulator({
           Kho Trung tâm Tân Bình DC
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="text-[#12b886] font-bold">★</span>
+          <Star className="w-3.5 h-3.5 text-[#12b886] fill-current" />
           Điểm giao EcoMiles cứu khỏi giờ cấm QĐ 23
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="text-[#e03131] font-bold">★</span>
+          <Star className="w-3.5 h-3.5 text-[#e03131] fill-current" />
           Điểm giao bị phạt giờ cấm ở Baseline
         </span>
         <span className="ml-auto font-semibold text-[#1971c2]">
@@ -1431,9 +1434,15 @@ export function EvsimDualSimulator({
                       </td>
                       <td className="py-2 px-3 border-b border-[#e3e9f2] font-bold">
                         {col.status === 'matched' ? (
-                          <span className="text-[#2f9e44]">✓ Đã khớp tự động</span>
+                          <span className="text-[#2f9e44] inline-flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>Đã khớp tự động</span>
+                          </span>
                         ) : (
-                          <span className="text-[#1971c2]">⚡ Nội suy thông minh</span>
+                          <span className="text-[#1971c2] inline-flex items-center gap-1">
+                            <Zap className="w-3.5 h-3.5" />
+                            <span>Nội suy thông minh</span>
+                          </span>
                         )}
                       </td>
                     </tr>

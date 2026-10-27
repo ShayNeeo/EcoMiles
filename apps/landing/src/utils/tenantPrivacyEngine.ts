@@ -175,7 +175,7 @@ export function buildBlindedAdminRow(
     encrypted_payload_cek: `aes256gcm$iv=${ivHex}$ct=${ct1}${ct2}e9a401b8...`,
     auth_tag_gcm: `0x${tagHex}`,
     district_bucket: order.district,
-    kg_bucket: `${Math.floor(order.kg / 25) * 25}–${Math.floor(order.kg / 25) * 25 + 25} kg`,
+    kg_bucket: `${Math.floor(order.kg / 25) * 25} - ${Math.floor(order.kg / 25) * 25 + 25} kg`,
     admin_can_decrypt: false,
   };
 }

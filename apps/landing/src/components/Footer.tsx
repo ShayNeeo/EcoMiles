@@ -1,5 +1,5 @@
 import React from 'react';
-import { Leaf, MapPin, Mail, Phone, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Leaf, MapPin, Mail, Phone, ShieldCheck, ArrowRight, Star } from 'lucide-react';
 
 interface FooterProps {
   onOpenPilotModal: () => void;
@@ -52,8 +52,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
               <li><a href="#workflow" className="hover:text-ecomiles-lime transition-colors">Quy trình 8 bước</a></li>
               <li><a href="#team" className="hover:text-ecomiles-lime transition-colors">Đội ngũ EcoMiles</a></li>
               <li><a href="#pricing" className="hover:text-ecomiles-lime transition-colors">Bảng giá gói cước</a></li>
-              <li><a href="#pricing" className="hover:text-ecomiles-lime transition-colors">Dùng thử miễn phí 4–6 tuần</a></li>
-              <li><a href="#pitch-deck" className="hover:text-emerald-400 transition-colors text-emerald-400/80 font-medium flex items-center gap-1">★ Kịch bản Pitch Deck (SO 2026)</a></li>
+              <li><a href="#pricing" className="hover:text-ecomiles-lime transition-colors">Dùng thử miễn phí 4 - 6 tuần</a></li>
+              <li><a href="#pitch-deck" className="hover:text-emerald-400 transition-colors text-emerald-400/80 font-medium flex items-center gap-1"><Star className="w-3 h-3 fill-current" /><span>Kịch bản Pitch Deck (SO 2026)</span></a></li>
             </ul>
           </div>
 

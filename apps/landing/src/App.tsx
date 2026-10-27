@@ -15,7 +15,7 @@ import { PitchDeckVoiceoverPage } from './components/PitchDeckVoiceoverPage';
 export function App() {
   const [pilotModalOpen, setPilotModalOpen] = useState<boolean>(false);
   const [rolePortalOpen, setRolePortalOpen] = useState<boolean>(false);
-  const [selectedInterest, setSelectedInterest] = useState<string>('Dùng thử miễn phí 4–6 tuần');
+  const [selectedInterest, setSelectedInterest] = useState<string>('Dùng thử miễn phí 4 - 6 tuần');
 
   const checkIsPitchDeck = () => {
     if (typeof window === 'undefined') return false;
@@ -84,19 +84,19 @@ export function App() {
 
       {/* Floating Glass Pill Top Bar */}
       <Navbar
-        onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4–6 tuần')}
+        onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')}
         onOpenPortalModal={() => setRolePortalOpen(true)}
       />
 
       <main id="main-content" tabIndex={-1}>
         {/* 1. Hero Section (Full Viewport Video with Barlow Condensed Headline & Route Map) */}
-        <Hero onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4–6 tuần')} />
+        <Hero onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')} />
 
         {/* 2. Solutions Section (4 Core VRPTW & Carbon Accounting Pillars) */}
         <Solutions />
 
         {/* 3. Interactive ROI & CO₂ Savings Calculator */}
-        <InteractiveSavingsCalculator onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4–6 tuần')} />
+        <InteractiveSavingsCalculator onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')} />
 
         {/* 4. 8-Step Interactive Dispatch Workflow */}
         <WorkflowShowcase />
@@ -112,7 +112,7 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <Footer onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4–6 tuần')} />
+      <Footer onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')} />
 
       {/* Pilot Registration Modal */}
       <PilotModal

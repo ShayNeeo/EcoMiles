@@ -529,8 +529,9 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                 <div className="text-2xl font-black text-ecomiles-lime mt-0.5">
                   {alnsSt.empty_running_pct.toFixed(1)}%
                 </div>
-                <div className="text-xs font-extrabold text-emerald-300 mt-1">
-                  ✓ Ghép +{alnsSt.backhaul_orders_matched} đơn chiều về
+                <div className="text-xs font-extrabold text-emerald-300 mt-1 flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>Ghép +{alnsSt.backhaul_orders_matched} đơn chiều về</span>
                 </div>
               </div>
 
@@ -547,8 +548,9 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
               <div className="p-3.5 rounded-2xl bg-slate-950/90 border border-emerald-500/30">
                 <div className="text-[11px] text-slate-400 font-bold">Phát thải &amp; Giờ cấm</div>
                 <div className="text-2xl font-black text-white mt-0.5">{alnsSt.kg_co2_ttw.toFixed(1)} kg CO₂</div>
-                <div className="text-xs font-extrabold text-emerald-400 mt-1">
-                  ✓ 0 vi phạm · Giảm {co2SavedPct}% CO₂
+                <div className="text-xs font-extrabold text-emerald-400 mt-1 flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>0 vi phạm · Giảm {co2SavedPct}% CO₂</span>
                 </div>
               </div>
             </div>
@@ -974,7 +976,10 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                                     {o.window_start} đến {o.window_end}
                                   </td>
                                   <td className="py-2 px-3 font-mono text-emerald-400 font-bold">
-                                    ✓ {fixedWindow}
+                                    <span className="inline-flex items-center gap-1">
+                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                      <span>{fixedWindow}</span>
+                                    </span>
                                   </td>
                                 </tr>
                               );
@@ -1068,8 +1073,9 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                               <td className="py-2.5 px-3 text-[11px] text-slate-300">{item.scope}</td>
                               <td className="py-2.5 px-3">
                                 {item.approved ? (
-                                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[11px]">
-                                    ✓ Đã duyệt
+                                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[11px] inline-flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3" />
+                                    <span>Đã duyệt</span>
                                   </span>
                                 ) : (
                                   <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[11px]">

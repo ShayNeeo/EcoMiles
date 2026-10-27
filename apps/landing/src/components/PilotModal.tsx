@@ -15,7 +15,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
     company: '',
     phone: '',
     email: '',
-    interest: initialInterest || 'Dùng thử miễn phí 4–6 tuần',
+    interest: initialInterest || 'Dùng thử miễn phí 4 - 6 tuần',
     fleetSize: '5-15 xe',
     area: 'TP. Hồ Chí Minh (Ưu tiên đợt 1)',
     notes: '',
@@ -68,7 +68,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
               </div>
 
               <p className="text-xs text-slate-300 mb-5 leading-relaxed">
-                Chọn nội dung doanh nghiệp quan tâm. Chương trình dùng thử 4–6 tuần ưu tiên <strong>3–5 doanh nghiệp đầu tiên tại TP.HCM</strong>.
+                Chọn nội dung doanh nghiệp quan tâm. Chương trình dùng thử 4 - 6 tuần ưu tiên <strong>3 - 5 doanh nghiệp đầu tiên tại TP.HCM</strong>.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -84,7 +84,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                       onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
                       className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                     >
-                      <option>Dùng thử miễn phí 4–6 tuần</option>
+                      <option>Dùng thử miễn phí 4 - 6 tuần</option>
                       <option>Đăng ký gói thuê bao</option>
                       <option>Báo cáo CO₂ &amp; tư vấn theo năm</option>
                       <option>Kết nối đơn chiều về</option>
@@ -187,8 +187,8 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                         className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-ecomiles-lime"
                       >
                         <option value="Dưới 5 xe">Dưới 5 xe</option>
-                        <option value="5-15 xe">5–15 xe (Phù hợp để dùng thử)</option>
-                        <option value="15-50 xe">15–50 xe</option>
+                        <option value="5-15 xe">5 - 15 xe (Phù hợp để dùng thử)</option>
+                        <option value="15-50 xe">15 - 50 xe</option>
                         <option value="Trên 50 xe">Trên 50 xe</option>
                       </select>
                     </div>
