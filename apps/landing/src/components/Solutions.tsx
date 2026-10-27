@@ -13,11 +13,14 @@ export const Solutions: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
 
 
-  const handleScrollToShowcase = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleScrollToShowcase = (e: React.MouseEvent<HTMLAnchorElement>, deviceId?: string) => {
     if (typeof window === 'undefined') return;
     const target = document.querySelector('#showcase');
     if (!target) return;
     e.preventDefault();
+    if (deviceId) {
+      window.dispatchEvent(new CustomEvent('ecomiles:select-device', { detail: { deviceId } }));
+    }
     if (shouldReduceMotion) {
       target.scrollIntoView({ behavior: 'instant' });
     } else {
@@ -69,6 +72,7 @@ export const Solutions: React.FC = () => {
       liveLabel: 'Kiểm tra Bảng Điều Khiển Đội Xe (/dashboard)',
       gradient: 'from-yellow-400/10 to-emerald-400/5',
       deviceTag: 'MacBook Pro 16" & Windows XPS 16',
+      deviceId: 'macbook_pro',
     },
     {
       id: '02',
@@ -86,6 +90,7 @@ export const Solutions: React.FC = () => {
       liveLabel: 'Xem Bản Đồ Vùng Cấm QĐ 23 (/maps)',
       gradient: 'from-emerald-500/10 to-teal-500/5',
       deviceTag: 'Samsung Galaxy Z Fold & iPad Pro M4',
+      deviceId: 'galaxy_zfold',
     },
     {
       id: '03',
@@ -103,6 +108,7 @@ export const Solutions: React.FC = () => {
       liveLabel: 'Mở Ứng Dụng Tài Xế 2 Chặng (/driver)',
       gradient: 'from-emerald-500/10 to-teal-500/5',
       deviceTag: 'iPhone Duo Dual-Screen',
+      deviceId: 'iphone_duo',
     },
     {
       id: '04',
@@ -120,6 +126,7 @@ export const Solutions: React.FC = () => {
       liveLabel: 'Mở Buồng Đối Chứng 2 Bên EVSIM (/benchmark)',
       gradient: 'from-yellow-400/10 to-emerald-500/5',
       deviceTag: 'iPhone 18 Pro Max & Galaxy S26 Ultra',
+      deviceId: 'galaxy_s26_ultra',
     },
   ];
 
@@ -194,7 +201,7 @@ export const Solutions: React.FC = () => {
                   </a>
                   <a
                     href="#showcase"
-                    onClick={handleScrollToShowcase}
+                    onClick={(e) => handleScrollToShowcase(e, item.deviceId)}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 hover:bg-ecomiles-lime/15 border border-white/10 hover:border-ecomiles-lime/40 text-[10.5px] font-bold text-slate-300 hover:text-ecomiles-lime transition-all cursor-pointer"
                     title="Xem thiết bị trên Sân khấu 7 Thiết Bị (#showcase)"
                   >

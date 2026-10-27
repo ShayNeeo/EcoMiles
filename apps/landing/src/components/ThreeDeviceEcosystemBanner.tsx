@@ -315,6 +315,51 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
     grid.position.y = -0.12;
     stageGroup.add(grid);
 
+    // Volumetric GLSL Studio Floor Spotlight Disc tracking uFocusPos
+    const floorDiscGeo = new THREE.CircleGeometry(4.2, 64);
+    floorDiscGeo.rotateX(-Math.PI / 2);
+    const floorDiscMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uFocusPos: { value: new THREE.Vector2(0, 0) },
+        uEmerald: { value: new THREE.Color(0x10b981) },
+        uLime: { value: new THREE.Color(0xd6f65a) },
+      },
+      vertexShader: `
+        varying vec2 vStageXZ;
+        void main() {
+          vStageXZ = position.xz;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform vec2 uFocusPos;
+        uniform vec3 uEmerald;
+        uniform vec3 uLime;
+        varying vec2 vStageXZ;
+        void main() {
+          float stageDist = length(vStageXZ) / 4.2;
+          float stageFalloff = smoothstep(1.0, 0.08, stageDist);
+          float pulseRing = 0.5 + 0.5 * sin(stageDist * 14.0 - uTime * 1.8);
+          float focusDist = distance(vStageXZ, uFocusPos);
+          float focusSpot = exp(-focusDist * focusDist * 0.65);
+          float focusCore = smoothstep(1.45, 0.0, focusDist);
+          vec3 glowColor = mix(uEmerald, uLime, clamp(focusCore * 0.72 + pulseRing * 0.18, 0.0, 1.0));
+          float alpha = stageFalloff * (0.11 + 0.26 * focusSpot + 0.03 * pulseRing * stageFalloff);
+          gl_FragColor = vec4(glowColor, alpha);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+    const floorDisc = new THREE.Mesh(floorDiscGeo, floorDiscMat);
+    floorDisc.position.set(0, -0.115, 0);
+    stageGroup.add(floorDisc);
+
     const ringGeo = new THREE.RingGeometry(4.2, 4.28, 64);
     ringGeo.rotateX(-Math.PI / 2);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -561,6 +606,11 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         focusRingTargetRef.current.scale * (prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 3.2) * 0.05);
       focusRing.scale.set(pulseScale, 1, pulseScale);
       focusRingMat.opacity = focusRingTargetRef.current.opacity;
+      floorDiscMat.uniforms.uTime.value = prefersReducedMotion ? 0 : elapsed;
+      (floorDiscMat.uniforms.uFocusPos.value as THREE.Vector2).set(
+        focusRingTargetRef.current.x,
+        focusRingTargetRef.current.z
+      );
 
       const activeCluster = clusterRef.current;
       deviceMeshes.forEach((m, i) => {
@@ -635,6 +685,8 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       container.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       grid.dispose();
+      floorDiscGeo.dispose();
+      floorDiscMat.dispose();
       ringGeo.dispose();
       ringMat.dispose();
       focusRingGeo.dispose();

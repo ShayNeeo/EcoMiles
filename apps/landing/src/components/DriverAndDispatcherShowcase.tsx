@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -212,6 +212,20 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     tiltRotateX.set(0);
     tiltRotateY.set(0);
   };
+
+  useEffect(() => {
+    const handleSelectDevice = (e: Event) => {
+      const customEvent = e as CustomEvent<{ deviceId: DeviceViewId }>;
+      const targetId = customEvent.detail?.deviceId;
+      if (targetId && FLAGSHIP_DEVICES.some((d) => d.id === targetId)) {
+        tiltRotateX.set(0);
+        tiltRotateY.set(0);
+        setSelectedDeviceId(targetId);
+      }
+    };
+    window.addEventListener('ecomiles:select-device', handleSelectDevice);
+    return () => window.removeEventListener('ecomiles:select-device', handleSelectDevice);
+  }, [tiltRotateX, tiltRotateY]);
   // GSAP ScrollTrigger 4-Beat Spatial Fan-Out (Office -> Handover -> Field -> Outcome)
   useGSAP(
     () => {

@@ -340,6 +340,7 @@ export function EvsimDualSimulator({
   const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
   const [showColumnModal, setShowColumnModal] = useState<boolean>(false);
   const [columnInspection, setColumnInspection] = useState<ColumnMappingInspection[]>([]);
+  const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
   const [uploadNotice, setUploadNotice] = useState<string>('');
   const [viewTransform, setViewTransform] = useState<{ zoom: number; panX: number; panY: number }>({
     zoom: 1,
@@ -1061,8 +1062,67 @@ export function EvsimDualSimulator({
           >
             Kết quả đối chứng
           </button>
+          <button
+            type="button"
+            onClick={() => setShowDeviceBanner((prev) => !prev)}
+            className={`px-2.5 py-1 border rounded-md font-bold flex items-center gap-1.5 text-[12px] cursor-pointer transition-colors ${
+              showDeviceBanner
+                ? 'border-[#14532d] bg-[#14532d] text-[#d6f65a]'
+                : 'border-[#d8cfbd] bg-white hover:bg-slate-100 text-[#2f3440]'
+            }`}
+            title="Xem dàn 7 thiết bị đồng bộ thời gian thực"
+          >
+            <span>7 Thiết Bị Đồng Bộ</span>
+          </button>
         </div>
       </div>
+      {showDeviceBanner && (
+        <div className="bg-[#060d14] border-b border-emerald-900/60 px-3.5 py-2.5 text-white transition-all">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <img
+                src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                alt="EcoMiles 7-Device Studio Stage"
+                className="h-12 sm:h-14 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0"
+              />
+              <div>
+                <div className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#d6f65a]">
+                  Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (Chuẩn Đối Chứng Windows XPS 16 &amp; MacBook Pro 16&quot;)
+                </div>
+                <div className="text-xs text-slate-300">
+                  MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
+              <a
+                href="/dashboard/"
+                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+              >
+                Trung Tâm B2B (/dashboard)
+              </a>
+              <a
+                href="/driver/"
+                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+              >
+                App Tài Xế (/driver)
+              </a>
+              <a
+                href="/maps/"
+                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+              >
+                Bản Đồ Xe Tải (/maps)
+              </a>
+              <a
+                href="/pitch-deck/"
+                className="px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
+              >
+                Bộ 28 Ảnh Pitch Deck →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {uploadNotice && (
         <div className="px-4 py-2 bg-[#eef7ee] border-b border-[#b9dfbf] text-[12px] text-[#14532d] flex items-center justify-between">

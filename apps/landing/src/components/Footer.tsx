@@ -9,11 +9,18 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
-  const handleSmoothFooterScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetSelector: string) => {
+  const handleSmoothFooterScroll = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    targetSelector: string,
+    deviceId?: string
+  ) => {
     if (typeof window === 'undefined') return;
     const target = document.querySelector(targetSelector);
     if (!target) return;
     e.preventDefault();
+    if (deviceId) {
+      window.dispatchEvent(new CustomEvent('ecomiles:select-device', { detail: { deviceId } }));
+    }
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       target.scrollIntoView({ behavior: 'instant' });
@@ -221,21 +228,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
           <span className="font-bold text-slate-300">Hệ sinh thái 7 thiết bị:</span>
           <div className="flex flex-wrap items-center gap-1.5">
             {[
-              'MacBook Pro 16" (B2B TMS)',
-              'Windows 11 XPS 16 (EVSIM)',
-              'Samsung Galaxy Z Fold (Cockpit)',
-              'iPad Pro M4 (Kho Vận)',
-              'iPhone Duo (Gập Đôi)',
-              'iPhone 18 Pro Max (Chặng Giữa)',
-              'Galaxy S26 Ultra (Live /maps)',
-            ].map((label) => (
+              { label: 'MacBook Pro 16" (B2B TMS)', id: 'macbook_pro' },
+              { label: 'Windows 11 XPS 16 (EVSIM)', id: 'windows_xps' },
+              { label: 'Samsung Galaxy Z Fold (Cockpit)', id: 'galaxy_zfold' },
+              { label: 'iPad Pro M4 (Kho Vận)', id: 'ipad_pro' },
+              { label: 'iPhone Duo (Gập Đôi)', id: 'iphone_duo' },
+              { label: 'iPhone 18 Pro Max (Chặng Giữa)', id: 'iphone_18_pro_max' },
+              { label: 'Galaxy S26 Ultra (Live /maps)', id: 'galaxy_s26_ultra' },
+            ].map((dev) => (
               <a
-                key={label}
+                key={dev.id}
                 href="#showcase"
-                onClick={(e) => handleSmoothFooterScroll(e, '#showcase')}
+                onClick={(e) => handleSmoothFooterScroll(e, '#showcase', dev.id)}
                 className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-300 border border-white/10 font-semibold transition-colors"
               >
-                {label}
+                {dev.label}
               </a>
             ))}
           </div>

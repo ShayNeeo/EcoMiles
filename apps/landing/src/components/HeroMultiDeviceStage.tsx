@@ -297,6 +297,19 @@ export const HeroMultiDeviceStage: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <a
+                  href="#showcase"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const targetId = inspectedDevice.id;
+                    setInspectedDevice(null);
+                    window.dispatchEvent(new CustomEvent('ecomiles:select-device', { detail: { deviceId: targetId } }));
+                    document.querySelector('#showcase')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-ecomiles-lime border border-ecomiles-lime/40 font-bold text-xs"
+                >
+                  Mở trên #showcase
+                </a>
+                <a
                   href={inspectedDevice.liveHref}
                   className="px-3 py-1.5 rounded-lg bg-ecomiles-lime text-slate-950 font-extrabold text-xs flex items-center gap-1"
                 >
