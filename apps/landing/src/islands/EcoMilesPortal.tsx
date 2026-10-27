@@ -2099,6 +2099,22 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           <div className="text-xs text-[#5f6368]">
                             Tài xế: {DRIVER_NAMES[idx % DRIVER_NAMES.length]}
                           </div>
+                          <div className="mt-1">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#e8f0fb] text-[#1f3a5f] border border-[#bfdbfe] text-[10.5px] font-bold">
+                              Thiết bị:{' '}
+                              {
+                                [
+                                  'iPhone Duo Gập Đôi',
+                                  'Samsung Galaxy Z Fold',
+                                  'iPhone 18 Pro Max',
+                                  'Samsung Galaxy S26 Ultra',
+                                  'iPad Pro M4',
+                                  'MacBook Pro 16"',
+                                  'Windows 11 XPS 16',
+                                ][idx % 7]
+                              }
+                            </span>
+                          </div>
                         </div>
                         <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#04250e] text-xs font-bold">
                           Lấp đầy {r.payload_utilisation_pct}%

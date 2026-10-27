@@ -175,6 +175,7 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
 export const DriverAndDispatcherShowcase: React.FC = () => {
   const [selectedDeviceId, setSelectedDeviceId] = useState<DeviceViewId>('all_banner');
   const [stageRenderMode, setStageRenderMode] = useState<'spatial_2d' | 'webgl_3d' | 'studio_banner'>('spatial_2d');
+  const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageCardRef = useRef<HTMLDivElement | null>(null);
   const multiStageRef = useRef<HTMLDivElement | null>(null);
@@ -427,12 +428,70 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     onSelectDevice={setSelectedDeviceId}
                   />
                 ) : stageRenderMode === 'studio_banner' ? (
-                  <div className="w-full flex items-center justify-center">
+                  <div className="w-full flex flex-col items-center justify-center space-y-2.5">
+                    <div className="w-full flex flex-wrap items-center justify-between gap-2 text-[10.5px]">
+                      <div className="inline-flex rounded-lg p-0.5 bg-slate-950 border border-white/10">
+                        <button
+                          type="button"
+                          onClick={() => setStudioBannerVariant('clean_stage')}
+                          className={`px-2.5 py-1 rounded-md font-bold cursor-pointer transition-colors ${
+                            studioBannerVariant === 'clean_stage'
+                              ? 'bg-ecomiles-lime text-slate-950'
+                              : 'text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          A. Sân Khấu 7 Thiết Bị (2400×1120)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setStudioBannerVariant('cover_banner')}
+                          className={`px-2.5 py-1 rounded-md font-bold cursor-pointer transition-colors ${
+                            studioBannerVariant === 'cover_banner'
+                              ? 'bg-ecomiles-lime text-slate-950'
+                              : 'text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          B. Ảnh Bìa OpenGraph / Pitch Deck (2400×1260)
+                        </button>
+                      </div>
+                      <a
+                        href={
+                          studioBannerVariant === 'clean_stage'
+                            ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                            : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                        }
+                        download
+                        className="font-extrabold text-ecomiles-lime hover:underline"
+                      >
+                        Tải PNG 2.4K →
+                      </a>
+                    </div>
                     <img
-                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
+                      src={
+                        studioBannerVariant === 'clean_stage'
+                          ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                          : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                      }
                       alt="EcoMiles 7-Device Flagship Studio Cover Banner with Floor Reflections"
-                      className="max-h-[450px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.85)] rounded-xl"
+                      className="max-h-[380px] w-auto max-w-full mx-auto block object-contain drop-shadow-[0_20px_44px_rgba(0,0,0,0.85)] rounded-xl"
                     />
+                    <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
+                      {hardwareDevices.map((dev, idx) => (
+                        <button
+                          key={dev.id}
+                          type="button"
+                          onClick={() => {
+                            tiltRotateX.set(0);
+                            tiltRotateY.set(0);
+                            setSelectedDeviceId(dev.id);
+                            setStageRenderMode('spatial_2d');
+                          }}
+                          className="px-2 py-0.5 rounded-lg bg-slate-950/90 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[9.5px] font-bold transition-colors cursor-pointer"
+                        >
+                          {idx + 1}. {dev.shortLabel}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 ) : activeDevice.id === 'all_banner' ? (
                   <div className="w-full">

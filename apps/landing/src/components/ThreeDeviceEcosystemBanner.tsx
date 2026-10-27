@@ -836,9 +836,21 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
 
   return (
     <div className="relative w-full space-y-2">
-      {hoveredDeviceId && (
+      {(hoveredDeviceId || clusterPreset !== 'none' || selectedDeviceId !== 'all_banner') && (
         <div className="pointer-events-none absolute top-2 left-2.5 z-20 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-ecomiles-lime/60 text-[10.5px] font-bold text-ecomiles-lime shadow-lg backdrop-blur-md">
-          Đang trỏ: {DEVICE_LABELS[hoveredDeviceId]} · Bấm để bay camera tới
+          {hoveredDeviceId
+            ? `Đang trỏ: ${DEVICE_LABELS[hoveredDeviceId]} · Bấm để bay camera tới`
+            : clusterPreset !== 'none'
+              ? `Camera 3D: Cụm ${
+                  clusterPreset === 'office'
+                    ? '2 Laptop Văn Phòng'
+                    : clusterPreset === 'tablet'
+                      ? 'Z Fold + iPad Pro'
+                      : '3 Điện Thoại Tài Xế'
+                } · Phím ← / → chuyển thiết bị`
+              : selectedDeviceId !== 'all_banner'
+                ? `Camera 3D: ${DEVICE_LABELS[selectedDeviceId]} · Phím ← / → chuyển thiết bị`
+                : null}
         </div>
       )}
       <div
