@@ -18,7 +18,7 @@ import {
   X,
   ZoomIn,
 } from 'lucide-react';
-import { STUDIO_STAGE_SPATIAL_HOTSPOTS } from './ThreeDeviceEcosystemBanner';
+import { STUDIO_STAGE_SPATIAL_HOTSPOTS } from '../utils/studioStageHotspots';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -265,14 +265,24 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
         return;
       }
       if (!isShowcaseLightboxOpen && selectedDeviceId === 'all_banner') return;
-      if (e.key === 'ArrowLeft') {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
-        if (isShowcaseLightboxOpen) stepFlagshipDevice(-1);
-        else stepHardwareDevice(-1);
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        if (isShowcaseLightboxOpen) stepFlagshipDevice(1);
-        else stepHardwareDevice(1);
+        const delta = e.key === 'ArrowRight' ? 1 : -1;
+        if (isShowcaseLightboxOpen) {
+          const nextDev = FLAGSHIP_DEVICES[wrapFlagshipIndex(activeFlagshipIndex + delta)];
+          if (nextDev) {
+            tiltRotateX.set(0);
+            tiltRotateY.set(0);
+            setSelectedDeviceId(nextDev.id);
+          }
+        } else {
+          const nextDev = hardwareDevices[wrapHardwareIndex(activeHardwareIndex + delta)];
+          if (nextDev) {
+            tiltRotateX.set(0);
+            tiltRotateY.set(0);
+            setSelectedDeviceId(nextDev.id);
+          }
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -282,6 +292,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     activeHardwareIndex,
     hardwareDevices,
     wrapHardwareIndex,
+    wrapFlagshipIndex,
     tiltRotateX,
     tiltRotateY,
     isShowcaseLightboxOpen,

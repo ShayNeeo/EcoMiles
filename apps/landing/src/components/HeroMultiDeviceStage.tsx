@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
 import {
   ArrowUpRight,
   ChevronLeft,
@@ -14,7 +14,7 @@ import {
   X,
   ZoomIn,
 } from 'lucide-react';
-import { STUDIO_STAGE_SPATIAL_HOTSPOTS } from './ThreeDeviceEcosystemBanner';
+import { STUDIO_STAGE_SPATIAL_HOTSPOTS } from '../utils/studioStageHotspots';
 
 interface HeroDeviceSpec {
   id: string;
