@@ -9,7 +9,6 @@ import {
   RotateCcw,
   Table2,
   X,
-  ArrowRight,
   ArrowUpRight,
   CheckCircle2,
   ChevronLeft,

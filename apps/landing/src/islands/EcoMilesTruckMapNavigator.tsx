@@ -22,7 +22,6 @@ import {
   RotateCcw,
   Route as RouteIcon,
   ShieldCheck,
-  ArrowRight,
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,

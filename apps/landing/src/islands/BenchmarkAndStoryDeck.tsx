@@ -14,7 +14,6 @@ import {
   UserCheck,
   Trash2,
   ArrowRight,
-  ArrowUpRight,
   Clock,
   TrendingDown,
   Truck,
