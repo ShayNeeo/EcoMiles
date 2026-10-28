@@ -4,15 +4,16 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import {
+  ArrowDown,
   ArrowRight,
   ArrowUpRight,
   CheckCircle2,
   Compass,
   FileSpreadsheet,
+  Layers,
   SplitSquareVertical,
   Truck,
 } from 'lucide-react';
-import { HeroMultiDeviceStage } from './HeroMultiDeviceStage';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -27,7 +28,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
   const heroRef = useRef<HTMLElement | null>(null);
   const bgPlaneRef = useRef<HTMLVideoElement | null>(null);
   const midPlaneRef = useRef<HTMLDivElement | null>(null);
-  const fgPlaneRef = useRef<HTMLDivElement | null>(null);
 
   useGSAP(
     () => {
@@ -51,9 +51,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
       if (midPlaneRef.current) {
         tl.to(midPlaneRef.current, { yPercent: -6, ease: 'none' }, 0);
       }
-      if (fgPlaneRef.current) {
-        tl.to(fgPlaneRef.current, { yPercent: -3, ease: 'none' }, 0);
-      }
     },
     { scope: heroRef }
   );
@@ -63,7 +60,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
       ref={heroRef}
       className="relative flex min-h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cargox-fallback"
     >
-      {/* Plane 1 (Background): Moving Container Truck & Urban Logistics Video — Full Optical Clarity */}
+      {/* Plane 1 (Background): Moving Container Truck & Urban Logistics Video — 100% Unobstructed on Right */}
       <video
         ref={bgPlaneRef}
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260620_185230_f7f71ef4-6655-469f-b9c6-efbdc1f7684a.mp4"
@@ -71,28 +68,26 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
         muted
         loop
         playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.86] saturate-[0.96] contrast-[1.06] pointer-events-none"
+        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.88] saturate-[0.98] contrast-[1.06] pointer-events-none"
       />
 
-      {/* Directional Scrim: Protects Left Headline Legibility While Leaving Right Container Truck 100% Open & Bright */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(2,9,5,0.88)_0%,rgba(2,9,5,0.46)_44%,rgba(2,9,5,0.04)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(2,9,5,0.52)_0%,transparent_26%,transparent_74%,rgba(7,17,12,0.92)_100%)]" />
+      {/* Directional Scrim: Protects Left Headline Legibility While Leaving the Moving Container Truck Cab 100% Clear */}
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(2,9,5,0.86)_0%,rgba(2,9,5,0.42)_44%,rgba(2,9,5,0.0)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(2,9,5,0.48)_0%,transparent_24%,transparent_76%,rgba(7,17,12,0.92)_100%)]" />
 
       {/* Main Hero Content Layer */}
       <div className="relative z-10 flex flex-col flex-1 w-full h-full justify-between overflow-hidden">
         <div className="h-16 sm:h-20" />
 
-        {/* Main Content Grid: Left Value Proposition (6 Cols) + Bottom-Right Low-Profile Glass Dock (6 Cols, Self-End) */}
+        {/* Main Content Grid: Left Value Proposition (7 Cols) + Right 5 Cols 100% Open to Moving Container Truck */}
         <div
           className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center w-full max-w-[1440px] mx-auto"
           style={{
             padding: 'clamp(16px, 3vh, 44px) clamp(16px, 3vw, 48px) 0',
-            gap: 'clamp(24px, 3vw, 44px)',
           }}
         >
-          {/* Left 6 Cols: 3-Second Clarity Headline + Instant Live App Entry */}
-          <div ref={midPlaneRef} className="lg:col-span-6 flex min-w-0 flex-col justify-center text-left space-y-5">
-            <h1 className="flex w-full max-w-none flex-col gap-1.5 text-balance font-barlow text-[clamp(36px,8.5vw,52px)] font-extrabold uppercase leading-[0.98] tracking-[-0.01em] sm:gap-2.5 sm:text-[clamp(46px,5.6vw,68px)] lg:text-[clamp(50px,4.2vw,74px)]">
+          <div ref={midPlaneRef} className="lg:col-span-7 flex min-w-0 flex-col justify-center text-left space-y-5">
+            <h1 className="flex w-full max-w-none flex-col gap-1.5 text-balance font-barlow text-[clamp(36px,8.5vw,52px)] font-extrabold uppercase leading-[0.98] tracking-[-0.01em] sm:gap-2.5 sm:text-[clamp(46px,5.6vw,68px)] lg:text-[clamp(52px,4.4vw,76px)]">
               <motion.span
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -122,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               báo cáo kiểm toán phát thải CO₂ chuẩn quốc tế trong 30 giây — <strong>$0 phí bản đồ API</strong>.
             </motion.p>
 
-            {/* Primary & Secondary Live Workspace Launchers */}
+            {/* Primary & Secondary Live Workspace Launchers (Refined Product Names — Zero Raw /route Paths) */}
             <motion.div
               initial={{ y: 18, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -149,7 +144,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-slate-200">
-                <span className="font-semibold text-slate-200 drop-shadow">Trải nghiệm thực địa:</span>
                 <a
                   href="/maps/?vehicle=0&mode=navigate"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950/70 hover:bg-slate-900 text-slate-100 hover:text-ecomiles-lime border border-white/15 backdrop-blur-md transition-colors font-semibold"
@@ -164,20 +158,20 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                   <Truck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Mở Ứng Dụng Tài Xế</span>
                 </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById('showcase')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950/70 hover:bg-slate-900 text-ecomiles-lime border border-ecomiles-lime/35 backdrop-blur-md transition-colors font-bold cursor-pointer"
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Khám Phá 7 Thiết Bị Đồng Bộ</span>
+                  <ArrowDown className="w-3.5 h-3.5" />
+                </button>
               </div>
             </motion.div>
           </div>
-
-          {/* Right 6 Cols: Self-End Bottom-Right Floating Glass Dock (Leaves Container Truck Cab 100% Unobstructed!) */}
-          <motion.div
-            ref={fgPlaneRef}
-            initial={{ y: 18, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.65, delay: 0.24, ease: EXPO_OUT }}
-            className="lg:col-span-6 self-end flex w-full min-w-0 flex-col items-end justify-end lg:pb-1"
-          >
-            <HeroMultiDeviceStage />
-          </motion.div>
         </div>
 
         {/* Bottom Bar: 3 Verified Empirical Proof Metrics + Primary Pilot Registration CTA */}

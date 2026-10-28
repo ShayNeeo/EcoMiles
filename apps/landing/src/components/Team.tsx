@@ -164,7 +164,7 @@ export const Team: React.FC = () => {
                     alt={`Chân dung ${member.name}`}
                     width="440"
                     height="440"
-                    loading="lazy"
+                    loading="eager"
                     decoding="async"
                     className="h-full w-full object-cover saturate-[0.85] transition duration-500 group-hover:scale-[1.03] group-hover:saturate-100"
                     style={{ objectPosition: member.imagePosition }}
