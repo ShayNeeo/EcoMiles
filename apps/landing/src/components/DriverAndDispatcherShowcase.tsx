@@ -48,7 +48,7 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     shortLabel: 'Toàn Cảnh 7 Thiết Bị (3D Stage)',
     deviceTitle: 'Hệ Sinh Thái Đa Thiết Bị Đồng Bộ Thời Gian Thực (Desktop · Foldable · Tablet · Mobile)',
     roleBadge: 'INTERACTIVE 7-DEVICE SPATIAL STAGE · CLICK BẤT KỲ THIẾT BỊ NÀO ĐỂ PHÓNG TO',
-    imageSrc: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+    imageSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
     liveRouteUrl: '/dashboard/',
     liveRouteLabel: 'Mở Trung Tâm Điều Phối B2B (/dashboard)',
     description:

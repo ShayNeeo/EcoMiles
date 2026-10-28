@@ -89,14 +89,24 @@ const HERO_DEVICES: HeroDeviceSpec[] = [
 const STUDIO_STAGE_SPEC: HeroDeviceSpec = {
   id: 'studio_stage',
   name: 'Sân Khấu 7 Thiết Bị Đồng Bộ (Studio 2.4K · 2400×1120)',
-  shortTag: '0. Studio 2.4K',
+  shortTag: '0A. Studio 2.4K',
   roleLabel: 'Toàn Cảnh 7 Thiết Bị Đồng Bộ Thời Gian Thực (<50ms) · $0 Map API',
   imgSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
   liveHref: '/dashboard/',
   liveText: 'Mở Trung Tâm B2B (/dashboard)',
   plane: 'front',
 };
-const HERO_LIGHTBOX_ASSETS: HeroDeviceSpec[] = [STUDIO_STAGE_SPEC, ...HERO_DEVICES];
+const OG_COVER_SPEC: HeroDeviceSpec = {
+  id: 'cover_banner',
+  name: 'Ảnh Bìa OpenGraph / Pitch Deck (OG Cover 2.4K · 2400×1260)',
+  shortTag: '0B. Ảnh Bìa OG',
+  roleLabel: 'Ảnh Bìa Chuẩn Thương Hiệu EcoMiles · B2B Urban Logistics & ESG ISO 14083',
+  imgSrc: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+  liveHref: '/pitch-deck/',
+  liveText: 'Mở Pitch Deck (/pitch-deck/)',
+  plane: 'front',
+};
+const HERO_LIGHTBOX_ASSETS: HeroDeviceSpec[] = [STUDIO_STAGE_SPEC, OG_COVER_SPEC, ...HERO_DEVICES];
 
 export const HeroMultiDeviceStage: React.FC = () => {
   const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]);
