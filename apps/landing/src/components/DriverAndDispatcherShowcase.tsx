@@ -580,19 +580,37 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     />
                     <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
                       {hardwareDevices.map((dev, idx) => (
-                        <button
+                        <div
                           key={dev.id}
-                          type="button"
-                          onClick={() => {
-                            tiltRotateX.set(0);
-                            tiltRotateY.set(0);
-                            setSelectedDeviceId(dev.id);
-                            setStageRenderMode('spatial_2d');
-                          }}
-                          className="px-2 py-0.5 rounded-lg bg-slate-950/90 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 border border-white/10 text-[9.5px] font-bold transition-colors cursor-pointer"
+                          className="inline-flex items-center rounded-lg overflow-hidden bg-slate-950/90 border border-white/10 text-[9.5px] font-bold"
                         >
-                          {idx + 1}. {dev.shortLabel}
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              tiltRotateX.set(0);
+                              tiltRotateY.set(0);
+                              setSelectedDeviceId(dev.id);
+                              setStageRenderMode('spatial_2d');
+                            }}
+                            className="px-2 py-0.5 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 transition-colors cursor-pointer"
+                          >
+                            {idx + 1}. {dev.shortLabel}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              tiltRotateX.set(0);
+                              tiltRotateY.set(0);
+                              setSelectedDeviceId(dev.id);
+                              setStageRenderMode('spatial_2d');
+                              setIsShowcaseLightboxOpen(true);
+                            }}
+                            title={`Phóng to 2.4K: ${dev.shortLabel}`}
+                            className="px-1.5 py-0.5 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime transition-colors cursor-zoom-in"
+                          >
+                            🔍
+                          </button>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -1020,8 +1038,26 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 />
               </div>
               <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStageRenderMode('studio_banner');
+                    setStudioBannerVariant('cover_banner');
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                    stageRenderMode === 'studio_banner' && studioBannerVariant === 'cover_banner'
+                      ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                      : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                  }`}
+                >
+                  0B. Ảnh Bìa OG 2.4K
+                </button>
                 {FLAGSHIP_DEVICES.map((dev, idx) => {
-                  const isActive = dev.id === activeDevice.id && stageRenderMode !== 'studio_banner';
+                  const isActive =
+                    dev.id === 'all_banner'
+                      ? (stageRenderMode === 'studio_banner' && studioBannerVariant === 'clean_stage') ||
+                        (stageRenderMode !== 'studio_banner' && activeDevice.id === 'all_banner')
+                      : dev.id === activeDevice.id && stageRenderMode !== 'studio_banner';
                   return (
                     <button
                       key={dev.id}
@@ -1029,7 +1065,10 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                       onClick={() => {
                         tiltRotateX.set(0);
                         tiltRotateY.set(0);
-                        if (stageRenderMode === 'studio_banner') {
+                        if (dev.id === 'all_banner') {
+                          setStudioBannerVariant('clean_stage');
+                        }
+                        if (stageRenderMode === 'studio_banner' && dev.id !== 'all_banner') {
                           setStageRenderMode('spatial_2d');
                         }
                         setSelectedDeviceId(dev.id);

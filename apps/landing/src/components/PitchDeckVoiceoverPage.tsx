@@ -61,14 +61,19 @@ function resolveLightboxLiveHref(asset: string | null | undefined): string {
   return LIGHTBOX_LIVE_ROUTE_MAP[asset] ?? '/dashboard/';
 }
 const ECOSYSTEM_8_PILLS = [
-  { file: '00_ecomiles_clean_devices_hero_stage.png', label: 'Studio 7 Thiết Bị' },
-  { file: '26_mockup_macbook_pro_16_b2b_tms.png', label: 'MacBook Pro 16"' },
-  { file: '27_mockup_windows_xps_16_evsim_dual.png', label: 'Windows 11 XPS 16' },
-  { file: '24_mockup_samsung_zfold_tablet_cockpit.png', label: 'Galaxy Z Fold' },
-  { file: '25_mockup_ipad_pro_tablet_tms.png', label: 'iPad Pro M4' },
-  { file: '23_mockup_iphone_duo_dual_screen.png', label: 'iPhone Duo' },
-  { file: '21_mockup_iphone_18_pro_max_driver.png', label: 'iPhone 18 Pro Max' },
-  { file: '22_mockup_samsung_s26_ultra_maps_live.png', label: 'Galaxy S26 Ultra' },
+  { file: '00_ecomiles_clean_devices_hero_stage.png', label: '01. Studio 2.4K' },
+  { file: '00_ecomiles_flagship_cover_banner.png', label: '02. Ảnh Bìa OG' },
+  { file: '26_mockup_macbook_pro_16_b2b_tms.png', label: '03. MacBook 16"' },
+  { file: '27_mockup_windows_xps_16_evsim_dual.png', label: '04. XPS 16' },
+  { file: '24_mockup_samsung_zfold_tablet_cockpit.png', label: '05. Z Fold' },
+  { file: '25_mockup_ipad_pro_tablet_tms.png', label: '06. iPad Pro' },
+  { file: '23_mockup_iphone_duo_dual_screen.png', label: '07. iPhone Duo' },
+  { file: '21_mockup_iphone_18_pro_max_driver.png', label: '08. 18 Pro Max' },
+  { file: '22_mockup_samsung_s26_ultra_maps_live.png', label: '09. S26 Ultra' },
+  { file: '17_slide_composite_all_devices_hero_trio.png', label: '10. Trio 3 Thiết Bị' },
+  { file: '18_slide_composite_driver_and_maps_mobile_tablet.png', label: '11. Driver + Maps' },
+  { file: '19_slide_composite_dispatcher_and_evsim_benchmark.png', label: '12. TMS + EVSIM' },
+  { file: '20_slide_composite_4role_enterprise_architecture.png', label: '13. 4 Vai Trò B2B' },
 ] as const;
 
 interface SlideItem {
