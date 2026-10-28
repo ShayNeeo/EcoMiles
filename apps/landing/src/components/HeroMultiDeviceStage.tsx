@@ -590,6 +590,13 @@ export const HeroMultiDeviceStage: React.FC = () => {
                       Tiếp ›
                     </button>
                     <a
+                      href={fullscreenDevice.imgSrc}
+                      download
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                    >
+                      Tải PNG 2.4K
+                    </a>
+                    <a
                       href={fullscreenDevice.liveHref}
                       className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
                     >

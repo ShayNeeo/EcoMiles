@@ -977,6 +977,19 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     Tiếp ›
                   </button>
                   <a
+                    href={
+                      stageRenderMode === 'studio_banner'
+                        ? studioBannerVariant === 'clean_stage'
+                          ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
+                          : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
+                        : activeDevice.imageSrc
+                    }
+                    download
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                  >
+                    Tải PNG 2.4K
+                  </a>
+                  <a
                     href={activeDevice.liveRouteUrl}
                     className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
                   >

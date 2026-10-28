@@ -542,6 +542,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                       Tiếp ›
                     </button>
                     <a
+                      href={activeAsset.src}
+                      download
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                    >
+                      Tải PNG 2.4K
+                    </a>
+                    <a
                       href={activeAsset.liveHref}
                       className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >

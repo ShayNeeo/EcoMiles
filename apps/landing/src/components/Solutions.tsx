@@ -385,6 +385,13 @@ export const Solutions: React.FC = () => {
                       Tiếp ›
                     </button>
                     <a
+                      href={activeAsset.src}
+                      download
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                    >
+                      Tải PNG 2.4K
+                    </a>
+                    <a
                       href="#showcase"
                       onClick={(e) => {
                         setLightboxIndex(null);
