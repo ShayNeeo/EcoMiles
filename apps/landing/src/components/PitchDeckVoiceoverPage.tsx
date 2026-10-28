@@ -2661,6 +2661,12 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                   >
                     Tải PNG
                   </a>
+                  <a
+                    href="/dashboard/"
+                    className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold border border-emerald-400/30"
+                  >
+                    Mở App Live ↗
+                  </a>
                   <button
                     type="button"
                     onClick={() => setLightboxAsset(null)}

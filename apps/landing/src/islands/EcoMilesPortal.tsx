@@ -384,6 +384,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
       spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
       src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+      liveHref: '/dashboard/',
     },
     {
       id: 'macbook_pro',
@@ -391,6 +392,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
       spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
       src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+      liveHref: '/dashboard/',
     },
     {
       id: 'windows_xps',
@@ -398,6 +400,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
       spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
       src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+      liveHref: '/benchmark/',
     },
     {
       id: 'galaxy_zfold',
@@ -405,6 +408,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
       spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
       src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+      liveHref: '/maps/?vehicle=0&mode=navigate',
     },
     {
       id: 'ipad_pro',
@@ -412,6 +416,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
       spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
       src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+      liveHref: '/dashboard/',
     },
     {
       id: 'iphone_duo',
@@ -419,6 +424,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
       spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
       src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+      liveHref: '/driver/',
     },
     {
       id: 'iphone_18_pro_max',
@@ -426,6 +432,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
       spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
       src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+      liveHref: '/driver/',
     },
     {
       id: 'galaxy_s26_ultra',
@@ -433,6 +440,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
       spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
       src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+      liveHref: '/maps/?vehicle=0&mode=navigate',
     },
   ] as const;
   useEffect(() => {
@@ -3676,6 +3684,12 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       className="px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
                     >
                       Tải PNG 2.4K
+                    </a>
+                    <a
+                      href={activeAsset.liveHref}
+                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                    >
+                      Mở App Live ↗
                     </a>
                     <button
                       type="button"

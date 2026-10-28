@@ -396,6 +396,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
       spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
       src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+      liveHref: '/dashboard/',
     },
     {
       id: '24_zfold',
@@ -403,6 +404,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
       spec: '750×834 · Buồng lái rảnh tay · Né vùng cấm QĐ 23/2018',
       src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+      liveHref: '/maps/?vehicle=0&mode=navigate',
     },
     {
       id: '25_ipad',
@@ -410,6 +412,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
       spec: '1024×768 · Taplo kho bãi · Điều phối cảm ứng',
       src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+      liveHref: '/dashboard/',
     },
     {
       id: '27_xps',
@@ -417,6 +420,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM',
       spec: '1440×900 · Đối chứng kép 374.4 km vs 243.7 km (-34.9%)',
       src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+      liveHref: '/benchmark/',
     },
     {
       id: '26_macbook',
@@ -424,6 +428,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
       spec: '1440×900 · Điều phối B2B · 120 đơn / 7 tuyến ALNS',
       src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+      liveHref: '/dashboard/',
     },
     {
       id: '23_duo',
@@ -431,6 +436,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
       spec: '2420×1080 · Trái: Danh sách đơn (/driver) · Phải: Dẫn đường (/maps)',
       src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+      liveHref: '/driver/',
     },
     {
       id: '21_iphone18',
@@ -438,6 +444,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'iPhone 18 Pro Max · App Tài Xế Chặng Giữa (>500kg)',
       spec: '2868×1320 · Chặng giữa & ghép đơn chiều về (2.7% chạy rỗng)',
       src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+      liveHref: '/driver/',
     },
     {
       id: '22_s26',
@@ -445,6 +452,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'Samsung Galaxy S26 Ultra · Dẫn Đường Trực Tiếp & Waypoints ($0)',
       spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
       src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+      liveHref: '/maps/?vehicle=0&mode=navigate',
     },
   ] as const;
   const CABIN_PROFILE_TO_ASSET_IDX: Record<'zfold' | 'ipad_pro' | 'windows_xps' | 'macbook_pro', number> = {
@@ -1569,6 +1577,12 @@ export function EcoMilesTruckMapNavigator({
                       className="px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
                     >
                       Tải PNG 2.4K
+                    </a>
+                    <a
+                      href={activeAsset.liveHref}
+                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                    >
+                      Mở App Live ↗
                     </a>
                     <button
                       type="button"
