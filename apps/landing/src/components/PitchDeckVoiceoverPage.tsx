@@ -47,6 +47,19 @@ const GALLERY_LIGHTBOX_ASSETS = [
   '19_slide_composite_dispatcher_and_evsim_benchmark.png',
   '20_slide_composite_4role_enterprise_architecture.png',
 ] as const;
+const LIGHTBOX_LIVE_ROUTE_MAP: Record<string, string> = {
+  '27_mockup_windows_xps_16_evsim_dual.png': '/benchmark/',
+  '24_mockup_samsung_zfold_tablet_cockpit.png': '/maps/?vehicle=0&mode=navigate',
+  '22_mockup_samsung_s26_ultra_maps_live.png': '/maps/?vehicle=0&mode=navigate',
+  '23_mockup_iphone_duo_dual_screen.png': '/driver/',
+  '21_mockup_iphone_18_pro_max_driver.png': '/driver/',
+  '18_slide_composite_driver_and_maps_mobile_tablet.png': '/driver/',
+  '07_desktop_admin_zero_knowledge_audit.png': '/portal/audit/',
+};
+function resolveLightboxLiveHref(asset: string | null | undefined): string {
+  if (!asset) return '/dashboard/';
+  return LIGHTBOX_LIVE_ROUTE_MAP[asset] ?? '/dashboard/';
+}
 const ECOSYSTEM_8_PILLS = [
   { file: '00_ecomiles_clean_devices_hero_stage.png', label: 'Studio 7 Thiết Bị' },
   { file: '26_mockup_macbook_pro_16_b2b_tms.png', label: 'MacBook Pro 16"' },
@@ -2662,7 +2675,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                     Tải PNG
                   </a>
                   <a
-                    href="/dashboard/"
+                    href={resolveLightboxLiveHref(lightboxAsset)}
                     className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold border border-emerald-400/30"
                   >
                     Mở App Live ↗

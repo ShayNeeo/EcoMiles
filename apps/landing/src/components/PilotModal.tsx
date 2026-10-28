@@ -15,6 +15,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
     subtitle: 'MacBook Pro 16" · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · 18 Pro Max · S26 Ultra',
     src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
+    liveHref: '/dashboard/',
   },
   {
     id: 'macbook_pro',
@@ -22,6 +23,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
     subtitle: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
     src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
+    liveHref: '/dashboard/',
   },
   {
     id: 'windows_xps',
@@ -29,6 +31,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
     subtitle: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
     src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+    liveHref: '/benchmark/',
   },
   {
     id: 'galaxy_zfold',
@@ -36,6 +39,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
     subtitle: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
     src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
   },
   {
     id: 'ipad_pro',
@@ -43,6 +47,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
     subtitle: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
     src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    liveHref: '/dashboard/',
   },
   {
     id: 'iphone_duo',
@@ -50,6 +55,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
     subtitle: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
     src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+    liveHref: '/driver/',
   },
   {
     id: 'iphone_18_pro_max',
@@ -57,6 +63,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
     subtitle: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
     src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    liveHref: '/driver/',
   },
   {
     id: 'galaxy_s26_ultra',
@@ -64,6 +71,7 @@ const PILOT_LIGHTBOX_ASSETS = [
     title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
     subtitle: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
     src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    liveHref: '/maps/?vehicle=0&mode=navigate',
   },
 ] as const;
 
@@ -451,7 +459,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                       Tải PNG 2.4K
                     </a>
                     <a
-                      href="/dashboard/"
+                      href={activeAsset.liveHref}
                       className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
                       Mở App Live ↗
