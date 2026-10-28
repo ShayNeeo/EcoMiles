@@ -131,6 +131,14 @@ const HARDWARE_EXECUTION_MOCKUPS: Record<
     liveHref: '/maps/?vehicle=0&mode=navigate',
     liveCta: 'Mở /maps Live',
   },
+  'Ảnh Bìa OG 2.4K': {
+    file: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+    title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+    resolution: '2400 × 1260 (OpenGraph / Pitch Deck Cover)',
+    spec: 'Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
+    liveHref: '/pitch-deck/',
+    liveCta: 'Mở /pitch-deck',
+  },
 };
 
 export const WorkflowShowcase: React.FC = () => {

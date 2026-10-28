@@ -73,6 +73,14 @@ const PILOT_LIGHTBOX_ASSETS = [
     src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
     liveHref: '/maps/?vehicle=0&mode=navigate',
   },
+  {
+    id: 'cover_banner',
+    shortLabel: '8. Ảnh Bìa OG 2.4K',
+    title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+    subtitle: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
+    src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+    liveHref: '/pitch-deck/',
+  },
 ] as const;
 
 export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initialInterest }) => {

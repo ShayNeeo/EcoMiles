@@ -83,6 +83,15 @@ const CALC_HARDWARE_MOCKUP_ASSETS = [
     href: '/driver/',
     cta: 'Mở /driver',
   },
+  {
+    id: 'cover_banner',
+    shortLabel: '8. Ảnh Bìa OG 2.4K',
+    src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+    title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+    spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
+    href: '/pitch-deck/',
+    cta: 'Mở /pitch-deck',
+  },
 ] as const;
 
 export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpenPilotModal }) => {

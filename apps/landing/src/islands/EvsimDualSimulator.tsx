@@ -408,6 +408,14 @@ export function EvsimDualSimulator({
       src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
       liveHref: '/benchmark/',
     },
+    {
+      id: '00_cover',
+      shortLabel: 'Ảnh Bìa OG 2.4K',
+      title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+      spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
+      src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+      liveHref: '/pitch-deck/',
+    },
   ] as const;
   useEffect(() => {
     if (evsimLightboxIdx === null) return undefined;
