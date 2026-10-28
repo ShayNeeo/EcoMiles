@@ -356,15 +356,27 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
               { label: 'iPhone Duo (Gập Đôi)', id: 'iphone_duo' },
               { label: 'iPhone 18 Pro Max (Chặng Giữa)', id: 'iphone_18_pro_max' },
               { label: 'Galaxy S26 Ultra (Live /maps)', id: 'galaxy_s26_ultra' },
-            ].map((dev) => (
-              <a
+            ].map((dev, idx) => (
+              <div
                 key={dev.id}
-                href="#showcase"
-                onClick={(e) => handleSmoothFooterScroll(e, '#showcase', dev.id)}
-                className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-300 border border-white/10 font-semibold transition-colors"
+                className="inline-flex items-center rounded-lg overflow-hidden border border-white/10 bg-slate-900"
               >
-                {dev.label}
-              </a>
+                <a
+                  href="#showcase"
+                  onClick={(e) => handleSmoothFooterScroll(e, '#showcase', dev.id)}
+                  className="px-2.5 py-1 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-300 font-semibold transition-colors"
+                >
+                  {dev.label}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setFooterLightboxIdx(idx + 1)}
+                  title={`Phóng to 2.4K: ${dev.label}`}
+                  className="px-1.5 py-1 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime font-extrabold transition-colors cursor-zoom-in"
+                >
+                  🔍
+                </button>
+              </div>
             ))}
           </div>
         </div>

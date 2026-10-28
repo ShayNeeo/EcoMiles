@@ -41,25 +41,46 @@ const ROLE_PORTAL_LIGHTBOX_ASSETS = [
     cta: 'Mở /benchmark',
   },
   {
-    shortLabel: '3. iPhone Duo (Driver)',
+    shortLabel: '3. Galaxy Z Fold (Cockpit)',
+    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
+    title: 'Samsung Galaxy Z Fold · Buồng Lái Bản Đồ Dẫn Đường Xe Tải Mở (/maps)',
+    href: '/maps/?vehicle=0&mode=navigate',
+    cta: 'Bắt Đầu Lái (/maps Live)',
+  },
+  {
+    shortLabel: '4. iPad Pro M4 (Kho Vận)',
+    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
+    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
+    href: '/dashboard/',
+    cta: 'Mở /dashboard',
+  },
+  {
+    shortLabel: '5. iPhone Duo (Driver)',
     src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
     title: 'iPhone Duo Dual-Screen · App Tài Xế 2 Chặng & Bản Đồ Live',
     href: '/driver/',
     cta: 'Mở /driver (PIN 0000)',
   },
   {
-    shortLabel: '4. Zero-Knowledge (Admin)',
+    shortLabel: '6. iPhone 18 Pro Max (Driver)',
+    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
+    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+    href: '/driver/',
+    cta: 'Mở /driver (PIN 0000)',
+  },
+  {
+    shortLabel: '7. Galaxy S26 Ultra (Maps)',
+    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
+    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
+    href: '/maps/?vehicle=0&mode=navigate',
+    cta: 'Mở /maps Live',
+  },
+  {
+    shortLabel: '8. Zero-Knowledge (Admin)',
     src: '/pitch-deck-screenshots/07_desktop_admin_zero_knowledge_audit.png',
     title: 'Desktop Admin · Giám Sát Hạ Tầng Zero-Knowledge & KMS',
     href: '/portal/audit/',
     cta: 'Mở /portal/audit',
-  },
-  {
-    shortLabel: '5. Galaxy Z Fold (/maps)',
-    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-    title: 'Samsung Galaxy Z Fold · Buồng Lái Bản Đồ Dẫn Đường Xe Tải Mở (/maps)',
-    href: '/maps/?vehicle=0&mode=navigate',
-    cta: 'Bắt Đầu Lái (/maps Live)',
   },
 ] as const;
 
@@ -408,19 +429,34 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                   { device: 'iPhone Duo', sub: '2-Tier Driver', href: `/driver/?plate=${encodeURIComponent(selectedPlate)}` },
                   { device: 'iPhone 18 Pro Max', sub: 'Driver ePOD', href: `/driver/?plate=${encodeURIComponent(selectedPlate)}` },
                   { device: 'Galaxy S26 Ultra', sub: 'Follow-Truck Nav', href: '/maps/?vehicle=0&mode=navigate' },
-                ].map((item) => (
-                  <a
+                ].map((item, idx) => (
+                  <div
                     key={item.device}
-                    href={item.href}
-                    className="group flex flex-col justify-between rounded-xl border border-white/10 bg-slate-900/90 px-2.5 py-1.5 hover:border-ecomiles-lime/60 hover:bg-slate-800/90 transition-all"
+                    className="group flex flex-col justify-between rounded-xl border border-white/10 bg-slate-900/90 px-2.5 py-1.5 hover:border-ecomiles-lime/60 transition-all"
                   >
-                    <span className="text-[10px] font-extrabold text-white group-hover:text-ecomiles-lime truncate">
-                      {item.device}
-                    </span>
-                    <span className="text-[9.5px] font-mono text-slate-400 group-hover:text-slate-200 truncate">
+                    <div className="flex items-center justify-between gap-1">
+                      <a
+                        href={item.href}
+                        className="text-[10px] font-extrabold text-white group-hover:text-ecomiles-lime truncate"
+                      >
+                        {item.device}
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewAsset(ROLE_PORTAL_LIGHTBOX_ASSETS[idx + 1])}
+                        title={`Phóng to 2.4K: ${item.device}`}
+                        className="px-1 py-0.5 rounded bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime text-[9px] font-extrabold transition-colors cursor-zoom-in shrink-0"
+                      >
+                        🔍
+                      </button>
+                    </div>
+                    <a
+                      href={item.href}
+                      className="text-[9.5px] font-mono text-slate-400 hover:text-slate-200 truncate"
+                    >
                       {item.sub} →
-                    </span>
-                  </a>
+                    </a>
+                  </div>
                 ))}
               </div>
             </div>
