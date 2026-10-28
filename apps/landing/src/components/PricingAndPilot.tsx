@@ -283,7 +283,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 Kiểm Chứng Mức Tiết Kiệm Ngay Trên <span className="text-ecomiles-lime">Đội Xe Thực Tế Của Bạn</span>
               </h3>
 
-              <p className="text-slate-200 text-sm sm:text-base leading-relaxed max-w-2xl">
+              <p className="text-slate-200 text-sm sm:text-base leading-relaxed max-w-xl">
                 Dành cho 3 – 5 doanh nghiệp đối tác đầu tiên (quy mô 10 – 100 xe): miễn phí 100% chi phí thiết lập, nạp
                 thử bảng tính đơn hàng thực tế và đo lường đối chứng Trước – Sau trong 4 – 6 tuần.
               </p>

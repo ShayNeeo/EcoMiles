@@ -362,7 +362,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
             {/* Left 8 Cols: Interactive 7-Device Spatial Stage OR Individual Device Mockup */}
             <div
               ref={multiStageRef}
-              className="lg:col-span-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.34)_0%,rgba(2,6,23,0.94)_75%)] rounded-2xl p-4 sm:p-6 border border-white/10 overflow-hidden"
+              className="lg:col-span-8 flex flex-col items-center justify-center p-2 sm:p-4 overflow-hidden"
             >
               {activeDevice.id === 'all_banner' ? (
                 <div className="w-full relative space-y-3">
