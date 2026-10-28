@@ -328,14 +328,14 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
   return (
     <div className="space-y-6 pb-16 tabular-nums">
       {/* 7-Device Studio Cover Banner & Verification Strip */}
-      <div className="p-4 rounded-3xl bg-slate-900/95 border border-ecomiles-lime/35 flex flex-col md:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="p-4 rounded-3xl bg-slate-900/95 border border-ecomiles-lime/35 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <img
             src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
             alt="EcoMiles 7-Device Studio Cover Banner"
             className="h-12 sm:h-14 w-auto object-contain rounded-xl border border-white/15 bg-black/40 p-0.5 shrink-0"
           />
-          <div>
+          <div className="min-w-0">
             <div className="text-[11px] font-extrabold uppercase tracking-wider text-ecomiles-lime">
               Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thực Nghiệm (2400×1120 Studio Stage)
             </div>

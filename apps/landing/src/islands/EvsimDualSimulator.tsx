@@ -1170,15 +1170,15 @@ export function EvsimDualSimulator({
       </div>
       {showDeviceBanner && (
         <div className="bg-[#060d14] border-b border-emerald-900/60 px-3.5 py-2.5 text-white transition-all">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
+          <div className="flex flex-col 2xl:flex-row items-start 2xl:items-center justify-between gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               <img
                 src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                 alt="EcoMiles 7-Device Studio Stage"
                 onClick={() => setEvsimLightboxIdx(0)}
                 className="h-12 sm:h-14 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
               />
-              <div>
+              <div className="min-w-0">
                 <div className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#d6f65a]">
                   Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (Chuẩn Đối Chứng Windows XPS 16 &amp; MacBook Pro 16&quot;)
                 </div>

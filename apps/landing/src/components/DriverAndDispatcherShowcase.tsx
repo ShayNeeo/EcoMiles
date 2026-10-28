@@ -10,20 +10,15 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Compass,
-  Download,
   Laptop,
   Layers,
-  Monitor,
-  Pause,
-  Play,
   Smartphone,
   SplitSquareVertical,
   Tablet,
   X,
   ZoomIn,
 } from 'lucide-react';
-import { ThreeDeviceEcosystemBanner } from './ThreeDeviceEcosystemBanner';
+import { STUDIO_STAGE_SPATIAL_HOTSPOTS } from './ThreeDeviceEcosystemBanner';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -52,14 +47,14 @@ interface DeviceShowcaseSpec {
 const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
   {
     id: 'all_banner',
-    shortLabel: 'Toàn Cảnh 7 Thiết Bị (3D Stage)',
+    shortLabel: 'Toàn Cảnh 7 Thiết Bị',
     deviceTitle: 'Hệ Sinh Thái Đa Thiết Bị Đồng Bộ Thời Gian Thực (Desktop · Foldable · Tablet · Mobile)',
-    roleBadge: 'INTERACTIVE 7-DEVICE SPATIAL STAGE · CLICK BẤT KỲ THIẾT BỊ NÀO ĐỂ PHÓNG TO',
+    roleBadge: 'SÂN KHẤU 7 THIẾT BỊ · BẤM VÀO THIẾT BỊ BẤT KỲ ĐỂ XEM CHI TIẾT',
     imageSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
     liveRouteUrl: '/dashboard/',
     liveRouteLabel: 'Mở Trung Tâm Điều Phối B2B (/dashboard)',
     description:
-      'Một nền tảng duy nhất đồng bộ từ máy trạm điều phối tại văn phòng (MacBook Pro 16", Windows 11 XPS 16) đến máy tính bảng kho vận / buồng lái (Samsung Galaxy Z Fold, iPad Pro M4) và điện thoại tài xế ngoài thực địa (iPhone Duo Dual-Screen, iPhone 18 Pro Max, Samsung Galaxy S26 Ultra). Di chuột hoặc bấm trực tiếp vào bất kỳ thiết bị nào trong sân khấu bên trái để kiểm tra chi tiết.',
+      'Một nền tảng duy nhất đồng bộ từ máy trạm điều phối tại văn phòng (MacBook Pro 16", Windows 11 XPS 16) đến máy tính bảng kho vận / buồng lái (Samsung Galaxy Z Fold, iPad Pro M4) và điện thoại tài xế ngoài thực địa (iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra).',
     highlights: [
       'Đồng bộ tức thì trạng thái 94/120 đơn hoàn thành & 7/10 xe tải đang khai thác',
       'Tiết giảm 34.9% tổng quãng đường (374.4 km xuống 243.7 km) và 39.2% phát thải CO₂e',
@@ -69,77 +64,77 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
   {
     id: 'macbook_pro',
     shortLabel: 'MacBook Pro 16"',
-    deviceTitle: 'MacBook Pro 16" (macOS) · Trung Tâm Điều Phối Đội Xe B2B CRM/TMS',
-    roleBadge: 'VAI TRÒ 1 (USER) · ĐIỀU PHỐI VIÊN CÔNG TY',
+    deviceTitle: 'MacBook Pro 16" · Trung Tâm Điều Phối Đội Xe B2B CRM/TMS',
+    roleBadge: 'VAI TRÒ 1 · ĐIỀU PHỐI VIÊN CÔNG TY',
     imageSrc: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
     liveRouteUrl: '/dashboard/',
     liveRouteLabel: 'Trải Nghiệm Giao Diện Quản Lý (/dashboard)',
     description:
-      'Không gian quản trị Daylight Enterprise dành cho điều phối viên: nạp bảng tính .XLSX 120 đơn từ ERP, kiểm tra tiến độ từng xe theo thời gian thực và xuất báo cáo kiểm toán ESG 3 Sheet chuẩn ISO 14083 / GLEC v3.2.',
+      'Không gian quản trị dành cho điều phối viên: nạp bảng tính .XLSX 120 đơn từ ERP, kiểm tra tiến độ từng xe theo thời gian thực và xuất báo cáo kiểm toán ESG 3 Sheet chuẩn ISO 14083 / GLEC v3.2.',
     highlights: [
-      'Thanh chỉ số 6 ô (94/120 đơn · 7/10 xe · 243.7 km · 2.7% chạy rỗng · +19 đơn ghép về · 57.3 kg CO₂)',
+      'Theo dõi trực quan 94/120 đơn, 7/10 xe, 243.7 km, 2.7% chạy rỗng và +19 đơn ghép về',
       'Tích hợp trực tiếp Buồng Đối Chứng 2 Bên EVSIM ngay trong thanh điều hướng bên trái',
-      '1-click nhảy từ bất kỳ dòng xe nào sang Bản đồ Dẫn đường Xe tải (/maps)',
+      '1-click chuyển từ bất kỳ dòng xe nào sang Bản đồ Dẫn đường Xe tải (/maps)',
     ],
   },
   {
     id: 'windows_xps',
     shortLabel: 'Windows 11 XPS 16',
-    deviceTitle: 'Dell XPS 16 (Windows 11 PWA) · Buồng Kiểm Thử Đối Chứng 2 Bên EVSIM',
-    roleBadge: 'VAI TRÒ 2 (TESTER) · KIỂM ĐỊNH THUẬT TOÁN ĐỘC LẬP',
+    deviceTitle: 'Dell XPS 16 · Buồng Kiểm Thử Đối Chứng 2 Bên EVSIM',
+    roleBadge: 'VAI TRÒ 2 · KIỂM ĐỊNH THUẬT TOÁN ĐỘC LẬP',
     imageSrc: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
     liveRouteUrl: '/benchmark/',
     liveRouteLabel: 'Mở Buồng Đối Chứng EVSIM (/benchmark)',
     description:
-      'Chạy song song hai bản đồ TP.HCM từ 06:00 đến 20:00 trên cùng một hàm khoảng cách đường phố thật OSRM: bên trái là quy trình điều phối thủ công (374.4 km, 28 lỗi cấm tải QĐ 23), bên phải là thuật toán Carbon-Aware ALNS của EcoMiles (243.7 km, 0 lỗi).',
+      'Chạy song song hai bản đồ TP.HCM từ 06:00 đến 20:00 trên cùng một mạng lưới đường phố thật: bên trái là quy trình điều phối thủ công (374.4 km, 28 lỗi cấm tải QĐ 23), bên phải là thuật toán EcoMiles (243.7 km, 0 lỗi).',
     highlights: [
-      'Đồng hồ mô phỏng 06:00 - 20:00 với tốc độ x30..x600 và nút nhảy mốc giờ cấm 06:00 / 09:05 / 16:30',
-      'Cho phép tải lên bất kỳ file .XLSX / .CSV thực tế nào của doanh nghiệp để kiểm chứng',
-      'Đồ thị sparkline theo dõi luỹ kế km chạy rỗng và phát thải CO₂e theo từng phút',
+      'Đồng hồ mô phỏng 06:00 - 20:00 với tốc độ tua nhanh và nút nhảy mốc giờ cấm 06:00 / 09:05 / 16:30',
+      'Cho phép tải lên bất kỳ file .XLSX / .CSV thực tế nào của doanh nghiệp để kiểm chứng ngay',
+      'Biểu đồ theo dõi luỹ kế km chạy rỗng và phát thải CO₂e theo thời gian thực',
     ],
   },
   {
     id: 'galaxy_zfold',
     shortLabel: 'Galaxy Z Fold',
-    deviceTitle: 'Samsung Galaxy Z Fold (768x1024 Unfolded) · Buồng Lái Bản Đồ Xe Tải (/maps)',
-    roleBadge: 'BẢN ĐỒ XE TẢI MỞ OPENTRUCK · CHẶNG GIỮA (>500KG)',
+    deviceTitle: 'Samsung Galaxy Z Fold · Buồng Lái Bản Đồ Xe Tải (/maps)',
+    roleBadge: 'BẢN ĐỒ XE TẢI MỞ · CHẶNG GIỮA (>500KG)',
     imageSrc: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
     liveRouteUrl: '/maps/?vehicle=0&mode=navigate',
     liveRouteLabel: 'Mở Chế Độ Bắt Đầu Lái (/maps Live)',
     description:
-      'Màn hình gập mở rộng gắn trên taplo xe tải (>500kg): hiển thị rõ các vùng cấm tải QĐ 23/2018 màu đỏ, giới hạn tải trọng cầu (13T / 4.5m) và chế độ Dẫn Đường Trực Tiếp (Follow-Truck) kiểu nút "Start" của Google Maps.',
+      'Màn hình gập mở rộng gắn trên taplo xe tải (>500kg): hiển thị rõ các vùng cấm tải QĐ 23/2018 màu đỏ, giới hạn tải trọng cầu (13T / 4.5m) và chế độ Dẫn Đường Trực Tiếp bám theo mũi xe.',
     highlights: [
       'Camera tự động xoay hướng mũi xe (36 km/h) với vệt xanh lá đã đi và đường xanh dương phía trước',
       'Thuyết minh giọng nói tiếng Việt tự động đọc tên đường rẽ tiếp theo và cảnh báo giờ cấm',
-      'Hỗ trợ xuất file .GPX sang OsmAnd Truck với chi phí bản đồ API = $0',
+      'Hỗ trợ xuất file .GPX sang ứng dụng dẫn đường xe tải với chi phí bản đồ API = $0',
     ],
   },
   {
     id: 'ipad_pro',
     shortLabel: 'iPad Pro M4',
-    deviceTitle: 'iPad Pro M4 (768x1024) · Bảng Điều Khiển Kho Vận & Giám Sát Đội Xe Cảm Ứng',
-    roleBadge: 'TABLET WAREHOUSE & DISPATCH · TOUCH UI',
+    deviceTitle: 'iPad Pro M4 · Bảng Điều Khiển Kho Vận & Giám Sát Bến Xuất',
+    roleBadge: 'TABLET KHO VẬN · GIAO DIỆN CẢM ỨNG',
     imageSrc: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
     liveRouteUrl: '/dashboard/',
     liveRouteLabel: 'Mở Bảng Điều Khiển Tablet (/dashboard)',
     description:
-      'Giao diện máy tính bảng tự động chuyển thanh điều hướng dọc thành dải nút cảm ứng ngang (Touch Pill Bar), đưa toàn bộ 6 chỉ số KPI và bảng tiến độ đội xe lên ngay màn hình đầu tiên mà không cần cuộn.',
+      'Giao diện máy tính bảng chuyển thanh điều hướng dọc thành dải nút cảm ứng ngang, đưa toàn bộ 6 chỉ số KPI và bảng tiến độ đội xe lên ngay màn hình đầu tiên để quản đốc kho thao tác nhanh.',
     highlights: [
-      '0px tràn ngang (scrollWidth === clientWidth = 768px) đã kiểm chứng tự động trên Chromium',
-      'Tối ưu thao tác chạm một tay cho quản đốc kho kiểm tra tỷ lệ lấp đầy tải trọng (101.5%)',
-      'Chuyển đổi tức thì giữa 3 doanh nghiệp B2B cách ly khóa mã hóa KMS riêng biệt',
+      'Giao diện cảm ứng tối ưu cho quản đốc kho kiểm tra nhanh tiến độ bến xuất và hàng về',
+      'Theo dõi tức thì tỷ lệ lấp đầy tải trọng (101.5%) và danh sách đơn ghép chiều về',
+      'Chuyển đổi nhanh giữa các chi nhánh doanh nghiệp B2B với kho dữ liệu cách ly độc lập',
     ],
   },
   {
     id: 'iphone_duo',
     shortLabel: 'iPhone Duo (Gập Đôi)',
-    deviceTitle: 'iPhone Duo Dual-Screen · Màn Trái Danh Sách Điểm Giao + Màn Phải Dẫn Đường Trực Tiếp',
-    roleBadge: 'DUAL-SCREEN FOLDABLE · ĐA NHIỆM TÀI XẾ',
+    deviceTitle: 'iPhone Duo Dual-Screen · Màn Trái Đơn Hàng + Màn Phải Bản Đồ',
+    roleBadge: 'ĐIỆN THOẠI GẬP ĐÔI · ĐA NHIỆM TÀI XẾ',
     imageSrc: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
     liveRouteUrl: '/driver/',
     liveRouteLabel: 'Mở Ứng Dụng Tài Xế (/driver)',
     description:
-      'Thiết kế đa nhiệm trên điện thoại gập đôi: màn hình bên trái giữ danh sách 13 điểm dừng và trạng thái giao hàng (/driver), trong khi màn hình bên phải chạy bản đồ dẫn đường trực tiếp của cùng chuyến xe 51C-000.09 (/maps?mode=navigate).',
+      'Thiết kế đa nhiệm trên điện thoại gập đôi: màn hình bên trái giữ danh sách 13 điểm dừng và trạng thái giao hàng (/driver), trong khi màn hình bên phải chạy bản đồ dẫn đường trực tiếp (/maps).',
     highlights: [
       'Tài xế vừa xem ghi chú người nhận & đơn ghép chiều về vừa theo dõi lộ trình né đường cấm',
       'Không cần chuyển tab qua lại khi đang di chuyển qua các giao lộ phức tạp tại TP.HCM',
@@ -149,15 +144,15 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
   {
     id: 'iphone_18_pro_max',
     shortLabel: 'iPhone 18 Pro Max',
-    deviceTitle: 'iPhone 18 Pro Max · Ứng Dụng Tài Xế Chặng Giữa (>500kg) & Ghép Đơn Chiều Về',
-    roleBadge: 'VAI TRÒ 3 (DRIVER) · CHẶNG GIỮA (>500KG)',
+    deviceTitle: 'iPhone 18 Pro Max · Ứng Dụng Tài Xế Chặng Giữa (>500kg)',
+    roleBadge: 'VAI TRÒ 3 (TÀI XẾ) · CHẶNG GIỮA (>500KG)',
     imageSrc: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
     liveRouteUrl: '/driver/',
     liveRouteLabel: 'Mở App Tài Xế Chặng Giữa (/driver)',
     description:
-      'Giao diện điện thoại dành cho tài xế xe tải (>500kg): tích hợp Buồng Lái Dẫn Đường Xe Tải Mở ($0 API), thông báo lệnh ghép đơn chiều về kho Tân Bình và cập nhật biên bản giao hàng tức thì.',
+      'Giao diện điện thoại độ tương phản cao ngoài trời nắng dành cho tài xế xe tải (>500kg): tích hợp bản đồ xe tải né đường cấm, thông báo lệnh ghép đơn chiều về kho Tân Bình và cập nhật giao hàng 1 chạm.',
     highlights: [
-      'Khung viền đồng tâm chuẩn iOS với thanh trạng thái 09:41 và Dynamic Island không che tiêu đề',
+      'Bố cục chữ lớn, nút bấm một chạm rõ ràng giúp tài xế thao tác an toàn tại điểm dừng',
       '1-chạm mở Bản Đồ Vùng Cấm (/maps) hoặc Bắt Đầu Lái (/maps Live)',
       'Hiển thị rõ ràng buộc cầu <= 13T, độ cao <= 3.8m và hành lang hợp pháp QĐ 23/2018',
     ],
@@ -165,28 +160,26 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
   {
     id: 'galaxy_s26_ultra',
     shortLabel: 'Galaxy S26 Ultra',
-    deviceTitle: 'Samsung Galaxy S26 Ultra · Dẫn Đường Trực Tiếp & Khóa Tọa Độ Waypoints Google Maps ($0)',
-    roleBadge: 'VAI TRÒ 3 (DRIVER) · CHẶNG CUỐI (<=500KG) & LIVE NAV',
+    deviceTitle: 'Samsung Galaxy S26 Ultra · Dẫn Đường Google Maps Waypoints ($0)',
+    roleBadge: 'VAI TRÒ 3 (TÀI XẾ) · CHẶNG CUỐI (<=500KG)',
     imageSrc: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
     liveRouteUrl: '/driver/',
-    liveRouteLabel: 'Thử Mở Google Maps Khóa Waypoints (/driver)',
+    liveRouteLabel: 'Thử Mở Google Maps Waypoints (/driver)',
     description:
-      'Đối với xe van / ô tô con (<=500kg) không bị cấm tải QĐ 23/2018, EcoMiles tự động nhúng chuỗi tọa độ trung gian (waypoints=lat,lng|lat,lng) của thuật toán EcoALNS thẳng vào URL Google Maps miễn phí ($0 API).',
+      'Đối với xe van / ô tô con (<=500kg) không bị cấm tải QĐ 23/2018, EcoMiles tự động nhúng chuỗi tọa độ các điểm dừng tối ưu thẳng vào ứng dụng Google Maps sẵn có trên điện thoại tài xế ($0 phí API).',
     highlights: [
-      'Khắc phục hoàn toàn lỗi tiền tố via: trên Google Maps Universal Cross-Platform URL (?api=1)',
+      'Giữ nguyên thứ tự điểm giao tối ưu của thuật toán khi mở trực tiếp trên Google Maps điện thoại',
       'Hỗ trợ nút Mở Toàn Bộ Tuyến Nhiều Điểm Dừng Trên Google Maps Ô Tô ($0) chỉ với 1 chạm',
-      'Giữ nguyên thứ tự giao hàng tối ưu của thuật toán mà không tốn phí Google Routes API',
+      'Tiết kiệm 100% chi phí thuê bao bản đồ thương mại cho đội xe giao hàng chặng cuối',
     ],
   },
 ];
 
 export const DriverAndDispatcherShowcase: React.FC = () => {
   const [selectedDeviceId, setSelectedDeviceId] = useState<DeviceViewId>('all_banner');
-  const [stageRenderMode, setStageRenderMode] = useState<'spatial_2d' | 'webgl_3d' | 'studio_banner'>('spatial_2d');
-  const [studioBannerVariant, setStudioBannerVariant] = useState<'clean_stage' | 'cover_banner'>('clean_stage');
-  const [isShowcaseAutoTour, setIsShowcaseAutoTour] = useState<boolean>(false);
   const shouldReduceMotion = useReducedMotion();
   const [isShowcaseLightboxOpen, setIsShowcaseLightboxOpen] = useState<boolean>(false);
+
   const activeFlagshipIndex = Math.max(
     0,
     FLAGSHIP_DEVICES.findIndex((d) => d.id === selectedDeviceId)
@@ -197,12 +190,10 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     if (nextDev) {
       tiltRotateX.set(0);
       tiltRotateY.set(0);
-      if (stageRenderMode === 'studio_banner') {
-        setStageRenderMode('spatial_2d');
-      }
       setSelectedDeviceId(nextDev.id);
     }
   };
+
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageCardRef = useRef<HTMLDivElement | null>(null);
   const multiStageRef = useRef<HTMLDivElement | null>(null);
@@ -223,17 +214,19 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
       setSelectedDeviceId(nextDev.id);
     }
   };
+
   const tiltRotateX = useMotionValue(0);
   const tiltRotateY = useMotionValue(0);
   const springRotateX = useSpring(tiltRotateX, { stiffness: 260, damping: 22, mass: 0.6 });
   const springRotateY = useSpring(tiltRotateY, { stiffness: 260, damping: 22, mass: 0.6 });
 
   const handleSingleDevicePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
     const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
-    tiltRotateX.set(-ny * 14);
-    tiltRotateY.set(nx * 16);
+    tiltRotateX.set(gsap.utils.clamp(-8, 8, -ny * 14));
+    tiltRotateY.set(gsap.utils.clamp(-10, 10, nx * 16));
   };
 
   const handleSingleDevicePointerLeave = () => {
@@ -242,162 +235,58 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleSelectDevice = (e: Event) => {
-      const customEvent = e as CustomEvent<{ deviceId: DeviceViewId }>;
+    const handleExternalSelectDevice = (e: Event) => {
+      const customEvent = e as CustomEvent<{ deviceId?: string }>;
       const targetId = customEvent.detail?.deviceId;
       if (targetId && FLAGSHIP_DEVICES.some((d) => d.id === targetId)) {
         tiltRotateX.set(0);
         tiltRotateY.set(0);
-        setSelectedDeviceId(targetId);
+        setSelectedDeviceId(targetId as DeviceViewId);
       }
     };
-    window.addEventListener('ecomiles:select-device', handleSelectDevice);
-    return () => window.removeEventListener('ecomiles:select-device', handleSelectDevice);
+    window.addEventListener('ecomiles:select-device', handleExternalSelectDevice);
+    return () => window.removeEventListener('ecomiles:select-device', handleExternalSelectDevice);
   }, [tiltRotateX, tiltRotateY]);
 
   useEffect(() => {
-    if (!isShowcaseLightboxOpen && selectedDeviceId === 'all_banner' && stageRenderMode !== 'webgl_3d') {
-      return;
-    }
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        if (isShowcaseLightboxOpen) {
-          const nextDev = FLAGSHIP_DEVICES[wrapFlagshipIndex(activeFlagshipIndex - 1)];
-          if (nextDev) {
-            tiltRotateX.set(0);
-            tiltRotateY.set(0);
-            if (stageRenderMode === 'studio_banner') setStageRenderMode('spatial_2d');
-            setSelectedDeviceId(nextDev.id);
-          }
-          return;
-        }
-        const nextIdx =
-          selectedDeviceId === 'all_banner'
-            ? hardwareDevices.length - 1
-            : wrapHardwareIndex(activeHardwareIndex - 1);
-        const nextDev = hardwareDevices[nextIdx];
-        if (nextDev) {
-          tiltRotateX.set(0);
-          tiltRotateY.set(0);
-          setSelectedDeviceId(nextDev.id);
-        }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        if (isShowcaseLightboxOpen) {
-          const nextDev = FLAGSHIP_DEVICES[wrapFlagshipIndex(activeFlagshipIndex + 1)];
-          if (nextDev) {
-            tiltRotateX.set(0);
-            tiltRotateY.set(0);
-            if (stageRenderMode === 'studio_banner') setStageRenderMode('spatial_2d');
-            setSelectedDeviceId(nextDev.id);
-          }
-          return;
-        }
-        const nextIdx =
-          selectedDeviceId === 'all_banner' ? 0 : wrapHardwareIndex(activeHardwareIndex + 1);
-        const nextDev = hardwareDevices[nextIdx];
-        if (nextDev) {
-          tiltRotateX.set(0);
-          tiltRotateY.set(0);
-          setSelectedDeviceId(nextDev.id);
-        }
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
+      if (e.key === 'Escape') {
         if (isShowcaseLightboxOpen) {
           setIsShowcaseLightboxOpen(false);
           return;
         }
-        tiltRotateX.set(0);
-        tiltRotateY.set(0);
-        setSelectedDeviceId('all_banner');
+        if (selectedDeviceId !== 'all_banner') {
+          tiltRotateX.set(0);
+          tiltRotateY.set(0);
+          setSelectedDeviceId('all_banner');
+        }
+        return;
+      }
+      if (!isShowcaseLightboxOpen && selectedDeviceId === 'all_banner') return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (isShowcaseLightboxOpen) stepFlagshipDevice(-1);
+        else stepHardwareDevice(-1);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (isShowcaseLightboxOpen) stepFlagshipDevice(1);
+        else stepHardwareDevice(1);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
-    isShowcaseLightboxOpen,
     selectedDeviceId,
-    stageRenderMode,
-    activeFlagshipIndex,
-    wrapFlagshipIndex,
     activeHardwareIndex,
     hardwareDevices,
     wrapHardwareIndex,
     tiltRotateX,
     tiltRotateY,
+    isShowcaseLightboxOpen,
+    activeFlagshipIndex,
   ]);
-
-  useEffect(() => {
-    if (!isShowcaseAutoTour) return;
-    const cycleIds: DeviceViewId[] = [
-      'all_banner',
-      'macbook_pro',
-      'windows_xps',
-      'galaxy_zfold',
-      'iphone_18_pro_max',
-      'iphone_duo',
-      'galaxy_s26_ultra',
-      'ipad_pro',
-    ];
-    const timer = window.setInterval(() => {
-      setSelectedDeviceId((prev) => {
-        const nextIdx = (cycleIds.indexOf(prev) + 1) % cycleIds.length;
-        tiltRotateX.set(0);
-        tiltRotateY.set(0);
-        return cycleIds[nextIdx];
-      });
-    }, 3000);
-    return () => window.clearInterval(timer);
-  }, [isShowcaseAutoTour, tiltRotateX, tiltRotateY]);
-  // GSAP ScrollTrigger 4-Beat Spatial Fan-Out (Office -> Handover -> Field -> Outcome)
-  useGSAP(
-    () => {
-      const prefersReducedMotion =
-        typeof window !== 'undefined' &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion || !sectionRef.current || !stageCardRef.current) return;
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: stageCardRef.current,
-          start: 'top 90%',
-          end: 'top 35%',
-          scrub: 0.45,
-        },
-      });
-
-      tl.fromTo(
-        stageCardRef.current,
-        { y: 32, opacity: 0.4, rotateX: 4, transformPerspective: 1200 },
-        { y: 0, opacity: 1, rotateX: 0, duration: 0.6, ease: 'none' },
-        0
-      );
-
-      // 4-Beat Device Fan-Out inside the Interactive 7-Device Stage
-      tl.fromTo(
-        '.gsap-beat-office',
-        { y: 24, scale: 0.94, opacity: 0.5 },
-        { y: 0, scale: 1, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'none' },
-        0.05
-      );
-      tl.fromTo(
-        '.gsap-beat-handover',
-        { y: 36, scale: 0.9, opacity: 0.35 },
-        { y: 0, scale: 1, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'none' },
-        0.2
-      );
-      tl.fromTo(
-        '.gsap-beat-field',
-        { y: 48, scale: 0.88, opacity: 0.25 },
-        { y: 0, scale: 1, opacity: 1, stagger: 0.07, duration: 0.5, ease: 'none' },
-        0.35
-      );
-    },
-    { scope: sectionRef }
-  );
 
   const renderDeviceIcon = (id: DeviceViewId) => {
     if (id === 'all_banner') return <Layers className="w-3.5 h-3.5" />;
@@ -411,21 +300,18 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     <section
       id="showcase"
       ref={sectionRef}
-      className="relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-slate-900/95 border-t border-white/10 scroll-mt-16 overflow-hidden"
+      className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-slate-900/95 border-t border-white/10 scroll-mt-16 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto relative z-10 space-y-5">
-        {/* Compact Header + Framer Motion 8-Pill Device Selector */}
-        <div className="flex flex-col items-center text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950 border border-ecomiles-lime/30 text-[11px] font-bold text-ecomiles-lime">
-            <Monitor className="w-3.5 h-3.5" />
-            <span>HỆ SINH THÁI ĐA THIẾT BỊ THỰC TẾ (MACBOOK · WINDOWS · Z FOLD · iPAD · iPHONE DUO · S26 ULTRA)</span>
-          </div>
-
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+      <div className="max-w-7xl mx-auto relative z-10 space-y-8">
+        {/* Clean Section Heading + 8-Pill Device Selector */}
+        <div className="flex flex-col items-center text-center space-y-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
             Đồng Bộ Tức Thì Trên <span className="text-ecomiles-lime">Mọi Thiết Bị Điều Phối &amp; Tài Xế</span>
           </h2>
+          <p className="max-w-2xl text-sm sm:text-base text-slate-300 leading-relaxed">
+            Chọn bất kỳ thiết bị nào bên dưới để xem giao diện thực tế và bấm mở trực tiếp ứng dụng tương ứng.
+          </p>
 
-          {/* Framer Motion Shared-Layout 8-Pill Device Selector Bar */}
           <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-slate-950/90 border border-white/10 max-w-6xl mx-auto">
             {FLAGSHIP_DEVICES.map((dev) => {
               const isActive = dev.id === selectedDeviceId;
@@ -436,14 +322,14 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   onClick={() => setSelectedDeviceId(dev.id)}
                   aria-pressed={isActive}
                   className={`relative px-3 py-1.5 rounded-xl font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer ${
-                    isActive ? 'text-slate-950' : 'text-slate-300 hover:text-white'
+                    isActive ? 'text-slate-950' : 'text-slate-200 hover:text-white'
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="activeDeviceSelectorPill"
                       transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-                      className="absolute inset-0 rounded-xl bg-ecomiles-lime shadow-md"
+                      className="absolute inset-0 rounded-xl bg-ecomiles-lime shadow-sm"
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-1.5">
@@ -456,542 +342,279 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Interactive Stage Card (GSAP Scroll-Scrubbed + Framer Motion AnimatePresence) */}
+        {/* Main Interactive Stage Card */}
         <div
           ref={stageCardRef}
-          className="rounded-3xl bg-slate-950/90 border border-white/10 p-4 sm:p-6 lg:p-7 shadow-[0_28px_80px_rgba(0,0,0,0.65)]"
+          className="rounded-3xl bg-slate-950/90 border border-white/10 p-5 sm:p-7 shadow-2xl shadow-black/60"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-              {/* Left/Center 8 Cols: Interactive 7-Device Spatial Stage OR Individual High-DPI Hardware Mockup */}
-              <div
-                ref={multiStageRef}
-                className="lg:col-span-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.34)_0%,rgba(2,6,23,0.94)_75%)] rounded-2xl p-3 sm:p-5 border border-white/10 overflow-hidden space-y-3"
-              >
-                {/* 3-Mode Stage View Switcher: Interactive 2D Fan-Out vs 3D WebGL Camera Flight vs 2.4K Studio Banner */}
-                <div className="w-full flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-white/10 text-[11px]">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-300 uppercase tracking-wider">
-                      Chế độ sân khấu thiết bị:
-                    </span>
-                    <button
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left 8 Cols: Interactive 7-Device Spatial Stage OR Individual Device Mockup */}
+            <div
+              ref={multiStageRef}
+              className="lg:col-span-8 flex flex-col items-center justify-center bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.34)_0%,rgba(2,6,23,0.94)_75%)] rounded-2xl p-4 sm:p-6 border border-white/10 overflow-hidden"
+            >
+              {activeDevice.id === 'all_banner' ? (
+                <div className="w-full relative space-y-3">
+                  {/* Animated SVG Data-Sync Bezier Network */}
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 600 320"
+                    preserveAspectRatio="none"
+                    className="pointer-events-none absolute inset-0 w-full h-full z-0"
+                  >
+                    {[
+                      { sx: 150, sy: 95, ex: 70, ey: 250, d: 'M 150 95 C 150 170, 70 190, 70 250' },
+                      { sx: 150, sy: 95, ex: 185, ey: 255, d: 'M 150 95 C 150 180, 185 200, 185 255' },
+                      { sx: 150, sy: 95, ex: 300, ey: 260, d: 'M 150 95 C 180 180, 300 200, 300 260' },
+                      { sx: 450, sy: 95, ex: 300, ey: 260, d: 'M 450 95 C 420 180, 300 200, 300 260' },
+                      { sx: 450, sy: 95, ex: 415, ey: 255, d: 'M 450 95 C 450 180, 415 200, 415 255' },
+                      { sx: 450, sy: 95, ex: 530, ey: 250, d: 'M 450 95 C 450 170, 530 190, 530 250' },
+                    ].map((arc, idx) => (
+                      <g key={idx}>
+                        <path
+                          d={arc.d}
+                          fill="none"
+                          stroke="#d6f65a"
+                          strokeWidth={1.35}
+                          strokeOpacity={0.35}
+                          strokeDasharray="5 6"
+                        />
+                        {!shouldReduceMotion && (
+                          <circle r={2.6} fill="#d6f65a" fillOpacity={0.9}>
+                            <animateMotion
+                              dur="2.2s"
+                              begin={`${idx * 0.32}s`}
+                              repeatCount="indefinite"
+                              path={arc.d}
+                            />
+                          </circle>
+                        )}
+                      </g>
+                    ))}
+                  </svg>
+
+                  <div className="relative z-10 grid grid-cols-2 gap-3 sm:gap-4 items-end px-2 sm:px-4">
+                    <motion.button
                       type="button"
-                      onClick={() => setIsShowcaseAutoTour((prev) => !prev)}
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg font-bold text-[10px] cursor-pointer transition-colors border ${
-                        isShowcaseAutoTour
-                          ? 'bg-emerald-400 text-slate-950 border-emerald-300 shadow-sm'
-                          : 'bg-slate-950/90 text-ecomiles-lime border-ecomiles-lime/40 hover:bg-ecomiles-lime/15'
-                      }`}
+                      onClick={() => setSelectedDeviceId('macbook_pro')}
+                      whileHover={{ y: -6, scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group w-full text-center cursor-pointer focus:outline-none"
                     >
-                      {isShowcaseAutoTour ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
-                      <span>{isShowcaseAutoTour ? 'Đang xoay' : 'Tự động xoay'}</span>
-                    </button>
+                      <div className="mb-1.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-950/90 border border-ecomiles-lime/40 text-xs font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                        <Laptop className="w-3.5 h-3.5" />
+                        <span>1. MacBook Pro 16&quot;</span>
+                      </div>
+                      <img
+                        src="/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png"
+                        alt="MacBook Pro 16 inch B2B CRM/TMS"
+                        className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
+                      />
+                    </motion.button>
+
+                    <motion.button
+                      type="button"
+                      onClick={() => setSelectedDeviceId('windows_xps')}
+                      whileHover={{ y: -6, scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group w-full text-center cursor-pointer focus:outline-none"
+                    >
+                      <div className="mb-1.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-950/90 border border-ecomiles-lime/40 text-xs font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
+                        <Laptop className="w-3.5 h-3.5" />
+                        <span>2. Windows 11 XPS 16</span>
+                      </div>
+                      <img
+                        src="/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png"
+                        alt="Dell XPS 16 Windows 11 EVSIM Dual Simulator"
+                        className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
+                      />
+                    </motion.button>
                   </div>
-                  <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-950/90 border border-white/10">
-                    <button
-                      type="button"
-                      onClick={() => setStageRenderMode('spatial_2d')}
-                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
-                        stageRenderMode === 'spatial_2d'
-                          ? 'bg-ecomiles-lime text-slate-950'
-                          : 'text-slate-300 hover:text-white'
-                      }`}
-                    >
-                      1. Sân Khấu 7 Thiết Bị (Tương Tác)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setStageRenderMode('webgl_3d')}
-                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
-                        stageRenderMode === 'webgl_3d'
-                          ? 'bg-ecomiles-lime text-slate-950'
-                          : 'text-slate-300 hover:text-white'
-                      }`}
-                    >
-                      2. Không Gian 3D WebGL (Camera Flight)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setStageRenderMode('studio_banner')}
-                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer transition-colors ${
-                        stageRenderMode === 'studio_banner'
-                          ? 'bg-ecomiles-lime text-slate-950'
-                          : 'text-slate-300 hover:text-white'
-                      }`}
-                    >
-                      3. Ảnh Bìa Studio 2.4K (Phản Chiếu)
-                    </button>
+
+                  {/* 5 Foreground Field & Tablet Devices */}
+                  <div className="relative z-20 -mt-7 sm:-mt-9 flex flex-wrap sm:flex-nowrap items-end justify-center gap-3 sm:gap-4">
+                    {[
+                      { id: 'galaxy_zfold' as const, label: '3. Galaxy Z Fold', src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png', highlight: false },
+                      { id: 'iphone_18_pro_max' as const, label: '4. iPhone 18 Pro', src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png', highlight: false },
+                      { id: 'iphone_duo' as const, label: '5. iPhone Duo', src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png', highlight: true },
+                      { id: 'galaxy_s26_ultra' as const, label: '6. Galaxy S26', src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png', highlight: false },
+                      { id: 'ipad_pro' as const, label: '7. iPad Pro M4', src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png', highlight: false },
+                    ].map((item) => (
+                      <motion.button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setSelectedDeviceId(item.id)}
+                        whileHover={{ y: -8, scale: 1.04 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group flex flex-col items-center text-center cursor-pointer focus:outline-none shrink-0"
+                      >
+                        <img
+                          src={item.src}
+                          alt={item.label}
+                          className="h-[120px] sm:h-[148px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
+                        />
+                        <span
+                          className={`mt-1.5 inline-block px-2.5 py-0.5 rounded-md text-xs font-bold whitespace-nowrap transition-colors ${
+                            item.highlight
+                              ? 'bg-ecomiles-lime text-slate-950 font-extrabold'
+                              : 'bg-slate-900/90 border border-ecomiles-lime/35 text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950'
+                          }`}
+                        >
+                          {item.label}
+                        </span>
+                      </motion.button>
+                    ))}
                   </div>
                 </div>
-
-                {stageRenderMode === 'webgl_3d' ? (
-                  <ThreeDeviceEcosystemBanner
-                    selectedDeviceId={selectedDeviceId}
-                    onSelectDevice={setSelectedDeviceId}
-                  />
-                ) : stageRenderMode === 'studio_banner' ? (
-                  <div className="w-full flex flex-col items-center justify-center space-y-2.5">
-                    <div className="w-full flex flex-wrap items-center justify-between gap-2 text-[10.5px]">
-                      <div className="inline-flex rounded-lg p-0.5 bg-slate-950 border border-white/10">
-                        <button
-                          type="button"
-                          onClick={() => setStudioBannerVariant('clean_stage')}
-                          className={`px-2.5 py-1 rounded-md font-bold cursor-pointer transition-colors ${
-                            studioBannerVariant === 'clean_stage'
-                              ? 'bg-ecomiles-lime text-slate-950'
-                              : 'text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          A. Sân Khấu 7 Thiết Bị (2400×1120)
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setStudioBannerVariant('cover_banner')}
-                          className={`px-2.5 py-1 rounded-md font-bold cursor-pointer transition-colors ${
-                            studioBannerVariant === 'cover_banner'
-                              ? 'bg-ecomiles-lime text-slate-950'
-                              : 'text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          B. Ảnh Bìa OpenGraph / Pitch Deck (2400×1260)
-                        </button>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setIsShowcaseLightboxOpen(true)}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-extrabold text-[10.5px] cursor-pointer transition-colors"
-                        >
-                          <ZoomIn className="w-3 h-3" />
-                          <span>Phóng To 2.4K</span>
-                        </button>
-                        <a
-                          href={
-                            studioBannerVariant === 'clean_stage'
-                              ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                              : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                          }
-                          download
-                          className="inline-flex items-center gap-1 font-extrabold text-ecomiles-lime hover:underline"
-                        >
-                          <Download className="w-3 h-3" />
-                          <span>Tải PNG 2.4K</span>
-                        </a>
-                      </div>
-                    </div>
-                    <img
-                      src={
-                        studioBannerVariant === 'clean_stage'
-                          ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                          : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                      }
-                      alt="EcoMiles 7-Device Flagship Studio Cover Banner with Floor Reflections"
-                      onClick={() => setIsShowcaseLightboxOpen(true)}
-                      className="max-h-[380px] w-auto max-w-full mx-auto block object-contain cursor-zoom-in drop-shadow-[0_20px_44px_rgba(0,0,0,0.85)] rounded-xl"
-                    />
-                    <div className="w-full flex flex-wrap items-center justify-center gap-1 pt-0.5">
-                      {hardwareDevices.map((dev, idx) => (
-                        <div
-                          key={dev.id}
-                          className="inline-flex items-center rounded-lg overflow-hidden bg-slate-950/90 border border-white/10 text-[9.5px] font-bold"
-                        >
-                          <button
-                            type="button"
-                            onClick={() => {
-                              tiltRotateX.set(0);
-                              tiltRotateY.set(0);
-                              setSelectedDeviceId(dev.id);
-                              setStageRenderMode('spatial_2d');
-                            }}
-                            className="px-2 py-0.5 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 transition-colors cursor-pointer"
-                          >
-                            {idx + 1}. {dev.shortLabel}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              tiltRotateX.set(0);
-                              tiltRotateY.set(0);
-                              setSelectedDeviceId(dev.id);
-                              setStageRenderMode('spatial_2d');
-                              setIsShowcaseLightboxOpen(true);
-                            }}
-                            title={`Phóng to 2.4K: ${dev.shortLabel}`}
-                            className="inline-flex items-center px-1.5 py-0.5 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime transition-colors cursor-zoom-in"
-                          >
-                            <ZoomIn className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : activeDevice.id === 'all_banner' ? (
-                  <div className="w-full relative">
-                    {/* Animated SVG Data-Sync Bezier Network connecting Rear Office Laptops to 5 Foreground Field Devices */}
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 600 320"
-                      preserveAspectRatio="none"
-                      className="pointer-events-none absolute inset-0 w-full h-full z-0"
+              ) : (
+                <div className="relative w-full flex flex-col items-center justify-center gap-3 py-1">
+                  <div className="w-full flex flex-wrap items-center justify-between gap-2 px-1 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        tiltRotateX.set(0);
+                        tiltRotateY.set(0);
+                        setSelectedDeviceId('all_banner');
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-bold transition-colors cursor-pointer"
                     >
-                      {[
-                        { sx: 150, sy: 95, ex: 70, ey: 250, d: 'M 150 95 C 150 170, 70 190, 70 250' },
-                        { sx: 150, sy: 95, ex: 185, ey: 255, d: 'M 150 95 C 150 180, 185 200, 185 255' },
-                        { sx: 150, sy: 95, ex: 300, ey: 260, d: 'M 150 95 C 180 180, 300 200, 300 260' },
-                        { sx: 450, sy: 95, ex: 300, ey: 260, d: 'M 450 95 C 420 180, 300 200, 300 260' },
-                        { sx: 450, sy: 95, ex: 415, ey: 255, d: 'M 450 95 C 450 180, 415 200, 415 255' },
-                        { sx: 450, sy: 95, ex: 530, ey: 250, d: 'M 450 95 C 450 170, 530 190, 530 250' },
-                      ].map((arc, idx) => (
-                        <g key={idx}>
-                          <path
-                            d={arc.d}
-                            fill="none"
-                            stroke="#d6f65a"
-                            strokeWidth={1.35}
-                            strokeOpacity={0.36}
-                            strokeDasharray="5 6"
-                          />
-                          <circle cx={arc.sx} cy={arc.sy} r={2.5} fill="#d6f65a" fillOpacity={0.65} />
-                          <circle cx={arc.ex} cy={arc.ey} r={2.8} fill="#34d399" fillOpacity={0.65} />
-                          {!shouldReduceMotion && (
-                            <circle r={2.6} fill="#d6f65a" fillOpacity={0.92}>
-                              <animateMotion
-                                dur="2.2s"
-                                begin={`${idx * 0.32}s`}
-                                repeatCount="indefinite"
-                                path={arc.d}
-                              />
-                            </circle>
-                          )}
-                        </g>
-                      ))}
-                    </svg>
-                    <div className="relative z-10 grid grid-cols-2 gap-3 sm:gap-4 items-end px-2 sm:px-4">
-                      <div className="gsap-beat-office">
-                        <motion.button
-                          type="button"
-                          onClick={() => setSelectedDeviceId('macbook_pro')}
-                          whileHover={{ y: -8, scale: 1.03 }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ type: 'spring', stiffness: 360, damping: 24 }}
-                          className="group w-full text-center cursor-pointer focus:outline-none"
-                        >
-                          <div className="mb-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/90 border border-ecomiles-lime/40 text-[10px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
-                            <Laptop className="w-3 h-3" />
-                            <span>1. MacBook Pro 16&quot; · Điều phối B2B</span>
-                          </div>
-                          <img
-                            src="/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png"
-                            alt="MacBook Pro 16 inch B2B CRM/TMS"
-                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
-                          />
-                        </motion.button>
-                      </div>
-
-                      <div className="gsap-beat-office">
-                        <motion.button
-                          type="button"
-                          onClick={() => setSelectedDeviceId('windows_xps')}
-                          whileHover={{ y: -8, scale: 1.03 }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ type: 'spring', stiffness: 360, damping: 24 }}
-                          className="group w-full text-center cursor-pointer focus:outline-none"
-                        >
-                          <div className="mb-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/90 border border-ecomiles-lime/40 text-[10px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors">
-                            <Laptop className="w-3 h-3" />
-                            <span>2. Windows 11 XPS 16 · EVSIM Dual</span>
-                          </div>
-                          <img
-                            src="/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png"
-                            alt="Dell XPS 16 Windows 11 EVSIM Dual Simulator"
-                            className="w-full h-auto max-h-[175px] object-contain mx-auto drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)]"
-                          />
-                        </motion.button>
-                      </div>
-                    </div>
-
-                    {/* Tier 2 & 3 (Mid Handover Tablets + Foreground Field Phones): 5 Interactive Devices */}
-                    <div className="relative z-20 -mt-7 sm:-mt-9 flex flex-wrap sm:flex-nowrap items-end justify-center gap-3 sm:gap-4">
-                      <div className="gsap-beat-handover shrink-0">
-                        <motion.button
-                          type="button"
-                          onClick={() => setSelectedDeviceId('galaxy_zfold')}
-                          whileHover={{ y: -10, scale: 1.05 }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
-                        >
-                          <img
-                            src="/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png"
-                            alt="Samsung Galaxy Z Fold Unfolded Truck Map Cockpit"
-                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
-                          />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
-                            3. Galaxy Z Fold
-                          </span>
-                        </motion.button>
-                      </div>
-
-                      <div className="gsap-beat-field shrink-0">
-                        <motion.button
-                          type="button"
-                          onClick={() => setSelectedDeviceId('iphone_18_pro_max')}
-                          whileHover={{ y: -10, scale: 1.06 }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
-                        >
-                          <img
-                            src="/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png"
-                            alt="iPhone 18 Pro Max Driver App"
-                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
-                          />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
-                            4. iPhone 18 Pro Max
-                          </span>
-                        </motion.button>
-                      </div>
-
-                      <div className="gsap-beat-field shrink-0">
-                        <motion.button
-                          type="button"
-                          onClick={() => setSelectedDeviceId('iphone_duo')}
-                          whileHover={{ y: -10, scale: 1.06 }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
-                        >
-                          <img
-                            src="/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png"
-                            alt="iPhone Duo Dual-Screen Foldable"
-                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.95)]"
-                          />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 text-[9.5px] font-extrabold whitespace-nowrap">
-                            5. iPhone Duo (Gập Đôi)
-                          </span>
-                        </motion.button>
-                      </div>
-
-                      <div className="gsap-beat-field shrink-0">
-                        <motion.button
-                          type="button"
-                          onClick={() => setSelectedDeviceId('galaxy_s26_ultra')}
-                          whileHover={{ y: -10, scale: 1.06 }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
-                        >
-                          <img
-                            src="/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png"
-                            alt="Samsung Galaxy S26 Ultra Live Truck Navigation"
-                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
-                          />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
-                            6. Galaxy S26 Ultra
-                          </span>
-                        </motion.button>
-                      </div>
-
-                      <div className="gsap-beat-handover shrink-0">
-                        <motion.button
-                          type="button"
-                          onClick={() => setSelectedDeviceId('ipad_pro')}
-                          whileHover={{ y: -10, scale: 1.05 }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                          className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
-                        >
-                          <img
-                            src="/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png"
-                            alt="iPad Pro M4 Tablet Fleet Dashboard"
-                            className="h-[122px] sm:h-[152px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
-                          />
-                          <span className="mt-1.5 inline-block px-2 py-0.5 rounded bg-slate-900/90 border border-ecomiles-lime/35 text-[9.5px] font-bold text-ecomiles-lime group-hover:bg-ecomiles-lime group-hover:text-slate-950 transition-colors whitespace-nowrap">
-                            7. iPad Pro M4
-                          </span>
-                        </motion.button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="relative w-full flex flex-col items-center justify-center gap-2.5 py-1">
-                    {/* In-Stage Return Pill + Cyclic 1..7 / 7 Counter */}
-                    <div className="w-full flex flex-wrap items-center justify-between gap-2 px-1 text-[11px]">
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Toàn cảnh 7 thiết bị</span>
+                    </button>
+                    <div className="inline-flex items-center gap-1.5">
                       <button
                         type="button"
-                        onClick={() => {
-                          tiltRotateX.set(0);
-                          tiltRotateY.set(0);
-                          setSelectedDeviceId('all_banner');
-                        }}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-bold transition-colors cursor-pointer"
+                        onClick={() => stepHardwareDevice(-1)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
                       >
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                        <span>Toàn cảnh 7 thiết bị</span>
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span>Trước</span>
                       </button>
-                      <div className="inline-flex items-center gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => stepHardwareDevice(-1)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
-                        >
-                          <ChevronLeft className="w-3.5 h-3.5" />
-                          <span>Thiết bị trước</span>
-                        </button>
-                        <span className="px-2.5 py-1 rounded-lg bg-slate-950/90 border border-white/10 font-mono font-bold text-ecomiles-lime">
-                          {activeHardwareIndex + 1} / {hardwareDevices.length}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => stepHardwareDevice(1)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
-                        >
-                          <span>Thiết bị tiếp</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setIsShowcaseLightboxOpen(true)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
-                        >
-                          <ZoomIn className="w-3.5 h-3.5" />
-                          <span>Phóng To 2.4K</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Interactive 3D Pointer-Tilted Hardware Mockup */}
-                    <motion.div
-                      key={activeDevice.id}
-                      onPointerMove={handleSingleDevicePointerMove}
-                      onPointerLeave={handleSingleDevicePointerLeave}
-                      style={{
-                        rotateX: springRotateX,
-                        rotateY: springRotateY,
-                        transformPerspective: 1100,
-                      }}
-                      initial={{ opacity: 0, scale: 0.94, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                      className="w-full flex items-center justify-center cursor-grab active:cursor-grabbing py-1"
-                    >
-                      <img
-                        src={activeDevice.imageSrc}
-                        alt={activeDevice.deviceTitle}
+                      <span className="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-white/10 font-mono font-bold text-ecomiles-lime">
+                        {activeHardwareIndex + 1} / {hardwareDevices.length}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => stepHardwareDevice(1)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
+                      >
+                        <span>Tiếp</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => setIsShowcaseLightboxOpen(true)}
-                        className="max-h-[420px] w-auto max-w-full mx-auto block object-contain cursor-zoom-in drop-shadow-[0_22px_48px_rgba(0,0,0,0.85)] rounded-xl"
-                      />
-                    </motion.div>
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 font-extrabold cursor-pointer transition-colors"
+                      >
+                        <ZoomIn className="w-3.5 h-3.5" />
+                        <span>Xem lớn</span>
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
 
-              {/* Right 4 Cols: Role Context, 3 Verified Highlights & Live Launch CTAs */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeDevice.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                  className="lg:col-span-4 flex flex-col justify-between space-y-4"
-                >
-                <div className="space-y-2.5">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-bold text-ecomiles-lime bg-ecomiles-lime/10 border border-ecomiles-lime/25 uppercase tracking-wider">
+                  {/* Interactive 3D Pointer-Tilted Hardware Mockup */}
+                  <motion.div
+                    key={activeDevice.id}
+                    onPointerMove={handleSingleDevicePointerMove}
+                    onPointerLeave={handleSingleDevicePointerLeave}
+                    style={{
+                      rotateX: springRotateX,
+                      rotateY: springRotateY,
+                      transformPerspective: 1100,
+                    }}
+                    initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full flex items-center justify-center cursor-grab active:cursor-grabbing py-1"
+                  >
+                    <img
+                      src={activeDevice.imageSrc}
+                      alt={activeDevice.deviceTitle}
+                      onClick={() => setIsShowcaseLightboxOpen(true)}
+                      className="max-h-[420px] w-auto max-w-full mx-auto block object-contain cursor-zoom-in drop-shadow-[0_22px_48px_rgba(0,0,0,0.85)] rounded-xl"
+                    />
+                  </motion.div>
+                </div>
+              )}
+            </div>
+
+            {/* Right 4 Cols: Role Context, 3 Verified Highlights (Flat Checklist, Zero Nested Cards) & Live Launch CTA */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeDevice.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                className="lg:col-span-4 flex flex-col justify-between space-y-5"
+              >
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-ecomiles-lime bg-ecomiles-lime/10 border border-ecomiles-lime/25 uppercase tracking-wider">
                     {activeDevice.roleBadge}
                   </div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white leading-snug">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white leading-snug">
                     {activeDevice.deviceTitle}
                   </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-sm text-slate-300 leading-relaxed">
                     {activeDevice.description}
                   </p>
                 </div>
 
-                <div className="space-y-2.5">
+                <div className="py-4 border-y border-white/10 space-y-3">
                   {activeDevice.highlights.map((hl, idx) => (
-                    <div
-                      key={idx}
-                      className="p-3 rounded-xl bg-slate-900/85 border border-white/10 flex items-start gap-2.5"
-                    >
-                      <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-ecomiles-lime flex items-center justify-center shrink-0 mt-0.5">
-                        <Check className="w-3 h-3" />
-                      </div>
-                      <span className="text-xs text-slate-200 leading-relaxed font-medium">
+                    <div key={idx} className="flex items-start gap-2.5">
+                      <Check className="w-4 h-4 text-ecomiles-lime shrink-0 mt-0.5" />
+                      <span className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
                         {hl}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 pt-1">
-                  <motion.a
+                <div className="flex flex-col gap-2.5">
+                  <a
                     href={activeDevice.liveRouteUrl}
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                    className="w-full px-4 py-2.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                    className="w-full px-4 py-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-black/40 transition-colors cursor-pointer"
                   >
                     <span>{activeDevice.liveRouteLabel}</span>
                     <ArrowRight className="w-4 h-4" />
-                  </motion.a>
-                  <div className="grid grid-cols-2 gap-2">
-                    <motion.a
-                      href="/maps/?vehicle=0&mode=navigate"
-                      whileHover={{ scale: 1.02, y: -1 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                      className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <Compass className="w-3.5 h-3.5 text-ecomiles-lime shrink-0" />
-                      <span>Bản Đồ (/maps)</span>
-                    </motion.a>
-                    <motion.a
-                      href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                      download="00_ecomiles_flagship_cover_banner.png"
-                      whileHover={{ scale: 1.02, y: -1 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                      className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-ecomiles-lime border border-ecomiles-lime/30 font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <Download className="w-3.5 h-3.5 shrink-0" />
-                      <span>Tải Ảnh Bìa 2.4K</span>
-                    </motion.a>
-                  </div>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setIsShowcaseLightboxOpen(true)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <ZoomIn className="w-4 h-4 text-ecomiles-lime" />
+                    <span>Phóng to màn hình thiết bị</span>
+                  </button>
                 </div>
-                </motion.div>
-              </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Lightbox Modal with Interactive Spatial Hotspots */}
       {isShowcaseLightboxOpen &&
         typeof document !== 'undefined' &&
         createPortal(
           <div
             role="dialog"
             aria-modal="true"
-            aria-label={`Chi tiết Mockup 2.4K ${activeDevice.deviceTitle}`}
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
+            aria-label={activeDevice.deviceTitle}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-xl p-3 sm:p-6"
             onClick={() => setIsShowcaseLightboxOpen(false)}
           >
             <div
-              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
+              className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
                 <div className="min-w-0">
                   <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                    [{activeFlagshipIndex + 1}/{FLAGSHIP_DEVICES.length}]{' '}
-                    {stageRenderMode === 'studio_banner'
-                      ? studioBannerVariant === 'clean_stage'
-                        ? 'Ảnh Bìa Sân Khấu 7 Thiết Bị (2400×1120) · Phản Chiếu Sàn'
-                        : 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260)'
-                      : activeDevice.deviceTitle}
+                    [{activeFlagshipIndex + 1}/{FLAGSHIP_DEVICES.length}] {activeDevice.deviceTitle}
                   </div>
-                  <div className="text-[11px] text-slate-300 truncate">
-                    {stageRenderMode === 'studio_banner'
-                      ? 'Studio High-DPI Dual-Banner'
-                      : activeDevice.roleBadge}
-                  </div>
+                  <div className="text-xs text-slate-300 truncate">{activeDevice.roleBadge}</div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
@@ -1011,20 +634,6 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                   <a
-                    href={
-                      stageRenderMode === 'studio_banner'
-                        ? studioBannerVariant === 'clean_stage'
-                          ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                          : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                        : activeDevice.imageSrc
-                    }
-                    download
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Tải PNG 2.4K</span>
-                  </a>
-                  <a
                     href={activeDevice.liveRouteUrl}
                     className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1"
                   >
@@ -1043,39 +652,50 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 </div>
               </div>
               <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                <img
-                  src={
-                    stageRenderMode === 'studio_banner'
-                      ? studioBannerVariant === 'clean_stage'
-                        ? '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png'
-                        : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
-                      : activeDevice.imageSrc
-                  }
-                  alt={activeDevice.deviceTitle}
-                  className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_20px_45px_rgba(0,0,0,0.9)]"
-                />
+                <div className="relative inline-block">
+                  <motion.img
+                    key={activeDevice.id}
+                    src={activeDevice.imageSrc}
+                    alt={activeDevice.deviceTitle}
+                    initial={{ opacity: 0, scale: 0.985 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl shadow-2xl"
+                  />
+                  {activeDevice.id === 'all_banner' && (
+                    <div className="absolute inset-0 pointer-events-none">
+                      {STUDIO_STAGE_SPATIAL_HOTSPOTS.map((spot) => (
+                        <button
+                          key={spot.id}
+                          type="button"
+                          onClick={() => {
+                            tiltRotateX.set(0);
+                            tiltRotateY.set(0);
+                            setSelectedDeviceId(spot.id);
+                          }}
+                          style={{
+                            left: `${spot.leftPct}%`,
+                            top: `${spot.topPct}%`,
+                            width: `${spot.widthPct}%`,
+                            height: `${spot.heightPct}%`,
+                          }}
+                          title={`Nhấn để xem chi tiết: ${spot.label} (${spot.roleHint})`}
+                          aria-label={`Xem chi tiết ${spot.label}`}
+                          className={`pointer-events-auto absolute ${spot.zIndexClass} group rounded-xl border-2 border-transparent hover:border-ecomiles-lime/85 hover:bg-ecomiles-lime/10 transition-all cursor-zoom-in flex items-end justify-center p-1.5`}
+                        >
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/95 border border-ecomiles-lime/60 text-xs font-extrabold text-ecomiles-lime shadow-lg whitespace-nowrap">
+                            <ZoomIn className="w-3 h-3 shrink-0" />
+                            <span>{spot.label}</span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStageRenderMode('studio_banner');
-                    setStudioBannerVariant('cover_banner');
-                  }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                    stageRenderMode === 'studio_banner' && studioBannerVariant === 'cover_banner'
-                      ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
-                      : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
-                  }`}
-                >
-                  0B. Ảnh Bìa OG 2.4K
-                </button>
-                {FLAGSHIP_DEVICES.map((dev, idx) => {
-                  const isActive =
-                    dev.id === 'all_banner'
-                      ? (stageRenderMode === 'studio_banner' && studioBannerVariant === 'clean_stage') ||
-                        (stageRenderMode !== 'studio_banner' && activeDevice.id === 'all_banner')
-                      : dev.id === activeDevice.id && stageRenderMode !== 'studio_banner';
+                {FLAGSHIP_DEVICES.map((dev) => {
+                  const isActive = dev.id === selectedDeviceId;
                   return (
                     <button
                       key={dev.id}
@@ -1083,21 +703,15 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                       onClick={() => {
                         tiltRotateX.set(0);
                         tiltRotateY.set(0);
-                        if (dev.id === 'all_banner') {
-                          setStudioBannerVariant('clean_stage');
-                        }
-                        if (stageRenderMode === 'studio_banner' && dev.id !== 'all_banner') {
-                          setStageRenderMode('spatial_2d');
-                        }
                         setSelectedDeviceId(dev.id);
                       }}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer border ${
                         isActive
                           ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
                           : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
                       }`}
                     >
-                      {idx + 1}. {dev.shortLabel}
+                      {dev.shortLabel}
                     </button>
                   );
                 })}

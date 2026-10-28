@@ -14,6 +14,89 @@ export type DeviceBannerFocusId =
   | 'iphone_18_pro_max'
   | 'galaxy_s26_ultra';
 
+export interface StudioStageSpatialHotspot {
+  id: Exclude<DeviceBannerFocusId, 'all_banner'>;
+  label: string;
+  roleHint: string;
+  leftPct: number;
+  topPct: number;
+  widthPct: number;
+  heightPct: number;
+  zIndexClass: string;
+}
+
+export const STUDIO_STAGE_SPATIAL_HOTSPOTS: readonly StudioStageSpatialHotspot[] = [
+  {
+    id: 'macbook_pro',
+    label: '1. MacBook Pro 16"',
+    roleHint: 'Trung Tâm B2B TMS (/dashboard)',
+    leftPct: 11.5,
+    topPct: 4.0,
+    widthPct: 35.5,
+    heightPct: 21.5,
+    zIndexClass: 'z-10',
+  },
+  {
+    id: 'windows_xps',
+    label: '2. Windows 11 XPS 16',
+    roleHint: 'Đối Chứng Kép EVSIM (/benchmark)',
+    leftPct: 52.0,
+    topPct: 4.0,
+    widthPct: 35.5,
+    heightPct: 21.5,
+    zIndexClass: 'z-10',
+  },
+  {
+    id: 'galaxy_zfold',
+    label: '3. Galaxy Z Fold',
+    roleHint: 'Bản Đồ Xe Tải Mở (/maps)',
+    leftPct: 1.5,
+    topPct: 24.5,
+    widthPct: 18.2,
+    heightPct: 55.5,
+    zIndexClass: 'z-20',
+  },
+  {
+    id: 'iphone_18_pro_max',
+    label: '4. iPhone 18 Pro Max',
+    roleHint: 'App Tài Xế Chặng Giữa (/driver)',
+    leftPct: 22.8,
+    topPct: 26.5,
+    widthPct: 11.4,
+    heightPct: 53.5,
+    zIndexClass: 'z-20',
+  },
+  {
+    id: 'iphone_duo',
+    label: '5. iPhone Duo (Gập Đôi)',
+    roleHint: 'Đa Nhiệm 2 Màn Hình (/driver)',
+    leftPct: 38.4,
+    topPct: 26.5,
+    widthPct: 22.2,
+    heightPct: 53.5,
+    zIndexClass: 'z-20',
+  },
+  {
+    id: 'galaxy_s26_ultra',
+    label: '6. Galaxy S26 Ultra',
+    roleHint: 'Dẫn Đường Waypoints ($0 API)',
+    leftPct: 64.0,
+    topPct: 26.5,
+    widthPct: 11.4,
+    heightPct: 53.5,
+    zIndexClass: 'z-20',
+  },
+  {
+    id: 'ipad_pro',
+    label: '7. iPad Pro M4',
+    roleHint: 'Taplo Kho Bãi & Bến Xuất (/dashboard)',
+    leftPct: 79.4,
+    topPct: 24.5,
+    widthPct: 18.2,
+    heightPct: 55.5,
+    zIndexClass: 'z-20',
+  },
+] as const;
 interface ThreeDeviceNodeSpec {
   id: Exclude<DeviceBannerFocusId, 'all_banner'>;
   textureUrl: string;
@@ -1330,11 +1413,42 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
                   </div>
                 </div>
                 <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                  <img
-                    src={activeMockup.src}
-                    alt={activeMockup.title}
-                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                  />
+                  <div className="relative inline-block">
+                    <img
+                      key={activeMockup.src}
+                      src={activeMockup.src}
+                      alt={activeMockup.title}
+                      className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)] transition-opacity duration-200"
+                    />
+                    {!isCoverBannerActive && selectedDeviceId === 'all_banner' && (
+                      <div className="absolute inset-0 pointer-events-none">
+                        {STUDIO_STAGE_SPATIAL_HOTSPOTS.map((spot) => (
+                          <button
+                            key={spot.id}
+                            type="button"
+                            onClick={() => {
+                              setIsCoverBannerActive(false);
+                              onSelectDevice(spot.id);
+                            }}
+                            style={{
+                              left: `${spot.leftPct}%`,
+                              top: `${spot.topPct}%`,
+                              width: `${spot.widthPct}%`,
+                              height: `${spot.heightPct}%`,
+                            }}
+                            title={`Nhấn để phóng to 2.4K: ${spot.label} (${spot.roleHint})`}
+                            aria-label={`Phóng to 2.4K ${spot.label}`}
+                            className={`pointer-events-auto absolute ${spot.zIndexClass} group rounded-xl border-2 border-transparent hover:border-ecomiles-lime/85 hover:bg-ecomiles-lime/10 hover:shadow-[0_0_24px_rgba(214,246,90,0.35)] transition-all cursor-zoom-in flex items-end justify-center p-1.5`}
+                          >
+                            <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/95 border border-ecomiles-lime/60 text-[10px] font-extrabold text-ecomiles-lime shadow-lg whitespace-nowrap">
+                              <ZoomIn className="w-2.5 h-2.5 shrink-0" />
+                              <span>{spot.label}</span>
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
                   <button

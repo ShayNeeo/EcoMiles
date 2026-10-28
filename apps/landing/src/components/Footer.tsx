@@ -1,129 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React from 'react';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import {
-  ArrowRight,
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
-  Compass,
-  Download,
-  FileSpreadsheet,
-  Leaf,
-  Mail,
-  MapPin,
-  Phone,
-  ShieldCheck,
-  Truck,
-  X,
-  ZoomIn,
-} from 'lucide-react';
+import { ArrowRight, Compass, FileSpreadsheet, Leaf, Mail, MapPin, Phone, ShieldCheck, Truck } from 'lucide-react';
 
 gsap.registerPlugin(ScrollToPlugin);
-const FOOTER_LIGHTBOX_ASSETS = [
-  {
-    id: 'studio_stage',
-    shortLabel: 'Studio 7 Thiết Bị',
-    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
-    spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
-    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
-    liveHref: '/dashboard/',
-  },
-  {
-    id: 'macbook_pro',
-    shortLabel: 'MacBook Pro 16"',
-    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
-    spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
-    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
-    liveHref: '/dashboard/',
-  },
-  {
-    id: 'windows_xps',
-    shortLabel: 'Windows 11 XPS 16',
-    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
-    spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
-    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
-    liveHref: '/benchmark/',
-  },
-  {
-    id: 'galaxy_zfold',
-    shortLabel: 'Galaxy Z Fold',
-    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
-    spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
-    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-    liveHref: '/maps/?vehicle=0&mode=navigate',
-  },
-  {
-    id: 'ipad_pro',
-    shortLabel: 'iPad Pro M4',
-    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
-    spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
-    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
-    liveHref: '/dashboard/',
-  },
-  {
-    id: 'iphone_duo',
-    shortLabel: 'iPhone Duo (Gập Đôi)',
-    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-    spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
-    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
-    liveHref: '/driver/',
-  },
-  {
-    id: 'iphone_18_pro_max',
-    shortLabel: 'iPhone 18 Pro Max',
-    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
-    spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
-    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
-    liveHref: '/driver/',
-  },
-  {
-    id: 'galaxy_s26_ultra',
-    shortLabel: 'Galaxy S26 Ultra',
-    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
-    spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
-    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
-    liveHref: '/maps/?vehicle=0&mode=navigate',
-  },
-  {
-    id: 'cover_banner',
-    shortLabel: 'Ảnh Bìa OG 2.4K',
-    title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
-    spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
-    src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
-    liveHref: '/pitch-deck/',
-  },
-] as const;
+
 interface FooterProps {
   onOpenPilotModal: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
-  const [footerLightboxIdx, setFooterLightboxIdx] = useState<number | null>(null);
-  useEffect(() => {
-    if (footerLightboxIdx === null) return undefined;
-    const total = FOOTER_LIGHTBOX_ASSETS.length;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setFooterLightboxIdx(null);
-      else if (e.key === 'ArrowLeft') setFooterLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
-      else if (e.key === 'ArrowRight') setFooterLightboxIdx((p) => ((p ?? 0) + 1) % total);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [footerLightboxIdx]);
   const handleSmoothFooterScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    targetSelector: string,
-    deviceId?: string
+    targetSelector: string
   ) => {
     if (typeof window === 'undefined') return;
     const target = document.querySelector(targetSelector);
     if (!target) return;
     e.preventDefault();
-    if (deviceId) {
-      window.dispatchEvent(new CustomEvent('ecomiles:select-device', { detail: { deviceId } }));
-    }
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       target.scrollIntoView({ behavior: 'instant' });
@@ -137,80 +31,40 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
   };
 
   return (
-    <footer className="relative bg-slate-950 border-t border-white/10 pt-16 pb-10 px-4 sm:px-6 lg:px-8 text-slate-400 text-xs overflow-hidden">
+    <footer className="relative bg-slate-950 border-t border-white/10 pt-16 pb-10 px-4 sm:px-6 lg:px-8 text-slate-300 text-xs overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Top Designed Closing Banner */}
-        <div className="mb-14 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-emerald-950/40 to-slate-900 border border-ecomiles-lime/25 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        {/* Top Closing CTA Banner (3 Focused Live App Actions) */}
+        <div className="mb-14 p-6 sm:p-8 rounded-3xl bg-slate-900/90 border border-ecomiles-lime/30 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 text-[11px] font-extrabold text-ecomiles-lime uppercase tracking-wider">
-              <ShieldCheck className="w-4 h-4" />
-              <span>SẴN SÀNG VẬN HÀNH THỰC TẾ TRÊN MỌI THIẾT BỊ ($0 MAP API)</span>
-            </div>
             <h3 className="text-xl sm:text-2xl font-extrabold text-white">
               Trải Nghiệm Ngay Hệ Sinh Thái Điều Phối B2B &amp; Bản Đồ Xe Tải Mở EcoMiles
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Mở trực tiếp 4 không gian làm việc độc lập hoặc tải bộ 28 ảnh chụp màn hình độ phân giải cao (MacBook Pro,
-              Windows XPS, Galaxy Z Fold, iPad Pro, iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra).
+              Mở trực tiếp các không gian làm việc thực tế ngay trên trình duyệt mà không cần cài đặt phần mềm.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0 max-w-2xl">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <a
               href="/dashboard/"
-              className="px-3.5 py-2 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-lg transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-lg shadow-black/40 transition-colors"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <FileSpreadsheet className="w-4 h-4" />
               <span>Trung Tâm B2B (/dashboard)</span>
             </a>
             <a
               href="/maps/?vehicle=0&mode=navigate"
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
             >
-              <Compass className="w-3.5 h-3.5 text-ecomiles-lime" />
+              <Compass className="w-4 h-4 text-ecomiles-lime" />
               <span>Bản Đồ Xe Tải (/maps)</span>
             </a>
             <a
               href="/driver/"
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
             >
-              <Truck className="w-3.5 h-3.5 text-emerald-400" />
+              <Truck className="w-4 h-4 text-emerald-400" />
               <span>App Tài Xế (/driver)</span>
-            </a>
-            <a
-              href="/benchmark/"
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
-            >
-              <span>Đối Chứng EVSIM (/benchmark)</span>
-            </a>
-            <a
-              href="/portal/audit/"
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Phòng Audit (/portal/audit)</span>
-            </a>
-            <a
-              href="/pitch-deck/"
-              className="px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold text-xs flex items-center gap-1.5 transition-colors"
-            >
-              <span>Slide Deck (/pitch-deck)</span>
-            </a>
-            <button
-              type="button"
-              onClick={() => setFooterLightboxIdx(0)}
-              className="px-3.5 py-2 rounded-xl bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <ZoomIn className="w-3.5 h-3.5" />
-              <span>Xem Sân Khấu 2.4K</span>
-            </button>
-            <a
-              href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-              download="00_ecomiles_clean_devices_hero_stage.png"
-              className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/15 font-semibold text-xs flex items-center gap-1.5 transition-colors"
-            >
-              <Download className="w-3.5 h-3.5 text-ecomiles-lime" />
-              <span>Banner 2.4K (.PNG)</span>
             </a>
           </div>
         </div>
@@ -227,21 +81,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
               </span>
             </div>
 
-            <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
-              Nền tảng B2B SaaS tối ưu lộ trình xe tải đô thị đa ràng buộc (VRPTW), lọc vùng cấm tải QĐ 23/2018/QĐ-UBND,
-              ghép đơn chiều về và kiểm toán phát thải CO₂e tự động theo chuẩn ISO 14083 / GLEC v3.2.
+            <p className="text-slate-300 text-xs leading-relaxed max-w-sm">
+              Nền tảng B2B SaaS tối ưu lộ trình xe tải đô thị đa ràng buộc, lọc vùng cấm tải QĐ 23/2018/QĐ-UBND, ghép đơn
+              chiều về và kiểm toán phát thải CO₂e tự động theo chuẩn ISO 14083 / GLEC v3.2.
             </p>
 
-            <div className="flex items-center gap-2 text-emerald-400 text-[11px] font-semibold">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Đồng hành cùng Chiến lược Logistics Quốc Gia QĐ 2229/QĐ-TTg &amp; Net Zero 2050</span>
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
+              <ShieldCheck className="w-4 h-4 shrink-0" />
+              <span>Đồng hành cùng Chiến lược Logistics Xanh &amp; Net Zero 2050</span>
             </div>
           </div>
 
           {/* Col 2: Direct Live Workspaces */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">4 Không Gian Vai Trò</h4>
-            <ul className="space-y-2">
+            <h4 className="font-bold text-white uppercase tracking-wider text-xs">Ứng Dụng Trực Tuyến</h4>
+            <ul className="space-y-2.5 text-slate-300">
               <li>
                 <a href="/dashboard/" className="hover:text-ecomiles-lime transition-colors">
                   1. Điều phối viên B2B (/dashboard)
@@ -254,33 +108,33 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
               </li>
               <li>
                 <a href="/driver/" className="hover:text-ecomiles-lime transition-colors">
-                  3. Ứng dụng Tài xế 2 Chặng (/driver)
+                  3. Ứng dụng Tài xế (/driver)
                 </a>
               </li>
               <li>
                 <a href="/maps/?vehicle=0&mode=navigate" className="hover:text-ecomiles-lime transition-colors">
-                  4. Bản đồ Xe tải OpenTruck (/maps)
+                  4. Bản đồ Xe tải (/maps)
                 </a>
               </li>
               <li>
                 <a href="/portal/audit/" className="hover:text-ecomiles-lime transition-colors">
-                  5. Phòng Giám sát Zero-Knowledge (/audit)
+                  5. Cổng Kiểm toán ESG (/portal/audit)
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Navigation & Pitch Deck Assets */}
+          {/* Col 3: Navigation & Pitch Deck */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Cấu Trúc &amp; Tài Liệu</h4>
-            <ul className="space-y-2">
+            <h4 className="font-bold text-white uppercase tracking-wider text-xs">Khám Phá</h4>
+            <ul className="space-y-2.5 text-slate-300">
               <li>
                 <a
                   href="#solutions"
                   onClick={(e) => handleSmoothFooterScroll(e, '#solutions')}
                   className="hover:text-ecomiles-lime transition-colors"
                 >
-                  4 trụ cột công nghệ VRPTW &amp; GLEC
+                  4 trụ cột giải pháp
                 </a>
               </li>
               <li>
@@ -289,7 +143,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   onClick={(e) => handleSmoothFooterScroll(e, '#calculator')}
                   className="hover:text-ecomiles-lime transition-colors"
                 >
-                  Công cụ tính ROI &amp; CO₂e tiết giảm
+                  Công cụ tính tiết kiệm ROI &amp; CO₂
                 </a>
               </li>
               <li>
@@ -298,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   onClick={(e) => handleSmoothFooterScroll(e, '#workflow')}
                   className="hover:text-ecomiles-lime transition-colors"
                 >
-                  Quy trình vận hành 8 bước khép kín
+                  Quy trình vận hành 4 bước
                 </a>
               </li>
               <li>
@@ -307,7 +161,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   onClick={(e) => handleSmoothFooterScroll(e, '#showcase')}
                   className="hover:text-ecomiles-lime transition-colors"
                 >
-                  Sân khấu 7 thiết bị (MacBook · Z Fold · Duo)
+                  Hệ sinh thái 7 thiết bị
                 </a>
               </li>
               <li>
@@ -316,25 +170,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   onClick={(e) => handleSmoothFooterScroll(e, '#pricing')}
                   className="hover:text-ecomiles-lime transition-colors"
                 >
-                  Bảng giá SaaS &amp; Gói Pilot 4 - 6 tuần
+                  Bảng giá &amp; Gói Pilot miễn phí
                 </a>
               </li>
               <li>
                 <a
                   href="/pitch-deck/"
-                  className="hover:text-ecomiles-lime transition-colors text-slate-300 font-semibold flex items-center gap-1"
+                  className="hover:text-ecomiles-lime transition-colors text-ecomiles-lime font-semibold"
                 >
-                  <span>Bộ 28 ảnh &amp; Slide Thuyết Trình (/pitch-deck)</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                  download="00_ecomiles_flagship_cover_banner.png"
-                  className="hover:text-emerald-400 transition-colors text-ecomiles-lime font-semibold flex items-center gap-1"
-                >
-                  <Download className="w-3 h-3" />
-                  <span>Tải Banner 7 Thiết Bị (2400x1260)</span>
+                  Hồ sơ thuyết trình (/pitch-deck)
                 </a>
               </li>
             </ul>
@@ -342,17 +186,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
 
           {/* Col 4: Contact & CTA */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">Liên Hệ &amp; Đăng Ký Pilot</h4>
-            <div className="space-y-2 text-[11px]">
-              <div className="flex items-center gap-2 text-slate-300">
+            <h4 className="font-bold text-white uppercase tracking-wider text-xs">Liên Hệ &amp; Hợp Tác</h4>
+            <div className="space-y-2.5 text-xs text-slate-300">
+              <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-ecomiles-lime shrink-0" />
                 <span>TP. Hồ Chí Minh, Việt Nam</span>
               </div>
-              <div className="flex items-center gap-2 text-slate-300">
+              <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-ecomiles-lime shrink-0" />
                 <span>contact@ecomiles.vn</span>
               </div>
-              <div className="flex items-center gap-2 text-slate-300">
+              <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-ecomiles-lime shrink-0" />
                 <span>0889.917.555</span>
               </div>
@@ -361,155 +205,23 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
             <button
               type="button"
               onClick={onOpenPilotModal}
-              className="mt-3 w-full py-2.5 px-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-[11px] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="mt-3 w-full py-2.5 px-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>Đăng Ký Dùng Thử Miễn Phí</span>
-              <ArrowRight className="w-3 h-3" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* 7-Device Ecosystem Quick-Jump Bar */}
-        <div className="py-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px]">
-          <span className="font-bold text-slate-300">Hệ sinh thái 7 thiết bị:</span>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {[
-              { label: 'MacBook Pro 16" (B2B TMS)', id: 'macbook_pro' },
-              { label: 'Windows 11 XPS 16 (EVSIM)', id: 'windows_xps' },
-              { label: 'Samsung Galaxy Z Fold (Cockpit)', id: 'galaxy_zfold' },
-              { label: 'iPad Pro M4 (Kho Vận)', id: 'ipad_pro' },
-              { label: 'iPhone Duo (Gập Đôi)', id: 'iphone_duo' },
-              { label: 'iPhone 18 Pro Max (Chặng Giữa)', id: 'iphone_18_pro_max' },
-              { label: 'Galaxy S26 Ultra (Live /maps)', id: 'galaxy_s26_ultra' },
-            ].map((dev, idx) => (
-              <div
-                key={dev.id}
-                className="inline-flex items-center rounded-lg overflow-hidden border border-white/10 bg-slate-900"
-              >
-                <a
-                  href="#showcase"
-                  onClick={(e) => handleSmoothFooterScroll(e, '#showcase', dev.id)}
-                  className="px-2.5 py-1 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-300 font-semibold transition-colors"
-                >
-                  {dev.label}
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setFooterLightboxIdx(idx + 1)}
-                  title={`Phóng to 2.4K: ${dev.label}`}
-                  className="inline-flex items-center px-1.5 py-1 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime font-extrabold transition-colors cursor-zoom-in"
-                >
-                  <ZoomIn className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Full-Width Architectural Brand Close */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        {/* Bottom Copyright & Standards */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
           <div>© 2026 EcoMiles Platform · Urban Logistics VRPTW &amp; ISO 14083 / GLEC v3.2 Carbon Accounting.</div>
           <div className="flex flex-wrap items-center gap-5">
-            <span>Zero-Knowledge AES-256-GCM (NĐ 13/2023/NĐ-CP)</span>
-            <span>100% Đường Phố Thật OSRM ($0 Map API)</span>
+            <span>Bảo mật dữ liệu NĐ 13/2023/NĐ-CP</span>
+            <span>100% Đường phố thật TP.HCM ($0 Map API)</span>
           </div>
         </div>
       </div>
-      {footerLightboxIdx !== null &&
-        typeof document !== 'undefined' &&
-        (() => {
-          const total = FOOTER_LIGHTBOX_ASSETS.length;
-          const safeIdx = ((footerLightboxIdx % total) + total) % total;
-          const activeAsset = FOOTER_LIGHTBOX_ASSETS[safeIdx];
-          return createPortal(
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-label={activeAsset.title}
-              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-              onClick={() => setFooterLightboxIdx(null)}
-            >
-              <div
-                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                  <div className="min-w-0">
-                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                      [{safeIdx + 1}/{total}] {activeAsset.title}
-                    </div>
-                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setFooterLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Trước</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFooterLightboxIdx((safeIdx + 1) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <span>Tiếp</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                    <a
-                      href={activeAsset.src}
-                      download
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Tải PNG 2.4K</span>
-                    </a>
-                    <a
-                      href={activeAsset.liveHref}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
-                    >
-                      <span>Mở App Live</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setFooterLightboxIdx(null)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                      <span>Đóng</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                  <img
-                    src={activeAsset.src}
-                    alt={activeAsset.title}
-                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                  />
-                </div>
-                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
-                  {FOOTER_LIGHTBOX_ASSETS.map((item, idx) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setFooterLightboxIdx(idx)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                        idx === safeIdx
-                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
-                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
-                      }`}
-                    >
-                      {item.shortLabel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>,
-            document.body
-          );
-        })()}
     </footer>
   );
 };

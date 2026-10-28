@@ -1,110 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import {
-  Calculator,
-  TrendingDown,
-  Leaf,
-  ArrowRight,
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
-  DollarSign,
-  Download,
-  X,
-  ZoomIn,
-} from 'lucide-react';
+import { TrendingDown, Leaf, ArrowRight, DollarSign } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
 interface CalculatorProps {
   onOpenPilotModal: () => void;
 }
-const CALC_HARDWARE_MOCKUP_ASSETS = [
-  {
-    id: 'studio_stage',
-    shortLabel: '0. Studio 7 Thiết Bị',
-    src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
-    title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
-    spec: '2400×1120 · Đồng bộ thời gian thực <50ms · $0 Map API',
-    href: '/dashboard/',
-    cta: 'Mở Trung Tâm B2B (/dashboard)',
-  },
-  {
-    id: 'macbook_pro',
-    shortLabel: '1. MacBook Pro 16"',
-    src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
-    title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
-    spec: '3456×2234 · Điều phối B2B TMS & Báo cáo ESG 3 Sheet',
-    href: '/dashboard/',
-    cta: 'Mở /dashboard',
-  },
-  {
-    id: 'windows_xps',
-    shortLabel: '2. Windows XPS 16',
-    src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
-    title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
-    spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
-    href: '/benchmark/',
-    cta: 'Mở /benchmark',
-  },
-  {
-    id: 'ipad_pro',
-    shortLabel: '3. iPad Pro M4',
-    src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
-    title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
-    spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
-    href: '/dashboard/',
-    cta: 'Mở /dashboard',
-  },
-  {
-    id: 'galaxy_zfold',
-    shortLabel: '4. Galaxy Z Fold',
-    src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-    title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
-    spec: '2160×1856 · Bản đồ xe tải mở OpenTruck (/maps)',
-    href: '/maps/?vehicle=0&mode=navigate',
-    cta: 'Mở /maps Live',
-  },
-  {
-    id: 'iphone_duo',
-    shortLabel: '5. iPhone Duo',
-    src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
-    title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-    spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
-    href: '/driver/',
-    cta: 'Mở /driver',
-  },
-  {
-    id: 'iphone_18_pro_max',
-    shortLabel: '6. iPhone 18 Pro Max',
-    src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
-    title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
-    spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
-    href: '/driver/',
-    cta: 'Mở /driver',
-  },
-  {
-    id: 'galaxy_s26_ultra',
-    shortLabel: '7. Galaxy S26 Ultra',
-    src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
-    title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
-    spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
-    href: '/driver/',
-    cta: 'Mở /driver',
-  },
-  {
-    id: 'cover_banner',
-    shortLabel: '8. Ảnh Bìa OG 2.4K',
-    src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
-    title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
-    spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
-    href: '/pitch-deck/',
-    cta: 'Mở /pitch-deck',
-  },
-] as const;
 
 export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpenPilotModal }) => {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -112,30 +17,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
   const [dailyKm, setDailyKm] = useState<number>(85);
   const [fuelConsumption, setFuelConsumption] = useState<number>(11); // L/100km
   const [savingsRate, setSavingsRate] = useState<number>(25); // %
-  const [calcLightboxAsset, setCalcLightboxAsset] = useState<{
-    src: string;
-    title: string;
-    spec: string;
-    href: string;
-    cta: string;
-  } | null>(null);
-  useEffect(() => {
-    if (!calcLightboxAsset) return undefined;
-    const total = CALC_HARDWARE_MOCKUP_ASSETS.length;
-    const foundIdx = CALC_HARDWARE_MOCKUP_ASSETS.findIndex(
-      (a) => a.src === calcLightboxAsset.src
-    );
-    const safeIdx = foundIdx >= 0 ? foundIdx : 0;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setCalcLightboxAsset(null);
-      else if (e.key === 'ArrowLeft')
-        setCalcLightboxAsset(CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx - 1 + total) % total]);
-      else if (e.key === 'ArrowRight')
-        setCalcLightboxAsset(CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx + 1) % total]);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [calcLightboxAsset]);
+
   const moneyNumRef = useRef<HTMLSpanElement | null>(null);
   const litersNumRef = useRef<HTMLSpanElement | null>(null);
   const co2NumRef = useRef<HTMLSpanElement | null>(null);
@@ -148,7 +30,6 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
     km: 12 * 85 * 26 * 0.25,
   });
 
-  // Calculations
   const workingDays = 26; // days/month
   const fuelPrice = 23500; // VND/liter
   const emissionFactor = 2.68; // kg CO2 / liter diesel (ISO 14083 standard)
@@ -158,12 +39,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
   const litersSaved = (kmSaved * fuelConsumption) / 100;
   const moneySavedVND = litersSaved * fuelPrice;
   const co2SavedKg = litersSaved * emissionFactor;
-  const dispatcherUnits = Math.max(2, Math.ceil(fleetSize / 12));
-  const warehouseTablets = Math.max(1, Math.ceil(fleetSize / 8));
-  const cabinFoldUnits = Math.max(1, Math.round(fleetSize * 0.35));
-  const driverHandheldUnits = Math.max(1, fleetSize - cabinFoldUnits);
-  const totalHardwareUnits =
-    dispatcherUnits + warehouseTablets + cabinFoldUnits + driverHandheldUnits;
+
   useGSAP(
     () => {
       const prefersReducedMotion =
@@ -173,12 +49,12 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
 
       gsap.fromTo(
         '.gsap-calc-panel',
-        { y: 32, opacity: 0 },
+        { y: 28, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.65,
-          stagger: 0.14,
+          duration: 0.6,
+          stagger: 0.12,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -201,7 +77,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
         liters: litersSaved,
         co2: co2SavedKg,
         km: kmSaved,
-        duration: prefersReducedMotion ? 0 : 0.55,
+        duration: prefersReducedMotion ? 0 : 0.5,
         ease: 'power2.out',
         overwrite: 'auto',
         onUpdate: () => {
@@ -233,32 +109,23 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-900 border-t border-white/5 scroll-mt-24"
     >
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border border-white/10 text-xs font-bold text-ecomiles-lime mb-4">
-            <Calculator className="w-3.5 h-3.5" />
-            <span>MÔ HÌNH DỰ PHÓNG HIỆU QUẢ TÀI CHÍNH &amp; MÔI TRƯỜNG</span>
-          </div>
-
+        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
             Ước Tính Mức Tiết Kiệm Chi Phí &amp; <span className="text-ecomiles-lime">Cắt Giảm CO₂</span>
           </h2>
-
-          <p className="mt-4 text-sm sm:text-base text-slate-300">
-            Điều chỉnh các thanh trượt theo đội xe thực tế để xem ngay số tiền nhiên liệu, quãng đường và lượng CO₂ có thể tiết kiệm mỗi tháng.
+          <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">
+            Điều chỉnh các thanh trượt theo đội xe thực tế để xem ngay số tiền nhiên liệu, quãng đường và lượng CO₂ có
+            thể tiết kiệm mỗi tháng.
           </p>
         </div>
 
-        {/* Calculator Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Sliders Control Panel (Left 7 Cols) */}
-          <div className="gsap-calc-panel lg:col-span-7 bg-slate-950/80 backdrop-blur-2xl rounded-3xl p-6 sm:p-9 border border-white/10 shadow-2xl flex flex-col justify-between">
+          {/* Left 7 Cols: Sliders Control Panel */}
+          <div className="gsap-calc-panel lg:col-span-7 bg-slate-950/85 rounded-3xl p-6 sm:p-9 border border-white/10 shadow-2xl shadow-black/50 flex flex-col justify-between">
             <div className="mb-6 space-y-3">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <span>Thông Số Đội Xe &amp; Vận Hành Thực Tế</span>
-              </h3>
+              <h3 className="text-xl font-bold text-white">Thông Số Đội Xe &amp; Vận Hành Thực Tế</h3>
               <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="text-slate-400 font-semibold">Mẫu doanh nghiệp B2B:</span>
+                <span className="text-slate-300 font-semibold">Mẫu đội xe B2B:</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -267,9 +134,9 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     setFuelConsumption(11.5);
                     setSavingsRate(35);
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-ecomiles-lime/35 text-ecomiles-lime font-bold cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-ecomiles-lime/40 text-ecomiles-lime font-bold cursor-pointer"
                 >
-                  10 Xe · Chuỗi Lạnh 120 Đơn (-35%)
+                  10 Xe · Chuỗi Lạnh (-35%)
                 </button>
                 <button
                   type="button"
@@ -279,7 +146,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     setFuelConsumption(12.0);
                     setSavingsRate(28);
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-semibold cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-semibold cursor-pointer"
                 >
                   25 Xe · Chuỗi Siêu Thị
                 </button>
@@ -291,18 +158,19 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     setFuelConsumption(13.5);
                     setSavingsRate(30);
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-semibold cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-semibold cursor-pointer"
                 >
-                  50 Xe · Đội Phân Phối FMCG
+                  50 Xe · Phân Phối FMCG
                 </button>
               </div>
             </div>
+
             <div className="space-y-6">
               {/* Slider 1: Fleet Size */}
               <div>
-                <div className="mb-2 flex flex-col items-start gap-2 text-sm font-semibold sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-slate-300">Quy mô đội xe giao hàng:</span>
-                  <span className="text-lg font-extrabold text-ecomiles-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
+                <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
+                  <span className="text-slate-200">Quy mô đội xe giao hàng:</span>
+                  <span className="text-base font-extrabold text-ecomiles-lime tabular-nums">
                     {fleetSize} xe
                   </span>
                 </div>
@@ -316,7 +184,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   onChange={(e) => setFleetSize(Number(e.target.value))}
                   className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ecomiles-lime"
                 />
-                <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+                <div className="flex justify-between text-xs text-slate-300 mt-1">
                   <span>3 xe</span>
                   <span>40 xe</span>
                   <span>80 xe</span>
@@ -325,9 +193,9 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
 
               {/* Slider 2: Daily Km */}
               <div>
-                <div className="mb-2 flex flex-col items-start gap-2 text-sm font-semibold sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-slate-300">Quãng đường bình quân/xe/ngày:</span>
-                  <span className="text-lg font-extrabold text-ecomiles-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
+                <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
+                  <span className="text-slate-200">Quãng đường bình quân/xe/ngày:</span>
+                  <span className="text-base font-extrabold text-ecomiles-lime tabular-nums">
                     {dailyKm} km
                   </span>
                 </div>
@@ -341,7 +209,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   onChange={(e) => setDailyKm(Number(e.target.value))}
                   className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ecomiles-lime"
                 />
-                <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+                <div className="flex justify-between text-xs text-slate-300 mt-1">
                   <span>30 km</span>
                   <span>100 km</span>
                   <span>200 km</span>
@@ -350,9 +218,9 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
 
               {/* Slider 3: Fuel Consumption */}
               <div>
-                <div className="mb-2 flex flex-col items-start gap-2 text-sm font-semibold sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-slate-300">Định mức tiêu hao nhiên liệu:</span>
-                  <span className="text-lg font-extrabold text-ecomiles-lime bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
+                <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
+                  <span className="text-slate-200">Định mức tiêu hao nhiên liệu:</span>
+                  <span className="text-base font-extrabold text-ecomiles-lime tabular-nums">
                     {fuelConsumption} L / 100km
                   </span>
                 </div>
@@ -366,8 +234,8 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   onChange={(e) => setFuelConsumption(Number(e.target.value))}
                   className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ecomiles-lime"
                 />
-                <div className="flex justify-between text-[11px] text-slate-500 mt-1">
-                  <span>6L (Xe máy/Van nhỏ)</span>
+                <div className="flex justify-between text-xs text-slate-300 mt-1">
+                  <span>6L (Xe van nhỏ)</span>
                   <span>12L (Xe tải 1 - 2T)</span>
                   <span>20L (Xe tải nặng)</span>
                 </div>
@@ -375,9 +243,9 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
 
               {/* Slider 4: Savings Rate */}
               <div>
-                <div className="mb-2 flex flex-col items-start gap-2 text-sm font-semibold sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-slate-300">Tỷ lệ quãng đường cắt giảm tối ưu:</span>
-                  <span className="text-lg font-extrabold text-emerald-400 bg-slate-900 border border-white/10 px-3 py-1 rounded-xl">
+                <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
+                  <span className="text-slate-200">Tỷ lệ quãng đường cắt giảm tối ưu:</span>
+                  <span className="text-base font-extrabold text-emerald-400 tabular-nums">
                     {savingsRate}%
                   </span>
                 </div>
@@ -391,7 +259,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   onChange={(e) => setSavingsRate(Number(e.target.value))}
                   className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
                 />
-                <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+                <div className="flex justify-between text-xs text-slate-300 mt-1">
                   <span>15% (Cơ sở)</span>
                   <span>25% (Tiêu chuẩn)</span>
                   <span>35% (Chuẩn 120 đơn QĐ 23: -34.9%)</span>
@@ -399,26 +267,26 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-white/10 text-xs text-slate-400 flex items-center justify-between">
-              <span>* Tạm tính theo giá dầu 23.500đ/lít và hệ số phát thải 2,68 kg CO₂/lít theo chuẩn quốc tế.</span>
+            <div className="mt-8 pt-5 border-t border-white/10 text-xs text-slate-300">
+              * Tạm tính theo giá dầu 23.500đ/lít và hệ số phát thải 2,68 kg CO₂/lít theo chuẩn ISO 14083 / GLEC v3.2.
             </div>
           </div>
 
-          {/* Results Metric Panel (Right 5 Cols) */}
-          <div className="gsap-calc-panel lg:col-span-5 bg-gradient-to-br from-slate-950 to-slate-900 rounded-3xl p-6 sm:p-9 border border-ecomiles-lime/30 shadow-2xl flex flex-col justify-between">
-            <div>
-              <div className="mb-6 flex flex-col items-start gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+          {/* Right 5 Cols: Pure Financial & Environmental Results Panel (Flat Structure, Zero Nested Cards) */}
+          <div className="gsap-calc-panel lg:col-span-5 bg-slate-950 rounded-3xl p-6 sm:p-9 border border-ecomiles-lime/35 shadow-2xl shadow-black/50 flex flex-col justify-between">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-200">
                   DỰ TOÁN TIẾT KIỆM MỖI THÁNG
                 </span>
-                <span className="text-xs font-bold text-ecomiles-lime bg-ecomiles-lime/10 border border-ecomiles-lime/20 px-2.5 py-1 rounded-full">
-                  Mô hình 26 ngày làm việc
+                <span className="text-xs font-bold text-ecomiles-lime">
+                  26 ngày vận hành
                 </span>
               </div>
 
-              {/* Big Financial Result */}
-              <div className="mb-6 p-5 rounded-2xl bg-slate-900/90 border border-white/10">
-                <div className="text-xs font-semibold text-slate-400 mb-1 flex items-center gap-1.5">
+              {/* Primary Financial Outcome */}
+              <div className="pb-6 border-b border-white/10">
+                <div className="text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
                   <DollarSign className="w-4 h-4 text-emerald-400" />
                   <span>Chi phí nhiên liệu tiết kiệm ròng:</span>
                 </div>
@@ -426,46 +294,46 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   <span ref={moneyNumRef}>{Math.round(moneySavedVND).toLocaleString('vi-VN')}</span>{' '}
                   <span className="text-sm font-bold text-white">VNĐ/tháng</span>
                 </div>
-                <div className="text-xs text-emerald-400 font-semibold mt-1 tabular-nums">
-                  ~ <span ref={litersNumRef}>{Math.round(litersSaved).toLocaleString('vi-VN')}</span> Lít dầu diesel cắt giảm
+                <div className="text-xs sm:text-sm text-emerald-400 font-semibold mt-1.5 tabular-nums">
+                  Tiết giảm ~ <span ref={litersNumRef}>{Math.round(litersSaved).toLocaleString('vi-VN')}</span> Lít dầu diesel / tháng
                 </div>
               </div>
 
-              {/* 2 Secondary Metric Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-6">
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-                    <Leaf className="w-3.5 h-3.5 text-emerald-400" />
+              {/* Secondary Outcomes: CO2 + Distance */}
+              <div className="grid grid-cols-2 gap-6 pb-6 border-b border-white/10">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1">
+                    <Leaf className="w-4 h-4 text-emerald-400" />
                     <span>CO₂ Tiết Giảm</span>
                   </div>
-                  <div className="text-xl font-extrabold text-white tabular-nums">
+                  <div className="text-2xl font-extrabold text-white tabular-nums">
                     <span ref={co2NumRef}>{Math.round(co2SavedKg).toLocaleString('vi-VN')}</span>{' '}
-                    <span className="text-xs font-normal text-slate-400">kg CO₂</span>
+                    <span className="text-xs font-normal text-slate-300">kg</span>
                   </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5 tabular-nums">
+                  <div className="text-xs text-slate-300 mt-1 tabular-nums">
                     ~ <span ref={co2TonsNumRef}>{(co2SavedKg / 1000).toFixed(2)}</span> Tấn CO₂/tháng
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-                    <TrendingDown className="w-3.5 h-3.5 text-emerald-300" />
-                    <span>Km Cắt Giảm</span>
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1">
+                    <TrendingDown className="w-4 h-4 text-emerald-300" />
+                    <span>Quãng Đường Giảm</span>
                   </div>
-                  <div className="text-xl font-extrabold text-white tabular-nums">
+                  <div className="text-2xl font-extrabold text-white tabular-nums">
                     <span ref={kmNumRef}>{Math.round(kmSaved).toLocaleString('vi-VN')}</span>{' '}
-                    <span className="text-xs font-normal text-slate-400">km/tháng</span>
+                    <span className="text-xs font-normal text-slate-300">km</span>
                   </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">
-                    Giảm mài mòn &amp; bảo trì xe
+                  <div className="text-xs text-slate-300 mt-1">
+                    Giảm hao mòn &amp; phí bảo dưỡng
                   </div>
                 </div>
               </div>
 
-              {/* Animated Before vs After Monthly Fuel & Distance Comparison Bar */}
-              <div className="mb-6 p-4 rounded-2xl bg-slate-900/75 border border-white/10 space-y-2.5 text-xs">
-                <div className="flex items-center justify-between text-[11px] font-bold">
-                  <span className="text-slate-400">Trước tối ưu ({totalMonthlyKm.toLocaleString('vi-VN')} km/tháng)</span>
+              {/* Animated Before vs After Monthly Distance Comparison Bar */}
+              <div className="space-y-2.5 text-xs">
+                <div className="flex items-center justify-between font-bold">
+                  <span className="text-slate-300">Trước tối ưu ({totalMonthlyKm.toLocaleString('vi-VN')} km)</span>
                   <span className="text-ecomiles-lime">
                     Sau EcoMiles ({Math.round(totalMonthlyKm - kmSaved).toLocaleString('vi-VN')} km · -{savingsRate}%)
                   </span>
@@ -486,230 +354,19 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   />
                 </div>
               </div>
-
-              {/* Dynamic 7-Device Fleet Hardware Provisioning Matrix */}
-              <div className="mb-6 p-3.5 rounded-2xl bg-slate-900/85 border border-ecomiles-lime/25 space-y-2.5 text-xs">
-                <div className="flex items-center justify-between gap-2 pb-2 border-b border-white/10">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <img
-                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                      alt="EcoMiles 7-Device Studio Stage"
-                      onClick={() =>
-                        setCalcLightboxAsset({
-                          src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
-                          title: `Hệ Sinh Thái 7 Thiết Bị Đồng Bộ (${fleetSize} Xe · ${totalHardwareUnits} Thiết Bị)`,
-                          spec: '2400×1120 · Đồng bộ thời gian thực <50ms · $0 Map API',
-                          href: '/dashboard/',
-                          cta: 'Mở Trung Tâm B2B (/dashboard)',
-                        })
-                      }
-                      className="h-8 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0 cursor-zoom-in"
-                    />
-                    <span className="text-[11px] font-extrabold text-white truncate">
-                      Cấu Hình 7 Thiết Bị ({fleetSize} Xe)
-                    </span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full bg-ecomiles-lime/15 border border-ecomiles-lime/35 text-[10px] font-bold text-ecomiles-lime shrink-0">
-                    {totalHardwareUnits} thiết bị · $0 Map API
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[10.5px]">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setCalcLightboxAsset({
-                        src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
-                        title: `${dispatcherUnits} Trạm Điều Phối · MacBook Pro 16" & Windows 11 XPS 16`,
-                        spec: '3456×2234 · Điều phối B2B TMS & Đối chứng EVSIM',
-                        href: '/dashboard/',
-                        cta: 'Mở /dashboard',
-                      })
-                    }
-                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-ecomiles-lime/40 text-left cursor-pointer transition-colors"
-                  >
-                    <div className="font-bold text-ecomiles-lime flex items-center justify-between gap-1">
-                      <span>{dispatcherUnits} Trạm Điều Phối</span>
-                      <ZoomIn className="w-3 h-3 shrink-0" />
-                    </div>
-                    <div className="text-slate-400 truncate">MacBook Pro 16&quot; · XPS 16</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setCalcLightboxAsset({
-                        src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
-                        title: `${warehouseTablets} Tablet Kho Bãi · iPad Pro M4 (Taplo 13")`,
-                        spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
-                        href: '/dashboard/',
-                        cta: 'Mở /dashboard',
-                      })
-                    }
-                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-emerald-400/40 text-left cursor-pointer transition-colors"
-                  >
-                    <div className="font-bold text-emerald-300 flex items-center justify-between gap-1">
-                      <span>{warehouseTablets} Tablet Kho Bãi</span>
-                      <ZoomIn className="w-3 h-3 shrink-0" />
-                    </div>
-                    <div className="text-slate-400 truncate">iPad Pro M4 (Taplo 13&quot;)</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setCalcLightboxAsset({
-                        src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-                        title: `${cabinFoldUnits} Màn Hình Buồng Lái · Samsung Galaxy Z Fold`,
-                        spec: '2160×1856 · Bản đồ xe tải mở OpenTruck (/maps)',
-                        href: '/maps/?vehicle=0&mode=navigate',
-                        cta: 'Mở /maps Live',
-                      })
-                    }
-                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-cyan-400/40 text-left cursor-pointer transition-colors"
-                  >
-                    <div className="font-bold text-cyan-300 flex items-center justify-between gap-1">
-                      <span>{cabinFoldUnits} Màn Hình Buồng Lái</span>
-                      <ZoomIn className="w-3 h-3 shrink-0" />
-                    </div>
-                    <div className="text-slate-400 truncate">Galaxy Z Fold (/maps)</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setCalcLightboxAsset({
-                        src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
-                        title: `${driverHandheldUnits} Máy Tài Xế Giao Điểm · iPhone Duo, 18 Pro Max & S26 Ultra`,
-                        spec: '2420×1080 · App Tài Xế 2 Chặng ($0 Map API)',
-                        href: '/driver/',
-                        cta: 'Mở /driver',
-                      })
-                    }
-                    className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-white/25 text-left cursor-pointer transition-colors"
-                  >
-                    <div className="font-bold text-white flex items-center justify-between gap-1">
-                      <span>{driverHandheldUnits} Máy Tài Xế Giao Điểm</span>
-                      <ZoomIn className="w-3 h-3 text-ecomiles-lime shrink-0" />
-                    </div>
-                    <div className="text-slate-400 truncate">iPhone Duo · 18 Pro Max · S26</div>
-                  </button>
-                </div>
-              </div>
             </div>
 
-            {/* CTA Trigger Button */}
             <button
+              type="button"
               onClick={onOpenPilotModal}
-              className="w-full py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm text-slate-950 bg-ecomiles-lime hover:bg-yellow-300 shadow-xl shadow-ecomiles-lime/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="mt-8 w-full py-4 px-6 rounded-2xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-sm shadow-xl shadow-black/40 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Đăng Ký Dùng Thử Miễn Phí 4 - 6 Tuần</span>
-              <ArrowRight className="w-4 h-4 text-slate-950" />
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
-      {calcLightboxAsset &&
-        typeof document !== 'undefined' &&
-        (() => {
-          const total = CALC_HARDWARE_MOCKUP_ASSETS.length;
-          const foundIdx = CALC_HARDWARE_MOCKUP_ASSETS.findIndex(
-            (a) => a.src === calcLightboxAsset.src
-          );
-          const safeIdx = foundIdx >= 0 ? foundIdx : 0;
-          return createPortal(
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-label={calcLightboxAsset.title}
-              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-              onClick={() => setCalcLightboxAsset(null)}
-            >
-              <div
-                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-ecomiles-lime/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                  <div className="min-w-0">
-                    <div className="text-sm font-extrabold text-ecomiles-lime truncate">
-                      [{safeIdx + 1}/{total}] {calcLightboxAsset.title}
-                    </div>
-                    <div className="text-[11px] text-slate-300 truncate">{calcLightboxAsset.spec}</div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCalcLightboxAsset(
-                          CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx - 1 + total) % total]
-                        )
-                      }
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Trước</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCalcLightboxAsset(
-                          CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx + 1) % total]
-                        )
-                      }
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <span>Tiếp</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                    <a
-                      href={calcLightboxAsset.src}
-                      download
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Tải PNG 2.4K</span>
-                    </a>
-                    <a
-                      href={calcLightboxAsset.href}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
-                    >
-                      <span>{calcLightboxAsset.cta}</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setCalcLightboxAsset(null)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                      <span>Đóng</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                  <img
-                    src={calcLightboxAsset.src}
-                    alt={calcLightboxAsset.title}
-                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                  />
-                </div>
-                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
-                  {CALC_HARDWARE_MOCKUP_ASSETS.map((item, idx) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setCalcLightboxAsset(item)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                        idx === safeIdx
-                          ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
-                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
-                      }`}
-                    >
-                      {item.shortLabel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>,
-            document.body
-          );
-        })()}
     </section>
   );
 };

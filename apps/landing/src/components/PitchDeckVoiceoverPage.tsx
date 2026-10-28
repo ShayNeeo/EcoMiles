@@ -375,7 +375,7 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-emerald-400 selection:text-slate-950 font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 antialiased font-sans">
       {/* Official SO 2026 Competition Banner Header */}
       <header className="sticky top-0 z-50 border-b border-cyan-500/30 bg-[#041c43]/95 backdrop-blur-2xl shadow-2xl transition-all duration-200 print:hidden">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-2 sm:px-6">
@@ -2110,12 +2110,12 @@ export function PitchDeckVoiceoverPage({ onBackToHome }: { onBackToHome?: () => 
                             </span>
                           </div>
 
-                          <div className="rounded-2xl border border-purple-500/30 bg-slate-950 p-5 text-center">
-                            <span className="text-xs uppercase font-bold text-slate-400">Dòng Tiền Tự Do</span>
-                            <div className="text-3xl sm:text-4xl font-black text-purple-400 font-mono mt-1">
+                          <div className="rounded-2xl border border-ecomiles-lime/30 bg-slate-950 p-5 text-center">
+                            <span className="text-xs uppercase font-bold text-slate-300">Dòng Tiền Tự Do</span>
+                            <div className="text-3xl sm:text-4xl font-black text-ecomiles-lime font-mono mt-1">
                               Năm 2
                             </div>
-                            <span className="text-[11px] text-purple-300/80 mt-1 block">
+                            <span className="text-xs text-ecomiles-lime/80 mt-1 block">
                               Lợi nhuận dương bền vững
                             </span>
                           </div>

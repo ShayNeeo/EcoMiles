@@ -389,8 +389,8 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
 
             {/* 7-Device Studio Cover Banner Strip */}
             <div className="mt-3 p-3.5 rounded-2xl bg-slate-950/90 border border-white/10 space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
                   <img
                     src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                     alt="EcoMiles 7-Device Studio Banner"
@@ -404,7 +404,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                     }
                     className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0 cursor-zoom-in hover:opacity-90 transition-opacity"
                   />
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[11px] font-black text-ecomiles-lime uppercase tracking-wider">
                       Hệ Sinh Thái 7 Thiết Bị Studio 2.4K — Chạm 1-Click Mở Trực Tiếp Từng Thiết Bị
                     </div>
@@ -413,7 +413,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
                   <a
                     href="#showcase"
                     onClick={onClose}

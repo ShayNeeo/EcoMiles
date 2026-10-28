@@ -997,15 +997,15 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       {/* Toggleable 7-Device Ecosystem Cover Banner Bar inside B2B Portal */}
       {showDeviceBanner && (
         <div className="bg-[#060d14] border-b border-emerald-900/60 px-4 sm:px-6 py-3 text-white transition-all">
-          <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5 min-w-0">
+          <div className="max-w-[1600px] mx-auto flex flex-col 2xl:flex-row items-start 2xl:items-center justify-between gap-3">
+            <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <img
                 src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                 alt="EcoMiles 7 Thiết Bị Đồng Bộ"
                 onClick={() => setPortalLightboxIdx(0)}
-                className="h-16 sm:h-20 w-auto rounded-lg border border-white/15 object-contain bg-black/40 p-1 shrink-0 cursor-zoom-in"
+                className="h-14 sm:h-16 w-auto rounded-lg border border-white/15 object-contain bg-black/40 p-1 shrink-0 cursor-zoom-in"
               />
-              <div>
+              <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-[11px] font-bold text-[#d6f65a] uppercase tracking-wider">
                     Hệ sinh thái 7 thiết bị đồng bộ thời gian thực (2400×1120 Studio Stage)
@@ -1097,8 +1097,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
             </div>
 
             {/* 7-Device Studio Cover Banner Strip inside Fast-Login Modal */}
-            <div className="bg-[#060d14] border-b border-emerald-900/60 px-5 py-2 flex items-center justify-between gap-3 text-white">
-              <div className="flex items-center gap-2.5 min-w-0">
+            <div className="bg-[#060d14] border-b border-emerald-900/60 px-5 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 text-white">
+              <div className="flex items-center gap-2.5 flex-1 min-w-0">
                 <img
                   src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                   alt="EcoMiles 7 Thiết Bị Đồng Bộ"
@@ -1106,15 +1106,15 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   className="h-9 w-auto object-contain rounded-md border border-white/15 bg-black/50 p-0.5 shrink-0 cursor-zoom-in"
                 />
                 <div className="min-w-0">
-                  <div className="text-[10.5px] font-bold text-[#d6f65a] uppercase tracking-wider truncate">
+                  <div className="text-[10.5px] font-bold text-[#d6f65a] uppercase tracking-wider">
                     Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)
                   </div>
-                  <div className="text-[10.5px] text-slate-300 truncate">
+                  <div className="text-[10.5px] text-slate-300">
                     MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-[11px] font-bold shrink-0">
+              <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold shrink-0">
                 <button
                   type="button"
                   onClick={() => setPortalLightboxIdx(0)}
@@ -1593,14 +1593,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 </div>
 
                 {/* Compact 7-Device Ecosystem Operational Sync Strip in Tab 1 */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-0">
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <img
                       src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                       alt="Đồng Bộ 7 Thiết Bị Thực Tế"
                       className="h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0"
                     />
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-[11.5px] font-bold text-[#d6f65a] uppercase tracking-wide">
                           Đồng Bộ 7 Thiết Bị Thực Tế Trong Ca Vận Hành
@@ -1890,15 +1890,15 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
             {userTab === 'evsim_compare' && (
               <div className="space-y-4">
                 {/* Compact 7-Device EVSIM Comparison Strip in Tab 2 */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-0">
+                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <img
                       src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                       alt="Đồng Bộ 7 Thiết Bị Thực Nghiệm EVSIM"
                       onClick={() => setPortalLightboxIdx(0)}
                       className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
                     />
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-[11.5px] font-bold text-[#d6f65a] uppercase tracking-wide">
                           Môi Trường Đối Chứng Thuật Toán EVSIM Trên 7 Thiết Bị Phần Cứng
@@ -2833,15 +2833,15 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
         <div className="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-5 space-y-3">
           {/* 7-Device Benchmark & Telemetry Verification Strip */}
           <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 text-white space-y-2.5">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
-              <div className="flex items-center gap-2.5">
+            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-2.5 border-b border-white/10 pb-2.5">
+              <div className="flex items-center gap-2.5 flex-1 min-w-0">
                 <img
                   src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
                   alt="EcoMiles 7-Device Studio Stage"
                   onClick={() => setPortalLightboxIdx(0)}
                   className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0 cursor-zoom-in"
                 />
-                <div>
+                <div className="min-w-0">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#d6f65a] block">
                     Trạm Đối Chứng &amp; Kiểm Định Dữ Liệu 7 Thiết Bị (120 Đơn Hàng TP.HCM)
                   </span>
