@@ -52,7 +52,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
         tl.to(midPlaneRef.current, { yPercent: -6, ease: 'none' }, 0);
       }
       if (fgPlaneRef.current) {
-        tl.to(fgPlaneRef.current, { yPercent: -10, ease: 'none' }, 0);
+        tl.to(fgPlaneRef.current, { yPercent: -3, ease: 'none' }, 0);
       }
     },
     { scope: heroRef }
@@ -63,7 +63,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
       ref={heroRef}
       className="relative flex min-h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cargox-fallback"
     >
-      {/* Plane 1 (Background): Ambient Urban Logistics & Container Video — High Clarity */}
+      {/* Plane 1 (Background): Moving Container Truck & Urban Logistics Video — Full Optical Clarity */}
       <video
         ref={bgPlaneRef}
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260620_185230_f7f71ef4-6655-469f-b9c6-efbdc1f7684a.mp4"
@@ -71,18 +71,18 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
         muted
         loop
         playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.84] saturate-[0.95] contrast-[1.06] pointer-events-none"
+        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.86] saturate-[0.96] contrast-[1.06] pointer-events-none"
       />
 
-      {/* Directional Scrim: Protects Left Headline Legibility While Leaving Right Container Video Open & Bright */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(2,9,5,0.88)_0%,rgba(2,9,5,0.52)_46%,rgba(2,9,5,0.12)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(2,9,5,0.55)_0%,transparent_28%,transparent_72%,rgba(7,17,12,0.94)_100%)]" />
+      {/* Directional Scrim: Protects Left Headline Legibility While Leaving Right Container Truck 100% Open & Bright */}
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(2,9,5,0.88)_0%,rgba(2,9,5,0.46)_44%,rgba(2,9,5,0.04)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(2,9,5,0.52)_0%,transparent_26%,transparent_74%,rgba(7,17,12,0.92)_100%)]" />
 
       {/* Main Hero Content Layer */}
       <div className="relative z-10 flex flex-col flex-1 w-full h-full justify-between overflow-hidden">
         <div className="h-16 sm:h-20" />
 
-        {/* Main Content Grid: Left Value Proposition (6 Cols) + Right Open-Air Floating 7-Device Stage (6 Cols) */}
+        {/* Main Content Grid: Left Value Proposition (6 Cols) + Bottom-Right Low-Profile Glass Dock (6 Cols, Self-End) */}
         <div
           className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center w-full max-w-[1440px] mx-auto"
           style={{
@@ -122,7 +122,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               báo cáo kiểm toán phát thải CO₂ chuẩn quốc tế trong 30 giây — <strong>$0 phí bản đồ API</strong>.
             </motion.p>
 
-            {/* Primary & Secondary Live Workspace Launchers (Refined Product Names — Zero Raw /route Paths) */}
+            {/* Primary & Secondary Live Workspace Launchers */}
             <motion.div
               initial={{ y: 18, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -168,13 +168,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
             </motion.div>
           </div>
 
-          {/* Right 6 Cols: Frameless Open-Air Floating 7-Device Stage (Lets Container Video Shine Through) */}
+          {/* Right 6 Cols: Self-End Bottom-Right Floating Glass Dock (Leaves Container Truck Cab 100% Unobstructed!) */}
           <motion.div
             ref={fgPlaneRef}
-            initial={{ scale: 0.96, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.16, ease: EXPO_OUT }}
-            className="lg:col-span-6 mx-auto flex w-full min-w-0 flex-col justify-end"
+            initial={{ y: 18, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.65, delay: 0.24, ease: EXPO_OUT }}
+            className="lg:col-span-6 self-end flex w-full min-w-0 flex-col items-end justify-end lg:pb-1"
           >
             <HeroMultiDeviceStage />
           </motion.div>

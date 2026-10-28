@@ -406,7 +406,7 @@ export function EcoMilesTruckMapNavigator({
     {
       id: '24_zfold',
       shortLabel: 'Galaxy Z Fold · Cabin 7.6"',
-      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở',
       spec: '750×834 · Buồng lái rảnh tay · Né vùng cấm QĐ 23/2018',
       src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
       liveHref: '/maps/?vehicle=0&mode=navigate',
@@ -439,7 +439,7 @@ export function EcoMilesTruckMapNavigator({
       id: '23_duo',
       shortLabel: 'iPhone Duo · Gập Đôi',
       title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-      spec: '2420×1080 · Trái: Danh sách đơn (/driver) · Phải: Dẫn đường (/maps)',
+      spec: '2420×1080 · Trái: Danh sách đơn · Phải: Bản đồ dẫn đường',
       src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
       liveHref: '/driver/',
     },
@@ -948,7 +948,7 @@ export function EcoMilesTruckMapNavigator({
   if (!result || !strategy || !activeRoute) {
     return (
       <div className="min-h-screen bg-[#f3f4ef] p-8 flex items-center justify-center text-[#111827] font-semibold">
-        Đang khởi tạo Bản Đồ Dẫn Đường Xe Tải Chuyên Dụng EcoMiles (/maps)...
+        Đang khởi tạo Bản Đồ Dẫn Đường Xe Tải Chuyên Dụng EcoMiles...
       </div>
     );
   }
@@ -980,7 +980,7 @@ export function EcoMilesTruckMapNavigator({
               className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-white text-xs font-bold text-[#111827] flex items-center gap-1.5"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Quay lại App Tài xế (/driver)</span>
+              <span>Quay lại Ứng dụng Tài xế</span>
             </a>
 
             <div className="flex items-center gap-2">
@@ -989,7 +989,7 @@ export function EcoMilesTruckMapNavigator({
               </div>
               <div>
                 <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#247b50]">
-                  EcoMiles OpenTruck Maps (/maps) · Chặng Giữa (&gt;500kg) · $0 API
+                  EcoMiles OpenTruck Maps · Chặng Giữa (&gt;500kg) · $0 API
                 </div>
                 <div className="text-sm font-bold text-[#111827]">
                   Bản Đồ Lộ Trình Chi Tiết, Vùng Cấm Tải QĐ 23/2018 &amp; Dẫn Đường Trực Tiếp

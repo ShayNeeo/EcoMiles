@@ -398,7 +398,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     {
       id: 'macbook_pro',
       shortLabel: 'MacBook Pro 16"',
-      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
       spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
       src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
       liveHref: '/dashboard/',
@@ -406,7 +406,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     {
       id: 'windows_xps',
       shortLabel: 'Windows 11 XPS 16',
-      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM',
       spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
       src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
       liveHref: '/benchmark/',
@@ -414,7 +414,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     {
       id: 'galaxy_zfold',
       shortLabel: 'Galaxy Z Fold',
-      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở',
       spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
       src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
       liveHref: '/maps/?vehicle=0&mode=navigate',
@@ -431,14 +431,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       id: 'iphone_duo',
       shortLabel: 'iPhone Duo (Gập Đôi)',
       title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-      spec: '2420×1080 · Màn 1: Đơn hàng (/driver) · Màn 2: Dẫn đường (/maps)',
+      spec: '2420×1080 · Màn 1: Đơn hàng · Màn 2: Bản đồ dẫn đường',
       src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
       liveHref: '/driver/',
     },
     {
       id: 'iphone_18_pro_max',
       shortLabel: 'iPhone 18 Pro Max',
-      title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+      title: 'iPhone 18 Pro Max · Ứng Dụng Tài Xế Chế Độ Nắng Gắt',
       spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
       src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
       liveHref: '/driver/',
@@ -931,7 +931,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 className="px-3 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] font-bold flex items-center gap-1.5"
               >
                 <Navigation className="w-3.5 h-3.5" />
-                <span>Bản đồ Dẫn đường Xe tải (/maps)</span>
+                <span>Bản đồ Dẫn đường Xe tải</span>
               </a>
             )}
 
@@ -1761,7 +1761,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                     href={`/maps?vehicle=${idx}&mode=overview`}
                                     className="px-2 py-1 rounded bg-[#eef7ee] hover:bg-[#dcfae5] border border-[#b9dfbf] text-xs font-bold text-[#14532d]"
                                   >
-                                    /maps
+                                    Bản đồ
                                   </a>
                                 </div>
                               </td>
@@ -2050,11 +2050,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     {[
                       { label: 'MacBook Pro (TMS)', href: '/dashboard/' },
                       { label: 'Windows XPS (EVSIM)', href: '/benchmark/' },
-                      { label: 'Galaxy Z Fold (/maps)', href: '/maps/?vehicle=0&mode=navigate' },
-                      { label: 'iPad Pro M4', href: '/dispatcher/' },
-                      { label: 'iPhone Duo (/driver)', href: '/driver/' },
+                      { label: 'Galaxy Z Fold (Bản đồ)', href: '/maps/?vehicle=0&mode=navigate' },
+                      { label: 'iPad Pro M4 (Kho bãi)', href: '/dispatcher/' },
+                      { label: 'iPhone Duo (Đa nhiệm)', href: '/driver/' },
                       { label: 'iPhone 18 Pro Max', href: '/driver/' },
-                      { label: 'Galaxy S26 Ultra (/maps)', href: '/maps/?vehicle=1&mode=navigate' },
+                      { label: 'Galaxy S26 Ultra (Dẫn đường)', href: '/maps/?vehicle=1&mode=navigate' },
                     ].map((dev) => (
                       <a
                         key={dev.label}
@@ -2253,7 +2253,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       iPad Pro M4 · Samsung Galaxy Z Fold
                     </div>
                     <div className="text-[11px] text-slate-300 mt-0.5">
-                      Phân bổ tải trọng 7 xe &amp; hiển thị vùng cấm QĐ 23 (/maps)
+                      Phân bổ tải trọng 7 xe &amp; hiển thị vùng cấm QĐ 23
                     </div>
                   </button>
                   <button
@@ -2274,7 +2274,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
                     </div>
                     <div className="text-[11px] text-slate-300 mt-0.5">
-                      Đồng bộ danh sách điểm dừng (/driver) &amp; dẫn đường trực tiếp
+                      Đồng bộ danh sách điểm dừng &amp; dẫn đường trực tiếp
                     </div>
                   </button>
                 </div>
@@ -2721,7 +2721,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     {[
                       { name: 'MacBook Pro 16"', policy: 'Khóa KMS Doanh nghiệp' },
                       { name: 'Windows 11 XPS 16', policy: 'Sandbox Đối chứng EVSIM' },
-                      { name: 'Galaxy Z Fold', policy: 'Chỉ tọa độ lộ trình /maps' },
+                      { name: 'Galaxy Z Fold', policy: 'Chỉ tọa độ lộ trình xe tải' },
                       { name: 'iPad Pro M4', policy: 'Phân quyền Trạm kho vận' },
                       { name: 'iPhone Duo', policy: 'PIN 0000 + Che SĐT NĐ 13' },
                       { name: 'iPhone 18 Pro Max', policy: 'PIN 0000 + PoD Mã hóa' },
@@ -2860,7 +2860,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </div>
               <div className="p-2 rounded-lg bg-white/5 border border-white/10">
                 <div className="text-[10px] font-bold text-emerald-300 uppercase">2. Bến Bãi &amp; Buồng Lái Xe Tải</div>
-                <div className="font-bold text-white mt-0.5">Galaxy Z Fold (/maps) · iPad Pro M4 (Taplo 13&quot;)</div>
+                <div className="font-bold text-white mt-0.5">Galaxy Z Fold (Buồng lái) · iPad Pro M4 (Taplo 13&quot;)</div>
               </div>
               <div className="p-2 rounded-lg bg-white/5 border border-white/10">
                 <div className="text-[10px] font-bold text-sky-300 uppercase">3. Thực Địa Giao Điểm ($0 API)</div>
@@ -3175,14 +3175,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 className="px-2.5 py-1 rounded-md bg-white text-[#14532d] hover:bg-emerald-50 text-[11px] font-extrabold flex items-center gap-1"
                               >
                                 <MapPin className="w-3 h-3" />
-                                <span>Mở Bản Đồ Vùng Cấm (/maps)</span>
+                                <span>Mở Bản Đồ Vùng Cấm</span>
                               </a>
                               <a
                                 href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
                                 className="px-2.5 py-1 rounded-md bg-[#d6f65a] hover:bg-[#c5e847] text-[#14532d] text-[11px] font-extrabold flex items-center gap-1"
                               >
                                 <Play className="w-3 h-3 fill-current" />
-                                <span>Bắt Đầu Lái (/maps Live)</span>
+                                <span>Bắt Đầu Dẫn Đường</span>
                               </a>
                               <button
                                 type="button"
@@ -3249,7 +3249,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       {isFoldableDualView ? (
                         <div className="rounded-xl border-2 border-[#14532d] overflow-hidden bg-[#060d14] shadow-md">
                           <div className="px-3 py-1.5 bg-[#14532d] text-white text-[11px] font-bold flex items-center justify-between">
-                            <span>Màn Hình Kép (iPhone Duo / Z Fold): Dẫn Đường Trực Tiếp (/maps)</span>
+                            <span>Màn Hình Kép (iPhone Duo / Z Fold): Dẫn Đường Trực Tiếp</span>
                             <span className="text-[#d6f65a] font-mono">{driverRoute?.plate}</span>
                           </div>
                           <iframe
@@ -3272,7 +3272,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <div className="p-3 rounded-lg bg-[#fffbeb] border border-[#fde68a] text-xs text-[#92400e] flex items-start gap-2">
                           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                           <span>
-                            <strong>Chế độ Xe Tải Chặng Giữa (&gt;500kg), Đã khóa Google Maps thương mại:</strong> Google Maps không có chế độ dẫn đường xe tải (<code>travelmode=truck</code>) và không biết khung giờ cấm tải QĐ 23/2018. Tài xế dùng trực tiếp <strong>Bản đồ Mở EcoMiles (/maps)</strong> hoặc bấm <strong>"Xuất GPX"</strong> để dẫn đường giọng nói offline miễn phí 100%.
+                            <strong>Chế độ Xe Tải Chặng Giữa (&gt;500kg), Đã khóa Google Maps thương mại:</strong> Google Maps không có chế độ dẫn đường xe tải (<code>travelmode=truck</code>) và không biết khung giờ cấm tải QĐ 23/2018. Tài xế dùng trực tiếp <strong>Bản đồ Xe tải Mở EcoMiles</strong> hoặc bấm <strong>"Xuất GPX"</strong> để dẫn đường giọng nói offline miễn phí 100%.
                           </span>
                         </div>
                       ) : (
@@ -3380,7 +3380,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                     className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold text-center flex items-center justify-center gap-1.5"
                                   >
                                     <Play className="w-3.5 h-3.5 text-[#d6f65a] fill-current" />
-                                    <span>Bắt đầu Lái Xe Tải (/maps)</span>
+                                    <span>Bắt đầu Lái Xe Tải</span>
                                   </a>
                                   <a
                                     href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=overview`}
@@ -3599,42 +3599,49 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       device: 'MacBook Pro 16" (macOS)',
                       role: 'Vai trò 1 · Điều phối viên B2B',
                       route: '/dashboard',
+                      routeLabel: 'Mở Bảng Điều Khiển',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
                     {
                       device: 'Windows 11 XPS 16 (Workstation)',
                       role: 'Vai trò 2 · Kiểm định viên EVSIM',
                       route: '/benchmark',
+                      routeLabel: 'Mở Phòng Đối Chứng',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
                     {
                       device: 'Samsung Galaxy Z Fold (768×1024)',
                       role: 'Vai trò 3 · Buồng lái OpenTruck HUD',
                       route: '/maps',
+                      routeLabel: 'Mở Bản Đồ Xe Tải',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
                     {
                       device: 'iPad Pro M4 (1024×768 Landscape)',
                       role: 'Vai trò 1 · Bảng điều khiển kho vận',
                       route: '/dispatcher',
+                      routeLabel: 'Mở Điều Phối Kho',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
                     {
                       device: 'iPhone Duo Dual-Screen (750×834)',
                       role: 'Vai trò 3 · Đa nhiệm 2 màn hình gập đôi',
                       route: '/driver',
+                      routeLabel: 'Mở Ứng Dụng Tài Xế',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
                     {
                       device: 'iPhone 18 Pro Max (422×907)',
                       role: 'Vai trò 3 · Tài xế chặng giữa (>500kg)',
                       route: '/driver',
+                      routeLabel: 'Mở Ứng Dụng Tài Xế',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
                     {
                       device: 'Samsung Galaxy S26 Ultra (418×899)',
                       role: 'Vai trò 3 · Dẫn đường trực tiếp Follow-Truck',
                       route: '/maps',
+                      routeLabel: 'Mở Bản Đồ Xe Tải',
                       cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
                     },
                   ].map((ep, idx) => (
@@ -3657,7 +3664,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           onClick={(e) => e.stopPropagation()}
                           className="hover:underline"
                         >
-                          {ep.route}
+                          {ep.routeLabel}
                         </a>
                       </td>
                       <td className="py-2 px-3 font-mono text-[#247b50]">{ep.cipher}</td>

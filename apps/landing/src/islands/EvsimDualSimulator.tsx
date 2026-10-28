@@ -358,8 +358,8 @@ export function EvsimDualSimulator({
     },
     {
       id: '24_zfold',
-      shortLabel: 'Galaxy Z Fold (Cabin /maps)',
-      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở (/maps)',
+      shortLabel: 'Galaxy Z Fold (Buồng lái)',
+      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở',
       spec: '2160×1856 · Buồng lái rảnh tay · Né vùng cấm QĐ 23/2018',
       src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
       liveHref: '/maps/?vehicle=0&mode=navigate',
@@ -368,14 +368,14 @@ export function EvsimDualSimulator({
       id: '23_duo',
       shortLabel: 'iPhone Duo (Gập Đôi)',
       title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-      spec: '2420×1080 · Trái: Danh sách đơn (/driver) · Phải: Dẫn đường (/maps)',
+      spec: '2420×1080 · Trái: Danh sách đơn · Phải: Bản đồ dẫn đường',
       src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
       liveHref: '/driver/',
     },
     {
       id: '21_iphone18',
       shortLabel: 'iPhone 18 Pro Max (Nắng Gắt)',
-      title: 'iPhone 18 Pro Max · App Tài Xế Chế Độ Nắng Gắt (/driver)',
+      title: 'iPhone 18 Pro Max · Ứng Dụng Tài Xế Chế Độ Nắng Gắt',
       spec: '2868×1320 · Chặng giữa (>500kg) & ghép đơn chiều về (2.7% chạy rỗng)',
       src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
       liveHref: '/driver/',
@@ -399,7 +399,7 @@ export function EvsimDualSimulator({
     {
       id: '26_macbook',
       shortLabel: 'MacBook Pro 16" (TMS)',
-      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS (/dashboard)',
+      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
       spec: '3456×2234 · Điều phối B2B · 120 đơn / 7 tuyến ALNS',
       src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
       liveHref: '/dashboard/',
@@ -407,7 +407,7 @@ export function EvsimDualSimulator({
     {
       id: '27_xps',
       shortLabel: 'Windows 11 XPS 16 (EVSIM)',
-      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM (/benchmark)',
+      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM',
       spec: '3840×2400 · Đối chứng kép 374.4 km vs 243.7 km (-34.9%)',
       src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
       liveHref: '/benchmark/',
@@ -1337,7 +1337,7 @@ export function EvsimDualSimulator({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[156px] overflow-y-auto pr-1">
                 {panel.st.routes.map((route, rIdx) => {
                   const pairedDevice = [
-                    'Galaxy Z Fold (Cabin /maps)',
+                    'Galaxy Z Fold (Buồng lái)',
                     'iPhone Duo (Gập Đôi)',
                     'iPhone 18 Pro Max (Nắng Gắt)',
                     'Galaxy S26 Ultra (Waypoints)',

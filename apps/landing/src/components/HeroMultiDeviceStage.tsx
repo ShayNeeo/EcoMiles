@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
 import {
+  ArrowDown,
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
-  Eye,
-  EyeOff,
   Laptop,
-  Layers,
-  Pause,
-  Play,
   Smartphone,
   SplitSquareVertical,
   Tablet,
@@ -117,30 +113,45 @@ const STUDIO_STAGE_SPEC: HeroDeviceSpec = {
 const HERO_LIGHTBOX_ASSETS: HeroDeviceSpec[] = [STUDIO_STAGE_SPEC, ...HERO_DEVICES];
 
 export const HeroMultiDeviceStage: React.FC = () => {
-  const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[0]); // MacBook Pro default
-  const [stageLayout, setStageLayout] = useState<'spotlight' | 'fan_all' | 'dock_only'>('spotlight');
+  // Default: null -> 100% of the moving container truck background video is unobstructed on page load!
+  const [activeDevice, setActiveDevice] = useState<HeroDeviceSpec | null>(null);
+  const [pinnedDeviceId, setPinnedDeviceId] = useState<string | null>(null);
   const [fullscreenDevice, setFullscreenDevice] = useState<HeroDeviceSpec | null>(null);
-  const [isPointerInside, setIsPointerInside] = useState<boolean>(false);
-  const [isAutoSpotlight, setIsAutoSpotlight] = useState<boolean>(true);
+  const dismissTimerRef = useRef<number | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  const stepHeroDevice = (delta: -1 | 1) => {
-    setIsAutoSpotlight(false);
-    const currentIdx = HERO_DEVICES.findIndex((d) => d.id === hoveredDevice.id);
-    const nextIdx = (currentIdx + delta + HERO_DEVICES.length) % HERO_DEVICES.length;
-    setHoveredDevice(HERO_DEVICES[nextIdx]);
+  const clearDismissTimer = () => {
+    if (dismissTimerRef.current !== null) {
+      window.clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = null;
+    }
+  };
+
+  const handleDockMouseEnter = (dev: HeroDeviceSpec) => {
+    clearDismissTimer();
+    setActiveDevice(dev);
+  };
+
+  const handleWrapperMouseLeave = () => {
+    clearDismissTimer();
+    if (!pinnedDeviceId) {
+      dismissTimerRef.current = window.setTimeout(() => {
+        setActiveDevice(null);
+      }, 150);
+    }
+  };
+
+  const stepActiveDevice = (delta: -1 | 1) => {
+    const current = activeDevice ?? HERO_DEVICES[0];
+    const currentIdx = HERO_DEVICES.findIndex((d) => d.id === current.id);
+    const nextDev = HERO_DEVICES[(currentIdx + delta + HERO_DEVICES.length) % HERO_DEVICES.length];
+    setActiveDevice(nextDev);
+    setPinnedDeviceId(nextDev.id);
   };
 
   useEffect(() => {
-    if (!isAutoSpotlight || isPointerInside || fullscreenDevice || shouldReduceMotion) return;
-    const timer = window.setInterval(() => {
-      setHoveredDevice((prev) => {
-        const idx = HERO_DEVICES.findIndex((d) => d.id === prev.id);
-        return HERO_DEVICES[(idx + 1) % HERO_DEVICES.length];
-      });
-    }, 3600);
-    return () => window.clearInterval(timer);
-  }, [isAutoSpotlight, isPointerInside, fullscreenDevice, shouldReduceMotion]);
+    return () => clearDismissTimer();
+  }, []);
 
   useEffect(() => {
     if (!fullscreenDevice) return undefined;
@@ -167,13 +178,10 @@ export const HeroMultiDeviceStage: React.FC = () => {
   const smoothX = useSpring(pointerX, { stiffness: 200, damping: 24 });
   const smoothY = useSpring(pointerY, { stiffness: 200, damping: 24 });
 
-  const tiltRotateX = useTransform(smoothY, [-0.5, 0.5], [7, -7]);
-  const tiltRotateY = useTransform(smoothX, [-0.5, 0.5], [-10, 10]);
-  const floatX = useTransform(smoothX, [-0.5, 0.5], [-12, 12]);
-  const floatY = useTransform(smoothY, [-0.5, 0.5], [-8, 8]);
+  const tiltRotateX = useTransform(smoothY, [-0.5, 0.5], [6, -6]);
+  const tiltRotateY = useTransform(smoothX, [-0.5, 0.5], [-8, 8]);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    setIsPointerInside(true);
     const rect = e.currentTarget.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
     const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
@@ -182,7 +190,6 @@ export const HeroMultiDeviceStage: React.FC = () => {
   };
 
   const handlePointerLeave = () => {
-    setIsPointerInside(false);
     pointerX.set(0);
     pointerY.set(0);
   };
@@ -196,213 +203,171 @@ export const HeroMultiDeviceStage: React.FC = () => {
 
   return (
     <div
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-      className="relative flex flex-col items-center justify-end w-full"
+      onMouseEnter={clearDismissTimer}
+      onMouseLeave={handleWrapperMouseLeave}
+      className="relative flex flex-col items-end justify-end w-full max-w-[620px] ml-auto"
     >
-      {/* Open-Air Floating Stage (Zero Opaque Box — Container Moving Video Shines Directly Behind!) */}
+      {/* On-Demand Floating 3D Glass Preview Card (Only Appears When Hovering/Clicking a Device Pill!) */}
       <AnimatePresence mode="wait">
-        {stageLayout === 'spotlight' && (
+        {activeDevice && (
           <motion.div
-            key={`spotlight-${hoveredDevice.id}`}
-            initial={{ opacity: 0, y: 14, scale: 0.96 }}
+            key={activeDevice.id}
+            initial={{ opacity: 0, y: 14, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.96 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            exit={{ opacity: 0, y: 10, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            onPointerMove={handlePointerMove}
+            onPointerLeave={handlePointerLeave}
             style={{
               rotateX: shouldReduceMotion ? 0 : tiltRotateX,
               rotateY: shouldReduceMotion ? 0 : tiltRotateY,
-              x: shouldReduceMotion ? 0 : floatX,
-              y: shouldReduceMotion ? 0 : floatY,
               transformPerspective: 1100,
             }}
-            className="relative z-10 mb-3 flex flex-col items-center justify-center cursor-zoom-in group"
-            onClick={() => setFullscreenDevice(hoveredDevice)}
+            className="mb-3 w-full sm:w-[460px] rounded-2xl bg-slate-950/80 backdrop-blur-2xl border border-ecomiles-lime/40 p-3.5 shadow-2xl shadow-black/80"
           >
-            <img
-              src={hoveredDevice.imgSrc}
-              alt={hoveredDevice.name}
-              className="h-auto max-h-[215px] sm:max-h-[250px] w-auto max-w-full object-contain mx-auto drop-shadow-[0_24px_48px_rgba(0,0,0,0.85)] group-hover:scale-[1.02] transition-transform duration-300"
-            />
-          </motion.div>
-        )}
-
-        {stageLayout === 'fan_all' && (
-          <motion.div
-            key="fan-all-open-air"
-            initial={{ opacity: 0, y: 14, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.96 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 mb-3 w-full"
-          >
-            {/* Open-Air 2-Tier Fan without any background box */}
-            <div className="grid grid-cols-2 gap-3 items-end px-4">
-              {HERO_DEVICES.slice(0, 2).map((dev) => (
+            <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10">
+              <div className="min-w-0">
+                <div className="text-xs font-extrabold text-ecomiles-lime truncate">
+                  {activeDevice.name}
+                </div>
+                <div className="text-xs text-slate-200 truncate">{activeDevice.roleLabel}</div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
-                  key={dev.id}
                   type="button"
-                  onMouseEnter={() => setHoveredDevice(dev)}
-                  onClick={() => setFullscreenDevice(dev)}
-                  className="group text-center cursor-zoom-in focus:outline-none"
+                  onClick={() => setFullscreenDevice(activeDevice)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-ecomiles-lime border border-ecomiles-lime/40 text-xs font-bold cursor-pointer"
+                  title="Phóng to màn hình thiết bị"
                 >
-                  <img
-                    src={dev.imgSrc}
-                    alt={dev.name}
-                    className="w-full h-auto max-h-[135px] sm:max-h-[150px] object-contain mx-auto drop-shadow-[0_20px_36px_rgba(0,0,0,0.9)] group-hover:-translate-y-1 transition-transform"
-                  />
+                  <ZoomIn className="w-3.5 h-3.5" />
+                  <span>Phóng to</span>
                 </button>
-              ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPinnedDeviceId(null);
+                    setActiveDevice(null);
+                  }}
+                  className="p-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 cursor-pointer"
+                  aria-label="Ẩn xem trước thiết bị"
+                  title="Ẩn xem trước để ngắm toàn cảnh video"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-            <div className="relative z-20 -mt-6 flex items-end justify-center gap-2">
-              {HERO_DEVICES.slice(2).map((dev) => (
+
+            <div
+              onClick={() => setFullscreenDevice(activeDevice)}
+              className="py-3 flex items-center justify-center cursor-zoom-in"
+            >
+              <img
+                src={activeDevice.imgSrc}
+                alt={activeDevice.name}
+                className="max-h-[180px] sm:max-h-[200px] w-auto max-w-full object-contain mx-auto drop-shadow-[0_18px_36px_rgba(0,0,0,0.9)]"
+              />
+            </div>
+
+            <div className="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 text-xs">
+              <div className="inline-flex items-center gap-1">
                 <button
-                  key={dev.id}
                   type="button"
-                  onMouseEnter={() => setHoveredDevice(dev)}
-                  onClick={() => setFullscreenDevice(dev)}
-                  className="group flex flex-col items-center cursor-zoom-in focus:outline-none shrink-0"
+                  onClick={() => stepActiveDevice(-1)}
+                  className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
+                  aria-label="Thiết bị trước"
                 >
-                  <img
-                    src={dev.imgSrc}
-                    alt={dev.name}
-                    className="h-[92px] sm:h-[115px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.92)] group-hover:-translate-y-1.5 transition-transform"
-                  />
+                  <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
-              ))}
+                <button
+                  type="button"
+                  onClick={() => stepActiveDevice(1)}
+                  className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
+                  aria-label="Thiết bị tiếp theo"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <a
+                href={activeDevice.liveHref}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold transition-colors"
+              >
+                <span>{activeDevice.liveText}</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Sleek Translucent Floating Glass Dock (Lets Container Video Shine Around It) */}
-      <div className="relative z-30 w-full rounded-2xl bg-slate-950/65 backdrop-blur-xl border border-white/15 p-3 shadow-2xl shadow-black/70 space-y-2.5">
-        {/* Row 1: 7-Device Pill Switcher + View Mode Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-1.5">
-          <div className="flex flex-wrap items-center gap-1">
-            {HERO_DEVICES.map((dev) => {
-              const isSelected = hoveredDevice.id === dev.id;
-              return (
-                <button
-                  key={dev.id}
-                  type="button"
-                  onClick={() => {
-                    setIsAutoSpotlight(false);
-                    setHoveredDevice(dev);
-                    if (stageLayout === 'dock_only') setStageLayout('spotlight');
-                  }}
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-ecomiles-lime text-slate-950 shadow-sm font-extrabold'
-                      : 'bg-slate-900/75 text-slate-200 hover:text-white border border-white/10'
-                  }`}
-                >
-                  {renderDeviceIcon(dev.id)}
-                  <span>{dev.shortTag}</span>
-                </button>
-              );
-            })}
+      {/* Low-Profile Translucent Floating 7-Device Glass Dock (Leaves Container Truck 100% Unobstructed!) */}
+      <div className="relative z-30 w-full rounded-2xl bg-slate-950/65 backdrop-blur-xl border border-white/15 p-3 shadow-2xl shadow-black/75 space-y-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold text-white">Đồng bộ trên 7 thiết bị</span>
+            <span className="text-slate-300 hidden sm:inline">· Di chuột hoặc chạm để xem nhanh</span>
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
-              onClick={() =>
-                setStageLayout((prev) => (prev === 'fan_all' ? 'spotlight' : 'fan_all'))
-              }
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold transition-colors cursor-pointer ${
-                stageLayout === 'fan_all'
-                  ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
-                  : 'bg-slate-900/80 border-white/15 text-slate-200 hover:text-white'
-              }`}
-              title="Chuyển đổi giữa xem 1 thiết bị và xem cả 7 thiết bị"
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>{stageLayout === 'fan_all' ? '1 Thiết bị' : 'Cả 7 máy'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setStageLayout((prev) => (prev === 'dock_only' ? 'spotlight' : 'dock_only'))
-              }
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-white/15 text-xs font-bold text-slate-200 hover:text-white transition-colors cursor-pointer"
-              title="Ẩn hoặc hiện hình thiết bị để ngắm toàn cảnh video nền"
-            >
-              {stageLayout === 'dock_only' ? (
-                <>
-                  <Eye className="w-3.5 h-3.5 text-ecomiles-lime" />
-                  <span>Hiện máy</span>
-                </>
-              ) : (
-                <>
-                  <EyeOff className="w-3.5 h-3.5 text-slate-300" />
-                  <span>Ngắm nền</span>
-                </>
-              )}
-            </button>
-
-            <button
-              type="button"
               onClick={() => setFullscreenDevice(STUDIO_STAGE_SPEC)}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-white/15 text-xs font-bold text-slate-200 hover:text-white transition-colors cursor-pointer"
-              title="Phóng to toàn cảnh 7 thiết bị"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 font-extrabold text-xs cursor-pointer transition-colors"
             >
-              <ZoomIn className="w-3.5 h-3.5 text-ecomiles-lime" />
-              <span>Phóng to</span>
+              <ZoomIn className="w-3.5 h-3.5" />
+              <span>Toàn cảnh 7 thiết bị</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                document.getElementById('showcase')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/85 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/15 font-bold text-xs cursor-pointer transition-colors"
+            >
+              <span>Khu trưng bày</span>
+              <ArrowDown className="w-3.5 h-3.5 text-ecomiles-lime" />
             </button>
           </div>
         </div>
 
-        {/* Row 2: Active Device Summary + Step Controls + Refined Live App Launch Button */}
-        <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2.5 text-xs">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <div className="inline-flex items-center gap-1 shrink-0">
+        <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-white/10">
+          {HERO_DEVICES.map((dev) => {
+            const isSelected = activeDevice?.id === dev.id;
+            return (
               <button
+                key={dev.id}
                 type="button"
-                onClick={() => stepHeroDevice(-1)}
-                className="p-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
-                title="Thiết bị trước"
-                aria-label="Thiết bị trước"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsAutoSpotlight((prev) => !prev)}
-                className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-                  isAutoSpotlight
-                    ? 'bg-ecomiles-lime/20 border-ecomiles-lime/50 text-ecomiles-lime'
-                    : 'bg-slate-900/90 border-white/15 text-slate-300 hover:text-white'
+                onMouseEnter={() => handleDockMouseEnter(dev)}
+                onFocus={() => handleDockMouseEnter(dev)}
+                onClick={() => {
+                  if (pinnedDeviceId === dev.id && activeDevice?.id === dev.id) {
+                    setPinnedDeviceId(null);
+                    setActiveDevice(null);
+                  } else {
+                    setPinnedDeviceId(dev.id);
+                    setActiveDevice(dev);
+                  }
+                }}
+                className={`relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                  isSelected
+                    ? 'text-slate-950 font-extrabold'
+                    : 'bg-slate-900/75 text-slate-200 hover:text-white border border-white/10'
                 }`}
-                title={isAutoSpotlight ? 'Tạm dừng tự động chuyển' : 'Bật tự động chuyển thiết bị'}
-                aria-label="Tự động chuyển thiết bị"
               >
-                {isAutoSpotlight ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                {isSelected && (
+                  <motion.span
+                    layoutId="heroDockActivePill"
+                    transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                    className="absolute inset-0 rounded-xl bg-ecomiles-lime shadow-sm"
+                  />
+                )}
+                <span className="relative z-10 inline-flex items-center gap-1.5">
+                  {renderDeviceIcon(dev.id)}
+                  <span>{dev.shortTag}</span>
+                </span>
               </button>
-              <button
-                type="button"
-                onClick={() => stepHeroDevice(1)}
-                className="p-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
-                title="Thiết bị tiếp theo"
-                aria-label="Thiết bị tiếp theo"
-              >
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            <div className="min-w-0">
-              <div className="font-extrabold text-ecomiles-lime truncate">{hoveredDevice.name}</div>
-              <div className="text-slate-200 truncate">{hoveredDevice.roleLabel}</div>
-            </div>
-          </div>
-
-          <a
-            href={hoveredDevice.liveHref}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold shrink-0 transition-colors"
-          >
-            <span>{hoveredDevice.liveText}</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
+            );
+          })}
         </div>
       </div>
 
