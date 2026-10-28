@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
 import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  EyeOff,
   Laptop,
+  Layers,
   Pause,
   Play,
   Smartphone,
@@ -30,72 +33,72 @@ interface HeroDeviceSpec {
 const HERO_DEVICES: HeroDeviceSpec[] = [
   {
     id: 'macbook_pro',
-    name: 'MacBook Pro 16" · Trung Tâm B2B TMS',
+    name: 'MacBook Pro 16" · Trung Tâm Điều Phối Đội Xe',
     shortTag: 'MacBook Pro',
-    roleLabel: 'Điều phối 120 đơn / 7 tuyến (-34.9% km)',
+    roleLabel: 'Điều phối 120 đơn / 7 tuyến (-34.9% quãng đường)',
     imgSrc: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
     liveHref: '/dashboard/',
-    liveText: 'Mở /dashboard',
+    liveText: 'Mở Bảng Điều Khiển',
     plane: 'rear',
   },
   {
     id: 'windows_xps',
-    name: 'Windows 11 XPS 16 · Đối Chứng EVSIM',
+    name: 'Windows 11 XPS 16 · Phòng Đối Chứng EVSIM',
     shortTag: 'Windows XPS',
-    roleLabel: 'So sánh song song 374.4 km vs 243.7 km',
+    roleLabel: 'So sánh song song 374.4 km thủ công vs 243.7 km EcoMiles',
     imgSrc: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
     liveHref: '/benchmark/',
-    liveText: 'Mở /benchmark',
+    liveText: 'Mở Phòng Đối Chứng',
     plane: 'rear',
   },
   {
     id: 'galaxy_zfold',
-    name: 'Samsung Galaxy Z Fold · Bản Đồ Xe Tải',
+    name: 'Samsung Galaxy Z Fold · Bản Đồ Xe Tải Mở',
     shortTag: 'Galaxy Z Fold',
-    roleLabel: 'Né vùng cấm QĐ 23/2018 & cầu 13T ($0 API)',
+    roleLabel: 'Né vùng cấm QĐ 23/2018 & cầu 13T ($0 phí bản đồ)',
     imgSrc: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
     liveHref: '/maps/?vehicle=0&mode=navigate',
-    liveText: 'Mở /maps',
+    liveText: 'Mở Bản Đồ Xe Tải',
     plane: 'mid',
   },
   {
     id: 'iphone_18_pro_max',
-    name: 'iPhone 18 Pro Max · App Tài Xế Chặng Giữa',
+    name: 'iPhone 18 Pro Max · Ứng Dụng Tài Xế Chặng Giữa',
     shortTag: 'iPhone 18 Pro',
-    roleLabel: 'Giao hàng xe tải (>500kg) & ghép đơn về',
+    roleLabel: 'Giao hàng xe tải (>500kg) & ghép đơn chiều về',
     imgSrc: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
     liveHref: '/driver/',
-    liveText: 'Mở /driver',
+    liveText: 'Mở Ứng Dụng Tài Xế',
     plane: 'front',
   },
   {
     id: 'iphone_duo',
     name: 'iPhone Duo (Gập Đôi) · Đa Nhiệm 2 Màn Hình',
     shortTag: 'iPhone Duo',
-    roleLabel: 'Trái: Đơn hàng (/driver) · Phải: Bản đồ (/maps)',
+    roleLabel: 'Màn trái: Danh sách đơn hàng · Màn phải: Bản đồ dẫn đường',
     imgSrc: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
     liveHref: '/driver/',
-    liveText: 'Mở /driver',
+    liveText: 'Mở Ứng Dụng Tài Xế',
     plane: 'front',
   },
   {
     id: 'galaxy_s26_ultra',
-    name: 'Samsung Galaxy S26 Ultra · Chặng Cuối',
+    name: 'Samsung Galaxy S26 Ultra · Dẫn Đường Chặng Cuối',
     shortTag: 'Galaxy S26',
-    roleLabel: 'Khóa tọa độ Waypoints Google Maps ($0 API)',
+    roleLabel: 'Khóa tọa độ nhiều điểm dừng trên Google Maps ($0 API)',
     imgSrc: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
     liveHref: '/driver/',
-    liveText: 'Mở /driver',
+    liveText: 'Mở Ứng Dụng Tài Xế',
     plane: 'front',
   },
   {
     id: 'ipad_pro',
     name: 'iPad Pro M4 · Bảng Điều Khiển Kho Bãi',
     shortTag: 'iPad Pro M4',
-    roleLabel: 'Quản lý cảm ứng bến xuất & hàng chiều về',
+    roleLabel: 'Quản lý cảm ứng bến xuất & thu hồi hàng chiều về',
     imgSrc: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
     liveHref: '/dashboard/',
-    liveText: 'Mở /dashboard',
+    liveText: 'Mở Bảng Điều Khiển',
     plane: 'mid',
   },
 ];
@@ -107,14 +110,15 @@ const STUDIO_STAGE_SPEC: HeroDeviceSpec = {
   roleLabel: 'Đồng bộ từ văn phòng điều phối đến kho bãi và tài xế ngoài thực địa (<50ms)',
   imgSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
   liveHref: '/dashboard/',
-  liveText: 'Mở Trung Tâm B2B (/dashboard)',
+  liveText: 'Mở Bảng Điều Khiển',
   plane: 'front',
 };
 
 const HERO_LIGHTBOX_ASSETS: HeroDeviceSpec[] = [STUDIO_STAGE_SPEC, ...HERO_DEVICES];
 
 export const HeroMultiDeviceStage: React.FC = () => {
-  const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[4]); // iPhone Duo default
+  const [hoveredDevice, setHoveredDevice] = useState<HeroDeviceSpec>(HERO_DEVICES[0]); // MacBook Pro default
+  const [stageLayout, setStageLayout] = useState<'spotlight' | 'fan_all' | 'dock_only'>('spotlight');
   const [fullscreenDevice, setFullscreenDevice] = useState<HeroDeviceSpec | null>(null);
   const [isPointerInside, setIsPointerInside] = useState<boolean>(false);
   const [isAutoSpotlight, setIsAutoSpotlight] = useState<boolean>(true);
@@ -134,7 +138,7 @@ export const HeroMultiDeviceStage: React.FC = () => {
         const idx = HERO_DEVICES.findIndex((d) => d.id === prev.id);
         return HERO_DEVICES[(idx + 1) % HERO_DEVICES.length];
       });
-    }, 3400);
+    }, 3600);
     return () => window.clearInterval(timer);
   }, [isAutoSpotlight, isPointerInside, fullscreenDevice, shouldReduceMotion]);
 
@@ -163,12 +167,10 @@ export const HeroMultiDeviceStage: React.FC = () => {
   const smoothX = useSpring(pointerX, { stiffness: 200, damping: 24 });
   const smoothY = useSpring(pointerY, { stiffness: 200, damping: 24 });
 
-  const rearX = useTransform(smoothX, [-0.5, 0.5], [-6, 6]);
-  const rearY = useTransform(smoothY, [-0.5, 0.5], [-4, 4]);
-  const midX = useTransform(smoothX, [-0.5, 0.5], [-14, 14]);
-  const midY = useTransform(smoothY, [-0.5, 0.5], [-8, 8]);
-  const frontX = useTransform(smoothX, [-0.5, 0.5], [-20, 20]);
-  const frontY = useTransform(smoothY, [-0.5, 0.5], [-10, 10]);
+  const tiltRotateX = useTransform(smoothY, [-0.5, 0.5], [7, -7]);
+  const tiltRotateY = useTransform(smoothX, [-0.5, 0.5], [-10, 10]);
+  const floatX = useTransform(smoothX, [-0.5, 0.5], [-12, 12]);
+  const floatY = useTransform(smoothY, [-0.5, 0.5], [-8, 8]);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     setIsPointerInside(true);
@@ -185,15 +187,6 @@ export const HeroMultiDeviceStage: React.FC = () => {
     pointerY.set(0);
   };
 
-  const rearDevices = HERO_DEVICES.filter((d) => d.plane === 'rear');
-  const bottomRowDevices = [
-    HERO_DEVICES[2],
-    HERO_DEVICES[3],
-    HERO_DEVICES[4],
-    HERO_DEVICES[5],
-    HERO_DEVICES[6],
-  ];
-
   const renderDeviceIcon = (id: string) => {
     if (id === 'macbook_pro' || id === 'windows_xps') return <Laptop className="w-3.5 h-3.5" />;
     if (id === 'galaxy_zfold' || id === 'ipad_pro') return <Tablet className="w-3.5 h-3.5" />;
@@ -205,197 +198,212 @@ export const HeroMultiDeviceStage: React.FC = () => {
     <div
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className="relative rounded-3xl border border-white/15 bg-[radial-gradient(ellipse_at_center,rgba(20,83,45,0.42)_0%,rgba(4,9,18,0.96)_78%)] p-3.5 sm:p-5 shadow-2xl shadow-black/80 overflow-hidden"
+      className="relative flex flex-col items-center justify-end w-full"
     >
-      {/* Top Stage Header Bar */}
-      <div className="relative z-30 mb-3 pb-2.5 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-white">Hệ sinh thái 7 thiết bị đồng bộ</span>
-          <button
-            type="button"
-            onClick={() => setIsAutoSpotlight((prev) => !prev)}
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold transition-colors cursor-pointer ${
-              isAutoSpotlight
-                ? 'bg-ecomiles-lime/15 border-ecomiles-lime/50 text-ecomiles-lime'
-                : 'bg-slate-900/80 border-white/15 text-slate-300 hover:text-white'
-            }`}
+      {/* Open-Air Floating Stage (Zero Opaque Box — Container Moving Video Shines Directly Behind!) */}
+      <AnimatePresence mode="wait">
+        {stageLayout === 'spotlight' && (
+          <motion.div
+            key={`spotlight-${hoveredDevice.id}`}
+            initial={{ opacity: 0, y: 14, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.96 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              rotateX: shouldReduceMotion ? 0 : tiltRotateX,
+              rotateY: shouldReduceMotion ? 0 : tiltRotateY,
+              x: shouldReduceMotion ? 0 : floatX,
+              y: shouldReduceMotion ? 0 : floatY,
+              transformPerspective: 1100,
+            }}
+            className="relative z-10 mb-3 flex flex-col items-center justify-center cursor-zoom-in group"
+            onClick={() => setFullscreenDevice(hoveredDevice)}
           >
-            {isAutoSpotlight ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-            <span>{isAutoSpotlight ? 'Đang tự xoay' : 'Tự động xoay'}</span>
-          </button>
-        </div>
+            <img
+              src={hoveredDevice.imgSrc}
+              alt={hoveredDevice.name}
+              className="h-auto max-h-[215px] sm:max-h-[250px] w-auto max-w-full object-contain mx-auto drop-shadow-[0_24px_48px_rgba(0,0,0,0.85)] group-hover:scale-[1.02] transition-transform duration-300"
+            />
+          </motion.div>
+        )}
 
-        <button
-          type="button"
-          onClick={() => setFullscreenDevice(STUDIO_STAGE_SPEC)}
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 font-extrabold text-xs cursor-pointer transition-colors"
-        >
-          <ZoomIn className="w-3.5 h-3.5" />
-          <span>Phóng to toàn cảnh</span>
-        </button>
-      </div>
-
-      {/* Animated SVG Data-Sync Bezier Network */}
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 600 320"
-        preserveAspectRatio="none"
-        className="pointer-events-none absolute inset-0 w-full h-full z-15"
-      >
-        {[
-          { from: 'macbook_pro', to: 'galaxy_zfold', sx: 185, sy: 95, ex: 70, ey: 245, d: 'M 185 95 C 120 130, 85 190, 70 245' },
-          { from: 'macbook_pro', to: 'iphone_18_pro_max', sx: 185, sy: 95, ex: 185, ey: 250, d: 'M 185 95 C 185 145, 185 200, 185 250' },
-          { from: 'macbook_pro', to: 'iphone_duo', sx: 185, sy: 95, ex: 300, ey: 245, d: 'M 185 95 C 235 140, 275 195, 300 245' },
-          { from: 'windows_xps', to: 'iphone_duo', sx: 415, sy: 95, ex: 300, ey: 245, d: 'M 415 95 C 365 140, 325 195, 300 245' },
-          { from: 'windows_xps', to: 'galaxy_s26_ultra', sx: 415, sy: 95, ex: 415, ey: 250, d: 'M 415 95 C 415 145, 415 200, 415 250' },
-          { from: 'windows_xps', to: 'ipad_pro', sx: 415, sy: 95, ex: 530, ey: 245, d: 'M 415 95 C 480 130, 515 190, 530 245' },
-        ].map((arc, idx) => {
-          const isActive = hoveredDevice.id === arc.from || hoveredDevice.id === arc.to;
-          return (
-            <g key={idx}>
-              <path
-                d={arc.d}
-                fill="none"
-                stroke={isActive ? '#d6f65a' : '#34d399'}
-                strokeWidth={isActive ? 2.2 : 1.15}
-                strokeOpacity={isActive ? 0.9 : 0.25}
-                strokeDasharray="6 6"
-              />
-              {!shouldReduceMotion && (
-                <circle r={isActive ? 3.2 : 2} fill="#d6f65a" fillOpacity={isActive ? 1 : 0.7}>
-                  <animateMotion dur="2.2s" begin={`${idx * 0.32}s`} repeatCount="indefinite" path={arc.d} />
-                </circle>
-              )}
-            </g>
-          );
-        })}
-      </svg>
-
-      {/* 3-Plane Layered Hardware V-Formation */}
-      <div className="relative z-10">
-        {/* Rear Office Plane: MacBook Pro 16" + Windows 11 XPS 16 */}
-        <motion.div
-          style={{ x: rearX, y: rearY }}
-          className="relative z-10 grid grid-cols-2 gap-3 items-end px-2 sm:px-4"
-        >
-          {rearDevices.map((dev) => (
-            <motion.button
-              key={dev.id}
-              type="button"
-              onMouseEnter={() => setHoveredDevice(dev)}
-              onClick={() => setFullscreenDevice(dev)}
-              animate={{
-                y: hoveredDevice.id === dev.id ? -5 : 0,
-                scale: hoveredDevice.id === dev.id ? 1.025 : 1,
-              }}
-              whileHover={{ y: -7, scale: 1.035, zIndex: 35 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 360, damping: 24 }}
-              className="group relative text-center cursor-pointer focus:outline-none"
-            >
-              <div
-                className={`mb-1.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-bold transition-colors shadow-md ${
-                  hoveredDevice.id === dev.id
-                    ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
-                    : 'bg-slate-950/90 border-white/15 text-slate-200 group-hover:border-ecomiles-lime group-hover:text-ecomiles-lime'
-                }`}
-              >
-                {renderDeviceIcon(dev.id)}
-                <span>{dev.shortTag}</span>
-              </div>
-              <img
-                src={dev.imgSrc}
-                alt={dev.name}
-                className="w-full h-auto max-h-[164px] sm:max-h-[184px] object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.9)]"
-              />
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Foreground Field & Tablet Plane */}
-        <div className="relative z-20 -mt-7 sm:-mt-10 flex flex-wrap sm:flex-nowrap items-end justify-center gap-2 sm:gap-2.5">
-          {bottomRowDevices.map((dev) => {
-            const isFront = dev.plane === 'front';
-            const isDuo = dev.id === 'iphone_duo';
-            return (
-              <motion.div
-                key={dev.id}
-                style={{
-                  x: isFront ? frontX : midX,
-                  y: isFront ? frontY : midY,
-                }}
-                className={isDuo ? 'relative z-30 shrink-0' : isFront ? 'relative z-25 shrink-0' : 'relative z-20 shrink-0'}
-              >
-                <motion.button
+        {stageLayout === 'fan_all' && (
+          <motion.div
+            key="fan-all-open-air"
+            initial={{ opacity: 0, y: 14, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.96 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10 mb-3 w-full"
+          >
+            {/* Open-Air 2-Tier Fan without any background box */}
+            <div className="grid grid-cols-2 gap-3 items-end px-4">
+              {HERO_DEVICES.slice(0, 2).map((dev) => (
+                <button
+                  key={dev.id}
                   type="button"
                   onMouseEnter={() => setHoveredDevice(dev)}
                   onClick={() => setFullscreenDevice(dev)}
-                  animate={{
-                    y: hoveredDevice.id === dev.id ? -6 : 0,
-                    scale: hoveredDevice.id === dev.id ? 1.04 : 1,
-                  }}
-                  whileHover={{ y: -9, scale: 1.06, zIndex: 40 }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-                  className="group flex flex-col items-center text-center cursor-pointer focus:outline-none"
+                  className="group text-center cursor-zoom-in focus:outline-none"
                 >
                   <img
                     src={dev.imgSrc}
                     alt={dev.name}
-                    className="h-[110px] sm:h-[144px] w-auto object-contain mx-auto drop-shadow-[0_20px_34px_rgba(0,0,0,0.95)]"
+                    className="w-full h-auto max-h-[135px] sm:max-h-[150px] object-contain mx-auto drop-shadow-[0_20px_36px_rgba(0,0,0,0.9)] group-hover:-translate-y-1 transition-transform"
                   />
-                  <span
-                    className={`mt-1 inline-block px-2 py-0.5 rounded-md text-xs font-bold whitespace-nowrap transition-colors shadow-sm ${
-                      hoveredDevice.id === dev.id
-                        ? 'bg-ecomiles-lime text-slate-950'
-                        : 'bg-slate-950/90 text-slate-200 border border-white/10 group-hover:text-ecomiles-lime'
-                    }`}
-                  >
-                    {dev.shortTag}
-                  </span>
-                </motion.button>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
+                </button>
+              ))}
+            </div>
+            <div className="relative z-20 -mt-6 flex items-end justify-center gap-2">
+              {HERO_DEVICES.slice(2).map((dev) => (
+                <button
+                  key={dev.id}
+                  type="button"
+                  onMouseEnter={() => setHoveredDevice(dev)}
+                  onClick={() => setFullscreenDevice(dev)}
+                  className="group flex flex-col items-center cursor-zoom-in focus:outline-none shrink-0"
+                >
+                  <img
+                    src={dev.imgSrc}
+                    alt={dev.name}
+                    className="h-[92px] sm:h-[115px] w-auto object-contain mx-auto drop-shadow-[0_18px_32px_rgba(0,0,0,0.92)] group-hover:-translate-y-1.5 transition-transform"
+                  />
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Bottom Active Device Status Bar (Single Clean Row) */}
-      <div className="relative z-30 mt-3 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-          <div className="inline-flex items-center gap-1 shrink-0">
+      {/* Sleek Translucent Floating Glass Dock (Lets Container Video Shine Around It) */}
+      <div className="relative z-30 w-full rounded-2xl bg-slate-950/65 backdrop-blur-xl border border-white/15 p-3 shadow-2xl shadow-black/70 space-y-2.5">
+        {/* Row 1: 7-Device Pill Switcher + View Mode Controls */}
+        <div className="flex flex-wrap items-center justify-between gap-1.5">
+          <div className="flex flex-wrap items-center gap-1">
+            {HERO_DEVICES.map((dev) => {
+              const isSelected = hoveredDevice.id === dev.id;
+              return (
+                <button
+                  key={dev.id}
+                  type="button"
+                  onClick={() => {
+                    setIsAutoSpotlight(false);
+                    setHoveredDevice(dev);
+                    if (stageLayout === 'dock_only') setStageLayout('spotlight');
+                  }}
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-ecomiles-lime text-slate-950 shadow-sm font-extrabold'
+                      : 'bg-slate-900/75 text-slate-200 hover:text-white border border-white/10'
+                  }`}
+                >
+                  {renderDeviceIcon(dev.id)}
+                  <span>{dev.shortTag}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
-              onClick={() => stepHeroDevice(-1)}
-              className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
-              title="Thiết bị trước"
-              aria-label="Thiết bị trước"
+              onClick={() =>
+                setStageLayout((prev) => (prev === 'fan_all' ? 'spotlight' : 'fan_all'))
+              }
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold transition-colors cursor-pointer ${
+                stageLayout === 'fan_all'
+                  ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                  : 'bg-slate-900/80 border-white/15 text-slate-200 hover:text-white'
+              }`}
+              title="Chuyển đổi giữa xem 1 thiết bị và xem cả 7 thiết bị"
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
+              <Layers className="w-3.5 h-3.5" />
+              <span>{stageLayout === 'fan_all' ? '1 Thiết bị' : 'Cả 7 máy'}</span>
             </button>
+
             <button
               type="button"
-              onClick={() => stepHeroDevice(1)}
-              className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
-              title="Thiết bị tiếp theo"
-              aria-label="Thiết bị tiếp theo"
+              onClick={() =>
+                setStageLayout((prev) => (prev === 'dock_only' ? 'spotlight' : 'dock_only'))
+              }
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-white/15 text-xs font-bold text-slate-200 hover:text-white transition-colors cursor-pointer"
+              title="Ẩn hoặc hiện hình thiết bị để ngắm toàn cảnh video nền"
             >
-              <ChevronRight className="w-3.5 h-3.5" />
+              {stageLayout === 'dock_only' ? (
+                <>
+                  <Eye className="w-3.5 h-3.5 text-ecomiles-lime" />
+                  <span>Hiện máy</span>
+                </>
+              ) : (
+                <>
+                  <EyeOff className="w-3.5 h-3.5 text-slate-300" />
+                  <span>Ngắm nền</span>
+                </>
+              )}
             </button>
-          </div>
-          <div className="min-w-0">
-            <div className="font-extrabold text-ecomiles-lime truncate">{hoveredDevice.name}</div>
-            <div className="text-slate-200 truncate">{hoveredDevice.roleLabel}</div>
+
+            <button
+              type="button"
+              onClick={() => setFullscreenDevice(STUDIO_STAGE_SPEC)}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-white/15 text-xs font-bold text-slate-200 hover:text-white transition-colors cursor-pointer"
+              title="Phóng to toàn cảnh 7 thiết bị"
+            >
+              <ZoomIn className="w-3.5 h-3.5 text-ecomiles-lime" />
+              <span>Phóng to</span>
+            </button>
           </div>
         </div>
 
-        <a
-          href={hoveredDevice.liveHref}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold shrink-0 transition-colors"
-        >
-          <span>{hoveredDevice.liveText}</span>
-          <ArrowUpRight className="w-3.5 h-3.5" />
-        </a>
+        {/* Row 2: Active Device Summary + Step Controls + Refined Live App Launch Button */}
+        <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="inline-flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={() => stepHeroDevice(-1)}
+                className="p-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
+                title="Thiết bị trước"
+                aria-label="Thiết bị trước"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAutoSpotlight((prev) => !prev)}
+                className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                  isAutoSpotlight
+                    ? 'bg-ecomiles-lime/20 border-ecomiles-lime/50 text-ecomiles-lime'
+                    : 'bg-slate-900/90 border-white/15 text-slate-300 hover:text-white'
+                }`}
+                title={isAutoSpotlight ? 'Tạm dừng tự động chuyển' : 'Bật tự động chuyển thiết bị'}
+                aria-label="Tự động chuyển thiết bị"
+              >
+                {isAutoSpotlight ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => stepHeroDevice(1)}
+                className="p-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 cursor-pointer"
+                title="Thiết bị tiếp theo"
+                aria-label="Thiết bị tiếp theo"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <div className="min-w-0">
+              <div className="font-extrabold text-ecomiles-lime truncate">{hoveredDevice.name}</div>
+              <div className="text-slate-200 truncate">{hoveredDevice.roleLabel}</div>
+            </div>
+          </div>
+
+          <a
+            href={hoveredDevice.liveHref}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold shrink-0 transition-colors"
+          >
+            <span>{hoveredDevice.liveText}</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
       </div>
 
       {/* Fullscreen Lightbox Portal with Interactive Spatial Hotspots */}

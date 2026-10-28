@@ -49,7 +49,7 @@ export const Solutions: React.FC = () => {
         'Rút ngắn thời gian lập kế hoạch từ 90 phút xuống dưới 1 giây',
       ],
       liveHref: '/dashboard/',
-      liveLabel: 'Thử Bàn Điều Phối Đội Xe (/dashboard)',
+      liveLabel: 'Mở Bảng Điều Khiển Đội Xe',
     },
     {
       id: '02',
@@ -60,11 +60,11 @@ export const Solutions: React.FC = () => {
         'Tích hợp trực tiếp quy định cấm tải QĐ 23/2018/QĐ-UBND (06:00 - 09:00 & 16:00 - 20:00) và giới hạn tải trọng cầu (13T / 4.5m): tự động dời lịch hợp pháp hoặc định tuyến vòng qua hành lang cho phép.',
       metrics: [
         '0 vi phạm giờ cấm QĐ 23/2018 (so với 28 lỗi khi chia tuyến thủ công)',
-        'Bản đồ xe tải (/maps) hiển thị rõ vùng cấm đỏ & cầu giới hạn',
+        'Bản đồ dẫn đường xe tải hiển thị rõ vùng cấm đỏ & cầu giới hạn',
         'Hỗ trợ cả xe tải (>500kg) và xe van (<=500kg mở Google Maps $0)',
       ],
       liveHref: '/maps/?vehicle=0&mode=navigate',
-      liveLabel: 'Mở Bản Đồ Vùng Cấm QĐ 23 (/maps)',
+      liveLabel: 'Mở Bản Đồ Vùng Cấm QĐ 23',
     },
     {
       id: '03',
@@ -76,10 +76,10 @@ export const Solutions: React.FC = () => {
       metrics: [
         'Hạ tỷ lệ xe chạy rỗng từ 32.8% (122.9 km) xuống chỉ còn 2.7% (6.5 km)',
         'Tự động ghép 21 đơn chiều về, thu hồi 1,864.9 kg hàng về kho',
-        'Tài xế nhận lệnh lấy hàng chiều về ngay trên điện thoại (/driver)',
+        'Tài xế nhận lệnh lấy hàng chiều về ngay trên ứng dụng điện thoại',
       ],
       liveHref: '/driver/',
-      liveLabel: 'Trải Nghiệm App Tài Xế (/driver)',
+      liveLabel: 'Mở Ứng Dụng Tài Xế',
     },
     {
       id: '04',
@@ -94,7 +94,7 @@ export const Solutions: React.FC = () => {
         'Mã hóa độc lập dữ liệu khách hàng theo Nghị định 13/2023/NĐ-CP',
       ],
       liveHref: '/benchmark/',
-      liveLabel: 'Xem Phòng Đối Chứng EVSIM (/benchmark)',
+      liveLabel: 'Mở Phòng Đối Chứng EVSIM',
     },
   ];
 

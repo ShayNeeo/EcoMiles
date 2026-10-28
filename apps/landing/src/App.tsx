@@ -10,22 +10,11 @@ import { PricingAndPilot } from './components/PricingAndPilot';
 import { Footer } from './components/Footer';
 import { PilotModal } from './components/PilotModal';
 import { RolePortalModal } from './components/RolePortalModal';
-import { PitchDeckVoiceoverPage } from './components/PitchDeckVoiceoverPage';
 
 export function App() {
   const [pilotModalOpen, setPilotModalOpen] = useState<boolean>(false);
   const [rolePortalOpen, setRolePortalOpen] = useState<boolean>(false);
   const [selectedInterest, setSelectedInterest] = useState<string>('Dùng thử miễn phí 4 - 6 tuần');
-
-  const checkIsPitchDeck = () => {
-    if (typeof window === 'undefined') return false;
-    const path = window.location.pathname.toLowerCase();
-    const hash = window.location.hash.toLowerCase();
-    const search = window.location.search.toLowerCase();
-    return path.includes('pitch-deck') || path.includes('kich-ban') || hash.includes('pitch-deck') || hash.includes('kich-ban') || search.includes('pitch-deck');
-  };
-
-  const [showPitchDeck, setShowPitchDeck] = useState<boolean>(checkIsPitchDeck());
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -43,28 +32,7 @@ export function App() {
         return;
       }
     }
-
-    const handleLocationChange = () => {
-      setShowPitchDeck(checkIsPitchDeck());
-    };
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('hashchange', handleLocationChange);
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('hashchange', handleLocationChange);
-    };
   }, []);
-
-  if (showPitchDeck) {
-    return (
-      <PitchDeckVoiceoverPage
-        onBackToHome={() => {
-          setShowPitchDeck(false);
-          window.history.pushState(null, '', '/');
-        }}
-      />
-    );
-  }
 
   const handleOpenPilotModal = (interest?: string) => {
     if (interest) {

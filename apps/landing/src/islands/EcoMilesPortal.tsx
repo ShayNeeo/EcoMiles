@@ -457,7 +457,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
       spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
       src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
-      liveHref: '/pitch-deck/',
+      liveHref: '/dashboard/',
     },
   ] as const;
   useEffect(() => {
@@ -1030,26 +1030,19 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 href="/maps/"
                 className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
               >
-                Bản Đồ Xe Tải (/maps)
+                Mở Bản Đồ Xe Tải
               </a>
               <a
                 href="/driver/"
                 className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
               >
-                App Tài Xế (/driver)
+                Mở Ứng Dụng Tài Xế
               </a>
               <a
                 href="/benchmark/"
                 className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
               >
-                Đối Chứng EVSIM (/benchmark)
-              </a>
-              <a
-                href="/pitch-deck/"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
-              >
-                <span>Bộ 28 Ảnh Pitch Deck</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                Mở Phòng Đối Chứng
               </a>
               <button
                 type="button"
@@ -1127,14 +1120,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   href="/maps/"
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
                 >
-                  Bản Đồ (/maps)
-                </a>
-                <a
-                  href="/pitch-deck/"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
-                >
-                  <span>Bộ 28 Ảnh Pitch Deck</span>
-                  <ArrowRight className="w-3 h-3" />
+                  Mở Bản Đồ Xe Tải
                 </a>
               </div>
             </div>
@@ -2863,14 +2849,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   href="/#showcase"
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-bold transition-colors"
                 >
-                  Sân Khấu 7 Thiết Bị (#showcase)
-                </a>
-                <a
-                  href="/pitch-deck/"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
-                >
-                  <span>Bộ 28 Ảnh Pitch Deck</span>
-                  <ArrowUpRight className="w-3 h-3" />
+                  Xem Sân Khấu 7 Thiết Bị
                 </a>
               </div>
             </div>

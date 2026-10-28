@@ -23,7 +23,7 @@ export const STUDIO_STAGE_SPATIAL_HOTSPOTS: readonly StudioStageSpatialHotspot[]
   {
     id: 'macbook_pro',
     label: '1. MacBook Pro 16"',
-    roleHint: 'Trung Tâm B2B TMS (/dashboard)',
+    roleHint: 'Trung Tâm Điều Phối B2B',
     leftPct: 11.5,
     topPct: 4.0,
     widthPct: 35.5,
@@ -33,7 +33,7 @@ export const STUDIO_STAGE_SPATIAL_HOTSPOTS: readonly StudioStageSpatialHotspot[]
   {
     id: 'windows_xps',
     label: '2. Windows 11 XPS 16',
-    roleHint: 'Đối Chứng Kép EVSIM (/benchmark)',
+    roleHint: 'Phòng Đối Chứng EVSIM',
     leftPct: 52.0,
     topPct: 4.0,
     widthPct: 35.5,
@@ -43,7 +43,7 @@ export const STUDIO_STAGE_SPATIAL_HOTSPOTS: readonly StudioStageSpatialHotspot[]
   {
     id: 'galaxy_zfold',
     label: '3. Galaxy Z Fold',
-    roleHint: 'Bản Đồ Xe Tải Mở (/maps)',
+    roleHint: 'Bản Đồ Dẫn Đường Xe Tải',
     leftPct: 1.5,
     topPct: 24.5,
     widthPct: 18.2,
@@ -53,7 +53,7 @@ export const STUDIO_STAGE_SPATIAL_HOTSPOTS: readonly StudioStageSpatialHotspot[]
   {
     id: 'iphone_18_pro_max',
     label: '4. iPhone 18 Pro Max',
-    roleHint: 'App Tài Xế Chặng Giữa (/driver)',
+    roleHint: 'Ứng Dụng Tài Xế Chặng Giữa',
     leftPct: 22.8,
     topPct: 26.5,
     widthPct: 11.4,
@@ -63,7 +63,7 @@ export const STUDIO_STAGE_SPATIAL_HOTSPOTS: readonly StudioStageSpatialHotspot[]
   {
     id: 'iphone_duo',
     label: '5. iPhone Duo (Gập Đôi)',
-    roleHint: 'Đa Nhiệm 2 Màn Hình (/driver)',
+    roleHint: 'Đa Nhiệm 2 Màn Hình Tài Xế',
     leftPct: 38.4,
     topPct: 26.5,
     widthPct: 22.2,
@@ -83,7 +83,7 @@ export const STUDIO_STAGE_SPATIAL_HOTSPOTS: readonly StudioStageSpatialHotspot[]
   {
     id: 'ipad_pro',
     label: '7. iPad Pro M4',
-    roleHint: 'Taplo Kho Bãi & Bến Xuất (/dashboard)',
+    roleHint: 'Bảng Điều Khiển Kho Bãi & Bến Xuất',
     leftPct: 79.4,
     topPct: 24.5,
     widthPct: 18.2,

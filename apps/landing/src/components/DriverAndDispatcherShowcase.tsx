@@ -52,7 +52,7 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     roleBadge: 'SÂN KHẤU 7 THIẾT BỊ · BẤM VÀO THIẾT BỊ BẤT KỲ ĐỂ XEM CHI TIẾT',
     imageSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
     liveRouteUrl: '/dashboard/',
-    liveRouteLabel: 'Mở Trung Tâm Điều Phối B2B (/dashboard)',
+    liveRouteLabel: 'Mở Trung Tâm Điều Phối B2B',
     description:
       'Một nền tảng duy nhất đồng bộ từ máy trạm điều phối tại văn phòng (MacBook Pro 16", Windows 11 XPS 16) đến máy tính bảng kho vận / buồng lái (Samsung Galaxy Z Fold, iPad Pro M4) và điện thoại tài xế ngoài thực địa (iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra).',
     highlights: [
@@ -68,13 +68,13 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     roleBadge: 'VAI TRÒ 1 · ĐIỀU PHỐI VIÊN CÔNG TY',
     imageSrc: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
     liveRouteUrl: '/dashboard/',
-    liveRouteLabel: 'Trải Nghiệm Giao Diện Quản Lý (/dashboard)',
+    liveRouteLabel: 'Mở Bảng Điều Khiển Quản Lý',
     description:
       'Không gian quản trị dành cho điều phối viên: nạp bảng tính .XLSX 120 đơn từ ERP, kiểm tra tiến độ từng xe theo thời gian thực và xuất báo cáo kiểm toán ESG 3 Sheet chuẩn ISO 14083 / GLEC v3.2.',
     highlights: [
       'Theo dõi trực quan 94/120 đơn, 7/10 xe, 243.7 km, 2.7% chạy rỗng và +19 đơn ghép về',
       'Tích hợp trực tiếp Buồng Đối Chứng 2 Bên EVSIM ngay trong thanh điều hướng bên trái',
-      '1-click chuyển từ bất kỳ dòng xe nào sang Bản đồ Dẫn đường Xe tải (/maps)',
+      '1-click chuyển từ bất kỳ dòng xe nào sang Bản đồ Dẫn đường Xe tải',
     ],
   },
   {
@@ -84,7 +84,7 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     roleBadge: 'VAI TRÒ 2 · KIỂM ĐỊNH THUẬT TOÁN ĐỘC LẬP',
     imageSrc: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
     liveRouteUrl: '/benchmark/',
-    liveRouteLabel: 'Mở Buồng Đối Chứng EVSIM (/benchmark)',
+    liveRouteLabel: 'Mở Phòng Đối Chứng EVSIM',
     description:
       'Chạy song song hai bản đồ TP.HCM từ 06:00 đến 20:00 trên cùng một mạng lưới đường phố thật: bên trái là quy trình điều phối thủ công (374.4 km, 28 lỗi cấm tải QĐ 23), bên phải là thuật toán EcoMiles (243.7 km, 0 lỗi).',
     highlights: [
@@ -96,11 +96,11 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
   {
     id: 'galaxy_zfold',
     shortLabel: 'Galaxy Z Fold',
-    deviceTitle: 'Samsung Galaxy Z Fold · Buồng Lái Bản Đồ Xe Tải (/maps)',
+    deviceTitle: 'Samsung Galaxy Z Fold · Buồng Lái Bản Đồ Xe Tải Mở',
     roleBadge: 'BẢN ĐỒ XE TẢI MỞ · CHẶNG GIỮA (>500KG)',
     imageSrc: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
     liveRouteUrl: '/maps/?vehicle=0&mode=navigate',
-    liveRouteLabel: 'Mở Chế Độ Bắt Đầu Lái (/maps Live)',
+    liveRouteLabel: 'Mở Bản Đồ Dẫn Đường Xe Tải',
     description:
       'Màn hình gập mở rộng gắn trên taplo xe tải (>500kg): hiển thị rõ các vùng cấm tải QĐ 23/2018 màu đỏ, giới hạn tải trọng cầu (13T / 4.5m) và chế độ Dẫn Đường Trực Tiếp bám theo mũi xe.',
     highlights: [
@@ -116,7 +116,7 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     roleBadge: 'TABLET KHO VẬN · GIAO DIỆN CẢM ỨNG',
     imageSrc: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
     liveRouteUrl: '/dashboard/',
-    liveRouteLabel: 'Mở Bảng Điều Khiển Tablet (/dashboard)',
+    liveRouteLabel: 'Mở Bảng Điều Khiển Kho Bãi',
     description:
       'Giao diện máy tính bảng chuyển thanh điều hướng dọc thành dải nút cảm ứng ngang, đưa toàn bộ 6 chỉ số KPI và bảng tiến độ đội xe lên ngay màn hình đầu tiên để quản đốc kho thao tác nhanh.',
     highlights: [
@@ -132,9 +132,9 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     roleBadge: 'ĐIỆN THOẠI GẬP ĐÔI · ĐA NHIỆM TÀI XẾ',
     imageSrc: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
     liveRouteUrl: '/driver/',
-    liveRouteLabel: 'Mở Ứng Dụng Tài Xế (/driver)',
+    liveRouteLabel: 'Mở Ứng Dụng Tài Xế',
     description:
-      'Thiết kế đa nhiệm trên điện thoại gập đôi: màn hình bên trái giữ danh sách 13 điểm dừng và trạng thái giao hàng (/driver), trong khi màn hình bên phải chạy bản đồ dẫn đường trực tiếp (/maps).',
+      'Thiết kế đa nhiệm trên điện thoại gập đôi: màn hình bên trái giữ danh sách 13 điểm dừng và trạng thái giao hàng, trong khi màn hình bên phải chạy bản đồ dẫn đường trực tiếp.',
     highlights: [
       'Tài xế vừa xem ghi chú người nhận & đơn ghép chiều về vừa theo dõi lộ trình né đường cấm',
       'Không cần chuyển tab qua lại khi đang di chuyển qua các giao lộ phức tạp tại TP.HCM',
@@ -148,12 +148,12 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     roleBadge: 'VAI TRÒ 3 (TÀI XẾ) · CHẶNG GIỮA (>500KG)',
     imageSrc: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
     liveRouteUrl: '/driver/',
-    liveRouteLabel: 'Mở App Tài Xế Chặng Giữa (/driver)',
+    liveRouteLabel: 'Mở Ứng Dụng Tài Xế Chặng Giữa',
     description:
       'Giao diện điện thoại độ tương phản cao ngoài trời nắng dành cho tài xế xe tải (>500kg): tích hợp bản đồ xe tải né đường cấm, thông báo lệnh ghép đơn chiều về kho Tân Bình và cập nhật giao hàng 1 chạm.',
     highlights: [
       'Bố cục chữ lớn, nút bấm một chạm rõ ràng giúp tài xế thao tác an toàn tại điểm dừng',
-      '1-chạm mở Bản Đồ Vùng Cấm (/maps) hoặc Bắt Đầu Lái (/maps Live)',
+      '1-chạm mở Bản Đồ Vùng Cấm hoặc Chế Độ Dẫn Đường Trực Tiếp',
       'Hiển thị rõ ràng buộc cầu <= 13T, độ cao <= 3.8m và hành lang hợp pháp QĐ 23/2018',
     ],
   },
@@ -164,7 +164,7 @@ const FLAGSHIP_DEVICES: DeviceShowcaseSpec[] = [
     roleBadge: 'VAI TRÒ 3 (TÀI XẾ) · CHẶNG CUỐI (<=500KG)',
     imageSrc: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
     liveRouteUrl: '/driver/',
-    liveRouteLabel: 'Thử Mở Google Maps Waypoints (/driver)',
+    liveRouteLabel: 'Thử Mở Google Maps Waypoints',
     description:
       'Đối với xe van / ô tô con (<=500kg) không bị cấm tải QĐ 23/2018, EcoMiles tự động nhúng chuỗi tọa độ các điểm dừng tối ưu thẳng vào ứng dụng Google Maps sẵn có trên điện thoại tài xế ($0 phí API).',
     highlights: [

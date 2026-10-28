@@ -84,7 +84,7 @@ export const WorkflowShowcase: React.FC = () => {
       outputSpec: '120 bản ghi chuẩn hóa + Gắn nhãn vùng cấm QĐ 23/2018',
       proofImage: '/pitch-deck-screenshots/01_desktop_b2b_tms_fleet_overview.png',
       liveUrl: '/dashboard/',
-      liveLabel: 'Thử Tải File .XLSX Trên /dashboard',
+      liveLabel: 'Thử Tải File .XLSX Trên Bảng Điều Khiển',
       outcomes: [
         'Tự động ánh xạ 100% cột tiếng Việt / tiếng Anh không cần sửa tay',
         'Phát hiện tức thì 28 đơn rơi vào khung giờ cấm 06:00-09:00 & 16:00-20:00',
@@ -102,7 +102,7 @@ export const WorkflowShowcase: React.FC = () => {
       outputSpec: 'Lộ trình 243.7 km (-34.9% km · 0 lỗi QĐ 23 · 2.7% chạy rỗng)',
       proofImage: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
       liveUrl: '/benchmark/',
-      liveLabel: 'Kiểm Chứng Trên Buồng Đôi EVSIM (/benchmark)',
+      liveLabel: 'Mở Phòng Đối Chứng EVSIM',
       outcomes: [
         'Tiết giảm 130.7 km mỗi ca vận hành (-34.9% tổng quãng đường)',
         'Khử 28/28 lỗi vi phạm giờ cấm QĐ 23/2018 (tránh phạt 5.000.000đ/lỗi)',
@@ -115,12 +115,12 @@ export const WorkflowShowcase: React.FC = () => {
       icon: <Navigation className="w-5 h-5 text-emerald-300" />,
       badge: 'Thực Địa 2 Chặng ($0 API)',
       summary:
-        'Phát hành lộ trình xuống điện thoại tài xế (/driver) và bản đồ dẫn đường xe tải giọng nói tiếng Việt (/maps): xe >500kg dùng bản đồ OpenTruck né đường cấm, xe <=500kg mở thẳng Google Maps Waypoints miễn phí.',
+        'Phát hành lộ trình xuống điện thoại tài xế và bản đồ dẫn đường xe tải giọng nói tiếng Việt: xe >500kg dùng bản đồ xe tải né đường cấm, xe <=500kg mở thẳng Google Maps Waypoints miễn phí.',
       inputSpec: 'Lộ trình 7 xe tải đã phê duyệt trên trung tâm điều phối',
-      outputSpec: 'Dẫn đường trực tiếp (/maps) & Google Maps Waypoints ($0 API)',
+      outputSpec: 'Bản đồ dẫn đường trực tiếp & Google Maps Waypoints ($0 API)',
       proofImage: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
       liveUrl: '/driver/',
-      liveLabel: 'Trải Nghiệm App Tài Xế (/driver)',
+      liveLabel: 'Mở Ứng Dụng Tài Xế',
       outcomes: [
         '0đ chi phí bản đồ API hàng tháng (tiết kiệm 7.500.000đ/tháng phí Google API)',
         'Thuyết minh giọng nói tiếng Việt đọc tên đường rẽ và cảnh báo cầu 13T / 4.5m',
@@ -138,7 +138,7 @@ export const WorkflowShowcase: React.FC = () => {
       outputSpec: 'Báo cáo Excel 3 Sheet (-39.2% CO₂e · Bảo mật NĐ 13/2023)',
       proofImage: '/pitch-deck-screenshots/20_slide_composite_4role_enterprise_architecture.png',
       liveUrl: '/portal/audit/',
-      liveLabel: 'Mở Cổng Kiểm Toán ESG (/portal/audit)',
+      liveLabel: 'Mở Cổng Kiểm Toán ESG',
       outcomes: [
         'Cắt giảm 39.2% lượng phát thải CO₂e (tiết kiệm 36.14 kg CO₂e mỗi ca)',
         'Xuất báo cáo Excel 3 Sheet sẵn sàng nộp kiểm toán chuỗi cung ứng xanh',

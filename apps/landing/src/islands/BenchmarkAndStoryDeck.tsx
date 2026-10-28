@@ -349,14 +349,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
             href="/#showcase"
             className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-white/10 transition-colors"
           >
-            Sân Khấu 7 Thiết Bị (#showcase)
-          </a>
-          <a
-            href="/pitch-deck/"
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold transition-colors"
-          >
-            <span>Bộ 28 Ảnh Pitch Deck</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
+            Xem Sân Khấu 7 Thiết Bị
           </a>
         </div>
       </div>

@@ -466,7 +466,7 @@ export function EcoMilesTruckMapNavigator({
       title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
       spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
       src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
-      liveHref: '/pitch-deck/',
+      liveHref: '/dashboard/',
     },
   ] as const;
   const CABIN_PROFILE_TO_ASSET_IDX: Record<'zfold' | 'ipad_pro' | 'windows_xps' | 'macbook_pro', number> = {
@@ -1145,26 +1145,19 @@ export function EcoMilesTruckMapNavigator({
                   href="/dashboard/"
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
                 >
-                  Trung Tâm Điều Phối (/dashboard)
+                  Mở Bảng Điều Khiển
                 </a>
                 <a
                   href="/driver/"
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
                 >
-                  App Tài Xế (/driver)
+                  Mở Ứng Dụng Tài Xế
                 </a>
                 <a
                   href="/benchmark/"
                   className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
                 >
-                  Đối Chứng EVSIM (/benchmark)
-                </a>
-                <a
-                  href="/pitch-deck/"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
-                >
-                  <span>Bộ 28 Ảnh Pitch Deck</span>
-                  <ArrowRight className="w-3 h-3" />
+                  Mở Phòng Đối Chứng
                 </a>
               </div>
             </div>

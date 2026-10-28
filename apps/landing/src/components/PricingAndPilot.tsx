@@ -249,7 +249,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 {[
                   'Chỉ tính phí khi ghép đơn chiều về thành công (Minh họa: 5.000đ/đơn + 10đ/kg/km)',
                   'Tự động thu hồi hàng hoàn, bao bì, pallet hoặc ghép hàng liên kho B2B',
-                  'Hiển thị điểm lấy hàng chiều về ngay trên ứng dụng điện thoại tài xế (/driver)',
+                  'Hiển thị điểm lấy hàng chiều về ngay trên ứng dụng điện thoại của tài xế',
                 ].map((feature) => (
                   <div key={feature} className="flex items-start gap-2.5">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-ecomiles-lime" />

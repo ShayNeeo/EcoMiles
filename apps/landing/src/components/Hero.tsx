@@ -63,7 +63,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
       ref={heroRef}
       className="relative flex min-h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cargox-fallback"
     >
-      {/* Plane 1 (Background): Ambient Urban Logistics Video */}
+      {/* Plane 1 (Background): Ambient Urban Logistics & Container Video — High Clarity */}
       <video
         ref={bgPlaneRef}
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260620_185230_f7f71ef4-6655-469f-b9c6-efbdc1f7684a.mp4"
@@ -71,18 +71,18 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
         muted
         loop
         playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.62] saturate-[0.82] contrast-[1.08] pointer-events-none"
+        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.84] saturate-[0.95] contrast-[1.06] pointer-events-none"
       />
 
-      {/* Focused Contrast Scrim */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(2,9,5,0.82)_0%,rgba(4,21,13,0.42)_45%,rgba(7,17,12,0.96)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-slate-950/35 mix-blend-multiply" />
+      {/* Directional Scrim: Protects Left Headline Legibility While Leaving Right Container Video Open & Bright */}
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(2,9,5,0.88)_0%,rgba(2,9,5,0.52)_46%,rgba(2,9,5,0.12)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,rgba(2,9,5,0.55)_0%,transparent_28%,transparent_72%,rgba(7,17,12,0.94)_100%)]" />
 
       {/* Main Hero Content Layer */}
       <div className="relative z-10 flex flex-col flex-1 w-full h-full justify-between overflow-hidden">
         <div className="h-16 sm:h-20" />
 
-        {/* Main Content Grid: Left Value Proposition (6 Cols) + Right Signature 7-Device Stage (6 Cols) */}
+        {/* Main Content Grid: Left Value Proposition (6 Cols) + Right Open-Air Floating 7-Device Stage (6 Cols) */}
         <div
           className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center w-full max-w-[1440px] mx-auto"
           style={{
@@ -115,14 +115,14 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               initial={{ y: 18, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2, ease: EXPO_OUT }}
-              className="max-w-xl text-sm sm:text-base text-slate-200 leading-relaxed font-normal"
+              className="max-w-xl text-sm sm:text-base text-slate-100 leading-relaxed font-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
             >
               Nhập trực tiếp file Excel đơn hàng: hệ thống tự động chia tuyến xe tải né khung giờ cấm tải{' '}
               <strong>QĐ 23/2018/QĐ-UBND</strong>, ghép đơn chiều về giảm chạy rỗng xuống <strong>2.7%</strong> và xuất
               báo cáo kiểm toán phát thải CO₂ chuẩn quốc tế trong 30 giây — <strong>$0 phí bản đồ API</strong>.
             </motion.p>
 
-            {/* Primary & Secondary Live Workspace Launchers */}
+            {/* Primary & Secondary Live Workspace Launchers (Refined Product Names — Zero Raw /route Paths) */}
             <motion.div
               initial={{ y: 18, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -135,46 +135,46 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                   className="px-5 py-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs sm:text-sm inline-flex items-center gap-2 shadow-xl shadow-black/50 transition-colors cursor-pointer"
                 >
                   <FileSpreadsheet className="w-4 h-4" />
-                  <span>Mở Trung Tâm Điều Phối Live (/dashboard)</span>
+                  <span>Mở Bảng Điều Khiển Đội Xe</span>
                   <ArrowUpRight className="w-4 h-4" />
                 </a>
 
                 <a
                   href="/benchmark/"
-                  className="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-100 border border-white/15 hover:border-ecomiles-lime/50 font-bold text-xs sm:text-sm inline-flex items-center gap-2 backdrop-blur-md transition-colors cursor-pointer"
+                  className="px-4 py-3 rounded-xl bg-slate-950/75 hover:bg-slate-900 text-slate-100 border border-white/20 hover:border-ecomiles-lime/50 font-bold text-xs sm:text-sm inline-flex items-center gap-2 backdrop-blur-md transition-colors cursor-pointer"
                 >
                   <SplitSquareVertical className="w-4 h-4 text-ecomiles-lime" />
-                  <span>Đối Chứng 2 Bên EVSIM (/benchmark)</span>
+                  <span>Mở Phòng Đối Chứng EVSIM</span>
                 </a>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-300">
-                <span className="font-semibold text-slate-300">Trải nghiệm thực địa:</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-200">
+                <span className="font-semibold text-slate-200 drop-shadow">Trải nghiệm thực địa:</span>
                 <a
                   href="/maps/?vehicle=0&mode=navigate"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950/85 hover:bg-slate-900 text-slate-200 hover:text-ecomiles-lime border border-white/10 transition-colors font-semibold"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950/70 hover:bg-slate-900 text-slate-100 hover:text-ecomiles-lime border border-white/15 backdrop-blur-md transition-colors font-semibold"
                 >
                   <Compass className="w-3.5 h-3.5 text-ecomiles-lime" />
-                  <span>Bản Đồ Xe Tải (/maps)</span>
+                  <span>Mở Bản Đồ Xe Tải</span>
                 </a>
                 <a
                   href="/driver/"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950/85 hover:bg-slate-900 text-slate-200 hover:text-ecomiles-lime border border-white/10 transition-colors font-semibold"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950/70 hover:bg-slate-900 text-slate-100 hover:text-ecomiles-lime border border-white/15 backdrop-blur-md transition-colors font-semibold"
                 >
                   <Truck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>App Tài Xế (/driver)</span>
+                  <span>Mở Ứng Dụng Tài Xế</span>
                 </a>
               </div>
             </motion.div>
           </div>
 
-          {/* Right 6 Cols: Signature Interactive 7-Device Spatial Stage */}
+          {/* Right 6 Cols: Frameless Open-Air Floating 7-Device Stage (Lets Container Video Shine Through) */}
           <motion.div
             ref={fgPlaneRef}
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.16, ease: EXPO_OUT }}
-            className="lg:col-span-6 mx-auto flex w-full min-w-0 flex-col justify-center"
+            className="lg:col-span-6 mx-auto flex w-full min-w-0 flex-col justify-end"
           >
             <HeroMultiDeviceStage />
           </motion.div>
@@ -193,7 +193,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
             transition={{ duration: 0.6, delay: 0.34, ease: EXPO_OUT }}
             className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl"
           >
-            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 backdrop-blur-md">
+            <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-white/15 backdrop-blur-md">
               <div className="text-xs font-bold text-ecomiles-lime uppercase tracking-wider flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Kiểm chứng 120 đơn QĐ 23</span>
@@ -203,12 +203,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 <ArrowRight className="w-5 h-5 text-ecomiles-lime shrink-0" />
                 <span>243.7 km</span>
               </div>
-              <div className="text-xs text-slate-300 mt-0.5">
+              <div className="text-xs text-slate-200 mt-0.5">
                 Tiết giảm <strong>130.7 km (-34.9%)</strong> trên mạng lưới đường thật TP.HCM
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 backdrop-blur-md">
+            <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-white/15 backdrop-blur-md">
               <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Ghép đơn chiều về (Backhaul)</span>
@@ -218,12 +218,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 <ArrowRight className="w-5 h-5 text-emerald-400 shrink-0" />
                 <span>2.7% rỗng</span>
               </div>
-              <div className="text-xs text-slate-300 mt-0.5">
+              <div className="text-xs text-slate-200 mt-0.5">
                 Thu hồi tự động <strong>1,864.9 kg</strong> hàng chiều về kho Tân Bình
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 backdrop-blur-md">
+            <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-white/15 backdrop-blur-md">
               <div className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Kiểm toán CO₂e ISO 14083</span>
@@ -231,7 +231,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
               <div className="text-xl sm:text-2xl font-black text-white mt-1 tabular-nums">
                 -39.2% kg CO₂e
               </div>
-              <div className="text-xs text-slate-300 mt-0.5">
+              <div className="text-xs text-slate-200 mt-0.5">
                 Tính theo tải trọng thực tế · Xuất báo cáo <strong>Excel 3 Sheet</strong>
               </div>
             </div>

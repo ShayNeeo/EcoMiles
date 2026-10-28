@@ -50,21 +50,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
               className="px-4 py-2.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-lg shadow-black/40 transition-colors"
             >
               <FileSpreadsheet className="w-4 h-4" />
-              <span>Trung Tâm B2B (/dashboard)</span>
+              <span>Mở Bảng Điều Khiển</span>
             </a>
             <a
               href="/maps/?vehicle=0&mode=navigate"
               className="px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
             >
               <Compass className="w-4 h-4 text-ecomiles-lime" />
-              <span>Bản Đồ Xe Tải (/maps)</span>
+              <span>Mở Bản Đồ Xe Tải</span>
             </a>
             <a
               href="/driver/"
               className="px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white border border-white/15 font-bold text-xs flex items-center gap-1.5 transition-colors"
             >
               <Truck className="w-4 h-4 text-emerald-400" />
-              <span>App Tài Xế (/driver)</span>
+              <span>Mở Ứng Dụng Tài Xế</span>
             </a>
           </div>
         </div>
@@ -98,27 +98,27 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
             <ul className="space-y-2.5 text-slate-300">
               <li>
                 <a href="/dashboard/" className="hover:text-ecomiles-lime transition-colors">
-                  1. Điều phối viên B2B (/dashboard)
+                  1. Trung tâm Điều phối Đội xe B2B
                 </a>
               </li>
               <li>
                 <a href="/benchmark/" className="hover:text-ecomiles-lime transition-colors">
-                  2. Phòng đối chứng EVSIM (/benchmark)
+                  2. Phòng Đối chứng Thuật toán EVSIM
                 </a>
               </li>
               <li>
                 <a href="/driver/" className="hover:text-ecomiles-lime transition-colors">
-                  3. Ứng dụng Tài xế (/driver)
+                  3. Ứng dụng Tài xế Giao nhận
                 </a>
               </li>
               <li>
                 <a href="/maps/?vehicle=0&mode=navigate" className="hover:text-ecomiles-lime transition-colors">
-                  4. Bản đồ Xe tải (/maps)
+                  4. Bản đồ Dẫn đường Xe tải
                 </a>
               </li>
               <li>
                 <a href="/portal/audit/" className="hover:text-ecomiles-lime transition-colors">
-                  5. Cổng Kiểm toán ESG (/portal/audit)
+                  5. Cổng Kiểm toán Phát thải ESG
                 </a>
               </li>
             </ul>
@@ -171,14 +171,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   className="hover:text-ecomiles-lime transition-colors"
                 >
                   Bảng giá &amp; Gói Pilot miễn phí
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/pitch-deck/"
-                  className="hover:text-ecomiles-lime transition-colors text-ecomiles-lime font-semibold"
-                >
-                  Hồ sơ thuyết trình (/pitch-deck)
                 </a>
               </li>
             </ul>

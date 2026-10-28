@@ -27,9 +27,9 @@ const members: TeamMember[] = [
       </>
     ),
     ownershipBadge: 'Product Lead · Vận hành B2B & Chuẩn GLEC v3.2',
-    image: '/team/phuc.png',
+    image: '/team/phuc.jpg',
     imagePosition: 'center 24%',
-    liveSubsystemLabel: 'Trung Tâm B2B (/dashboard)',
+    liveSubsystemLabel: 'Mở Bảng Điều Khiển',
     liveSubsystemHref: '/dashboard/',
   },
   {
@@ -44,7 +44,7 @@ const members: TeamMember[] = [
     ownershipBadge: 'CTO · Thuật toán VRPTW/ALNS & Kiến trúc Bảo mật',
     image: '/team/thanh.jpg',
     imagePosition: 'center 32%',
-    liveSubsystemLabel: 'Kiểm Toán ESG (/portal/audit)',
+    liveSubsystemLabel: 'Mở Cổng Kiểm Toán ESG',
     liveSubsystemHref: '/portal/audit/',
   },
   {
@@ -59,7 +59,7 @@ const members: TeamMember[] = [
     ownershipBadge: 'ESG Analytics · Đối chứng EVSIM & Báo cáo 3 Sheet',
     image: '/team/phuong.jpg',
     imagePosition: 'center 18%',
-    liveSubsystemLabel: 'Đối Chứng EVSIM (/benchmark)',
+    liveSubsystemLabel: 'Mở Phòng Đối Chứng',
     liveSubsystemHref: '/benchmark/',
   },
   {
@@ -74,7 +74,7 @@ const members: TeamMember[] = [
     ownershipBadge: 'CFO · Mô hình hoàn vốn ROI & Bản đồ $0 API',
     image: '/team/thuy.jpg',
     imagePosition: 'center 24%',
-    liveSubsystemLabel: 'Bản Đồ Xe Tải (/maps)',
+    liveSubsystemLabel: 'Mở Bản Đồ Xe Tải',
     liveSubsystemHref: '/maps/?vehicle=0&mode=navigate',
   },
   {
@@ -89,7 +89,7 @@ const members: TeamMember[] = [
     ownershipBadge: 'Last-Mile Lead · Ứng dụng Tài xế & Ghép đơn về',
     image: '/team/ngan.jpg',
     imagePosition: 'center 25%',
-    liveSubsystemLabel: 'App Tài Xế (/driver)',
+    liveSubsystemLabel: 'Mở Ứng Dụng Tài Xế',
     liveSubsystemHref: '/driver/',
   },
 ];
