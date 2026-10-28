@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
-import { ArrowUpRight, Laptop, Smartphone, SplitSquareVertical, Tablet, X } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Laptop,
+  Pause,
+  Play,
+  Smartphone,
+  SplitSquareVertical,
+  Tablet,
+  X,
+  ZoomIn,
+} from 'lucide-react';
 
 interface HeroDeviceSpec {
   id: string;
@@ -379,30 +392,31 @@ export const HeroMultiDeviceStage: React.FC = () => {
             <button
               type="button"
               onClick={() => stepHeroDevice(-1)}
-              className="px-1.5 py-0.5 rounded bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/15 font-bold cursor-pointer"
+              className="p-1 rounded bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/15 font-bold cursor-pointer"
               title="Thiết bị trước"
             >
-              ‹
+              <ChevronLeft className="w-3 h-3" />
             </button>
             <button
               type="button"
               onClick={() => stepHeroDevice(1)}
-              className="px-1.5 py-0.5 rounded bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/15 font-bold cursor-pointer"
+              className="p-1 rounded bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/15 font-bold cursor-pointer"
               title="Thiết bị tiếp theo"
             >
-              ›
+              <ChevronRight className="w-3 h-3" />
             </button>
           </div>
           <button
             type="button"
             onClick={() => setIsAutoSpotlight((prev) => !prev)}
-            className={`px-2 py-0.5 rounded border text-[10px] font-bold transition-colors cursor-pointer ${
+            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-bold transition-colors cursor-pointer ${
               isAutoSpotlight
                 ? 'bg-ecomiles-lime/15 border-ecomiles-lime/50 text-ecomiles-lime'
                 : 'bg-slate-900/80 border-white/15 text-slate-400 hover:text-white'
             }`}
           >
-            {isAutoSpotlight ? '⏸ Tự động' : '▶ Tự động'}
+            {isAutoSpotlight ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+            <span>Tự động</span>
           </button>
           <button
             type="button"
@@ -414,18 +428,20 @@ export const HeroMultiDeviceStage: React.FC = () => {
           <button
             type="button"
             onClick={() => setFullscreenDevice(STUDIO_STAGE_SPEC)}
-            className="px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 font-extrabold text-[10px] cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 font-extrabold text-[10px] cursor-pointer transition-colors"
             title="Phóng to Sân Khấu 7 Thiết Bị 2.4K (2400×1120)"
           >
-            🔍 Sân Khấu 2.4K
+            <ZoomIn className="w-3 h-3" />
+            <span>Sân Khấu 2.4K</span>
           </button>
           <button
             type="button"
             onClick={() => setFullscreenDevice(hoveredDevice)}
-            className="px-2 py-0.5 rounded bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold text-[10px] cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold text-[10px] cursor-pointer transition-colors"
             title="Phóng to toàn màn hình 2.4K"
           >
-            🔍 2.4K
+            <ZoomIn className="w-3 h-3" />
+            <span>2.4K</span>
           </button>
           <a
             href={hoveredDevice.liveHref}
@@ -489,18 +505,18 @@ export const HeroMultiDeviceStage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => stepHeroDevice(-1)}
-                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer whitespace-nowrap"
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer whitespace-nowrap"
                   title="Thiết bị trước"
                 >
-                  ‹
+                  <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => stepHeroDevice(1)}
-                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer whitespace-nowrap"
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer whitespace-nowrap"
                   title="Thiết bị tiếp theo"
                 >
-                  ›
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </button>
                 <a
                   href="#showcase"
@@ -521,9 +537,10 @@ export const HeroMultiDeviceStage: React.FC = () => {
                     setFullscreenDevice(inspectedDevice);
                     setInspectedDevice(null);
                   }}
-                  className="px-2 py-1 rounded-lg bg-ecomiles-lime/20 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-bold text-[11px] cursor-pointer whitespace-nowrap transition-colors"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-ecomiles-lime/20 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-bold text-[11px] cursor-pointer whitespace-nowrap transition-colors"
                 >
-                  🔍 Toàn Màn Hình 2.4K
+                  <ZoomIn className="w-3 h-3" />
+                  <span>Toàn Màn Hình 2.4K</span>
                 </button>
                 <a
                   href={inspectedDevice.liveHref}
@@ -586,25 +603,28 @@ export const HeroMultiDeviceStage: React.FC = () => {
                       onClick={() =>
                         setFullscreenDevice(HERO_LIGHTBOX_ASSETS[(activeIdx - 1 + total) % total])
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() =>
                         setFullscreenDevice(HERO_LIGHTBOX_ASSETS[(activeIdx + 1) % total])
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={fullscreenDevice.imgSrc}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={fullscreenDevice.liveHref}
@@ -616,10 +636,11 @@ export const HeroMultiDeviceStage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setFullscreenDevice(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                       aria-label="Đóng toàn màn hình"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

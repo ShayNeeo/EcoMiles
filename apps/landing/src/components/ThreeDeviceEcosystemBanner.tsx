@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import gsap from 'gsap';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Download, Pause, Play, X, ZoomIn } from 'lucide-react';
 
 export type DeviceBannerFocusId =
   | 'all_banner'
@@ -182,14 +183,14 @@ const DEVICE_LIVE_ROUTES: Record<
   DeviceBannerFocusId,
   { href: string; label: string }
 > = {
-  all_banner: { href: '/dashboard/', label: 'Mở Trung Tâm B2B (/dashboard) ↗' },
-  macbook_pro: { href: '/dashboard/', label: 'Mở Trung Tâm B2B (/dashboard) ↗' },
-  windows_xps: { href: '/benchmark/', label: 'Mở Phòng Đối Chứng (/benchmark) ↗' },
-  galaxy_zfold: { href: '/maps/?vehicle=0&mode=navigate', label: 'Mở Bản Đồ Xe Tải (/maps) ↗' },
-  ipad_pro: { href: '/dispatcher/', label: 'Mở Giao Diện Kho Vận (/dispatcher) ↗' },
-  iphone_18_pro_max: { href: '/driver/', label: 'Mở App Tài Xế Chặng Giữa (/driver) ↗' },
-  iphone_duo: { href: '/driver/', label: 'Mở Đa Nhiệm 2 Màn Hình (/driver) ↗' },
-  galaxy_s26_ultra: { href: '/maps/?vehicle=1&mode=navigate', label: 'Mở Dẫn Đường Trực Tiếp (/maps) ↗' },
+  all_banner: { href: '/dashboard/', label: 'Mở Trung Tâm B2B (/dashboard)' },
+  macbook_pro: { href: '/dashboard/', label: 'Mở Trung Tâm B2B (/dashboard)' },
+  windows_xps: { href: '/benchmark/', label: 'Mở Phòng Đối Chứng (/benchmark)' },
+  galaxy_zfold: { href: '/maps/?vehicle=0&mode=navigate', label: 'Mở Bản Đồ Xe Tải (/maps)' },
+  ipad_pro: { href: '/dispatcher/', label: 'Mở Giao Diện Kho Vận (/dispatcher)' },
+  iphone_18_pro_max: { href: '/driver/', label: 'Mở App Tài Xế Chặng Giữa (/driver)' },
+  iphone_duo: { href: '/driver/', label: 'Mở Đa Nhiệm 2 Màn Hình (/driver)' },
+  galaxy_s26_ultra: { href: '/maps/?vehicle=1&mode=navigate', label: 'Mở Dẫn Đường Trực Tiếp (/maps)' },
 };
 
 const DEVICE_2D_MOCKUPS: Record<
@@ -270,6 +271,7 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
   } | null>(null);
   const [isAutoTour, setIsAutoTour] = useState<boolean>(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+  const [isCoverBannerActive, setIsCoverBannerActive] = useState<boolean>(false);
   const clusterPreset: ClusterPresetId =
     clusterOverride && clusterOverride.forDeviceId === selectedDeviceId
       ? clusterOverride.preset
@@ -1090,16 +1092,18 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
         <button
           type="button"
           onClick={() => setIsLightboxOpen(true)}
-          className="px-2.5 py-1 rounded-lg bg-slate-900/95 hover:bg-slate-800 border border-ecomiles-lime/60 text-ecomiles-lime text-[10.5px] font-extrabold shadow-lg backdrop-blur-md transition-all cursor-pointer"
+          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/95 hover:bg-slate-800 border border-ecomiles-lime/60 text-ecomiles-lime text-[10.5px] font-extrabold shadow-lg backdrop-blur-md transition-all cursor-pointer"
           title="Phóng to màn hình thiết bị độ phân giải 2.4K"
         >
-          🔍 Phóng To 2.4K
+          <ZoomIn className="w-3 h-3" />
+          <span>Phóng To 2.4K</span>
         </button>
         <a
           href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
-          className="px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-[10.5px] font-extrabold shadow-lg transition-colors"
+          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-[10.5px] font-extrabold shadow-lg transition-colors"
         >
-          {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
+          <span>{DEVICE_LIVE_ROUTES[selectedDeviceId].label}</span>
+          <ArrowUpRight className="w-3 h-3" />
         </a>
       </div>
       <div
@@ -1163,29 +1167,30 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
           <button
             type="button"
             onClick={() => stepDeviceCamera(-1)}
-            className="px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors bg-slate-900 text-slate-300 hover:text-white border border-white/10"
+            className="p-1 rounded-lg font-bold cursor-pointer transition-colors bg-slate-900 text-slate-300 hover:text-white border border-white/10"
             title="Bay tới thiết bị trước"
           >
-            ‹
+            <ChevronLeft className="w-3.5 h-3.5" />
           </button>
           <button
             type="button"
             onClick={() => stepDeviceCamera(1)}
-            className="px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-colors bg-slate-900 text-slate-300 hover:text-white border border-white/10"
+            className="p-1 rounded-lg font-bold cursor-pointer transition-colors bg-slate-900 text-slate-300 hover:text-white border border-white/10"
             title="Bay tới thiết bị tiếp theo"
           >
-            ›
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
           <button
             type="button"
             onClick={() => setIsAutoTour((prev) => !prev)}
-            className={`px-2 py-0.5 rounded-lg font-extrabold cursor-pointer transition-colors ${
+            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg font-extrabold cursor-pointer transition-colors ${
               isAutoTour
                 ? 'bg-emerald-400 text-slate-950 shadow-sm'
                 : 'bg-ecomiles-lime/15 text-ecomiles-lime border border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
             }`}
           >
-            {isAutoTour ? '⏸ Đang Bay' : '▶ Bay Tự Động'}
+            {isAutoTour ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+            <span>{isAutoTour ? 'Đang Bay' : 'Bay Tự Động'}</span>
           </button>
         </div>
       </div>
@@ -1221,17 +1226,39 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
       {isLightboxOpen &&
         typeof document !== 'undefined' &&
         (() => {
-          const allIds: DeviceBannerFocusId[] = [
+          type LightboxStopId = DeviceBannerFocusId | 'cover_banner';
+          const allStops: LightboxStopId[] = [
             'all_banner',
+            'cover_banner',
             ...DIRECT_JUMP_DEVICES.map((d) => d.id),
           ];
-          const curIdx = Math.max(0, allIds.indexOf(selectedDeviceId));
+          const activeStop: LightboxStopId = isCoverBannerActive ? 'cover_banner' : selectedDeviceId;
+          const curIdx = Math.max(0, allStops.indexOf(activeStop));
+          const activeMockup = isCoverBannerActive
+            ? {
+                src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+                title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+                subtitle: 'Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
+                resolution: '2400 × 1260 (Flagship Cover Banner)',
+                href: '/pitch-deck/',
+                ctaLabel: 'Mở Pitch Deck (/pitch-deck)',
+              }
+            : {
+                ...DEVICE_2D_MOCKUPS[selectedDeviceId],
+                href: DEVICE_LIVE_ROUTES[selectedDeviceId].href,
+                ctaLabel: DEVICE_LIVE_ROUTES[selectedDeviceId].label,
+              };
           const stepLightbox = (delta: 1 | -1) => {
-            const nextId = allIds[(curIdx + delta + allIds.length) % allIds.length];
+            const nextStop = allStops[(curIdx + delta + allStops.length) % allStops.length];
             setIsAutoTour(false);
             setClusterOverride(null);
             clusterRef.current = 'none';
-            onSelectDevice(nextId);
+            if (nextStop === 'cover_banner') {
+              setIsCoverBannerActive(true);
+            } else {
+              setIsCoverBannerActive(false);
+              onSelectDevice(nextStop);
+            }
           };
           return createPortal(
             <div
@@ -1250,12 +1277,12 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
                     <span className="w-2.5 h-2.5 rounded-full bg-ecomiles-lime animate-pulse shrink-0" />
                     <div className="min-w-0">
                       <h3 className="text-sm font-bold text-white truncate">
-                        [{curIdx + 1}/{allIds.length}] {DEVICE_2D_MOCKUPS[selectedDeviceId].title}
+                        [{curIdx + 1}/{allStops.length}] {activeMockup.title}
                       </h3>
                       <p className="text-[11px] text-slate-400 truncate">
-                        {DEVICE_2D_MOCKUPS[selectedDeviceId].subtitle} ·{' '}
+                        {activeMockup.subtitle} ·{' '}
                         <span className="text-ecomiles-lime font-mono">
-                          {DEVICE_2D_MOCKUPS[selectedDeviceId].resolution}
+                          {activeMockup.resolution}
                         </span>
                       </p>
                     </div>
@@ -1264,65 +1291,87 @@ export const ThreeDeviceEcosystemBanner: React.FC<ThreeDeviceEcosystemBannerProp
                     <button
                       type="button"
                       onClick={() => stepLightbox(-1)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => stepLightbox(1)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
-                      href={DEVICE_2D_MOCKUPS[selectedDeviceId].src}
+                      href={activeMockup.src}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
-                      href={DEVICE_LIVE_ROUTES[selectedDeviceId].href}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-xs font-extrabold transition-colors"
+                      href={activeMockup.href}
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 text-xs font-extrabold transition-colors"
                     >
-                      {DEVICE_LIVE_ROUTES[selectedDeviceId].label}
+                      <span>{activeMockup.ctaLabel}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setIsLightboxOpen(false)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 transition-colors cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>
                 <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
                   <img
-                    src={DEVICE_2D_MOCKUPS[selectedDeviceId].src}
-                    alt={DEVICE_2D_MOCKUPS[selectedDeviceId].title}
+                    src={activeMockup.src}
+                    alt={activeMockup.title}
                     className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
                   />
                 </div>
                 <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
                   <button
                     type="button"
-                    onClick={() => onSelectDevice('all_banner')}
+                    onClick={() => {
+                      setIsCoverBannerActive(false);
+                      onSelectDevice('all_banner');
+                    }}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                      selectedDeviceId === 'all_banner'
+                      !isCoverBannerActive && selectedDeviceId === 'all_banner'
                         ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
                         : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
                     }`}
                   >
-                    0. Studio 7 Thiết Bị
+                    0A. Studio 7 Thiết Bị
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsCoverBannerActive(true)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
+                      isCoverBannerActive
+                        ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
+                        : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
+                    }`}
+                  >
+                    0B. Ảnh Bìa OG 2.4K
                   </button>
                   {DIRECT_JUMP_DEVICES.map((item) => (
                     <button
                       key={item.id}
                       type="button"
-                      onClick={() => onSelectDevice(item.id)}
+                      onClick={() => {
+                        setIsCoverBannerActive(false);
+                        onSelectDevice(item.id);
+                      }}
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                        selectedDeviceId === item.id
+                        !isCoverBannerActive && selectedDeviceId === item.id
                           ? 'bg-ecomiles-lime text-slate-950 border-ecomiles-lime'
                           : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
                       }`}

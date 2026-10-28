@@ -6,13 +6,19 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { useGSAP } from '@gsap/react';
 import {
+  ArrowRight,
   ArrowUpRight,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Compass,
+  Download,
   FileSpreadsheet,
   Layers,
   ShieldCheck,
   Truck,
+  X,
+  ZoomIn,
 } from 'lucide-react';
 import { HcmcThreeNetworkStage } from './HcmcThreeNetworkStage';
 import { HeroMultiDeviceStage } from './HeroMultiDeviceStage';
@@ -416,9 +422,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                     <button
                       type="button"
                       onClick={() => setStudioLightboxIdx(studioBannerVariant === 'clean_stage' ? 0 : 1)}
-                      className="px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
                     >
-                      🔍 Phóng To 2.4K
+                      <ZoomIn className="w-3 h-3" />
+                      <span>Phóng To 2.4K</span>
                     </button>
                     <a
                       href={
@@ -431,9 +438,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                           ? '00_ecomiles_clean_devices_hero_stage.png'
                           : '00_ecomiles_flagship_cover_banner.png'
                       }
-                      className="font-extrabold text-ecomiles-lime hover:underline"
+                      className="inline-flex items-center gap-1 font-extrabold text-ecomiles-lime hover:underline"
                     >
-                      Tải PNG 2.4K →
+                      <Download className="w-3 h-3" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                   </div>
                 </div>
@@ -462,10 +470,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                       <button
                         type="button"
                         onClick={() => setStudioLightboxIdx(idx + 2)}
-                        className="px-1.5 py-0.5 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime transition-colors cursor-zoom-in"
+                        className="inline-flex items-center px-1.5 py-0.5 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime transition-colors cursor-zoom-in"
                         title={`Phóng to 2.4K: ${spot.label}`}
                       >
-                        🔍
+                        <ZoomIn className="w-3 h-3" />
                       </button>
                       <button
                         type="button"
@@ -473,10 +481,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                           setHeroWebglDeviceId(spot.id);
                           setHeroStageMode('webgl_7devices');
                         }}
-                        className="px-2 py-0.5 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 hover:bg-ecomiles-lime hover:text-slate-950 text-slate-200 transition-colors cursor-pointer"
                         title={`Bay camera 3D WebGL tới ${spot.label}`}
                       >
-                        {idx + 1}. {spot.label} · 3D →
+                        <span>
+                          {idx + 1}. {spot.label} · 3D
+                        </span>
+                        <ArrowRight className="w-2.5 h-2.5" />
                       </button>
                     </div>
                   ))}
@@ -524,8 +535,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Kiểm chứng 120 đơn QĐ 23</span>
               </div>
-              <div className="text-xl sm:text-2xl font-black text-white mt-1">
-                374.4 km → 243.7 km
+              <div className="text-xl sm:text-2xl font-black text-white mt-1 flex items-center gap-1.5">
+                <span>374.4 km</span>
+                <ArrowRight className="w-5 h-5 text-ecomiles-lime shrink-0" />
+                <span>243.7 km</span>
               </div>
               <div className="text-xs text-slate-300 mt-0.5">
                 Tiết giảm <strong>130.7 km (-34.9%)</strong> trên mạng lưới đường thật OSRM TP.HCM
@@ -537,8 +550,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Ghép đơn chiều về (Backhaul)</span>
               </div>
-              <div className="text-xl sm:text-2xl font-black text-white mt-1">
-                32.8% → 2.7% rỗng
+              <div className="text-xl sm:text-2xl font-black text-white mt-1 flex items-center gap-1.5">
+                <span>32.8%</span>
+                <ArrowRight className="w-5 h-5 text-emerald-400 shrink-0" />
+                <span>2.7% rỗng</span>
               </div>
               <div className="text-xs text-slate-300 mt-0.5">
                 Thu hồi tự động <strong>1,864.9 kg</strong> hàng chiều về kho Tân Bình
@@ -621,37 +636,42 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                     <button
                       type="button"
                       onClick={() => setStudioLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setStudioLightboxIdx((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <a
                       href={activeAsset.src}
                       download={activeAsset.downloadName}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      Tải PNG 2.4K →
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <button
                       type="button"
                       onClick={() => setStudioLightboxIdx(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                       aria-label="Đóng phóng to 2.4K"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

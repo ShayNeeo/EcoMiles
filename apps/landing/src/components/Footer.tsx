@@ -2,7 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { ArrowRight, Compass, Download, FileSpreadsheet, Leaf, Mail, MapPin, Phone, ShieldCheck, Truck } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  Download,
+  FileSpreadsheet,
+  Leaf,
+  Mail,
+  MapPin,
+  Phone,
+  ShieldCheck,
+  Truck,
+  X,
+  ZoomIn,
+} from 'lucide-react';
 
 gsap.registerPlugin(ScrollToPlugin);
 const FOOTER_LIGHTBOX_ASSETS = [
@@ -185,7 +201,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
               onClick={() => setFooterLightboxIdx(0)}
               className="px-3.5 py-2 rounded-xl bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <span>🔍 Xem Sân Khấu 2.4K</span>
+              <ZoomIn className="w-3.5 h-3.5" />
+              <span>Xem Sân Khấu 2.4K</span>
             </button>
             <a
               href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
@@ -380,9 +397,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   type="button"
                   onClick={() => setFooterLightboxIdx(idx + 1)}
                   title={`Phóng to 2.4K: ${dev.label}`}
-                  className="px-1.5 py-1 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime font-extrabold transition-colors cursor-zoom-in"
+                  className="inline-flex items-center px-1.5 py-1 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime font-extrabold transition-colors cursor-zoom-in"
                 >
-                  🔍
+                  <ZoomIn className="w-3 h-3" />
                 </button>
               </div>
             ))}
@@ -427,36 +444,41 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                     <button
                       type="button"
                       onClick={() => setFooterLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setFooterLightboxIdx((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.src}
                       download
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setFooterLightboxIdx(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

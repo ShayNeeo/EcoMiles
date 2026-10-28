@@ -4,7 +4,19 @@ import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Calculator, TrendingDown, Leaf, ArrowRight, DollarSign } from 'lucide-react';
+import {
+  Calculator,
+  TrendingDown,
+  Leaf,
+  ArrowRight,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  DollarSign,
+  Download,
+  X,
+  ZoomIn,
+} from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 interface CalculatorProps {
@@ -515,7 +527,10 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     }
                     className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-ecomiles-lime/40 text-left cursor-pointer transition-colors"
                   >
-                    <div className="font-bold text-ecomiles-lime">{dispatcherUnits} Trạm Điều Phối 🔍</div>
+                    <div className="font-bold text-ecomiles-lime flex items-center justify-between gap-1">
+                      <span>{dispatcherUnits} Trạm Điều Phối</span>
+                      <ZoomIn className="w-3 h-3 shrink-0" />
+                    </div>
                     <div className="text-slate-400 truncate">MacBook Pro 16&quot; · XPS 16</div>
                   </button>
                   <button
@@ -531,7 +546,10 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     }
                     className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-emerald-400/40 text-left cursor-pointer transition-colors"
                   >
-                    <div className="font-bold text-emerald-300">{warehouseTablets} Tablet Kho Bãi 🔍</div>
+                    <div className="font-bold text-emerald-300 flex items-center justify-between gap-1">
+                      <span>{warehouseTablets} Tablet Kho Bãi</span>
+                      <ZoomIn className="w-3 h-3 shrink-0" />
+                    </div>
                     <div className="text-slate-400 truncate">iPad Pro M4 (Taplo 13&quot;)</div>
                   </button>
                   <button
@@ -547,7 +565,10 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     }
                     className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-cyan-400/40 text-left cursor-pointer transition-colors"
                   >
-                    <div className="font-bold text-cyan-300">{cabinFoldUnits} Màn Hình Buồng Lái 🔍</div>
+                    <div className="font-bold text-cyan-300 flex items-center justify-between gap-1">
+                      <span>{cabinFoldUnits} Màn Hình Buồng Lái</span>
+                      <ZoomIn className="w-3 h-3 shrink-0" />
+                    </div>
                     <div className="text-slate-400 truncate">Galaxy Z Fold (/maps)</div>
                   </button>
                   <button
@@ -563,7 +584,10 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     }
                     className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-white/5 hover:border-white/25 text-left cursor-pointer transition-colors"
                   >
-                    <div className="font-bold text-white">{driverHandheldUnits} Máy Tài Xế Giao Điểm 🔍</div>
+                    <div className="font-bold text-white flex items-center justify-between gap-1">
+                      <span>{driverHandheldUnits} Máy Tài Xế Giao Điểm</span>
+                      <ZoomIn className="w-3 h-3 text-ecomiles-lime shrink-0" />
+                    </div>
                     <div className="text-slate-400 truncate">iPhone Duo · 18 Pro Max · S26</div>
                   </button>
                 </div>
@@ -616,9 +640,10 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                           CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx - 1 + total) % total]
                         )
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
@@ -627,29 +652,33 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                           CALC_HARDWARE_MOCKUP_ASSETS[(safeIdx + 1) % total]
                         )
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={calcLightboxAsset.src}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={calcLightboxAsset.href}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      {calcLightboxAsset.cta} ↗
+                      <span>{calcLightboxAsset.cta}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setCalcLightboxAsset(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

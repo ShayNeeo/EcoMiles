@@ -14,7 +14,9 @@ import {
   UserCheck,
   Trash2,
   ArrowRight,
+  ArrowUpRight,
   Clock,
+  TrendingDown,
   Truck,
 } from 'lucide-react';
 import {
@@ -351,9 +353,10 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
           </a>
           <a
             href="/pitch-deck/"
-            className="px-3 py-1.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold transition-colors"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold transition-colors"
           >
-            Bộ 28 Ảnh Pitch Deck ↗
+            <span>Bộ 28 Ảnh Pitch Deck</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </a>
         </div>
       </div>
@@ -566,8 +569,9 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
               <div className="p-3.5 rounded-2xl bg-slate-950/90 border border-emerald-500/30">
                 <div className="text-[11px] text-slate-400 font-bold">Tổng quãng đường</div>
                 <div className="text-2xl font-black text-white mt-0.5">{alnsSt.km_total.toFixed(1)} km</div>
-                <div className="text-xs font-extrabold text-emerald-400 mt-1">
-                  ↓ Giảm {kmSaved} km (-{kmSavedPct}%)
+                <div className="text-xs font-extrabold text-emerald-400 mt-1 flex items-center gap-1">
+                  <TrendingDown className="w-3.5 h-3.5 shrink-0" />
+                  <span>Giảm {kmSaved} km (-{kmSavedPct}%)</span>
                 </div>
               </div>
 
@@ -587,8 +591,9 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
               <div className="p-3.5 rounded-2xl bg-slate-950/90 border border-emerald-500/30">
                 <div className="text-[11px] text-slate-400 font-bold">Nhiên liệu &amp; Chi phí</div>
                 <div className="text-2xl font-black text-white mt-0.5">{alnsSt.litres_total.toFixed(1)} Lít</div>
-                <div className="text-xs font-extrabold text-emerald-400 mt-1">
-                  ↓ Tiết kiệm {vndSaved.toLocaleString('vi-VN')} ₫
+                <div className="text-xs font-extrabold text-emerald-400 mt-1 flex items-center gap-1">
+                  <TrendingDown className="w-3.5 h-3.5 shrink-0" />
+                  <span>Tiết kiệm {vndSaved.toLocaleString('vi-VN')} ₫</span>
                 </div>
               </div>
 

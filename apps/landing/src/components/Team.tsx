@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Sparkles } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Download, Sparkles, X, ZoomIn } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 interface TeamMember {
@@ -55,7 +55,7 @@ const members: TeamMember[] = [
     imagePosition: 'center 32%',
     liveSubsystemLabel: 'Zero-Knowledge Audit (/audit)',
     liveSubsystemHref: '/portal/audit/',
-    secondaryLabel: '28 Ảnh Pitch Deck ↗',
+    secondaryLabel: '28 Ảnh Pitch Deck',
     secondaryHref: '/pitch-deck/',
     mockupSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
     mockupTitle: 'Full 7-Device Studio Stage · VRPTW/ALNS, 3D WebGL & AES-256-GCM (2400×1120)',
@@ -93,7 +93,7 @@ const members: TeamMember[] = [
     imagePosition: 'center 24%',
     liveSubsystemLabel: 'Bản Đồ Xe Tải $0 API (/maps)',
     liveSubsystemHref: '/maps/?vehicle=0&mode=navigate',
-    secondaryLabel: 'Hồ Sơ Gọi Vốn ↗',
+    secondaryLabel: 'Hồ Sơ Gọi Vốn',
     secondaryHref: '/pitch-deck/',
     mockupSrc: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
     mockupTitle: 'Samsung Galaxy Z Fold · Bản Đồ Xe Tải $0 API & Mô Hình Tài Chính',
@@ -117,18 +117,31 @@ const members: TeamMember[] = [
     mockupTitle: 'iPhone Duo Dual-Screen · App Tài Xế 2 Chặng & Bản Đồ Live',
   },
 ];
+const OG_COVER_TEAM_SPEC: TeamMember = {
+  name: 'Ảnh Bìa OG 2.4K',
+  role: 'Bìa OpenGraph & Pitch Deck 2400×1260',
+  ownershipBadge: 'Flagship Cover Banner · 7 Thiết Bị Đồng Bộ',
+  hardwareEndpoints: '2400×1260 · -34.9% Km & -39.2% CO₂e',
+  image: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+  imagePosition: 'center center',
+  liveSubsystemLabel: 'Mở Pitch Deck (/pitch-deck/)',
+  liveSubsystemHref: '/pitch-deck/',
+  mockupSrc: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+  mockupTitle: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+};
+const TEAM_LIGHTBOX_ITEMS: TeamMember[] = [...members, OG_COVER_TEAM_SPEC];
 
 export const Team: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [activeLightboxMember, setActiveLightboxMember] = useState<TeamMember | null>(null);
   useEffect(() => {
     if (!activeLightboxMember) return undefined;
-    const total = members.length;
-    const idx = Math.max(0, members.findIndex((m) => m.name === activeLightboxMember.name));
+    const total = TEAM_LIGHTBOX_ITEMS.length;
+    const idx = Math.max(0, TEAM_LIGHTBOX_ITEMS.findIndex((m) => m.name === activeLightboxMember.name));
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setActiveLightboxMember(null);
-      else if (e.key === 'ArrowLeft') setActiveLightboxMember(members[(idx - 1 + total) % total]);
-      else if (e.key === 'ArrowRight') setActiveLightboxMember(members[(idx + 1) % total]);
+      else if (e.key === 'ArrowLeft') setActiveLightboxMember(TEAM_LIGHTBOX_ITEMS[(idx - 1 + total) % total]);
+      else if (e.key === 'ArrowRight') setActiveLightboxMember(TEAM_LIGHTBOX_ITEMS[(idx + 1) % total]);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -257,8 +270,9 @@ export const Team: React.FC = () => {
                 >
                   <div className="flex items-center justify-between gap-1.5">
                     <span className="font-bold text-white truncate">{member.ownershipBadge}</span>
-                    <span className="shrink-0 rounded bg-ecomiles-lime/15 border border-ecomiles-lime/35 px-1.5 py-0.5 font-mono text-[9px] font-extrabold text-ecomiles-lime">
-                      🔍 2.4K
+                    <span className="inline-flex items-center gap-1 shrink-0 rounded bg-ecomiles-lime/15 border border-ecomiles-lime/35 px-1.5 py-0.5 font-mono text-[9px] font-extrabold text-ecomiles-lime">
+                      <ZoomIn className="w-2.5 h-2.5" />
+                      <span>2.4K</span>
                     </span>
                   </div>
                   <div className="mt-0.5 font-mono text-[9.5px] text-emerald-300 truncate">
@@ -291,10 +305,10 @@ export const Team: React.FC = () => {
       {activeLightboxMember &&
         typeof document !== 'undefined' &&
         (() => {
-          const total = members.length;
+          const total = TEAM_LIGHTBOX_ITEMS.length;
           const activeIdx = Math.max(
             0,
-            members.findIndex((m) => m.name === activeLightboxMember.name)
+            TEAM_LIGHTBOX_ITEMS.findIndex((m) => m.name === activeLightboxMember.name)
           );
           return createPortal(
             <div
@@ -322,40 +336,45 @@ export const Team: React.FC = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        setActiveLightboxMember(members[(activeIdx - 1 + total) % total])
+                        setActiveLightboxMember(TEAM_LIGHTBOX_ITEMS[(activeIdx - 1 + total) % total])
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() =>
-                        setActiveLightboxMember(members[(activeIdx + 1) % total])
+                        setActiveLightboxMember(TEAM_LIGHTBOX_ITEMS[(activeIdx + 1) % total])
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeLightboxMember.mockupSrc}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeLightboxMember.liveSubsystemHref}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      {activeLightboxMember.liveSubsystemLabel} ↗
+                      <span>{activeLightboxMember.liveSubsystemLabel}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setActiveLightboxMember(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>
@@ -367,7 +386,7 @@ export const Team: React.FC = () => {
                   />
                 </div>
                 <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
-                  {members.map((m, idx) => (
+                  {TEAM_LIGHTBOX_ITEMS.map((m, idx) => (
                     <button
                       key={m.name}
                       type="button"

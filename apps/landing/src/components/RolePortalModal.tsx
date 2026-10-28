@@ -5,13 +5,17 @@ import {
   Activity,
   ArrowRight,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Compass,
+  Download,
   LayoutDashboard,
   ShieldCheck,
   Smartphone,
   SplitSquareVertical,
   Truck,
   X,
+  ZoomIn,
 } from 'lucide-react';
 
 interface RolePortalModalProps {
@@ -24,7 +28,7 @@ const ROLE_PORTAL_LIGHTBOX_ASSETS = [
     src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
     title: 'Hệ Sinh Thái 7 Thiết Bị Studio 2.4K Đồng Bộ Thời Gian Thực',
     href: '/pitch-deck/',
-    cta: 'Bộ 28 Ảnh Pitch Deck →',
+    cta: 'Bộ 28 Ảnh Pitch Deck',
   },
   {
     shortLabel: '1. MacBook Pro 16" (User)',
@@ -81,6 +85,13 @@ const ROLE_PORTAL_LIGHTBOX_ASSETS = [
     title: 'Desktop Admin · Giám Sát Hạ Tầng Zero-Knowledge & KMS',
     href: '/portal/audit/',
     cta: 'Mở /portal/audit',
+  },
+  {
+    shortLabel: '9. Ảnh Bìa OG 2.4K',
+    src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+    title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
+    href: '/pitch-deck/',
+    cta: 'Mở /pitch-deck',
   },
 ] as const;
 
@@ -388,7 +399,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                         src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
                         title: 'Hệ Sinh Thái 7 Thiết Bị Studio 2.4K Đồng Bộ Thời Gian Thực',
                         href: '/pitch-deck/',
-                        cta: 'Bộ 28 Ảnh Pitch Deck →',
+                        cta: 'Bộ 28 Ảnh Pitch Deck',
                       })
                     }
                     className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/10 bg-black/40 p-0.5 shrink-0 cursor-zoom-in hover:opacity-90 transition-opacity"
@@ -412,9 +423,10 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                   </a>
                   <a
                     href="/pitch-deck/"
-                    className="py-1.5 px-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-black text-xs"
+                    className="inline-flex items-center gap-1 py-1.5 px-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-black text-xs"
                   >
-                    Bộ 28 Ảnh Pitch Deck →
+                    <span>Bộ 28 Ảnh Pitch Deck</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
               </div>
@@ -445,16 +457,17 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                         type="button"
                         onClick={() => setPreviewAsset(ROLE_PORTAL_LIGHTBOX_ASSETS[idx + 1])}
                         title={`Phóng to 2.4K: ${item.device}`}
-                        className="px-1 py-0.5 rounded bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime text-[9px] font-extrabold transition-colors cursor-zoom-in shrink-0"
+                        className="inline-flex items-center px-1 py-0.5 rounded bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime text-[9px] font-extrabold transition-colors cursor-zoom-in shrink-0"
                       >
-                        🔍
+                        <ZoomIn className="w-2.5 h-2.5" />
                       </button>
                     </div>
                     <a
                       href={item.href}
-                      className="text-[9.5px] font-mono text-slate-400 hover:text-slate-200 truncate"
+                      className="inline-flex items-center gap-0.5 text-[9.5px] font-mono text-slate-400 hover:text-slate-200 truncate"
                     >
-                      {item.sub} →
+                      <span>{item.sub}</span>
+                      <ArrowRight className="w-2.5 h-2.5 shrink-0" />
                     </a>
                   </div>
                 ))}
@@ -499,9 +512,10 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                           ROLE_PORTAL_LIGHTBOX_ASSETS[(activeIdx - 1 + total) % total]
                         )
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
@@ -510,16 +524,18 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                           ROLE_PORTAL_LIGHTBOX_ASSETS[(activeIdx + 1) % total]
                         )
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={previewAsset.src}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG</span>
                     </a>
                     <a
                       href={previewAsset.href}
@@ -531,10 +547,11 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                     <button
                       type="button"
                       onClick={() => setPreviewAsset(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                       aria-label="Đóng xem trước"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

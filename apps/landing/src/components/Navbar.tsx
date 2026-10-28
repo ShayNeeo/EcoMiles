@@ -3,7 +3,20 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { Leaf, Menu, X, ArrowRight, Calculator, LayoutDashboard, ChevronDown } from 'lucide-react';
+import {
+  Leaf,
+  Menu,
+  X,
+  ArrowRight,
+  ArrowUpRight,
+  Calculator,
+  LayoutDashboard,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  ZoomIn,
+} from 'lucide-react';
 
 gsap.registerPlugin(ScrollToPlugin);
 interface NavbarProps {
@@ -316,11 +329,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                               setDevicesPopoverOpen(false);
                               setNavbarLightboxIdx(0);
                             }}
-                            className="px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 font-extrabold text-[9.5px] hover:bg-yellow-300 cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-ecomiles-lime text-slate-950 font-extrabold text-[9.5px] hover:bg-yellow-300 cursor-pointer"
                           >
-                            🔍 Phóng To 2.4K
+                            <ZoomIn className="w-3 h-3" />
+                            <span>Phóng To 2.4K</span>
                           </button>
-                          <span className="text-[9.5px] font-mono text-slate-300">#showcase →</span>
+                          <span className="inline-flex items-center gap-0.5 text-[9.5px] font-mono text-slate-300">
+                            <span>#showcase</span>
+                            <ArrowRight className="w-2.5 h-2.5" />
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -344,9 +361,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                               setNavbarLightboxIdx(idx + 1);
                             }}
                             title={`Phóng to 2.4K: ${device.name}`}
-                            className="px-1.5 py-1 text-[9px] font-mono font-bold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 rounded-r-lg transition-colors shrink-0 cursor-pointer"
+                            className="inline-flex items-center gap-1 px-1.5 py-1 text-[9px] font-mono font-bold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 rounded-r-lg transition-colors shrink-0 cursor-pointer"
                           >
-                            {device.role} 🔍
+                            <span>{device.role}</span>
+                            <ZoomIn className="w-2.5 h-2.5" />
                           </button>
                         </div>
                       ))}
@@ -444,8 +462,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                   }}
                   className="w-full py-2.5 px-3 rounded-xl bg-slate-900 border border-ecomiles-lime/40 text-ecomiles-lime font-extrabold text-xs flex items-center justify-between cursor-pointer"
                 >
-                  <span>🔍 Sân Khấu 7 Thiết Bị 2.4K (Full Lightbox)</span>
-                  <span className="text-[10px] font-mono text-slate-300">8 Ảnh →</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <ZoomIn className="w-3.5 h-3.5" />
+                    <span>Sân Khấu 7 Thiết Bị 2.4K (Full Lightbox)</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-300">
+                    <span>9 Ảnh</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
                 </button>
                 <a
                   href="#calculator"
@@ -539,36 +563,41 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPilotModal, onOpenPortalMo
                     <button
                       type="button"
                       onClick={() => setNavbarLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setNavbarLightboxIdx((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.src}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setNavbarLightboxIdx(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

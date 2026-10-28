@@ -9,9 +9,14 @@ import {
   RotateCcw,
   Table2,
   X,
+  ArrowRight,
+  ArrowUpRight,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Star,
   Zap,
+  ZoomIn,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -1203,9 +1208,10 @@ export function EvsimDualSimulator({
               </a>
               <a
                 href="/pitch-deck/"
-                className="px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
               >
-                Bộ 28 Ảnh Pitch Deck →
+                <span>Bộ 28 Ảnh Pitch Deck</span>
+                <ArrowRight className="w-3 h-3" />
               </a>
             </div>
           </div>
@@ -1376,7 +1382,7 @@ export function EvsimDualSimulator({
                           className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold bg-[#e8f0fb] hover:bg-[#d0e2ff] text-[#1971c2] border border-[#c9d6e8]/60 truncate cursor-pointer transition-colors"
                         >
                           <span>{pairedDevice}</span>
-                          <span className="text-[9px] opacity-75">🔍</span>
+                          <ZoomIn className="w-2.5 h-2.5 opacity-75 shrink-0" />
                         </button>
                         <span className="text-[#6b6f78] shrink-0 font-medium">
                           {nonDepotCount} điểm ·{' '}
@@ -1710,36 +1716,41 @@ export function EvsimDualSimulator({
                     <button
                       type="button"
                       onClick={() => setEvsimLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setEvsimLightboxIdx((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.src}
                       download
-                      className="px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setEvsimLightboxIdx(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

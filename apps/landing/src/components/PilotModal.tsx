@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle2, ShieldCheck, Sparkles, Building2, Phone, Mail, User, Truck, ClipboardList } from 'lucide-react';
+import {
+  X,
+  ArrowUpRight,
+  Check,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Plus,
+  ShieldCheck,
+  Sparkles,
+  Building2,
+  Phone,
+  Mail,
+  User,
+  Truck,
+  ClipboardList,
+  ZoomIn,
+} from 'lucide-react';
 
 interface PilotModalProps {
   isOpen: boolean;
@@ -190,9 +208,10 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                 <button
                   type="button"
                   onClick={() => setPilotLightboxIdx(0)}
-                  className="px-2 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 text-[10px] font-extrabold shrink-0 cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 text-[10px] font-extrabold shrink-0 cursor-pointer transition-colors"
                 >
-                  🔍 2.4K
+                  <ZoomIn className="w-3 h-3" />
+                  <span>2.4K</span>
                 </button>
               </div>
 
@@ -364,18 +383,22 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                           <button
                             type="button"
                             onClick={() => toggleDeviceMix(chip)}
-                            className="flex-1 px-2.5 py-1.5 text-left truncate cursor-pointer"
+                            className="flex-1 px-2.5 py-1.5 text-left truncate cursor-pointer inline-flex items-center gap-1.5"
                           >
-                            {active ? '✓ ' : '+ '}
-                            {chip}
+                            {active ? (
+                              <Check className="w-3 h-3 text-ecomiles-lime shrink-0" />
+                            ) : (
+                              <Plus className="w-3 h-3 text-slate-500 shrink-0" />
+                            )}
+                            <span className="truncate">{chip}</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => setPilotLightboxIdx(idx)}
                             title={`Phóng to Mockup 2.4K: ${chip}`}
-                            className="px-2 py-1.5 text-[10px] font-mono font-extrabold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 rounded-r-xl transition-colors cursor-zoom-in shrink-0"
+                            className="inline-flex items-center px-2 py-1.5 text-[10px] font-mono font-extrabold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 rounded-r-xl transition-colors cursor-zoom-in shrink-0"
                           >
-                            🔍
+                            <ZoomIn className="w-3 h-3" />
                           </button>
                         </div>
                       );
@@ -448,36 +471,41 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                     <button
                       type="button"
                       onClick={() => setPilotLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setPilotLightboxIdx((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.src}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setPilotLightboxIdx(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

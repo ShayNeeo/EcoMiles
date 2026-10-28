@@ -22,8 +22,14 @@ import {
   RotateCcw,
   Route as RouteIcon,
   ShieldCheck,
+  ArrowRight,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
   Truck,
   Volume2,
+  X,
+  ZoomIn,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -1076,15 +1082,15 @@ export function EcoMilesTruckMapNavigator({
                   key={prof.id}
                   type="button"
                   onClick={() => setActiveCabinProfile(prof.id)}
-                  className={`px-2.5 py-0.5 rounded-lg font-bold transition-colors cursor-pointer border ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg font-bold transition-colors cursor-pointer border ${
                     isActive
                       ? 'bg-[#14532d] text-[#d6f65a] border-[#14532d] shadow-xs'
                       : 'bg-[#f9fafb] text-[#374151] border-[#d1d5db] hover:bg-white'
                   }`}
                   title={prof.spec}
                 >
-                  {isActive ? '● ' : ''}
-                  {prof.label}
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#d6f65a] shrink-0" />}
+                  <span>{prof.label}</span>
                 </button>
               );
             })}
@@ -1093,13 +1099,15 @@ export function EcoMilesTruckMapNavigator({
             <button
               type="button"
               onClick={() => setMapsLightboxAssetIdx(CABIN_PROFILE_TO_ASSET_IDX[activeCabinProfile])}
-              className="px-2.5 py-0.5 rounded-md font-extrabold text-[#060d14] bg-[#d6f65a] hover:bg-[#c5e847] border border-[#14532d]/30 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md font-extrabold text-[#060d14] bg-[#d6f65a] hover:bg-[#c5e847] border border-[#14532d]/30 transition-colors cursor-pointer"
               title="Mở ảnh chụp phần cứng 2.4K của thiết bị buồng lái đang chọn"
             >
-              🔍 Xem Mockup 2.4K
+              <ZoomIn className="w-3 h-3" />
+              <span>Xem Mockup 2.4K</span>
             </button>
-            <span className="font-mono font-bold text-[#14532d] bg-[#e8f7ee] border border-[#bbf7d0] px-2 py-0.5 rounded-md">
-              ● Đồng bộ &lt;50ms · 0 Vi Phạm QĐ 23/2018
+            <span className="inline-flex items-center gap-1.5 font-mono font-bold text-[#14532d] bg-[#e8f7ee] border border-[#bbf7d0] px-2 py-0.5 rounded-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#14532d] shrink-0" />
+              <span>Đồng bộ &lt;50ms · 0 Vi Phạm QĐ 23/2018</span>
             </span>
           </div>
         </div>
@@ -1121,9 +1129,10 @@ export function EcoMilesTruckMapNavigator({
                     <button
                       type="button"
                       onClick={() => setMapsLightboxAssetIdx(0)}
-                      className="px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
                     >
-                      🔍 Xem Mockup 2.4K
+                      <ZoomIn className="w-3 h-3" />
+                      <span>Xem Mockup 2.4K</span>
                     </button>
                   </div>
                   <div className="text-xs text-slate-300 font-medium">
@@ -1152,9 +1161,10 @@ export function EcoMilesTruckMapNavigator({
                 </a>
                 <a
                   href="/pitch-deck/"
-                  className="px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
                 >
-                  Bộ 28 Ảnh Pitch Deck →
+                  <span>Bộ 28 Ảnh Pitch Deck</span>
+                  <ArrowRight className="w-3 h-3" />
                 </a>
               </div>
             </div>
@@ -1568,36 +1578,41 @@ export function EcoMilesTruckMapNavigator({
                     <button
                       type="button"
                       onClick={() => setMapsLightboxAssetIdx((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setMapsLightboxAssetIdx((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.src}
                       download
-                      className="px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setMapsLightboxAssetIdx(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

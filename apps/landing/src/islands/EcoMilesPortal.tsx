@@ -33,9 +33,18 @@ import {
   Building2,
   Search,
   KeyRound,
+  ArrowRight,
+  ArrowUpRight,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  Download,
   RefreshCw,
   Play,
+  X,
   Zap,
+  ZoomIn,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -1004,9 +1013,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   <button
                     type="button"
                     onClick={() => setPortalLightboxIdx(0)}
-                    className="px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
                   >
-                    🔍 Xem Mockup 2.4K
+                    <ZoomIn className="w-3 h-3" />
+                    <span>Xem Mockup 2.4K</span>
                   </button>
                 </div>
                 <div className="text-xs text-slate-300 mt-0.5">
@@ -1036,16 +1046,18 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </a>
               <a
                 href="/pitch-deck/"
-                className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
               >
-                Bộ 28 Ảnh Pitch Deck →
+                <span>Bộ 28 Ảnh Pitch Deck</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </a>
               <button
                 type="button"
                 onClick={() => setShowDeviceBanner(false)}
-                className="px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer font-bold"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer font-bold"
               >
-                ✕ Đóng
+                <X className="w-3.5 h-3.5" />
+                <span>Đóng</span>
               </button>
             </div>
           </div>
@@ -1106,9 +1118,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 <button
                   type="button"
                   onClick={() => setPortalLightboxIdx(0)}
-                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 font-extrabold cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 font-extrabold cursor-pointer transition-colors"
                 >
-                  🔍 Xem Mockup 2.4K
+                  <ZoomIn className="w-3 h-3" />
+                  <span>Xem Mockup 2.4K</span>
                 </button>
                 <a
                   href="/maps/"
@@ -1118,9 +1131,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 </a>
                 <a
                   href="/pitch-deck/"
-                  className="px-2.5 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
                 >
-                  Bộ 28 Ảnh Pitch Deck →
+                  <span>Bộ 28 Ảnh Pitch Deck</span>
+                  <ArrowRight className="w-3 h-3" />
                 </a>
               </div>
             </div>
@@ -1145,7 +1159,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       className="text-left text-[11px] font-bold text-[#1971c2] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <span>Thiết bị: MacBook Pro 16&quot; &amp; iPad Pro M4</span>
-                      <span className="px-1.5 py-0.2 rounded bg-[#e8f0fb] text-[#1971c2] text-[10px]">🔍 2.4K</span>
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#e8f0fb] text-[#1971c2] text-[10px]">
+                        <ZoomIn className="w-2.5 h-2.5" />
+                        <span>2.4K</span>
+                      </span>
                     </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Điều Phối Viên Vận Tải Công Ty (CRM / TMS)
@@ -1211,7 +1228,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       className="text-left text-[11px] font-bold text-[#247b50] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <span>Thiết bị: Windows 11 XPS 16 (EVSIM Dual Engine)</span>
-                      <span className="px-1.5 py-0.2 rounded bg-[#dcfae5] text-[#04250e] text-[10px]">🔍 2.4K</span>
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#dcfae5] text-[#04250e] text-[10px]">
+                        <ZoomIn className="w-2.5 h-2.5" />
+                        <span>2.4K</span>
+                      </span>
                     </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Mô Phỏng Đối Chứng 2 Bên Kiểu EVSIM (Baseline vs. EcoMiles)
@@ -1267,7 +1287,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       className="text-left text-[11px] font-bold text-[#92400e] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <span>Thiết bị: iPhone Duo, iPhone 18 Pro Max &amp; Galaxy S26 Ultra</span>
-                      <span className="px-1.5 py-0.2 rounded bg-[#fffbeb] text-[#92400e] text-[10px]">🔍 2.4K</span>
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#fffbeb] text-[#92400e] text-[10px]">
+                        <ZoomIn className="w-2.5 h-2.5" />
+                        <span>2.4K</span>
+                      </span>
                     </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Ứng Dụng Tài Xế Giao Hàng &amp; Dẫn Đường Ô Tô
@@ -1327,7 +1350,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       className="text-left text-[11px] font-bold text-[#831c1e] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <span>Thiết bị: Samsung Galaxy Z Fold &amp; Zero-Knowledge Audit</span>
-                      <span className="px-1.5 py-0.2 rounded bg-[#ffedea] text-[#831c1e] text-[10px]">🔍 2.4K</span>
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#ffedea] text-[#831c1e] text-[10px]">
+                        <ZoomIn className="w-2.5 h-2.5" />
+                        <span>2.4K</span>
+                      </span>
                     </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Phòng Giám Sát Hạ Tầng &amp; Quản Lý Tenant (Zero-Knowledge)
@@ -1592,16 +1618,18 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <button
                       type="button"
                       onClick={() => setPortalLightboxIdx(0)}
-                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 text-xs font-extrabold transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 text-xs font-extrabold transition-colors cursor-pointer"
                     >
-                      🔍 Xem Mockup 2.4K
+                      <ZoomIn className="w-3.5 h-3.5" />
+                      <span>Xem Mockup 2.4K</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowDeviceBanner((prev) => !prev)}
-                      className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
                     >
-                      {showDeviceBanner ? 'Ẩn Thanh 7 Thiết Bị ▲' : 'Mở Thanh 7 Thiết Bị ▼'}
+                      <span>{showDeviceBanner ? 'Ẩn Thanh 7 Thiết Bị' : 'Mở Thanh 7 Thiết Bị'}</span>
+                      {showDeviceBanner ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
@@ -1685,7 +1713,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                             ][idx % 7]
                                           }
                                         </span>
-                                        <span className="text-[9px] opacity-75">🔍</span>
+                                        <ZoomIn className="w-2.5 h-2.5 opacity-75 shrink-0" />
                                       </button>
                                     </div>
                                   </div>
@@ -1878,9 +1906,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <button
                           type="button"
                           onClick={() => setPortalLightboxIdx(0)}
-                          className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 cursor-pointer transition-colors"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 cursor-pointer transition-colors"
                         >
-                          🔍 Xem Mockup 2.4K
+                          <ZoomIn className="w-3 h-3" />
+                          <span>Xem Mockup 2.4K</span>
                         </button>
                       </div>
                       <p className="text-[11.5px] text-slate-300 mt-0.5">
@@ -1891,16 +1920,18 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
                     <a
                       href="/benchmark/"
-                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border border-white/10 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border border-white/10 transition-colors"
                     >
-                      Mở Trang Benchmark Riêng ↗
+                      <span>Mở Trang Benchmark Riêng</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setShowDeviceBanner((prev) => !prev)}
-                      className="px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
                     >
-                      {showDeviceBanner ? 'Ẩn Banner Đa Thiết Bị ▲' : 'Bật Toàn Bộ 7 Thiết Bị ▼'}
+                      <span>{showDeviceBanner ? 'Ẩn Banner Đa Thiết Bị' : 'Bật Toàn Bộ 7 Thiết Bị'}</span>
+                      {showDeviceBanner ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
@@ -2023,9 +2054,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <button
                       type="button"
                       onClick={() => setPortalLightboxIdx(0)}
-                      className="px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
                     >
-                      🔍 Xem Mockup 2.4K
+                      <ZoomIn className="w-3 h-3" />
+                      <span>Xem Mockup 2.4K</span>
                     </button>
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
@@ -2205,7 +2237,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <span className="text-[10.5px] font-bold text-[#d6f65a] uppercase">
                         1. Trạm Nhập &amp; Chuẩn Hóa .XLSX
                       </span>
-                      <span className="text-[10px] font-bold text-[#d6f65a]">🔍 2.4K</span>
+                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-[#d6f65a]">
+                        <ZoomIn className="w-2.5 h-2.5" />
+                        <span>2.4K</span>
+                      </span>
                     </div>
                     <div className="font-bold text-white mt-0.5">
                       MacBook Pro 16&quot; · Windows 11 XPS 16
@@ -2223,7 +2258,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <span className="text-[10.5px] font-bold text-emerald-300 uppercase">
                         2. Trạm Điều Phối Bến Bãi &amp; Kho Lạnh
                       </span>
-                      <span className="text-[10px] font-bold text-emerald-300">🔍 2.4K</span>
+                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-300">
+                        <ZoomIn className="w-2.5 h-2.5" />
+                        <span>2.4K</span>
+                      </span>
                     </div>
                     <div className="font-bold text-white mt-0.5">
                       iPad Pro M4 · Samsung Galaxy Z Fold
@@ -2241,7 +2279,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <span className="text-[10.5px] font-bold text-sky-300 uppercase">
                         3. Thực Địa Giao Nhận 2 Chặng ($0 API)
                       </span>
-                      <span className="text-[10px] font-bold text-sky-300">🔍 2.4K</span>
+                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-sky-300">
+                        <ZoomIn className="w-2.5 h-2.5" />
+                        <span>2.4K</span>
+                      </span>
                     </div>
                     <div className="font-bold text-white mt-0.5">
                       iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
@@ -2388,7 +2429,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   ][idx % 7]
                                 }
                               </span>
-                              <span className="text-[9.5px] opacity-75">🔍</span>
+                              <ZoomIn className="w-2.5 h-2.5 opacity-75 shrink-0" />
                             </button>
                           </div>
                         </div>
@@ -2475,9 +2516,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <button
                       type="button"
                       onClick={() => setPortalLightboxIdx(0)}
-                      className="px-2.5 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] text-[11px] font-bold border border-[#d6f65a]/40 cursor-pointer transition-colors"
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] text-[11px] font-bold border border-[#d6f65a]/40 cursor-pointer transition-colors"
                     >
-                      🔍 Xem Mockup 2.4K (7/7 Thiết Bị)
+                      <ZoomIn className="w-3 h-3" />
+                      <span>Xem Mockup 2.4K (7/7 Thiết Bị)</span>
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
@@ -2706,7 +2748,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         className="p-2 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-left cursor-pointer transition-colors"
                         title="Nhấn để phóng to ảnh thiết bị 2.4K"
                       >
-                        <div className="font-bold text-white truncate">{ep.name} 🔍</div>
+                        <div className="font-bold text-white truncate flex items-center justify-between gap-1">
+                          <span className="truncate">{ep.name}</span>
+                          <ZoomIn className="w-3 h-3 text-[#d6f65a] shrink-0" />
+                        </div>
                         <div className="text-[10px] text-emerald-300 mt-0.5 truncate">{ep.policy}</div>
                       </button>
                     ))}
@@ -2722,9 +2767,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <button
                       type="button"
                       onClick={() => setShowLoginGate(true)}
-                      className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-[#eeeeee] text-xs font-bold text-[#1971c2] cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-[#eeeeee] text-xs font-bold text-[#1971c2] cursor-pointer"
                     >
-                      Mở Cổng Đổi Tài Khoản để kiểm tra góc nhìn Admin →
+                      <span>Mở Cổng Đổi Tài Khoản để kiểm tra góc nhìn Admin</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
@@ -2808,9 +2854,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 <button
                   type="button"
                   onClick={() => setPortalLightboxIdx(0)}
-                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 font-extrabold cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 font-extrabold cursor-pointer transition-colors"
                 >
-                  🔍 Xem Mockup 2.4K
+                  <ZoomIn className="w-3 h-3" />
+                  <span>Xem Mockup 2.4K</span>
                 </button>
                 <a
                   href="/#showcase"
@@ -2820,9 +2867,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 </a>
                 <a
                   href="/pitch-deck/"
-                  className="px-2.5 py-1 rounded-lg bg-[#d6f65a] text-[#060d14] hover:bg-[#c5e847] font-extrabold transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] font-extrabold transition-colors"
                 >
-                  Bộ 28 Ảnh Pitch Deck ↗
+                  <span>Bộ 28 Ảnh Pitch Deck</span>
+                  <ArrowUpRight className="w-3 h-3" />
                 </a>
               </div>
             </div>
@@ -3044,9 +3092,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 : 6
                           )
                         }
-                        className="px-2.5 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] text-[11px] font-extrabold cursor-pointer transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] text-[11px] font-extrabold cursor-pointer transition-colors"
                       >
-                        🔍 Xem Mockup 2.4K
+                        <ZoomIn className="w-3 h-3" />
+                        <span>Xem Mockup 2.4K</span>
                       </button>
                     </div>
                   </div>
@@ -3619,7 +3668,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <td className="py-2 px-3 font-bold text-[#111827]">
                         <span className="inline-flex items-center gap-1.5 text-[#1971c2] hover:underline">
                           <span>{ep.device}</span>
-                          <span className="text-[10px]">🔍</span>
+                          <ZoomIn className="w-3 h-3 shrink-0" />
                         </span>
                       </td>
                       <td className="py-2 px-3 text-[#5f6368]">{ep.role}</td>
@@ -3675,36 +3724,41 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <button
                       type="button"
                       onClick={() => setPortalLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setPortalLightboxIdx((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.src}
                       download
-                      className="px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setPortalLightboxIdx(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

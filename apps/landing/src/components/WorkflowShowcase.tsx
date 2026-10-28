@@ -3,6 +3,9 @@ import { createPortal } from 'react-dom';
 import {
   ArrowUpRight,
   Check,
+  ChevronLeft,
+  ChevronRight,
+  Download,
   FileCheck2,
   FileSpreadsheet,
   Globe2,
@@ -16,6 +19,7 @@ import {
   Route,
   Truck,
   X,
+  ZoomIn,
 } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'motion/react';
 
@@ -531,10 +535,11 @@ export const WorkflowShowcase: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setActiveMockupDevice('Studio 7 Thiết Bị')}
-                    className="px-2 py-0.5 rounded-full text-[10.5px] font-extrabold border border-ecomiles-lime bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold border border-ecomiles-lime bg-ecomiles-lime text-slate-950 hover:bg-yellow-300 transition-colors cursor-pointer"
                     title="Xem Sân Khấu 7 Thiết Bị Đồng Bộ 2.4K (2400×1120)"
                   >
-                    🔍 Sân Khấu 2.4K
+                    <ZoomIn className="w-3 h-3" />
+                    <span>Sân Khấu 2.4K</span>
                   </button>
                   {[
                     'MacBook Pro 16"',
@@ -552,13 +557,17 @@ export const WorkflowShowcase: React.FC = () => {
                         type="button"
                         onClick={() => setActiveMockupDevice(device)}
                         title={`Xem ảnh phần cứng 2.4K: ${device}`}
-                        className={`px-2 py-0.5 rounded-full text-[10.5px] font-semibold border transition-colors cursor-pointer ${
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold border transition-colors cursor-pointer ${
                           isActiveDevice
                             ? 'bg-ecomiles-lime/15 hover:bg-ecomiles-lime/25 border-ecomiles-lime/50 text-ecomiles-lime shadow-sm'
                             : 'bg-slate-950/50 hover:bg-slate-900 border-white/5 hover:border-white/20 text-slate-400 hover:text-white'
                         }`}
                       >
-                        {isActiveDevice ? '● ' : ''}{device} 🔍
+                        {isActiveDevice && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-ecomiles-lime shrink-0" />
+                        )}
+                        <span>{device}</span>
+                        <ZoomIn className="w-3 h-3 shrink-0 opacity-80" />
                       </button>
                     );
                   })}
@@ -767,38 +776,43 @@ export const WorkflowShowcase: React.FC = () => {
                       onClick={() =>
                         setActiveMockupDevice(mockupKeys[(activeIdx - 1 + total) % total])
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() =>
                         setActiveMockupDevice(mockupKeys[(activeIdx + 1) % total])
                       }
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeItem.file}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeItem.liveHref}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      {activeItem.liveCta} ↗
+                      <span>{activeItem.liveCta}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setActiveMockupDevice(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { ArrowUpRight, ShieldCheck, Truck, Zap } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Download, Pause, Play, ShieldCheck, Truck, X, Zap, ZoomIn } from 'lucide-react';
 
 interface HcmcNodeSpec {
   id: string;
@@ -106,7 +106,7 @@ const HCMC_3D_NODES: HcmcNodeSpec[] = [
 const STUDIO_HUB_SPEC: HcmcNodeSpec = {
   id: 'studio_stage',
   label: 'Toàn Cảnh Hệ Sinh Thái 7 Thiết Bị (Studio 2.4K)',
-  shortName: '0. Studio 2.4K',
+  shortName: '0A. Studio 2.4K',
   x: 0,
   z: 0,
   kind: 'hub',
@@ -115,7 +115,19 @@ const STUDIO_HUB_SPEC: HcmcNodeSpec = {
   mockupSrc: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
   liveHref: '/dashboard/',
 };
-const HCMC_LIGHTBOX_NODES: HcmcNodeSpec[] = [STUDIO_HUB_SPEC, ...HCMC_3D_NODES];
+const OG_COVER_HUB_SPEC: HcmcNodeSpec = {
+  id: 'cover_banner',
+  label: 'Ảnh Bìa OpenGraph / Pitch Deck (OG Cover 2.4K)',
+  shortName: '0B. Ảnh Bìa OG',
+  x: 0,
+  z: 0,
+  kind: 'hub',
+  deviceLabel: 'Flagship Cover Banner · 2400×1260',
+  stats: 'Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
+  mockupSrc: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
+  liveHref: '/pitch-deck/',
+};
+const HCMC_LIGHTBOX_NODES: HcmcNodeSpec[] = [STUDIO_HUB_SPEC, OG_COVER_HUB_SPEC, ...HCMC_3D_NODES];
 
 const ROUTE_ARCS: Array<{ points: Array<[number, number, number]>; color: number }> = [
   {
@@ -638,9 +650,10 @@ export const HcmcThreeNetworkStage: React.FC = () => {
         )}
         <a
           href="/maps/?vehicle=0&mode=navigate"
-          className="absolute top-2.5 right-3 z-10 px-2.5 py-1 rounded-lg bg-slate-950/90 hover:bg-ecomiles-lime hover:text-slate-950 border border-ecomiles-lime/40 text-[10.5px] font-extrabold text-ecomiles-lime transition-colors shadow-lg backdrop-blur-md"
+          className="absolute top-2.5 right-3 z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-950/90 hover:bg-ecomiles-lime hover:text-slate-950 border border-ecomiles-lime/40 text-[10.5px] font-extrabold text-ecomiles-lime transition-colors shadow-lg backdrop-blur-md"
         >
-          Mở Bản Đồ /maps ↗
+          <span>Mở Bản Đồ /maps</span>
+          <ArrowUpRight className="w-3 h-3" />
         </a>
         <div
           ref={mountRef}
@@ -688,9 +701,10 @@ export const HcmcThreeNetworkStage: React.FC = () => {
                 focusHcmcNode(STUDIO_HUB_SPEC);
                 setIsDeviceLightboxOpen(true);
               }}
-              className="px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border bg-ecomiles-lime text-slate-950 border-ecomiles-lime hover:bg-yellow-300"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border bg-ecomiles-lime text-slate-950 border-ecomiles-lime hover:bg-yellow-300"
             >
-              🔍 Sân Khấu 2.4K
+              <ZoomIn className="w-3 h-3" />
+              <span>Sân Khấu 2.4K</span>
             </button>
             <button
               type="button"
@@ -698,20 +712,22 @@ export const HcmcThreeNetworkStage: React.FC = () => {
                 setIsAutoHubTour(false);
                 setIsDeviceLightboxOpen(true);
               }}
-              className="px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border bg-slate-950 text-ecomiles-lime border-ecomiles-lime/50 hover:bg-ecomiles-lime hover:text-slate-950"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border bg-slate-950 text-ecomiles-lime border-ecomiles-lime/50 hover:bg-ecomiles-lime hover:text-slate-950"
             >
-              🔍 Xem Thiết Bị 2.4K
+              <ZoomIn className="w-3 h-3" />
+              <span>Xem Thiết Bị 2.4K</span>
             </button>
             <button
               type="button"
               onClick={() => setIsAutoHubTour((prev) => !prev)}
-              className={`px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border ${
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded font-extrabold cursor-pointer transition-colors border ${
                 isAutoHubTour
                   ? 'bg-emerald-400 text-slate-950 border-emerald-400'
                   : 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40 hover:bg-ecomiles-lime/25'
               }`}
             >
-              {isAutoHubTour ? '⏸ Đang Quét' : '▶ Quét 7 Trạm'}
+              {isAutoHubTour ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+              <span>{isAutoHubTour ? 'Đang Quét' : 'Quét 7 Trạm'}</span>
             </button>
           </div>
         </div>
@@ -777,9 +793,10 @@ export const HcmcThreeNetworkStage: React.FC = () => {
                         HCMC_LIGHTBOX_NODES[(idx - 1 + HCMC_LIGHTBOX_NODES.length) % HCMC_LIGHTBOX_NODES.length];
                       if (prev) focusHcmcNode(prev);
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                   >
-                    ‹ Trước
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Trước</span>
                   </button>
                   <button
                     type="button"
@@ -788,16 +805,18 @@ export const HcmcThreeNetworkStage: React.FC = () => {
                       const next = HCMC_LIGHTBOX_NODES[(idx + 1) % HCMC_LIGHTBOX_NODES.length];
                       if (next) focusHcmcNode(next);
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                   >
-                    Tiếp ›
+                    <span>Tiếp</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                   <a
                     href={selectedNode.mockupSrc}
                     download
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                   >
-                    Tải PNG 2.4K
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Tải PNG 2.4K</span>
                   </a>
                   <a
                     href={selectedNode.liveHref}
@@ -809,10 +828,11 @@ export const HcmcThreeNetworkStage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsDeviceLightboxOpen(false)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     aria-label="Đóng phóng to 2.4K"
                   >
-                    ✕ Đóng
+                    <X className="w-3.5 h-3.5" />
+                    <span>Đóng</span>
                   </button>
                 </div>
               </div>

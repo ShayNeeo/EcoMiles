@@ -5,7 +5,21 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { useGSAP } from '@gsap/react';
-import { ArrowUpRight, BarChart3, CheckCircle, Clock, Cpu, Monitor, RefreshCw, Route } from 'lucide-react';
+import {
+  ArrowUpRight,
+  BarChart3,
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Cpu,
+  Download,
+  Monitor,
+  RefreshCw,
+  Route,
+  X,
+  ZoomIn,
+} from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
 const SOLUTIONS_LIGHTBOX_ASSETS = [
@@ -311,8 +325,9 @@ export const Solutions: React.FC = () => {
                       <div className="text-[10px] text-slate-400">Bấm để phóng to Mockup Thiết bị 2.4K</div>
                     </div>
                   </div>
-                  <span className="shrink-0 px-2.5 py-1 rounded-lg bg-ecomiles-lime/15 border border-ecomiles-lime/40 text-[10px] font-extrabold text-ecomiles-lime group-hover/mock:bg-ecomiles-lime group-hover/mock:text-slate-950 transition-colors">
-                    🔍 2.4K
+                  <span className="inline-flex items-center gap-1 shrink-0 px-2.5 py-1 rounded-lg bg-ecomiles-lime/15 border border-ecomiles-lime/40 text-[10px] font-extrabold text-ecomiles-lime group-hover/mock:bg-ecomiles-lime group-hover/mock:text-slate-950 transition-colors">
+                    <ZoomIn className="w-3 h-3" />
+                    <span>2.4K</span>
                   </span>
                 </button>
               </div>
@@ -350,7 +365,8 @@ export const Solutions: React.FC = () => {
                         title={`Phóng to Mockup 2.4K của ${dev.label}`}
                       >
                         <Monitor className="w-3 h-3 text-ecomiles-lime" />
-                        <span>{dev.label} 🔍</span>
+                        <span>{dev.label}</span>
+                        <ZoomIn className="w-3 h-3 text-ecomiles-lime" />
                       </button>
                     ))}
                   </div>
@@ -389,29 +405,33 @@ export const Solutions: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setLightboxIndex((safeIdx - 1 + total) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      ‹ Trước
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Trước</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setLightboxIndex((safeIdx + 1) % total)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                     >
-                      Tiếp ›
+                      <span>Tiếp</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <a
                       href={activeAsset.src}
                       download
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                     >
-                      Tải PNG 2.4K
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Tải PNG 2.4K</span>
                     </a>
                     <a
                       href={activeAsset.liveHref}
-                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
                     >
-                      Mở App Live ↗
+                      <span>Mở App Live</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <a
                       href="#showcase"
@@ -419,16 +439,18 @@ export const Solutions: React.FC = () => {
                         setLightboxIndex(null);
                         handleScrollToShowcase(e, activeAsset.id === 'studio_stage' ? 'all_banner' : activeAsset.id);
                       }}
-                      className="px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs"
                     >
-                      Đến #showcase ↗
+                      <span>Đến #showcase</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <button
                       type="button"
                       onClick={() => setLightboxIndex(null)}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     >
-                      ✕ Đóng
+                      <X className="w-3.5 h-3.5" />
+                      <span>Đóng</span>
                     </button>
                   </div>
                 </div>

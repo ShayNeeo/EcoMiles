@@ -5,16 +5,23 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import {
+  ArrowLeft,
   ArrowRight,
   Check,
+  ChevronLeft,
+  ChevronRight,
   Compass,
   Download,
   Laptop,
   Layers,
   Monitor,
+  Pause,
+  Play,
   Smartphone,
   SplitSquareVertical,
   Tablet,
+  X,
+  ZoomIn,
 } from 'lucide-react';
 import { ThreeDeviceEcosystemBanner } from './ThreeDeviceEcosystemBanner';
 
@@ -469,13 +476,14 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setIsShowcaseAutoTour((prev) => !prev)}
-                      className={`px-2 py-0.5 rounded-lg font-bold text-[10px] cursor-pointer transition-colors border ${
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg font-bold text-[10px] cursor-pointer transition-colors border ${
                         isShowcaseAutoTour
                           ? 'bg-emerald-400 text-slate-950 border-emerald-300 shadow-sm'
                           : 'bg-slate-950/90 text-ecomiles-lime border-ecomiles-lime/40 hover:bg-ecomiles-lime/15'
                       }`}
                     >
-                      {isShowcaseAutoTour ? '⏸ Đang xoay' : '▶ Tự động xoay'}
+                      {isShowcaseAutoTour ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+                      <span>{isShowcaseAutoTour ? 'Đang xoay' : 'Tự động xoay'}</span>
                     </button>
                   </div>
                   <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-950/90 border border-white/10">
@@ -551,9 +559,10 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setIsShowcaseLightboxOpen(true)}
-                          className="px-2 py-0.5 rounded-md bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-extrabold text-[10.5px] cursor-pointer transition-colors"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-900 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-extrabold text-[10.5px] cursor-pointer transition-colors"
                         >
-                          🔍 Phóng To 2.4K
+                          <ZoomIn className="w-3 h-3" />
+                          <span>Phóng To 2.4K</span>
                         </button>
                         <a
                           href={
@@ -562,9 +571,10 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                               : '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png'
                           }
                           download
-                          className="font-extrabold text-ecomiles-lime hover:underline"
+                          className="inline-flex items-center gap-1 font-extrabold text-ecomiles-lime hover:underline"
                         >
-                          Tải PNG 2.4K →
+                          <Download className="w-3 h-3" />
+                          <span>Tải PNG 2.4K</span>
                         </a>
                       </div>
                     </div>
@@ -606,9 +616,9 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                               setIsShowcaseLightboxOpen(true);
                             }}
                             title={`Phóng to 2.4K: ${dev.shortLabel}`}
-                            className="px-1.5 py-0.5 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime transition-colors cursor-zoom-in"
+                            className="inline-flex items-center px-1.5 py-0.5 border-l border-white/10 bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime transition-colors cursor-zoom-in"
                           >
-                            🔍
+                            <ZoomIn className="w-3 h-3" />
                           </button>
                         </div>
                       ))}
@@ -813,17 +823,19 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           tiltRotateY.set(0);
                           setSelectedDeviceId('all_banner');
                         }}
-                        className="px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-bold transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/40 font-bold transition-colors cursor-pointer"
                       >
-                        ← Toàn cảnh 7 thiết bị
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        <span>Toàn cảnh 7 thiết bị</span>
                       </button>
                       <div className="inline-flex items-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => stepHardwareDevice(-1)}
-                          className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
                         >
-                          ‹ Thiết bị trước
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                          <span>Thiết bị trước</span>
                         </button>
                         <span className="px-2.5 py-1 rounded-lg bg-slate-950/90 border border-white/10 font-mono font-bold text-ecomiles-lime">
                           {activeHardwareIndex + 1} / {hardwareDevices.length}
@@ -831,16 +843,18 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => stepHardwareDevice(1)}
-                          className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 font-bold cursor-pointer transition-colors"
                         >
-                          Thiết bị tiếp ›
+                          <span>Thiết bị tiếp</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={() => setIsShowcaseLightboxOpen(true)}
-                          className="px-2.5 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-ecomiles-lime/15 hover:bg-ecomiles-lime hover:text-slate-950 text-ecomiles-lime border border-ecomiles-lime/50 font-extrabold cursor-pointer transition-colors"
                         >
-                          🔍 Phóng To 2.4K
+                          <ZoomIn className="w-3.5 h-3.5" />
+                          <span>Phóng To 2.4K</span>
                         </button>
                       </div>
                     </div>
@@ -983,16 +997,18 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => stepFlagshipDevice(-1)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                   >
-                    ‹ Trước
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Trước</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => stepFlagshipDevice(1)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
                   >
-                    Tiếp ›
+                    <span>Tiếp</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                   <a
                     href={
@@ -1003,9 +1019,10 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                         : activeDevice.imageSrc
                     }
                     download
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-white/10"
                   >
-                    Tải PNG 2.4K
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Tải PNG 2.4K</span>
                   </a>
                   <a
                     href={activeDevice.liveRouteUrl}
@@ -1017,10 +1034,11 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsShowcaseLightboxOpen(false)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
                     aria-label="Đóng toàn màn hình"
                   >
-                    ✕ Đóng
+                    <X className="w-3.5 h-3.5" />
+                    <span>Đóng</span>
                   </button>
                 </div>
               </div>
