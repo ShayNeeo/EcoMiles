@@ -2,35 +2,27 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { ArrowUpRight } from 'lucide-react';
-
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface TeamMember {
   name: string;
   role: React.ReactNode;
-  ownershipBadge: string;
   image: string;
   imagePosition: string;
-  liveSubsystemLabel: string;
-  liveSubsystemHref: string;
 }
 
 const members: TeamMember[] = [
   {
-    name: 'Nguyễn Hồng Phúc',
+    name: 'Nguyễn Thu Thuỷ',
     role: (
       <>
-        Nghiên Cứu Logistics
+        Nghiên Cứu &amp; Cung Cấp Kiến Thức
         <br />
-        &amp; Chuỗi Cung Ứng
+        Logistics &amp; Chuỗi Cung Ứng
       </>
     ),
-    ownershipBadge: 'Product Lead · Vận hành B2B & Chuẩn GLEC v3.2',
-    image: '/team/phuc.jpg',
+    image: '/team/thuy.jpg',
     imagePosition: 'center 24%',
-    liveSubsystemLabel: 'Mở Bảng Điều Khiển',
-    liveSubsystemHref: '/dashboard/',
   },
   {
     name: 'Phạm Quốc Thanh',
@@ -41,41 +33,32 @@ const members: TeamMember[] = [
         &amp; Kiến Trúc Hệ Thống
       </>
     ),
-    ownershipBadge: 'CTO · Thuật toán VRPTW/ALNS & Kiến trúc Bảo mật',
     image: '/team/thanh.jpg',
     imagePosition: 'center 32%',
-    liveSubsystemLabel: 'Mở Cổng Kiểm Toán ESG',
-    liveSubsystemHref: '/portal/audit/',
   },
   {
     name: 'Nguyễn Ngọc Khánh Phương',
     role: (
       <>
-        Phân Tích Dữ Liệu
+        Nghiên Cứu Thị Trường
         <br />
-        &amp; Báo Cáo Phát Thải
+        &amp; Phát Triển Bền Vững
       </>
     ),
-    ownershipBadge: 'ESG Analytics · Đối chứng EVSIM & Báo cáo 3 Sheet',
     image: '/team/phuong.jpg',
     imagePosition: 'center 18%',
-    liveSubsystemLabel: 'Mở Phòng Đối Chứng',
-    liveSubsystemHref: '/benchmark/',
   },
   {
-    name: 'Nguyễn Thu Thủy',
+    name: 'Nguyễn Hồng Phúc',
     role: (
       <>
-        Kế Hoạch Tài Chính
+        Mô Hình Tài Chính
         <br />
-        &amp; Hiệu Quả Vận Hành
+        &amp; Kế Hoạch Vốn
       </>
     ),
-    ownershipBadge: 'CFO · Mô hình hoàn vốn ROI & Bản đồ $0 API',
-    image: '/team/thuy.jpg',
+    image: '/team/phuc.jpg',
     imagePosition: 'center 24%',
-    liveSubsystemLabel: 'Mở Bản Đồ Xe Tải',
-    liveSubsystemHref: '/maps/?vehicle=0&mode=navigate',
   },
   {
     name: 'Lê Thị Hoàng Ngân',
@@ -86,11 +69,8 @@ const members: TeamMember[] = [
         &amp; Thương Mại Điện Tử
       </>
     ),
-    ownershipBadge: 'Last-Mile Lead · Ứng dụng Tài xế & Ghép đơn về',
     image: '/team/ngan.jpg',
     imagePosition: 'center 25%',
-    liveSubsystemLabel: 'Mở Ứng Dụng Tài Xế',
-    liveSubsystemHref: '/driver/',
   },
 ];
 
@@ -183,18 +163,6 @@ export const Team: React.FC = () => {
                 <p className="text-xs font-bold leading-5 text-ecomiles-lime sm:text-sm text-balance">
                   {member.role}
                 </p>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  {member.ownershipBadge}
-                </p>
-                <div className="pt-1">
-                  <a
-                    href={member.liveSubsystemHref}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-white/15 text-xs font-bold text-slate-200 hover:border-ecomiles-lime/60 hover:text-ecomiles-lime transition-colors"
-                  >
-                    <span>{member.liveSubsystemLabel}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-ecomiles-lime" />
-                  </a>
-                </div>
               </div>
             </article>
           ))}
