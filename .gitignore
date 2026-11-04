@@ -51,3 +51,10 @@ apps/mobile-driver/build/
 omp-session-*.html
 slides/.comments/
 .~lock.*#
+
+# Large local media & raw archive assets (kept on disk under docs/)
+docs/audio/*.wav
+docs/video/*.mp4
+docs/video/*.wav
+docs/contests/KNQG_2026/*.zip
+docs/contests/KNQG_2026/*.pptx

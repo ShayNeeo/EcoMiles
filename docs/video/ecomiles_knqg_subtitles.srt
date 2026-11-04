@@ -1,0 +1,405 @@
+1
+00:00:00,080 --> 00:00:02,720
+Mỗi ngày, hàng vạn chuyến xe tải
+nối đuôi nhau giữ nhịp đập
+
+2
+00:00:02,760 --> 00:00:04,560
+cho nền kinh tế Việt Nam.
+
+3
+00:00:05,020 --> 00:00:09,140
+Thế nhưng, đằng sau dòng chảy hàng hóa ấy
+là một nghịch lý kéo dài suốt nhiều năm:
+
+4
+00:00:09,900 --> 00:00:13,020
+theo Hiệp hội Logistics Việt Nam,
+chi phí logistics nước ta
+
+5
+00:00:13,060 --> 00:00:17,320
+chiếm tới gần 17% GDP,
+cao gấp rưỡi mức bình quân toàn cầu,
+
+6
+00:00:17,760 --> 00:00:20,040
+trong đó vận tải đường bộ chiếm tới
+80% lượng phát thải
+
+7
+00:00:20,080 --> 00:00:22,500
+khí nhà kính của toàn ngành giao thông.
+
+8
+00:00:23,400 --> 00:00:25,400
+Theo khảo sát của
+Ngân hàng Phát triển Châu Á ADB,
+
+9
+00:00:25,660 --> 00:00:29,600
+cứ ba chuyến xe tải lăn bánh thì có
+một chuyến quay về rỗng không chở hàng.
+
+10
+00:00:30,260 --> 00:00:33,080
+Doanh nghiệp vừa và nhỏ
+đang bị kẹp giữa ba áp lực cùng lúc:
+
+11
+00:00:33,560 --> 00:00:36,720
+chi phí xăng dầu đắt đỏ do xếp tuyến
+thủ công bằng kinh nghiệm,
+
+12
+00:00:37,240 --> 00:00:40,860
+giới hạn nghiêm ngặt không quá 4 giờ
+lái liên tục theo Luật năm 2024,
+
+13
+00:00:41,540 --> 00:00:46,500
+và hạn chót ngày 31/03/2027
+phải nộp báo cáo kiểm kê khí nhà kính
+
+14
+00:00:46,540 --> 00:00:48,060
+theo Nghị định 06 của Chính phủ.
+
+15
+00:00:49,680 --> 00:00:53,760
+Trước khi xây dựng giải pháp,
+đội ngũ EcoMiles đã khảo sát trực tiếp
+
+16
+00:00:53,800 --> 00:00:57,440
+9 doanh nghiệp từ cảng Tiên Sa Đà Nẵng,
+các tập đoàn lớn như Heineken, ADM,
+
+17
+00:00:57,700 --> 00:01:00,280
+Giao Hàng Nhanh đến
+các công ty giao nhận vừa và nhỏ.
+
+18
+00:01:00,920 --> 00:01:03,840
+Kết quả cho thấy các doanh nghiệp
+đều muốn xanh hóa chuỗi cung ứng,
+
+19
+00:01:04,140 --> 00:01:07,800
+nhưng khâu điều phối vẫn đang ghi chép
+thủ công trên từng trang Excel rời rạc,
+
+20
+00:01:07,860 --> 00:01:11,560
+vừa mất hàng giờ mỗi ngày vừa không thể
+đo lường chính xác lượng khí thải.
+
+21
+00:01:12,000 --> 00:01:14,720
+Trò chuyện cùng các bác tài đường dài
+như chú Hoàng
+
+22
+00:01:15,120 --> 00:01:17,480
+với hơn 7 năm chạy tuyến
+Miền Trung, Miền Tây,
+
+23
+00:01:18,140 --> 00:01:20,820
+chúng tôi thấu hiểu nỗi khổ
+khi đi theo bản đồ thông thường
+
+24
+00:01:20,860 --> 00:01:24,760
+vốn không cảnh báo giờ cấm tải
+hay giới hạn cầu đường,
+
+25
+00:01:24,900 --> 00:01:27,620
+khiến xe phải chạy vòng
+và xả khói đen khi kẹt xe.
+
+26
+00:01:28,520 --> 00:01:31,640
+Mỗi câu chuyện thực địa ấy
+đã được EcoMiles chuyển hóa
+
+27
+00:01:31,680 --> 00:01:34,000
+trực tiếp thành 6 quyết định
+thiết kế cốt lõi.
+
+28
+00:01:35,260 --> 00:01:38,360
+EcoMiles ra đời như một nền tảng
+phần mềm thuê bao tinh gọn.
+
+29
+00:01:39,180 --> 00:01:41,160
+Tuyên ngôn giá trị của chúng tôi
+rất rõ ràng:
+
+30
+00:01:41,960 --> 00:01:44,040
+doanh nghiệp không cần đổi sang
+xe điện đắt đỏ,
+
+31
+00:01:44,480 --> 00:01:48,000
+không cần lắp phần cứng mới
+và không cần hệ thống ERP phức tạp.
+
+32
+00:01:48,040 --> 00:01:50,940
+Chỉ cần đưa vào đúng file Excel
+đơn hàng quen thuộc,
+
+33
+00:01:51,520 --> 00:01:55,800
+EcoMiles tự động lập tuyến ngắn nhất
+và tính sẵn báo cáo CO2 chuẩn quốc tế.
+
+34
+00:01:56,300 --> 00:02:00,140
+Hãy quan sát sản phẩm mẫu đang vận hành
+thực tế tại ecomiles.pages.dev.
+
+35
+00:02:00,720 --> 00:02:04,420
+Tại Bảng điều khiển doanh nghiệp, điều phối
+viên chỉ cần tải lên file Excel đơn hàng.
+
+36
+00:02:04,900 --> 00:02:07,580
+Thuật toán định tuyến phương tiện
+lập tức gom cụm theo khu vực,
+
+37
+00:02:07,920 --> 00:02:10,920
+kiểm tra tải trọng từng xe
+và rút ngắn thời gian xếp tuyến
+
+38
+00:02:11,120 --> 00:02:12,820
+mỗi ngày từ vài giờ
+xuống chỉ còn vài phút.
+
+39
+00:02:13,400 --> 00:02:17,140
+Tại Phòng đối chứng hai bản đồ chạy
+song song trên đường phố TP. Hồ Chí Minh,
+
+40
+00:02:17,500 --> 00:02:19,600
+hiệu quả Trước và Sau
+hiện lên minh bạch.
+
+41
+00:02:20,100 --> 00:02:23,240
+Cùng phục vụ một khối lượng đơn hàng,
+EcoMiles giúp cắt giảm
+
+42
+00:02:23,280 --> 00:02:26,000
+từ 20 đến hơn 30%
+tổng quãng đường di chuyển,
+
+43
+00:02:26,240 --> 00:02:28,680
+đồng thời tự động ghép các đơn
+lấy hàng chiều về kho,
+
+44
+00:02:29,040 --> 00:02:32,340
+kéo tỷ lệ xe chạy rỗng
+từ hơn 30% xuống dưới 10%.
+
+45
+00:02:32,660 --> 00:02:36,180
+Ở khâu thực thi ngoài thực địa,
+bản đồ dẫn đường xe tải của EcoMiles
+
+46
+00:02:36,220 --> 00:02:40,220
+hiển thị rõ các vùng cấm tải theo khung giờ
+và giới hạn cầu đường tại TP. Hồ Chí Minh,
+
+47
+00:02:40,260 --> 00:02:43,460
+kết hợp hướng dẫn giọng nói tiếng Việt
+với chi phí bản đồ bằng không.
+
+48
+00:02:44,220 --> 00:02:47,820
+Trên điện thoại, tài xế nhận lịch trình
+tuân thủ đúng quy định 4 giờ lái liên tục
+
+49
+00:02:47,860 --> 00:02:50,000
+và cập nhật trạng thái giao hàng
+chỉ với một chạm.
+
+50
+00:02:50,780 --> 00:02:54,220
+Mọi ki-lô-mét tiết kiệm được
+đều tự động quy đổi thành lượng CO2
+
+51
+00:02:54,260 --> 00:02:57,520
+cắt giảm theo đúng chuẩn quốc tế
+GLEC Framework và GHG Protocol,
+
+52
+00:02:57,560 --> 00:02:59,360
+truy vết đến từng mã đơn hàng.
+
+53
+00:03:00,260 --> 00:03:02,920
+Với một đội 10 xe tải
+chi 50 triệu đồng tiền dầu mỗi tháng,
+
+54
+00:03:03,200 --> 00:03:06,620
+EcoMiles giúp tiết kiệm
+từ 7,5 đến 12,5 triệu đồng mỗi tháng,
+
+55
+00:03:06,660 --> 00:03:09,600
+trong khi phí thuê bao gói khởi đầu
+chỉ từ 1,5 triệu đồng.
+
+56
+00:03:10,080 --> 00:03:13,200
+Theo Hiệp hội Logistics Việt Nam,
+cả nước có hơn 30.000 doanh nghiệp
+
+57
+00:03:13,240 --> 00:03:16,360
+ngành logistics, với 70% tập trung
+tại Thành phố Hồ Chí Minh.
+
+58
+00:03:17,040 --> 00:03:20,700
+EcoMiles tập trung vào phân khúc
+từ 5 đến 100 xe giao hàng nội đô mỗi ngày.
+
+59
+00:03:21,260 --> 00:03:23,680
+Khi đối thủ lớn nhất là
+thói quen làm tay trên Excel,
+
+60
+00:03:24,120 --> 00:03:26,660
+rào cản cạnh tranh bền vững của chúng tôi
+nằm ở tri thức liên ngành
+
+61
+00:03:26,700 --> 00:03:28,920
+và nguồn dữ liệu vận hành
+tích lũy qua từng chuyến xe.
+
+62
+00:03:29,760 --> 00:03:31,720
+Nền tảng vận hành theo
+mô hình thuê bao hàng tháng
+
+63
+00:03:31,760 --> 00:03:34,380
+từ 1,5 đến 40 triệu đồng
+tùy quy mô tài xế,
+
+64
+00:03:34,420 --> 00:03:37,760
+kết hợp dịch vụ tư vấn báo cáo ESG
+và hoa hồng ghép đơn chiều về.
+
+65
+00:03:38,280 --> 00:03:42,100
+Ngay trong giai đoạn tiếp theo, chúng tôi
+triển khai thí điểm miễn phí 4 đến 6 tuần
+
+66
+00:03:42,140 --> 00:03:44,040
+với 3 đến 5 doanh nghiệp
+tại Thành phố Hồ Chí Minh,
+
+67
+00:03:44,340 --> 00:03:46,480
+cam kết giảm từ 8 đến 15%
+quãng đường
+
+68
+00:03:46,520 --> 00:03:48,540
+và giảm 10 đến 20%
+xe chạy rỗng.
+
+69
+00:03:49,140 --> 00:03:53,000
+Từ bước đệm tại TP. Hồ Chí Minh,
+EcoMiles sẽ mở rộng ra 5 tỉnh thành
+
+70
+00:03:53,040 --> 00:03:55,140
+trọng điểm vào năm 2028
+và hướng tới mạng lưới
+
+71
+00:03:55,180 --> 00:03:57,080
+logistics tuần hoàn
+xuyên biên giới.
+
+72
+00:03:57,640 --> 00:04:00,320
+Với vốn đầu tư ban đầu
+228,6 triệu đồng,
+
+73
+00:04:00,740 --> 00:04:03,800
+dự án dự kiến đạt doanh thu
+310 triệu đồng năm 2027,
+
+74
+00:04:04,080 --> 00:04:07,900
+bắt đầu có lãi từ năm thứ hai và cán mốc
+hơn 10,5 tỷ đồng vào năm thứ năm,
+
+75
+00:04:08,280 --> 00:04:12,440
+hoàn vốn sau 1,68 năm
+với tỷ suất IRR đạt 28%.
+
+76
+00:04:12,920 --> 00:04:16,760
+Đứng sau EcoMiles là 5 sinh viên đa ngành
+từ Đại học FPT Hà Nội,
+
+77
+00:04:17,160 --> 00:04:19,000
+Đại học Quốc tế thuộc
+Đại học Quốc gia TP. Hồ Chí Minh,
+
+78
+00:04:19,440 --> 00:04:21,320
+Đại học Ngoại thương
+và Đại học Kinh tế Quốc dân.
+
+79
+00:04:21,800 --> 00:04:24,800
+Thông qua Chương trình Khởi nghiệp Quốc gia,
+chúng tôi mong muốn kết nối
+
+80
+00:04:24,840 --> 00:04:28,320
+với các cố vấn phát thải, Hiệp hội VLA
+và các doanh nghiệp đối tác,
+
+81
+00:04:28,360 --> 00:04:30,620
+để mỗi ki-lô-mét tối ưu hôm nay
+cùng góp sức
+
+82
+00:04:30,660 --> 00:04:33,100
+đưa Việt Nam tiến tới
+mục tiêu Net Zero 2050.

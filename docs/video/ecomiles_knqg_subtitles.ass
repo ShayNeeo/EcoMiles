@@ -1,0 +1,99 @@
+[Script Info]
+; Script generated for EcoMiles KNQG 2026 Documentary & Product Demo Video (Google AI Studio 2-Speaker Voiceover v2)
+Title: EcoMiles KNQG 2026 Documentary & Product Demo Subtitles
+Original Script: EcoMiles Founder Team (KNQG 2026)
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+PlayResX: 1920
+PlayResY: 1080
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Noto Sans,44,&H00FFFFFF,&H000000FF,&H5C000000,&H5C000000,-1,0,0,0,100,100,0,0,3,10,0,2,140,140,48,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.08,0:00:02.72,Default,,0,0,0,,Mỗi ngày, hàng vạn chuyến xe tải\Nnối đuôi nhau giữ nhịp đập
+Dialogue: 0,0:00:02.76,0:00:04.56,Default,,0,0,0,,cho nền kinh tế Việt Nam.
+Dialogue: 0,0:00:05.02,0:00:09.14,Default,,0,0,0,,Thế nhưng, đằng sau dòng chảy hàng hóa ấy\Nlà một nghịch lý kéo dài suốt nhiều năm:
+Dialogue: 0,0:00:09.90,0:00:13.02,Default,,0,0,0,,theo Hiệp hội Logistics Việt Nam,\Nchi phí logistics nước ta
+Dialogue: 0,0:00:13.06,0:00:17.32,Default,,0,0,0,,chiếm tới gần 17% GDP,\Ncao gấp rưỡi mức bình quân toàn cầu,
+Dialogue: 0,0:00:17.76,0:00:20.04,Default,,0,0,0,,trong đó vận tải đường bộ chiếm tới\N80% lượng phát thải
+Dialogue: 0,0:00:20.08,0:00:22.50,Default,,0,0,0,,khí nhà kính của toàn ngành giao thông.
+Dialogue: 0,0:00:23.40,0:00:25.40,Default,,0,0,0,,Theo khảo sát của\NNgân hàng Phát triển Châu Á ADB,
+Dialogue: 0,0:00:25.66,0:00:29.60,Default,,0,0,0,,cứ ba chuyến xe tải lăn bánh thì có\Nmột chuyến quay về rỗng không chở hàng.
+Dialogue: 0,0:00:30.26,0:00:33.08,Default,,0,0,0,,Doanh nghiệp vừa và nhỏ\Nđang bị kẹp giữa ba áp lực cùng lúc:
+Dialogue: 0,0:00:33.56,0:00:36.72,Default,,0,0,0,,chi phí xăng dầu đắt đỏ do xếp tuyến\Nthủ công bằng kinh nghiệm,
+Dialogue: 0,0:00:37.24,0:00:40.86,Default,,0,0,0,,giới hạn nghiêm ngặt không quá 4 giờ\Nlái liên tục theo Luật năm 2024,
+Dialogue: 0,0:00:41.54,0:00:46.50,Default,,0,0,0,,và hạn chót ngày 31/03/2027\Nphải nộp báo cáo kiểm kê khí nhà kính
+Dialogue: 0,0:00:46.54,0:00:48.06,Default,,0,0,0,,theo Nghị định 06 của Chính phủ.
+Dialogue: 0,0:00:49.68,0:00:53.76,Default,,0,0,0,,Trước khi xây dựng giải pháp,\Nđội ngũ EcoMiles đã khảo sát trực tiếp
+Dialogue: 0,0:00:53.80,0:00:57.44,Default,,0,0,0,,9 doanh nghiệp từ cảng Tiên Sa Đà Nẵng,\Ncác tập đoàn lớn như Heineken, ADM,
+Dialogue: 0,0:00:57.70,0:01:00.28,Default,,0,0,0,,Giao Hàng Nhanh đến\Ncác công ty giao nhận vừa và nhỏ.
+Dialogue: 0,0:01:00.92,0:01:03.84,Default,,0,0,0,,Kết quả cho thấy các doanh nghiệp\Nđều muốn xanh hóa chuỗi cung ứng,
+Dialogue: 0,0:01:04.14,0:01:07.80,Default,,0,0,0,,nhưng khâu điều phối vẫn đang ghi chép\Nthủ công trên từng trang Excel rời rạc,
+Dialogue: 0,0:01:07.86,0:01:11.56,Default,,0,0,0,,vừa mất hàng giờ mỗi ngày vừa không thể\Nđo lường chính xác lượng khí thải.
+Dialogue: 0,0:01:12.00,0:01:14.72,Default,,0,0,0,,Trò chuyện cùng các bác tài đường dài\Nnhư chú Hoàng
+Dialogue: 0,0:01:15.12,0:01:17.48,Default,,0,0,0,,với hơn 7 năm chạy tuyến\NMiền Trung, Miền Tây,
+Dialogue: 0,0:01:18.14,0:01:20.82,Default,,0,0,0,,chúng tôi thấu hiểu nỗi khổ\Nkhi đi theo bản đồ thông thường
+Dialogue: 0,0:01:20.86,0:01:24.76,Default,,0,0,0,,vốn không cảnh báo giờ cấm tải\Nhay giới hạn cầu đường,
+Dialogue: 0,0:01:24.90,0:01:27.62,Default,,0,0,0,,khiến xe phải chạy vòng\Nvà xả khói đen khi kẹt xe.
+Dialogue: 0,0:01:28.52,0:01:31.64,Default,,0,0,0,,Mỗi câu chuyện thực địa ấy\Nđã được EcoMiles chuyển hóa
+Dialogue: 0,0:01:31.68,0:01:34.00,Default,,0,0,0,,trực tiếp thành 6 quyết định\Nthiết kế cốt lõi.
+Dialogue: 0,0:01:35.26,0:01:38.36,Default,,0,0,0,,EcoMiles ra đời như một nền tảng\Nphần mềm thuê bao tinh gọn.
+Dialogue: 0,0:01:39.18,0:01:41.16,Default,,0,0,0,,Tuyên ngôn giá trị của chúng tôi\Nrất rõ ràng:
+Dialogue: 0,0:01:41.96,0:01:44.04,Default,,0,0,0,,doanh nghiệp không cần đổi sang\Nxe điện đắt đỏ,
+Dialogue: 0,0:01:44.48,0:01:48.00,Default,,0,0,0,,không cần lắp phần cứng mới\Nvà không cần hệ thống ERP phức tạp.
+Dialogue: 0,0:01:48.04,0:01:50.94,Default,,0,0,0,,Chỉ cần đưa vào đúng file Excel\Nđơn hàng quen thuộc,
+Dialogue: 0,0:01:51.52,0:01:55.80,Default,,0,0,0,,EcoMiles tự động lập tuyến ngắn nhất\Nvà tính sẵn báo cáo CO2 chuẩn quốc tế.
+Dialogue: 0,0:01:56.30,0:02:00.14,Default,,0,0,0,,Hãy quan sát sản phẩm mẫu đang vận hành\Nthực tế tại ecomiles.pages.dev.
+Dialogue: 0,0:02:00.72,0:02:04.42,Default,,0,0,0,,Tại Bảng điều khiển doanh nghiệp, điều phối\Nviên chỉ cần tải lên file Excel đơn hàng.
+Dialogue: 0,0:02:04.90,0:02:07.58,Default,,0,0,0,,Thuật toán định tuyến phương tiện\Nlập tức gom cụm theo khu vực,
+Dialogue: 0,0:02:07.92,0:02:10.92,Default,,0,0,0,,kiểm tra tải trọng từng xe\Nvà rút ngắn thời gian xếp tuyến
+Dialogue: 0,0:02:11.12,0:02:12.82,Default,,0,0,0,,mỗi ngày từ vài giờ\Nxuống chỉ còn vài phút.
+Dialogue: 0,0:02:13.40,0:02:17.14,Default,,0,0,0,,Tại Phòng đối chứng hai bản đồ chạy\Nsong song trên đường phố TP. Hồ Chí Minh,
+Dialogue: 0,0:02:17.50,0:02:19.60,Default,,0,0,0,,hiệu quả Trước và Sau\Nhiện lên minh bạch.
+Dialogue: 0,0:02:20.10,0:02:23.24,Default,,0,0,0,,Cùng phục vụ một khối lượng đơn hàng,\NEcoMiles giúp cắt giảm
+Dialogue: 0,0:02:23.28,0:02:26.00,Default,,0,0,0,,từ 20 đến hơn 30%\Ntổng quãng đường di chuyển,
+Dialogue: 0,0:02:26.24,0:02:28.68,Default,,0,0,0,,đồng thời tự động ghép các đơn\Nlấy hàng chiều về kho,
+Dialogue: 0,0:02:29.04,0:02:32.34,Default,,0,0,0,,kéo tỷ lệ xe chạy rỗng\Ntừ hơn 30% xuống dưới 10%.
+Dialogue: 0,0:02:32.66,0:02:36.18,Default,,0,0,0,,Ở khâu thực thi ngoài thực địa,\Nbản đồ dẫn đường xe tải của EcoMiles
+Dialogue: 0,0:02:36.22,0:02:40.22,Default,,0,0,0,,hiển thị rõ các vùng cấm tải theo khung giờ\Nvà giới hạn cầu đường tại TP. Hồ Chí Minh,
+Dialogue: 0,0:02:40.26,0:02:43.46,Default,,0,0,0,,kết hợp hướng dẫn giọng nói tiếng Việt\Nvới chi phí bản đồ bằng không.
+Dialogue: 0,0:02:44.22,0:02:47.82,Default,,0,0,0,,Trên điện thoại, tài xế nhận lịch trình\Ntuân thủ đúng quy định 4 giờ lái liên tục
+Dialogue: 0,0:02:47.86,0:02:50.00,Default,,0,0,0,,và cập nhật trạng thái giao hàng\Nchỉ với một chạm.
+Dialogue: 0,0:02:50.78,0:02:54.22,Default,,0,0,0,,Mọi ki-lô-mét tiết kiệm được\Nđều tự động quy đổi thành lượng CO2
+Dialogue: 0,0:02:54.26,0:02:57.52,Default,,0,0,0,,cắt giảm theo đúng chuẩn quốc tế\NGLEC Framework và GHG Protocol,
+Dialogue: 0,0:02:57.56,0:02:59.36,Default,,0,0,0,,truy vết đến từng mã đơn hàng.
+Dialogue: 0,0:03:00.26,0:03:02.92,Default,,0,0,0,,Với một đội 10 xe tải\Nchi 50 triệu đồng tiền dầu mỗi tháng,
+Dialogue: 0,0:03:03.20,0:03:06.62,Default,,0,0,0,,EcoMiles giúp tiết kiệm\Ntừ 7,5 đến 12,5 triệu đồng mỗi tháng,
+Dialogue: 0,0:03:06.66,0:03:09.60,Default,,0,0,0,,trong khi phí thuê bao gói khởi đầu\Nchỉ từ 1,5 triệu đồng.
+Dialogue: 0,0:03:10.08,0:03:13.20,Default,,0,0,0,,Theo Hiệp hội Logistics Việt Nam,\Ncả nước có hơn 30.000 doanh nghiệp
+Dialogue: 0,0:03:13.24,0:03:16.36,Default,,0,0,0,,ngành logistics, với 70% tập trung\Ntại Thành phố Hồ Chí Minh.
+Dialogue: 0,0:03:17.04,0:03:20.70,Default,,0,0,0,,EcoMiles tập trung vào phân khúc\Ntừ 5 đến 100 xe giao hàng nội đô mỗi ngày.
+Dialogue: 0,0:03:21.26,0:03:23.68,Default,,0,0,0,,Khi đối thủ lớn nhất là\Nthói quen làm tay trên Excel,
+Dialogue: 0,0:03:24.12,0:03:26.66,Default,,0,0,0,,rào cản cạnh tranh bền vững của chúng tôi\Nnằm ở tri thức liên ngành
+Dialogue: 0,0:03:26.70,0:03:28.92,Default,,0,0,0,,và nguồn dữ liệu vận hành\Ntích lũy qua từng chuyến xe.
+Dialogue: 0,0:03:29.76,0:03:31.72,Default,,0,0,0,,Nền tảng vận hành theo\Nmô hình thuê bao hàng tháng
+Dialogue: 0,0:03:31.76,0:03:34.38,Default,,0,0,0,,từ 1,5 đến 40 triệu đồng\Ntùy quy mô tài xế,
+Dialogue: 0,0:03:34.42,0:03:37.76,Default,,0,0,0,,kết hợp dịch vụ tư vấn báo cáo ESG\Nvà hoa hồng ghép đơn chiều về.
+Dialogue: 0,0:03:38.28,0:03:42.10,Default,,0,0,0,,Ngay trong giai đoạn tiếp theo, chúng tôi\Ntriển khai thí điểm miễn phí 4 đến 6 tuần
+Dialogue: 0,0:03:42.14,0:03:44.04,Default,,0,0,0,,với 3 đến 5 doanh nghiệp\Ntại Thành phố Hồ Chí Minh,
+Dialogue: 0,0:03:44.34,0:03:46.48,Default,,0,0,0,,cam kết giảm từ 8 đến 15%\Nquãng đường
+Dialogue: 0,0:03:46.52,0:03:48.54,Default,,0,0,0,,và giảm 10 đến 20%\Nxe chạy rỗng.
+Dialogue: 0,0:03:49.14,0:03:53.00,Default,,0,0,0,,Từ bước đệm tại TP. Hồ Chí Minh,\NEcoMiles sẽ mở rộng ra 5 tỉnh thành
+Dialogue: 0,0:03:53.04,0:03:55.14,Default,,0,0,0,,trọng điểm vào năm 2028\Nvà hướng tới mạng lưới
+Dialogue: 0,0:03:55.18,0:03:57.08,Default,,0,0,0,,logistics tuần hoàn\Nxuyên biên giới.
+Dialogue: 0,0:03:57.64,0:04:00.32,Default,,0,0,0,,Với vốn đầu tư ban đầu\N228,6 triệu đồng,
+Dialogue: 0,0:04:00.74,0:04:03.80,Default,,0,0,0,,dự án dự kiến đạt doanh thu\N310 triệu đồng năm 2027,
+Dialogue: 0,0:04:04.08,0:04:07.90,Default,,0,0,0,,bắt đầu có lãi từ năm thứ hai và cán mốc\Nhơn 10,5 tỷ đồng vào năm thứ năm,
+Dialogue: 0,0:04:08.28,0:04:12.44,Default,,0,0,0,,hoàn vốn sau 1,68 năm\Nvới tỷ suất IRR đạt 28%.
+Dialogue: 0,0:04:12.92,0:04:16.76,Default,,0,0,0,,Đứng sau EcoMiles là 5 sinh viên đa ngành\Ntừ Đại học FPT Hà Nội,
+Dialogue: 0,0:04:17.16,0:04:19.00,Default,,0,0,0,,Đại học Quốc tế thuộc\NĐại học Quốc gia TP. Hồ Chí Minh,
+Dialogue: 0,0:04:19.44,0:04:21.32,Default,,0,0,0,,Đại học Ngoại thương\Nvà Đại học Kinh tế Quốc dân.
+Dialogue: 0,0:04:21.80,0:04:24.80,Default,,0,0,0,,Thông qua Chương trình Khởi nghiệp Quốc gia,\Nchúng tôi mong muốn kết nối
+Dialogue: 0,0:04:24.84,0:04:28.32,Default,,0,0,0,,với các cố vấn phát thải, Hiệp hội VLA\Nvà các doanh nghiệp đối tác,
+Dialogue: 0,0:04:28.36,0:04:30.62,Default,,0,0,0,,để mỗi ki-lô-mét tối ưu hôm nay\Ncùng góp sức
+Dialogue: 0,0:04:30.66,0:04:33.10,Default,,0,0,0,,đưa Việt Nam tiến tới\Nmục tiêu Net Zero 2050.
