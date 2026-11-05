@@ -92,14 +92,6 @@ interface SimulatedTimelineSide {
   };
 }
 
-function parseTimeSec(hhmm: string, fallbackSec: number): number {
-  const parts = String(hhmm || '').split(':').map(Number);
-  if (parts.length >= 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
-    return parts[0] * 3600 + parts[1] * 60;
-  }
-  return fallbackSec;
-}
-
 function isQd23PeakSec(tSec: number): boolean {
   const h = tSec / 3600;
   return (h >= 6 && h < 9) || (h >= 16 && h < 20);
@@ -358,7 +350,9 @@ export function EvsimDualSimulator({
 }) {
   const [result, setResult] = useState<EphemeralBenchmarkResult | null>(initialResult || null);
   const onResultChangeRef = useRef(onResultChange);
-  onResultChangeRef.current = onResultChange;
+  useEffect(() => {
+    onResultChangeRef.current = onResultChange;
+  }, [onResultChange]);
   const [baselineKey, setBaselineKey] = useState<'human_google_proxy' | 'raw_excel'>('human_google_proxy');
   const [timeSec, setTimeSec] = useState<number>(7.25 * 3600); // Start at 07:15 AM so numbers & trucks climb actively across the full shift
   const [playing, setPlaying] = useState<boolean>(true);
