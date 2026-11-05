@@ -453,9 +453,16 @@ export function interpolateAlongStreetPathWithHeading(
  * Removes hairpin U-turn spikes, dead-end median turnaround tails, and acute fold-back vertices
  * from a route polyline so the road line flows smoothly without long break tails.
  */
+const SPIKE_CLEAN_CACHE = new Map<string, LngLat[]>();
+
 export function cleanRoutePolylineSpikes(rawPath: LngLat[]): LngLat[] {
   if (rawPath.length <= 2) return rawPath;
-
+  const first = rawPath[0];
+  const mid = rawPath[rawPath.length >> 1];
+  const last = rawPath[rawPath.length - 1];
+  const cacheKey = `${rawPath.length}:${first[0].toFixed(5)},${first[1].toFixed(5)}:${mid[0].toFixed(5)},${mid[1].toFixed(5)}:${last[0].toFixed(5)},${last[1].toFixed(5)}`;
+  const hit = SPIKE_CLEAN_CACHE.get(cacheKey);
+  if (hit) return hit;
   // Step 1: Deduplicate identical consecutive points and densify long straight street segments
   // to ~35m (0.00032 deg) spacing so U-turn necks can be clipped right at the intersection (<130m)
   // without EVER drawing a long chord across city blocks.
@@ -535,6 +542,8 @@ export function cleanRoutePolylineSpikes(rawPath: LngLat[]): LngLat[] {
     if (!removed) break;
   }
 
+  if (SPIKE_CLEAN_CACHE.size > 400) SPIKE_CLEAN_CACHE.clear();
+  SPIKE_CLEAN_CACHE.set(cacheKey, pts);
   return pts;
 }
 

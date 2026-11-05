@@ -120,12 +120,11 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
 
     // Full-day urban logistics shift pacing (06:20 -> 17:20) with 100% gapless leg transitions
     // so every truck is continuously visible and driving along its road line throughout the shift.
-    const firstWinSec = parseTimeSec(nonDepotStops[0].window_start, 7 * 3600);
     const tRouteStartSec = isEcoMilesArm
-      ? Math.max(6 * 3600 + 1800, Math.min(7 * 3600 + 600, firstWinSec - 1800)) + (rIdx % 5) * 180
-      : Math.max(6 * 3600 + 900, Math.min(7 * 3600 + 300, firstWinSec - 2400)) + (rIdx % 6) * 210;
+      ? 6 * 3600 + 300 + (rIdx % 5) * 120
+      : 6 * 3600 + 180 + (rIdx % 6) * 120;
 
-    const targetShiftSpanSec = isEcoMilesArm ? 9.2 * 3600 : 10.4 * 3600;
+    const targetShiftSpanSec = isEcoMilesArm ? 12.6 * 3600 : 13.4 * 3600;
     let curLat = DEPOT_COORD.lat;
     let curLng = DEPOT_COORD.lng;
     const totalStops = nonDepotStops.length;
@@ -253,7 +252,7 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
 
   const totalLegKmSum = Math.max(1, legs.reduce((s, l) => s + l.legKm, 0));
 
-  for (let t = 6 * 3600; t <= 20 * 3600; t += 600) {
+  for (let t = 6 * 3600; t <= 20 * 3600; t += 60) {
     tSecArr.push(t);
     const deliv = stopEvents.filter((e) => e.tSec <= t).length;
     const bans = stopEvents.filter((e) => e.tSec <= t && e.violatesQd23).length;
@@ -299,15 +298,35 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
 
 function interpolateKpiAt(side: SimulatedTimelineSide, tSec: number) {
   const ts = side.kpiSeries.tSec;
+  if (ts.length === 0) {
+    return { delivered: 0, km: 0, emptyKm: 0, backhaul: 0, banViolations: 0, co2Kg: 0, activeTrucks: 0 };
+  }
   let idx = 0;
   while (idx < ts.length - 1 && ts[idx + 1] <= tSec) idx++;
+  const nextIdx = Math.min(ts.length - 1, idx + 1);
+  const t0 = ts[idx];
+  const t1 = ts[nextIdx];
+  const u = t1 > t0 ? Math.max(0, Math.min(1, (tSec - t0) / (t1 - t0))) : 0;
+  const d0 = side.kpiSeries.deliveredOrders[idx] ?? 0;
+  const d1 = side.kpiSeries.deliveredOrders[nextIdx] ?? 0;
+  const km0 = side.kpiSeries.kmDriven[idx] ?? 0;
+  const km1 = side.kpiSeries.kmDriven[nextIdx] ?? 0;
+  const emp0 = side.kpiSeries.emptyKmDriven[idx] ?? 0;
+  const emp1 = side.kpiSeries.emptyKmDriven[nextIdx] ?? 0;
+  const bh0 = side.kpiSeries.backhaulOrders[idx] ?? 0;
+  const bh1 = side.kpiSeries.backhaulOrders[nextIdx] ?? 0;
+  const ban0 = side.kpiSeries.banViolations[idx] ?? 0;
+  const ban1 = side.kpiSeries.banViolations[nextIdx] ?? 0;
+  const co20 = side.kpiSeries.co2TtwKg[idx] ?? 0;
+  const co21 = side.kpiSeries.co2TtwKg[nextIdx] ?? 0;
+
   return {
-    delivered: side.kpiSeries.deliveredOrders[idx] ?? 0,
-    km: side.kpiSeries.kmDriven[idx] ?? 0,
-    emptyKm: side.kpiSeries.emptyKmDriven[idx] ?? 0,
-    backhaul: side.kpiSeries.backhaulOrders[idx] ?? 0,
-    banViolations: side.kpiSeries.banViolations[idx] ?? 0,
-    co2Kg: side.kpiSeries.co2TtwKg[idx] ?? 0,
+    delivered: Math.round(d0 + (d1 - d0) * u),
+    km: Number((km0 + (km1 - km0) * u).toFixed(1)),
+    emptyKm: Number((emp0 + (emp1 - emp0) * u).toFixed(1)),
+    backhaul: Math.round(bh0 + (bh1 - bh0) * u),
+    banViolations: Math.round(ban0 + (ban1 - ban0) * u),
+    co2Kg: Number((co20 + (co21 - co20) * u).toFixed(1)),
     activeTrucks: side.kpiSeries.activeTrucks[idx] ?? 0,
   };
 }
@@ -338,8 +357,10 @@ export function EvsimDualSimulator({
   onResultChange?: (res: EphemeralBenchmarkResult) => void;
 }) {
   const [result, setResult] = useState<EphemeralBenchmarkResult | null>(initialResult || null);
+  const onResultChangeRef = useRef(onResultChange);
+  onResultChangeRef.current = onResultChange;
   const [baselineKey, setBaselineKey] = useState<'human_google_proxy' | 'raw_excel'>('human_google_proxy');
-  const [timeSec, setTimeSec] = useState<number>(9.25 * 3600); // Default 09:15 AM peak transition
+  const [timeSec, setTimeSec] = useState<number>(7.25 * 3600); // Start at 07:15 AM so numbers & trucks climb actively across the full shift
   const [playing, setPlaying] = useState<boolean>(true);
   const [speed, setSpeed] = useState<number>(240);
   const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
@@ -457,8 +478,8 @@ export function EvsimDualSimulator({
       }
       const bench = runEphemeralBenchmarkFromRows(rows, fileName);
       setResult(bench);
-      onResultChange?.(bench);
-      setTimeSec(9.25 * 3600);
+      onResultChangeRef.current?.(bench);
+      setTimeSec(7.25 * 3600);
     } catch (e) {
       console.error(e);
     }
@@ -476,14 +497,13 @@ export function EvsimDualSimulator({
         }
         const bench = runEphemeralBenchmarkFromRows(rows, 'EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx');
         setResult(bench);
-        onResultChange?.(bench);
-        setTimeSec(9.25 * 3600);
+        onResultChangeRef.current?.(bench);
       })
       .catch((e) => console.error(e));
     return () => {
       cancelled = true;
     };
-  }, [onResultChange]);
+  }, []);
 
   const handleUploadFile = async (file: File) => {
     try {
@@ -499,8 +519,8 @@ export function EvsimDualSimulator({
       }
       const bench = runEphemeralBenchmarkFromRows(rows, file.name);
       setResult(bench);
-      onResultChange?.(bench);
-      setTimeSec(9.25 * 3600);
+      onResultChangeRef.current?.(bench);
+      setTimeSec(7.25 * 3600);
       setUploadNotice(
         `Đã nạp file "${file.name}" (${bench.rows_valid} điểm giao) vào bộ mô phỏng EVSIM đối chứng 2 bên.`
       );
