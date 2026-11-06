@@ -92,7 +92,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
 
           <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed">
             Chọn gói theo số lượng tài xế hoạt động mỗi tháng. Chạy trực tiếp trên máy tính và điện thoại sẵn có của
-            doanh nghiệp — $0 phí thiết bị chuyên dụng, $0 phí bản đồ API.
+            doanh nghiệp, không tốn phí thiết bị chuyên dụng hay phí bản đồ API.
           </p>
 
           {/* Interactive Fleet Size Tier Matcher */}

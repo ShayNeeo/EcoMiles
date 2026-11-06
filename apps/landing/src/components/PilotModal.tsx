@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
-  Check,
   CheckCircle2,
-  Plus,
   ShieldCheck,
   Sparkles,
   Building2,
@@ -32,22 +30,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
     fleetSize: '5-15 xe',
     area: 'TP. Hồ Chí Minh (Ưu tiên đợt 1)',
     notes: '',
-    deviceMix: [
-      'MacBook / Windows (Điều phối & Đối chứng)',
-      'iPad / Tablet (Kho Vận & Bến xuất)',
-      'Galaxy Z Fold / Gập Đôi (Bản đồ Xe tải)',
-      'iPhone / Samsung Android (Ứng dụng Tài xế)',
-    ],
   });
-
-  const toggleDeviceMix = (chip: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      deviceMix: prev.deviceMix.includes(chip)
-        ? prev.deviceMix.filter((c) => c !== chip)
-        : [...prev.deviceMix, chip],
-    }));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,43 +222,6 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose, initial
                   </div>
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-semibold text-slate-300">
-                      Thiết bị vận hành đang sử dụng ({formData.deviceMix.length}/4 nhóm)
-                    </label>
-                    <span className="text-xs text-ecomiles-lime font-bold">$0 Map API</span>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                    {[
-                      'MacBook / Windows (Điều phối & Đối chứng)',
-                      'iPad / Tablet (Kho Vận & Bến xuất)',
-                      'Galaxy Z Fold / Gập Đôi (Bản đồ Xe tải)',
-                      'iPhone / Samsung Android (Ứng dụng Tài xế)',
-                    ].map((chip) => {
-                      const active = formData.deviceMix.includes(chip);
-                      return (
-                        <button
-                          key={chip}
-                          type="button"
-                          onClick={() => toggleDeviceMix(chip)}
-                          className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all border flex items-center gap-2 text-left cursor-pointer ${
-                            active
-                              ? 'bg-ecomiles-lime/15 text-ecomiles-lime border-ecomiles-lime/40'
-                              : 'bg-slate-950 text-slate-300 border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          {active ? (
-                            <Check className="w-3.5 h-3.5 text-ecomiles-lime shrink-0" />
-                          ) : (
-                            <Plus className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          )}
-                          <span className="truncate">{chip}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
 
                 <button
                   type="submit"

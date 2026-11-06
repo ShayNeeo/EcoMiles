@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { createPortal } from 'react-dom';
 import {
   UploadCloud,
   Download,
@@ -9,13 +8,9 @@ import {
   RotateCcw,
   Table2,
   X,
-  ArrowUpRight,
   CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
   Star,
   Zap,
-  ZoomIn,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -360,93 +355,6 @@ export function EvsimDualSimulator({
   const [showResultsModal, setShowResultsModal] = useState<boolean>(false);
   const [showColumnModal, setShowColumnModal] = useState<boolean>(false);
   const [columnInspection, setColumnInspection] = useState<ColumnMappingInspection[]>([]);
-  const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
-  const [evsimLightboxIdx, setEvsimLightboxIdx] = useState<number | null>(null);
-  const EVSIM_HARDWARE_MOCKUP_ASSETS = [
-    {
-      id: '00_clean',
-      shortLabel: 'Studio 7 Thiết Bị',
-      title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
-      spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
-      src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: '24_zfold',
-      shortLabel: 'Galaxy Z Fold (Buồng lái)',
-      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở',
-      spec: '2160×1856 · Buồng lái rảnh tay · Né vùng cấm QĐ 23/2018',
-      src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-      liveHref: '/maps/?vehicle=0&mode=navigate',
-    },
-    {
-      id: '23_duo',
-      shortLabel: 'iPhone Duo (Gập Đôi)',
-      title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-      spec: '2420×1080 · Trái: Danh sách đơn · Phải: Bản đồ dẫn đường',
-      src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
-      liveHref: '/driver/',
-    },
-    {
-      id: '21_iphone18',
-      shortLabel: 'iPhone 18 Pro Max (Nắng Gắt)',
-      title: 'iPhone 18 Pro Max · Ứng Dụng Tài Xế Chế Độ Nắng Gắt',
-      spec: '2868×1320 · Chặng giữa (>500kg) & ghép đơn chiều về (2.7% chạy rỗng)',
-      src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
-      liveHref: '/driver/',
-    },
-    {
-      id: '22_s26',
-      shortLabel: 'Galaxy S26 Ultra (Waypoints)',
-      title: 'Samsung Galaxy S26 Ultra · Dẫn Đường Trực Tiếp & Waypoints ($0)',
-      spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
-      src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
-      liveHref: '/maps/?vehicle=0&mode=navigate',
-    },
-    {
-      id: '25_ipad',
-      shortLabel: 'iPad Pro M4 (Taplo Kho)',
-      title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
-      spec: '2752×2064 · Taplo kho bãi · Điều phối cảm ứng',
-      src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: '26_macbook',
-      shortLabel: 'MacBook Pro 16" (TMS)',
-      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
-      spec: '3456×2234 · Điều phối B2B · 120 đơn / 7 tuyến ALNS',
-      src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: '27_xps',
-      shortLabel: 'Windows 11 XPS 16 (EVSIM)',
-      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM',
-      spec: '3840×2400 · Đối chứng kép 374.4 km vs 243.7 km (-34.9%)',
-      src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
-      liveHref: '/benchmark/',
-    },
-    {
-      id: '00_cover',
-      shortLabel: 'Ảnh Bìa OG 2.4K',
-      title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
-      spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
-      src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
-      liveHref: '/dashboard/',
-    },
-  ] as const;
-  useEffect(() => {
-    if (evsimLightboxIdx === null) return undefined;
-    const onKey = (e: KeyboardEvent) => {
-      const total = EVSIM_HARDWARE_MOCKUP_ASSETS.length;
-      if (e.key === 'Escape') setEvsimLightboxIdx(null);
-      else if (e.key === 'ArrowLeft') setEvsimLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
-      else if (e.key === 'ArrowRight') setEvsimLightboxIdx((p) => ((p ?? 0) + 1) % total);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [evsimLightboxIdx, EVSIM_HARDWARE_MOCKUP_ASSETS.length]);
   const [uploadNotice, setUploadNotice] = useState<string>('');
   const [viewTransform, setViewTransform] = useState<{ zoom: number; panX: number; panY: number }>({
     zoom: 1,
@@ -1167,63 +1075,86 @@ export function EvsimDualSimulator({
           >
             Kết quả đối chứng
           </button>
-          <button
-            type="button"
-            onClick={() => setShowDeviceBanner((prev) => !prev)}
-            className={`px-2.5 py-1 border rounded-md font-bold flex items-center gap-1.5 text-[12px] cursor-pointer transition-colors ${
-              showDeviceBanner
-                ? 'border-[#14532d] bg-[#14532d] text-[#d6f65a]'
-                : 'border-[#d8cfbd] bg-white hover:bg-slate-100 text-[#2f3440]'
-            }`}
-            title="Xem dàn 7 thiết bị đồng bộ thời gian thực"
-          >
-            <span>7 Thiết Bị Đồng Bộ</span>
-          </button>
         </div>
       </div>
-      {showDeviceBanner && (
-        <div className="bg-[#060d14] border-b border-emerald-900/60 px-3.5 py-2.5 text-white transition-all">
-          <div className="flex flex-col 2xl:flex-row items-start 2xl:items-center justify-between gap-3">
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <img
-                src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                alt="EcoMiles 7-Device Studio Stage"
-                onClick={() => setEvsimLightboxIdx(0)}
-                className="h-12 sm:h-14 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
-              />
-              <div className="min-w-0">
-                <div className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#d6f65a]">
-                  Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (Chuẩn Đối Chứng Windows XPS 16 &amp; MacBook Pro 16&quot;)
-                </div>
-                <div className="text-xs text-slate-300">
-                  MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
-                </div>
+
+      {/* QĐ 23/2018 Restricted Truck Time-Window & Inner-City Area Strip */}
+      {(() => {
+        const isMorningBan = timeSec >= 6 * 3600 && timeSec < 9 * 3600;
+        const isAfternoonBan = timeSec >= 16 * 3600 && timeSec <= 20 * 3600;
+        const isBanActive = isMorningBan || isAfternoonBan;
+        const progressPct = Math.max(0, Math.min(100, ((timeSec - 6 * 3600) / (14 * 3600)) * 100));
+        return (
+          <div className="px-3.5 py-2.5 bg-[#f8f5ec] border-b border-[#d8cfbd] space-y-2 text-[12px]">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className={`px-2 py-0.5 rounded font-bold text-[11px] ${
+                    isBanActive
+                      ? 'bg-[#ffedea] text-[#c92a2a] border border-[#ffc9c9]'
+                      : 'bg-[#dcfae5] text-[#14532d] border border-[#b9dfbf]'
+                  }`}
+                >
+                  {isMorningBan
+                    ? `ĐANG CẤM TẢI SÁNG (06:00 - 09:00) · Đồng hồ ${clockStr}`
+                    : isAfternoonBan
+                    ? `ĐANG CẤM TẢI CHIỀU (16:00 - 20:00) · Đồng hồ ${clockStr}`
+                    : `GIỜ MỞ LUỒNG NỘI ĐÔ (09:00 - 16:00) · Đồng hồ ${clockStr}`}
+                </span>
+                <span className="text-[#2f3440] font-semibold">
+                  {isBanActive
+                    ? 'Khu vực cấm xe tải nhẹ: Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh (Hành lang nội đô QĐ 23/2018)'
+                    : 'Toàn bộ xe tải nhẹ <= 2.5T được phép giao hàng hợp pháp trong khu vực nội đô TP.HCM'}
+                </span>
+              </div>
+              <div className="text-[11.5px] font-semibold text-[#14532d]">
+                Cách xử lý của EcoMiles:{' '}
+                {isMorningBan
+                  ? 'Giao vành đai ngoài (Tân Bình, Gò Vấp, Thủ Đức) lúc 06-09h, đợi 09:02 mới vào nội đô'
+                  : isAfternoonBan
+                  ? 'Rút khỏi nội đô trước 15:50, chuyển sang thu hồi đơn chiều về dọc hành lang vành đai'
+                  : `Tập trung giao dứt điểm ${rescuedBanCount} đơn vùng lõi nội đô trong khung mở 09:00 - 16:00`}
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
-              <a
-                href="/dashboard/"
-                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+
+            {/* 06:00 -> 20:00 Visual Time-Window Bar */}
+            <div className="relative h-6 rounded-md overflow-hidden border border-[#d8cfbd] flex text-[10.5px] font-bold select-none">
+              <button
+                type="button"
+                onClick={() => setTimeSec(7.5 * 3600)}
+                style={{ width: '21.43%' }}
+                className="bg-[#ffedea] hover:bg-[#ffe3e3] text-[#c92a2a] flex items-center justify-center border-r border-[#d8cfbd] cursor-pointer truncate px-1"
+                title="Bấm để xem lúc 07:30 (Cao điểm cấm tải sáng 06:00 - 09:00)"
               >
-                Mở Bảng Điều Khiển
-              </a>
-              <a
-                href="/driver/"
-                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+                06:00 - 09:00 · Cấm tải sáng (Giao vành đai)
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimeSec(10.5 * 3600)}
+                style={{ width: '50%' }}
+                className="bg-[#dcfae5] hover:bg-[#c3fae8] text-[#14532d] flex items-center justify-center border-r border-[#d8cfbd] cursor-pointer truncate px-1"
+                title="Bấm để xem lúc 10:30 (Khung giờ mở nội đô 09:00 - 16:00)"
               >
-                Mở Ứng Dụng Tài Xế
-              </a>
-              <a
-                href="/maps/"
-                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
+                09:00 - 16:00 · Khung mở nội đô (Giao Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh)
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimeSec(17 * 3600)}
+                style={{ width: '28.57%' }}
+                className="bg-[#ffedea] hover:bg-[#ffe3e3] text-[#c92a2a] flex items-center justify-center cursor-pointer truncate px-1"
+                title="Bấm để xem lúc 17:00 (Cao điểm cấm tải chiều 16:00 - 20:00)"
               >
-                Mở Bản Đồ Xe Tải
-              </a>
+                16:00 - 20:00 · Cấm tải chiều (Ghép đơn về kho)
+              </button>
+              {/* Live Clock Pointer */}
+              <div
+                style={{ left: `${progressPct}%` }}
+                className="pointer-events-none absolute top-0 bottom-0 w-0.5 bg-[#111827] shadow-[0_0_4px_rgba(0,0,0,0.8)]"
+              />
             </div>
           </div>
-        </div>
-      )}
-
+        );
+      })()}
       {uploadNotice && (
         <div className="px-4 py-2 bg-[#eef7ee] border-b border-[#b9dfbf] text-[12px] text-[#14532d] flex items-center justify-between">
           <div className="flex items-center gap-2 font-semibold">
@@ -1338,11 +1269,11 @@ export function EvsimDualSimulator({
             {/* Bottom 72px Timeline Sparkline Canvas (canvas.chart) */}
             <canvas ref={panel.sparkRef} className="w-full h-[72px] block border-t border-[#d8cfbd]" />
 
-            {/* Per-Truck Route Breakdown with Paired 7-Device Hardware Badges */}
+            {/* Per-Truck Route Breakdown */}
             <div className="border-t border-[#d8cfbd] bg-[#fffdf8] p-2.5">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-[11px] font-bold text-[#6b6f78] uppercase tracking-wider">
-                  Chi Tiết {panel.st.routes.length} Chuyến Xe &amp; 7 Thiết Bị Đồng Bộ
+                  Chi Tiết {panel.st.routes.length} Chuyến Xe Trong Ca
                 </span>
                 <span className="text-[10.5px] font-semibold text-[#1971c2]">
                   {panel.isEco ? 'EcoALNS v2.1' : baseSt.name}
@@ -1350,22 +1281,18 @@ export function EvsimDualSimulator({
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[156px] overflow-y-auto pr-1">
                 {panel.st.routes.map((route, rIdx) => {
-                  const pairedDevice = [
-                    'Galaxy Z Fold (Buồng lái)',
-                    'iPhone Duo (Gập Đôi)',
-                    'iPhone 18 Pro Max (Nắng Gắt)',
-                    'Galaxy S26 Ultra (Waypoints)',
-                    'iPad Pro M4 (Taplo Kho)',
-                    'MacBook Pro 16" (TMS)',
-                    'Windows 11 XPS 16 (EVSIM)',
-                  ][rIdx % 7];
-                  const nonDepotCount = route.stops.filter((s) => s.kind !== 'depot').length;
+                  const customerStops = route.stops.filter((s) => s.kind !== 'depot');
+                  const nonDepotCount = customerStops.length;
+                  const districts = Array.from(new Set(customerStops.map((s) => s.district)))
+                    .slice(0, 3)
+                    .join(' → ');
+                  const restrictedCount = customerStops.filter((s) => s.qd23_ban_conflict).length;
                   return (
                     <div
                       key={`${route.plate}-${rIdx}`}
                       className="flex flex-col gap-1 p-2 rounded-lg bg-white border border-[#e3dcd0] text-[11px]"
                     >
-                      <div className="flex items-center justify-between gap-1.5 min-w-0">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <span
                             className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -1377,25 +1304,26 @@ export function EvsimDualSimulator({
                           </span>
                         </div>
                         <span className="font-mono font-bold text-[#2f3440]">
-                          {route.km.toFixed(1)} km
+                          {route.km.toFixed(1)} km · {nonDepotCount} điểm
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-1.5 text-[10px]">
-                        <button
-                          type="button"
-                          onClick={() => setEvsimLightboxIdx((rIdx % 7) + 1)}
-                          title={`Phóng to mockup 2.4K: ${pairedDevice}`}
-                          className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold bg-[#e8f0fb] hover:bg-[#d0e2ff] text-[#1971c2] border border-[#c9d6e8]/60 truncate cursor-pointer transition-colors"
-                        >
-                          <span>{pairedDevice}</span>
-                          <ZoomIn className="w-2.5 h-2.5 opacity-75 shrink-0" />
-                        </button>
-                        <span className="text-[#6b6f78] shrink-0 font-medium">
-                          {nonDepotCount} điểm ·{' '}
+                        <span className="text-[#4b5563] truncate" title={districts}>
+                          Khu vực: <b className="text-[#2f3440]">{districts || 'Nội đô TP.HCM'}</b>
+                        </span>
+                        <span className="shrink-0 font-semibold">
                           {route.ban_conflicts > 0 ? (
-                            <b className="text-[#e03131]">{route.ban_conflicts} lỗi QĐ23</b>
+                            <span className="px-1.5 py-0.5 rounded bg-[#ffedea] text-[#c92a2a]">
+                              {route.ban_conflicts} đơn phạm cấm 06-09h/16-20h
+                            </span>
+                          ) : restrictedCount > 0 ? (
+                            <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#14532d]">
+                              Đã dời {restrictedCount} đơn sang 09-16h · 0 lỗi
+                            </span>
                           ) : (
-                            <b className="text-[#2f9e44]">0 vi phạm</b>
+                            <span className="px-1.5 py-0.5 rounded bg-[#eef7ee] text-[#2f9e44]">
+                              Hành lang mở · 0 lỗi QĐ23
+                            </span>
                           )}
                         </span>
                       </div>
@@ -1693,101 +1621,6 @@ export function EvsimDualSimulator({
           </div>
         </div>
       )}
-      {evsimLightboxIdx !== null &&
-        typeof document !== 'undefined' &&
-        (() => {
-          const total = EVSIM_HARDWARE_MOCKUP_ASSETS.length;
-          const safeIdx = ((evsimLightboxIdx % total) + total) % total;
-          const activeAsset = EVSIM_HARDWARE_MOCKUP_ASSETS[safeIdx];
-          return createPortal(
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-label={activeAsset.title}
-              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-              onClick={() => setEvsimLightboxIdx(null)}
-            >
-              <div
-                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-[#d6f65a]/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                  <div className="min-w-0">
-                    <div className="text-sm font-extrabold text-[#d6f65a] truncate">
-                      [{safeIdx + 1}/{total}] {activeAsset.title}
-                    </div>
-                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setEvsimLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Trước</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEvsimLightboxIdx((safeIdx + 1) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <span>Tiếp</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                    <a
-                      href={activeAsset.src}
-                      download
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Tải PNG 2.4K</span>
-                    </a>
-                    <a
-                      href={activeAsset.liveHref}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
-                    >
-                      <span>Mở App Live</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setEvsimLightboxIdx(null)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                      <span>Đóng</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                  <img
-                    src={activeAsset.src}
-                    alt={activeAsset.title}
-                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                  />
-                </div>
-                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
-                  {EVSIM_HARDWARE_MOCKUP_ASSETS.map((item, idx) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setEvsimLightboxIdx(idx)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                        idx === safeIdx
-                          ? 'bg-[#d6f65a] text-slate-950 border-[#d6f65a]'
-                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
-                      }`}
-                    >
-                      {item.shortLabel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>,
-            document.body
-          );
-        })()}
     </div>
   );
 }

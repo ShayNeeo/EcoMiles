@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   Compass,
   FileSpreadsheet,
-  Layers,
   SplitSquareVertical,
   Truck,
 } from 'lucide-react';
@@ -60,7 +59,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
       ref={heroRef}
       className="relative flex min-h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cargox-fallback"
     >
-      {/* Plane 1 (Background): Moving Container Truck & Urban Logistics Video — 100% Unobstructed on Right */}
+      {/* Plane 1 (Background): Moving Container Truck & Urban Logistics Video */}
       <video
         ref={bgPlaneRef}
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260620_185230_f7f71ef4-6655-469f-b9c6-efbdc1f7684a.mp4"
@@ -114,10 +113,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
             >
               Nhập trực tiếp file Excel đơn hàng: hệ thống tự động chia tuyến xe tải né khung giờ cấm tải{' '}
               <strong>QĐ 23/2018/QĐ-UBND</strong>, ghép đơn chiều về giảm chạy rỗng xuống <strong>2.7%</strong> và xuất
-              báo cáo kiểm toán phát thải CO₂ chuẩn quốc tế trong 30 giây — <strong>$0 phí bản đồ API</strong>.
+              báo cáo kiểm toán phát thải CO₂ chuẩn quốc tế trong 30 giây, miễn phí 100% bản đồ dẫn đường.
             </motion.p>
 
-            {/* Primary & Secondary Live Workspace Launchers (Refined Product Names — Zero Raw /route Paths) */}
+            {/* Primary & Secondary Live Workspace Launchers */}
             <motion.div
               initial={{ y: 18, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -165,8 +164,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenPilotModal }) => {
                   }}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950/70 hover:bg-slate-900 text-ecomiles-lime border border-ecomiles-lime/35 backdrop-blur-md transition-colors font-bold cursor-pointer"
                 >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Khám Phá 7 Thiết Bị Đồng Bộ</span>
+                  <span>Xem Cách Né Giờ Cấm QĐ 23</span>
                   <ArrowDown className="w-3.5 h-3.5" />
                 </button>
               </div>

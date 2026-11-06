@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -22,13 +21,8 @@ import {
   RotateCcw,
   Route as RouteIcon,
   ShieldCheck,
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
   Truck,
   Volume2,
-  X,
-  ZoomIn,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -389,102 +383,6 @@ export function EcoMilesTruckMapNavigator({
   const [showBanZones, setShowBanZones] = useState<boolean>(true);
   const [showBridges, setShowBridges] = useState<boolean>(true);
   const [showAllFleetRoutes, setShowAllFleetRoutes] = useState<boolean>(false);
-  const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
-  const [activeCabinProfile, setActiveCabinProfile] = useState<
-    'zfold' | 'ipad_pro' | 'windows_xps' | 'macbook_pro'
-  >('zfold');
-  const [mapsLightboxAssetIdx, setMapsLightboxAssetIdx] = useState<number | null>(null);
-  const MAPS_HARDWARE_MOCKUP_ASSETS = [
-    {
-      id: '00_clean',
-      shortLabel: 'Studio 7 Thiết Bị',
-      title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
-      spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
-      src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: '24_zfold',
-      shortLabel: 'Galaxy Z Fold · Cabin 7.6"',
-      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở',
-      spec: '750×834 · Buồng lái rảnh tay · Né vùng cấm QĐ 23/2018',
-      src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-      liveHref: '/maps/?vehicle=0&mode=navigate',
-    },
-    {
-      id: '25_ipad',
-      shortLabel: 'iPad Pro M4 · Taplo 13"',
-      title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
-      spec: '1024×768 · Taplo kho bãi · Điều phối cảm ứng',
-      src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: '27_xps',
-      shortLabel: 'Windows 11 XPS 16 · EVSIM',
-      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM',
-      spec: '1440×900 · Đối chứng kép 374.4 km vs 243.7 km (-34.9%)',
-      src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
-      liveHref: '/benchmark/',
-    },
-    {
-      id: '26_macbook',
-      shortLabel: 'MacBook Pro 16" · TMS',
-      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
-      spec: '1440×900 · Điều phối B2B · 120 đơn / 7 tuyến ALNS',
-      src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: '23_duo',
-      shortLabel: 'iPhone Duo · Gập Đôi',
-      title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-      spec: '2420×1080 · Trái: Danh sách đơn · Phải: Bản đồ dẫn đường',
-      src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
-      liveHref: '/driver/',
-    },
-    {
-      id: '21_iphone18',
-      shortLabel: 'iPhone 18 Pro Max',
-      title: 'iPhone 18 Pro Max · App Tài Xế Chặng Giữa (>500kg)',
-      spec: '2868×1320 · Chặng giữa & ghép đơn chiều về (2.7% chạy rỗng)',
-      src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
-      liveHref: '/driver/',
-    },
-    {
-      id: '22_s26',
-      shortLabel: 'Galaxy S26 Ultra',
-      title: 'Samsung Galaxy S26 Ultra · Dẫn Đường Trực Tiếp & Waypoints ($0)',
-      spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
-      src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
-      liveHref: '/maps/?vehicle=0&mode=navigate',
-    },
-    {
-      id: '00_cover',
-      shortLabel: 'Ảnh Bìa OG 2.4K',
-      title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
-      spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
-      src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
-      liveHref: '/dashboard/',
-    },
-  ] as const;
-  const CABIN_PROFILE_TO_ASSET_IDX: Record<'zfold' | 'ipad_pro' | 'windows_xps' | 'macbook_pro', number> = {
-    zfold: 1,
-    ipad_pro: 2,
-    windows_xps: 3,
-    macbook_pro: 4,
-  };
-  useEffect(() => {
-    if (mapsLightboxAssetIdx === null) return undefined;
-    const onKey = (e: KeyboardEvent) => {
-      const total = MAPS_HARDWARE_MOCKUP_ASSETS.length;
-      if (e.key === 'Escape') setMapsLightboxAssetIdx(null);
-      else if (e.key === 'ArrowLeft') setMapsLightboxAssetIdx((p) => ((p ?? 0) - 1 + total) % total);
-      else if (e.key === 'ArrowRight') setMapsLightboxAssetIdx((p) => ((p ?? 0) + 1) % total);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [mapsLightboxAssetIdx, MAPS_HARDWARE_MOCKUP_ASSETS.length]);
   const [tileTick, setTileTick] = useState<number>(0);
   const [voiceBanner, setVoiceBanner] = useState<string>('');
   const [overviewTransform, setOverviewTransform] = useState<{ zoom: number; panX: number; panY: number }>({
@@ -1045,123 +943,8 @@ export function EcoMilesTruckMapNavigator({
                 <span>2. Dẫn Đường Trực Tiếp (Chế độ Bắt Đầu)</span>
               </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowDeviceBanner((prev) => !prev)}
-              aria-expanded={showDeviceBanner}
-              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 border transition-all cursor-pointer ${
-                showDeviceBanner
-                  ? 'bg-[#14532d] text-[#d6f65a] border-[#0f3f22] shadow-xs'
-                  : 'bg-white hover:bg-slate-50 text-[#111827] border-[#d1d5db]'
-              }`}
-              title="Xem dàn 7 thiết bị đồng bộ thời gian thực"
-            >
-              <Layers className="w-3.5 h-3.5 text-[#1971c2]" />
-              <span>7 Thiết Bị Đồng Bộ</span>
-            </button>
           </div>
         </div>
-        {/* IN-CAB / DESKTOP 4-HARDWARE PROFILE SYNCHRONIZER STRIP */}
-        <div className="max-w-[1600px] mx-auto mt-1.5 pt-1.5 border-t border-[#e5e7eb] flex flex-wrap items-center justify-between gap-2 text-[11px]">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="font-extrabold uppercase tracking-wider text-[#4b5563] mr-1">
-              Thiết bị buồng lái đang đồng bộ:
-            </span>
-            {(
-              [
-                { id: 'zfold', label: 'Galaxy Z Fold · Cabin 7.6"', spec: '750×834 · Buồng lái rảnh tay' },
-                { id: 'ipad_pro', label: 'iPad Pro M4 · Taplo 13"', spec: '1024×768 · Taplo kho bãi' },
-                { id: 'windows_xps', label: 'Windows 11 XPS 16 · EVSIM', spec: '1440×900 · Đối chứng kép' },
-                { id: 'macbook_pro', label: 'MacBook Pro 16" · TMS', spec: '1440×900 · Điều phối B2B' },
-              ] as const
-            ).map((prof) => {
-              const isActive = activeCabinProfile === prof.id;
-              return (
-                <button
-                  key={prof.id}
-                  type="button"
-                  onClick={() => setActiveCabinProfile(prof.id)}
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg font-bold transition-colors cursor-pointer border ${
-                    isActive
-                      ? 'bg-[#14532d] text-[#d6f65a] border-[#14532d] shadow-xs'
-                      : 'bg-[#f9fafb] text-[#374151] border-[#d1d5db] hover:bg-white'
-                  }`}
-                  title={prof.spec}
-                >
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#d6f65a] shrink-0" />}
-                  <span>{prof.label}</span>
-                </button>
-              );
-            })}
-          </div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => setMapsLightboxAssetIdx(CABIN_PROFILE_TO_ASSET_IDX[activeCabinProfile])}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md font-extrabold text-[#060d14] bg-[#d6f65a] hover:bg-[#c5e847] border border-[#14532d]/30 transition-colors cursor-pointer"
-              title="Mở ảnh chụp phần cứng 2.4K của thiết bị buồng lái đang chọn"
-            >
-              <ZoomIn className="w-3 h-3" />
-              <span>Xem Mockup 2.4K</span>
-            </button>
-            <span className="inline-flex items-center gap-1.5 font-mono font-bold text-[#14532d] bg-[#e8f7ee] border border-[#bbf7d0] px-2 py-0.5 rounded-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#14532d] shrink-0" />
-              <span>Đồng bộ &lt;50ms · 0 Vi Phạm QĐ 23/2018</span>
-            </span>
-          </div>
-        </div>
-        {showDeviceBanner && (
-          <div className="mt-2.5 pt-2.5 border-t border-[#d8cfbd] bg-[#060d14] text-white rounded-xl px-3.5 py-2.5">
-            <div className="flex flex-col 2xl:flex-row items-start 2xl:items-center justify-between gap-3">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <img
-                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  alt="EcoMiles 7-Device Studio Stage"
-                  onClick={() => setMapsLightboxAssetIdx(0)}
-                  className="h-12 sm:h-14 w-auto rounded-lg border border-white/15 bg-black/40 p-0.5 object-contain shrink-0 cursor-zoom-in"
-                />
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#d6f65a]">
-                      Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setMapsLightboxAssetIdx(0)}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
-                    >
-                      <ZoomIn className="w-3 h-3" />
-                      <span>Xem Mockup 2.4K</span>
-                    </button>
-                  </div>
-                  <div className="text-xs text-slate-300 font-medium">
-                    MacBook Pro 16&quot; · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
-                <a
-                  href="/dashboard/"
-                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
-                >
-                  Mở Bảng Điều Khiển
-                </a>
-                <a
-                  href="/driver/"
-                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
-                >
-                  Mở Ứng Dụng Tài Xế
-                </a>
-                <a
-                  href="/benchmark/"
-                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors"
-                >
-                  Mở Phòng Đối Chứng
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
       {/* MAIN WORKSPACE: LEFT/CENTER INTERACTIVE TRUCK MAP + RIGHT DETAILED ROUTING DRAWER */}
@@ -1431,11 +1214,25 @@ export function EcoMilesTruckMapNavigator({
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-extrabold text-[#991b1b] flex items-center gap-1.5">
                 <AlertTriangle className="w-4 h-4" />
-                <span>Vùng &amp; Đường Cấm Tải Đã Né (QĐ 23/2018)</span>
+                <span>Khu Vực &amp; Khung Giờ Cấm Tải (QĐ 23/2018)</span>
               </h2>
-              <span className="px-2 py-0.5 rounded bg-[#fee2e2] text-[#991b1b] text-[10.5px] font-extrabold">
-                3 Vùng Cấm Nội Đô
+              <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#14532d] text-[10.5px] font-extrabold">
+                Mở nội đô: 09:00 - 16:00
               </span>
+            </div>
+            <div className="grid grid-cols-3 rounded-lg overflow-hidden border border-[#d8cfbd] text-[10px] font-bold text-center">
+              <div className="bg-[#ffedea] text-[#c92a2a] py-1 px-1 border-r border-[#d8cfbd]">
+                06:00 - 09:00
+                <div className="font-normal text-[9.5px]">Cấm tải sáng</div>
+              </div>
+              <div className="bg-[#dcfae5] text-[#14532d] py-1 px-1 border-r border-[#d8cfbd]">
+                09:00 - 16:00
+                <div className="font-normal text-[9.5px]">Thông hành nội đô</div>
+              </div>
+              <div className="bg-[#ffedea] text-[#c92a2a] py-1 px-1">
+                16:00 - 20:00
+                <div className="font-normal text-[9.5px]">Cấm tải chiều</div>
+              </div>
             </div>
             <div className="space-y-1.5 text-[11.5px]">
               {HCMC_QD23_BANNED_ZONES.map((z) => (
@@ -1505,9 +1302,16 @@ export function EcoMilesTruckMapNavigator({
                           <div className="font-bold text-[#111827] leading-snug">
                             {st.toLabel}
                           </div>
-                          <div className="text-[10.5px] text-[#5f6368]">
-                            {st.district} · Mã: <code className="font-mono">{st.orderId}</code> · Khung:{' '}
-                            {st.timeWindow}
+                          <div className="flex flex-wrap items-center gap-1 mt-1 text-[10px]">
+                            <span className="px-1.5 py-0.5 rounded bg-[#e8f0fb] text-[#1f3a5f] font-bold">
+                              Khu vực: {st.district}
+                            </span>
+                            <span className="px-1.5 py-0.5 rounded bg-white border border-[#d1d5db] text-[#374151] font-semibold">
+                              Khung hẹn: {st.timeWindow}
+                            </span>
+                            <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#14532d] font-bold">
+                              Giao ngoài giờ cấm 06-09h / 16-20h
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1541,101 +1345,6 @@ export function EcoMilesTruckMapNavigator({
           </div>
         </div>
       </div>
-      {mapsLightboxAssetIdx !== null &&
-        typeof document !== 'undefined' &&
-        (() => {
-          const total = MAPS_HARDWARE_MOCKUP_ASSETS.length;
-          const safeIdx = ((mapsLightboxAssetIdx % total) + total) % total;
-          const activeAsset = MAPS_HARDWARE_MOCKUP_ASSETS[safeIdx];
-          return createPortal(
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-label={activeAsset.title}
-              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-              onClick={() => setMapsLightboxAssetIdx(null)}
-            >
-              <div
-                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-[#d6f65a]/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                  <div className="min-w-0">
-                    <div className="text-sm font-extrabold text-[#d6f65a] truncate">
-                      [{safeIdx + 1}/{total}] {activeAsset.title}
-                    </div>
-                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setMapsLightboxAssetIdx((safeIdx - 1 + total) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Trước</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMapsLightboxAssetIdx((safeIdx + 1) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <span>Tiếp</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                    <a
-                      href={activeAsset.src}
-                      download
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Tải PNG 2.4K</span>
-                    </a>
-                    <a
-                      href={activeAsset.liveHref}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
-                    >
-                      <span>Mở App Live</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setMapsLightboxAssetIdx(null)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                      <span>Đóng</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                  <img
-                    src={activeAsset.src}
-                    alt={activeAsset.title}
-                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                  />
-                </div>
-                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
-                  {MAPS_HARDWARE_MOCKUP_ASSETS.map((item, idx) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setMapsLightboxAssetIdx(idx)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                        idx === safeIdx
-                          ? 'bg-[#d6f65a] text-slate-950 border-[#d6f65a]'
-                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
-                      }`}
-                    >
-                      {item.shortLabel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>,
-            document.body
-          );
-        })()}
     </div>
   );
 }

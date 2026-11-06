@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import {
   createRootRoute,
   createRoute,
@@ -34,17 +33,9 @@ import {
   Search,
   KeyRound,
   ArrowRight,
-  ArrowUpRight,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  Download,
   RefreshCw,
   Play,
-  X,
   Zap,
-  ZoomIn,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -380,97 +371,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     pathname === '/dashboard' || pathname === '/app' || pathname === '/portal'
   );
   const [loginLoadingRole, setLoginLoadingRole] = useState<AppRole | null>(null);
-  const [showDeviceBanner, setShowDeviceBanner] = useState<boolean>(false);
-  const [isFoldableDualView, setIsFoldableDualView] = useState<boolean>(false);
-  const [driverHardwareProfile, setDriverHardwareProfile] = useState<
-    'iphone_18_pro_max' | 'galaxy_s26_ultra' | 'iphone_duo_zfold'
-  >('iphone_18_pro_max');
-  const [portalLightboxIdx, setPortalLightboxIdx] = useState<number | null>(null);
-  const PORTAL_LIGHTBOX_ASSETS = [
-    {
-      id: 'studio_stage',
-      shortLabel: 'Studio 7 Thiết Bị',
-      title: 'Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)',
-      spec: '2400×1120 · 7 Thiết Bị Đồng Bộ <50ms',
-      src: '/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: 'macbook_pro',
-      shortLabel: 'MacBook Pro 16"',
-      title: 'MacBook Pro 16" M3 Max · Trung Tâm Điều Phối B2B TMS',
-      spec: '3456×2234 · 120 đơn / 7 tuyến ALNS · Báo cáo ESG 3 Sheet',
-      src: '/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: 'windows_xps',
-      shortLabel: 'Windows 11 XPS 16',
-      title: 'Dell Windows 11 XPS 16 · Buồng Đối Chứng Kép EVSIM',
-      spec: '3840×2400 · Đối chứng 374.4 km vs 243.7 km (-34.9%)',
-      src: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
-      liveHref: '/benchmark/',
-    },
-    {
-      id: 'galaxy_zfold',
-      shortLabel: 'Galaxy Z Fold',
-      title: 'Samsung Galaxy Z Fold · Buồng Lái Xe Tải Mở',
-      spec: '2160×1856 · Chặng giữa (>500kg) · Né vùng cấm QĐ 23/2018',
-      src: '/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png',
-      liveHref: '/maps/?vehicle=0&mode=navigate',
-    },
-    {
-      id: 'ipad_pro',
-      shortLabel: 'iPad Pro M4',
-      title: 'iPad Pro M4 13" · Bảng Điều Khiển Kho Bãi & Taplo',
-      spec: '2752×2064 · Quản lý bến xuất & ghép đơn chiều về',
-      src: '/pitch-deck-screenshots/25_mockup_ipad_pro_tablet_tms.png',
-      liveHref: '/dashboard/',
-    },
-    {
-      id: 'iphone_duo',
-      shortLabel: 'iPhone Duo (Gập Đôi)',
-      title: 'iPhone Duo Dual-Screen · Đa Nhiệm Tài Xế & Bản Đồ',
-      spec: '2420×1080 · Màn 1: Đơn hàng · Màn 2: Bản đồ dẫn đường',
-      src: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
-      liveHref: '/driver/',
-    },
-    {
-      id: 'iphone_18_pro_max',
-      shortLabel: 'iPhone 18 Pro Max',
-      title: 'iPhone 18 Pro Max · Ứng Dụng Tài Xế Chế Độ Nắng Gắt',
-      spec: '2868×1320 · Giao hàng 1-chạm & ghép đơn chiều về (2.7% rỗng)',
-      src: '/pitch-deck-screenshots/21_mockup_iphone_18_pro_max_driver.png',
-      liveHref: '/driver/',
-    },
-    {
-      id: 'galaxy_s26_ultra',
-      shortLabel: 'Galaxy S26 Ultra',
-      title: 'Samsung Galaxy S26 Ultra · Giao Hẻm Nhỏ & Google Maps Waypoints ($0)',
-      spec: '3120×1440 · Waypoints + Google Maps Ô tô ($0 API)',
-      src: '/pitch-deck-screenshots/22_mockup_samsung_s26_ultra_maps_live.png',
-      liveHref: '/maps/?vehicle=0&mode=navigate',
-    },
-    {
-      id: 'cover_banner',
-      shortLabel: 'Ảnh Bìa OG 2.4K',
-      title: 'Ảnh Bìa OpenGraph / Pitch Deck (2400×1260 Cover Banner)',
-      spec: '2400×1260 · Chuẩn Thương Hiệu EcoMiles · -34.9% Km & -39.2% CO₂e',
-      src: '/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png',
-      liveHref: '/dashboard/',
-    },
-  ] as const;
-  useEffect(() => {
-    if (portalLightboxIdx === null) return undefined;
-    const onKey = (e: KeyboardEvent) => {
-      const total = PORTAL_LIGHTBOX_ASSETS.length;
-      if (e.key === 'Escape') setPortalLightboxIdx(null);
-      else if (e.key === 'ArrowLeft') setPortalLightboxIdx((p) => ((p ?? 0) - 1 + total) % total);
-      else if (e.key === 'ArrowRight') setPortalLightboxIdx((p) => ((p ?? 0) + 1) % total);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [portalLightboxIdx, PORTAL_LIGHTBOX_ASSETS.length]);
   const [authSessionInfo, setAuthSessionInfo] = useState<{
     token: string;
     account: string;
@@ -946,20 +846,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
             <button
               type="button"
-              onClick={() => setShowDeviceBanner((prev) => !prev)}
-              className={`px-3 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                showDeviceBanner
-                  ? 'bg-[#14532d] text-[#d6f65a] border-[#14532d]'
-                  : 'border-[#d1d5db] bg-[#f9fafb] hover:bg-white text-[#111827]'
-              }`}
-              title="Xem dàn 7 thiết bị đồng bộ thời gian thực"
-            >
-              <SplitSquareVertical className="w-3.5 h-3.5 text-[#1971c2]" />
-              <span>7 Thiết Bị Đồng Bộ</span>
-            </button>
-
-            <button
-              type="button"
               onClick={() => setShowLoginGate(true)}
               className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-white text-[#111827] font-bold flex items-center gap-1.5 cursor-pointer"
               title="Chuyển đổi tài khoản hoặc vai trò đăng nhập"
@@ -991,69 +877,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           >
             Đóng
           </button>
-        </div>
-      )}
-
-      {/* Toggleable 7-Device Ecosystem Cover Banner Bar inside B2B Portal */}
-      {showDeviceBanner && (
-        <div className="bg-[#060d14] border-b border-emerald-900/60 px-4 sm:px-6 py-3 text-white transition-all">
-          <div className="max-w-[1600px] mx-auto flex flex-col 2xl:flex-row items-start 2xl:items-center justify-between gap-3">
-            <div className="flex items-center gap-3.5 flex-1 min-w-0">
-              <img
-                src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                alt="EcoMiles 7 Thiết Bị Đồng Bộ"
-                onClick={() => setPortalLightboxIdx(0)}
-                className="h-14 sm:h-16 w-auto rounded-lg border border-white/15 object-contain bg-black/40 p-1 shrink-0 cursor-zoom-in"
-              />
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-bold text-[#d6f65a] uppercase tracking-wider">
-                    Hệ sinh thái 7 thiết bị đồng bộ thời gian thực (2400×1120 Studio Stage)
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setPortalLightboxIdx(0)}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
-                  >
-                    <ZoomIn className="w-3 h-3" />
-                    <span>Xem Mockup 2.4K</span>
-                  </button>
-                </div>
-                <div className="text-xs text-slate-300 mt-0.5">
-                  MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 shrink-0 text-xs">
-              <a
-                href="/maps/"
-                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
-              >
-                Mở Bản Đồ Xe Tải
-              </a>
-              <a
-                href="/driver/"
-                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
-              >
-                Mở Ứng Dụng Tài Xế
-              </a>
-              <a
-                href="/benchmark/"
-                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
-              >
-                Mở Phòng Đối Chứng
-              </a>
-              <button
-                type="button"
-                onClick={() => setShowDeviceBanner(false)}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer font-bold"
-              >
-                <X className="w-3.5 h-3.5" />
-                <span>Đóng</span>
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
@@ -1089,41 +912,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </button>
             </div>
 
-            {/* 7-Device Studio Cover Banner Strip inside Fast-Login Modal */}
-            <div className="bg-[#060d14] border-b border-emerald-900/60 px-5 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 text-white">
-              <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                <img
-                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  alt="EcoMiles 7 Thiết Bị Đồng Bộ"
-                  onClick={() => setPortalLightboxIdx(0)}
-                  className="h-9 w-auto object-contain rounded-md border border-white/15 bg-black/50 p-0.5 shrink-0 cursor-zoom-in"
-                />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-bold text-[#d6f65a] uppercase tracking-wider">
-                    Hệ Sinh Thái 7 Thiết Bị Đồng Bộ Thời Gian Thực (2400×1120 Studio Stage)
-                  </div>
-                  <div className="text-[10.5px] text-slate-300">
-                    MacBook Pro · Windows XPS · Z Fold · iPad Pro · iPhone Duo · 18 Pro Max · S26 Ultra
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setPortalLightboxIdx(0)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 font-extrabold cursor-pointer transition-colors"
-                >
-                  <ZoomIn className="w-3 h-3" />
-                  <span>Xem Mockup 2.4K</span>
-                </button>
-                <a
-                  href="/maps/"
-                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-                >
-                  Mở Bản Đồ Xe Tải
-                </a>
-              </div>
-            </div>
 
             {/* 4 Prefilled Role Cards */}
             <div className="p-5 sm:p-6 space-y-5 bg-[#f3f4f6]">
@@ -1139,17 +927,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         API: Bearer DEMO
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(1)}
-                      className="text-left text-[11px] font-bold text-[#1971c2] hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>Thiết bị: MacBook Pro 16&quot; &amp; iPad Pro M4</span>
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#e8f0fb] text-[#1971c2] text-[10px]">
-                        <ZoomIn className="w-2.5 h-2.5" />
-                        <span>2.4K</span>
-                      </span>
-                    </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Điều Phối Viên Vận Tải Công Ty (CRM / TMS)
                     </h3>
@@ -1208,17 +985,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         EVSIM Dual Engine
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(2)}
-                      className="text-left text-[11px] font-bold text-[#247b50] hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>Thiết bị: Windows 11 XPS 16 (EVSIM Dual Engine)</span>
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#dcfae5] text-[#04250e] text-[10px]">
-                        <ZoomIn className="w-2.5 h-2.5" />
-                        <span>2.4K</span>
-                      </span>
-                    </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Mô Phỏng Đối Chứng 2 Bên Kiểu EVSIM (Baseline vs. EcoMiles)
                     </h3>
@@ -1247,7 +1013,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     disabled={loginLoadingRole !== null}
                     className="w-full py-2.5 px-4 rounded-lg bg-[#2f9e44] hover:bg-[#258237] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <SplitSquareVertical className="w-4 h-4" />
+                    <RouteIcon className="w-4 h-4" />
                     <span>
                       {loginLoadingRole === 'tester'
                         ? 'Đang mở bộ mô phỏng EVSIM...'
@@ -1267,17 +1033,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         X-Driver-Pin: 0000
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(5)}
-                      className="text-left text-[11px] font-bold text-[#92400e] hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>Thiết bị: iPhone Duo, iPhone 18 Pro Max &amp; Galaxy S26 Ultra</span>
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#fffbeb] text-[#92400e] text-[10px]">
-                        <ZoomIn className="w-2.5 h-2.5" />
-                        <span>2.4K</span>
-                      </span>
-                    </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Ứng Dụng Tài Xế Giao Hàng &amp; Dẫn Đường Ô Tô
                     </h3>
@@ -1330,17 +1085,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         admin_can_decrypt = false
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(3)}
-                      className="text-left text-[11px] font-bold text-[#831c1e] hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>Thiết bị: Samsung Galaxy Z Fold &amp; Zero-Knowledge Audit</span>
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-[#ffedea] text-[#831c1e] text-[10px]">
-                        <ZoomIn className="w-2.5 h-2.5" />
-                        <span>2.4K</span>
-                      </span>
-                    </button>
                     <h3 className="text-base font-bold text-[#111827]">
                       Phòng Giám Sát Hạ Tầng &amp; Quản Lý Tenant (Zero-Knowledge)
                     </h3>
@@ -1578,47 +1322,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
-                {/* Compact 7-Device Ecosystem Operational Sync Strip in Tab 1 */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <img
-                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                      alt="Đồng Bộ 7 Thiết Bị Thực Tế"
-                      className="h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0"
-                    />
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[11.5px] font-bold text-[#d6f65a] uppercase tracking-wide">
-                          Đồng Bộ 7 Thiết Bị Thực Tế Trong Ca Vận Hành
-                        </span>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                          7/7 Thiết bị Online · &lt;50ms
-                        </span>
-                      </div>
-                      <p className="text-[11.5px] text-slate-300 mt-0.5">
-                        MacBook Pro 16&quot; · Windows XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(0)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 text-xs font-extrabold transition-colors cursor-pointer"
-                    >
-                      <ZoomIn className="w-3.5 h-3.5" />
-                      <span>Xem Mockup 2.4K</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowDeviceBanner((prev) => !prev)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
-                    >
-                      <span>{showDeviceBanner ? 'Ẩn Thanh 7 Thiết Bị' : 'Mở Thanh 7 Thiết Bị'}</span>
-                      {showDeviceBanner ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
-                </div>
 
                 {/* Active Truck Fleet & Order Completion Table */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
@@ -1679,29 +1382,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   <div>
                                     <div className="font-bold text-[#111827]">{r.plate}</div>
                                     <div className="text-[11.5px] text-[#5f6368]">{driverName}</div>
-                                    <div className="mt-0.5">
-                                      <button
-                                        type="button"
-                                        onClick={() => setPortalLightboxIdx([5, 3, 6, 7, 4, 1, 2][idx % 7])}
-                                        title="Xem ảnh thực tế thiết bị 2.4K"
-                                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#e8f0fb] hover:bg-[#dbeafe] text-[#1f3a5f] border border-[#bfdbfe] text-[10px] font-bold cursor-pointer transition-colors"
-                                      >
-                                        <span>
-                                          {
-                                            [
-                                              'iPhone Duo Gập Đôi',
-                                              'Samsung Galaxy Z Fold',
-                                              'iPhone 18 Pro Max',
-                                              'Samsung Galaxy S26 Ultra',
-                                              'iPad Pro M4',
-                                              'MacBook Pro 16"',
-                                              'Windows 11 XPS 16',
-                                            ][idx % 7]
-                                          }
-                                        </span>
-                                        <ZoomIn className="w-2.5 h-2.5 opacity-75 shrink-0" />
-                                      </button>
-                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -1875,52 +1555,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 =============================================================== */}
             {userTab === 'evsim_compare' && (
               <div className="space-y-4">
-                {/* Compact 7-Device EVSIM Comparison Strip in Tab 2 */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 sm:p-4 text-white flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <img
-                      src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                      alt="Đồng Bộ 7 Thiết Bị Thực Nghiệm EVSIM"
-                      onClick={() => setPortalLightboxIdx(0)}
-                      className="h-11 sm:h-12 w-auto object-contain rounded-lg border border-white/15 bg-black/40 p-0.5 shrink-0 cursor-zoom-in"
-                    />
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[11.5px] font-bold text-[#d6f65a] uppercase tracking-wide">
-                          Môi Trường Đối Chứng Thuật Toán EVSIM Trên 7 Thiết Bị Phần Cứng
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setPortalLightboxIdx(0)}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 cursor-pointer transition-colors"
-                        >
-                          <ZoomIn className="w-3 h-3" />
-                          <span>Xem Mockup 2.4K</span>
-                        </button>
-                      </div>
-                      <p className="text-[11.5px] text-slate-300 mt-0.5">
-                        MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 text-xs font-bold shrink-0">
-                    <a
-                      href="/benchmark/"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border border-white/10 transition-colors"
-                    >
-                      <span>Mở Trang Benchmark Riêng</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setShowDeviceBanner((prev) => !prev)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-[#060d14] text-xs font-extrabold transition-colors cursor-pointer"
-                    >
-                      <span>{showDeviceBanner ? 'Ẩn Banner Đa Thiết Bị' : 'Bật Toàn Bộ 7 Thiết Bị'}</span>
-                      {showDeviceBanner ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
-                </div>
                 <EvsimDualSimulator
                   initialResult={result}
                   onResultChange={(newRes) => setResult(newRes)}
@@ -2030,42 +1664,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
-                {/* Live 7-Device Broadcast Target Strip in /dispatcher */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl px-3.5 py-2.5 text-white flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="w-2 h-2 rounded-full bg-[#d6f65a] animate-pulse shrink-0" />
-                    <span className="text-[11px] font-bold text-[#d6f65a] uppercase tracking-wider">
-                      Đích đồng bộ 7 thiết bị (&lt;50ms):
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(0)}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] border border-[#d6f65a]/40 text-[10px] font-extrabold transition-colors cursor-pointer"
-                    >
-                      <ZoomIn className="w-3 h-3" />
-                      <span>Xem Mockup 2.4K</span>
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
-                    {[
-                      { label: 'MacBook Pro (TMS)', href: '/dashboard/' },
-                      { label: 'Windows XPS (EVSIM)', href: '/benchmark/' },
-                      { label: 'Galaxy Z Fold (Bản đồ)', href: '/maps/?vehicle=0&mode=navigate' },
-                      { label: 'iPad Pro M4 (Kho bãi)', href: '/dispatcher/' },
-                      { label: 'iPhone Duo (Đa nhiệm)', href: '/driver/' },
-                      { label: 'iPhone 18 Pro Max', href: '/driver/' },
-                      { label: 'Galaxy S26 Ultra (Dẫn đường)', href: '/maps/?vehicle=1&mode=navigate' },
-                    ].map((dev) => (
-                      <a
-                        key={dev.label}
-                        href={dev.href}
-                        className="px-2 py-0.5 rounded-md bg-white/10 hover:bg-[#d6f65a] hover:text-[#060d14] text-slate-200 transition-colors"
-                      >
-                        {dev.label}
-                      </a>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Map + Route Filter */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -2212,72 +1810,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
-                {/* 7-Device Order Ingestion & Dispatch Pipeline Strip */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 text-white grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => setPortalLightboxIdx(1)}
-                    className="p-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#d6f65a]/50 text-left transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10.5px] font-bold text-[#d6f65a] uppercase">
-                        1. Trạm Nhập &amp; Chuẩn Hóa .XLSX
-                      </span>
-                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-[#d6f65a]">
-                        <ZoomIn className="w-2.5 h-2.5" />
-                        <span>2.4K</span>
-                      </span>
-                    </div>
-                    <div className="font-bold text-white mt-0.5">
-                      MacBook Pro 16&quot; · Windows 11 XPS 16
-                    </div>
-                    <div className="text-[11px] text-slate-300 mt-0.5">
-                      Ánh xạ tự động 120 đơn từ ERP &amp; kiểm thử đối chứng EVSIM
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPortalLightboxIdx(4)}
-                    className="p-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-400/50 text-left transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10.5px] font-bold text-emerald-300 uppercase">
-                        2. Trạm Điều Phối Bến Bãi &amp; Kho Lạnh
-                      </span>
-                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-300">
-                        <ZoomIn className="w-2.5 h-2.5" />
-                        <span>2.4K</span>
-                      </span>
-                    </div>
-                    <div className="font-bold text-white mt-0.5">
-                      iPad Pro M4 · Samsung Galaxy Z Fold
-                    </div>
-                    <div className="text-[11px] text-slate-300 mt-0.5">
-                      Phân bổ tải trọng 7 xe &amp; hiển thị vùng cấm QĐ 23
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPortalLightboxIdx(5)}
-                    className="p-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/50 text-left transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10.5px] font-bold text-sky-300 uppercase">
-                        3. Thực Địa Giao Nhận 2 Chặng ($0 API)
-                      </span>
-                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-sky-300">
-                        <ZoomIn className="w-2.5 h-2.5" />
-                        <span>2.4K</span>
-                      </span>
-                    </div>
-                    <div className="font-bold text-white mt-0.5">
-                      iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
-                    </div>
-                    <div className="text-[11px] text-slate-300 mt-0.5">
-                      Đồng bộ danh sách điểm dừng &amp; dẫn đường trực tiếp
-                    </div>
-                  </button>
-                </div>
 
                 {/* Searchable Orders Table */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
@@ -2394,30 +1926,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           <div className="text-xs text-[#5f6368]">
                             Tài xế: {DRIVER_NAMES[idx % DRIVER_NAMES.length]}
                           </div>
-                          <div className="mt-1">
-                            <button
-                              type="button"
-                              onClick={() => setPortalLightboxIdx([5, 3, 6, 7, 4, 1, 2][idx % 7])}
-                              title="Xem ảnh thực tế thiết bị 2.4K"
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#e8f0fb] hover:bg-[#dbeafe] text-[#1f3a5f] border border-[#bfdbfe] text-[10.5px] font-bold cursor-pointer transition-colors"
-                            >
-                              <span>
-                                Thiết bị:{' '}
-                                {
-                                  [
-                                    'iPhone Duo Gập Đôi',
-                                    'Samsung Galaxy Z Fold',
-                                    'iPhone 18 Pro Max',
-                                    'Samsung Galaxy S26 Ultra',
-                                    'iPad Pro M4',
-                                    'MacBook Pro 16"',
-                                    'Windows 11 XPS 16',
-                                  ][idx % 7]
-                                }
-                              </span>
-                              <ZoomIn className="w-2.5 h-2.5 opacity-75 shrink-0" />
-                            </button>
-                          </div>
                         </div>
                         <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#04250e] text-xs font-bold">
                           Lấp đầy {r.payload_utilisation_pct}%
@@ -2480,70 +1988,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
-                {/* 7-Device Hardware Telemetry Aggregation to 3-Sheet Excel Strip */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-4 text-white space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
-                    <div className="flex items-center gap-2.5">
-                      <img
-                        src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                        alt="EcoMiles 7-Device ESG Telemetry Pipeline"
-                        onClick={() => setPortalLightboxIdx(0)}
-                        className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0 cursor-zoom-in"
-                      />
-                      <div>
-                        <span className="text-xs font-bold uppercase tracking-wider text-[#d6f65a] block">
-                          Luồng Thu Thập Telemetry 7 Thiết Bị &rarr; Báo Cáo Excel 3 Sheet Tự Động
-                        </span>
-                        <span className="text-[11px] text-slate-300">
-                          Tổng hợp tự động từ 5 thiết bị thực địa và 2 máy trạm điều phối theo chuẩn GLEC v3.2 / ISO 14083
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(0)}
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-[#d6f65a]/15 hover:bg-[#d6f65a] hover:text-[#060d14] text-[#d6f65a] text-[11px] font-bold border border-[#d6f65a]/40 cursor-pointer transition-colors"
-                    >
-                      <ZoomIn className="w-3 h-3" />
-                      <span>Xem Mockup 2.4K (7/7 Thiết Bị)</span>
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                    <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-1">
-                      <div className="text-[10px] font-bold uppercase text-emerald-400">
-                        1. Telemetry 5 Thiết Bị Thực Địa
-                      </div>
-                      <div className="font-bold text-white">
-                        Galaxy Z Fold · iPad Pro M4 · iPhone Duo · 18 Pro Max · S26 Ultra
-                      </div>
-                      <p className="text-[11px] text-slate-300">
-                        Ghi nhận tọa độ GPS thực tế, tải trọng dỡ hàng từng điểm và trạng thái tuân thủ giờ cấm QĐ 23/2018.
-                      </p>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-1">
-                      <div className="text-[10px] font-bold uppercase text-cyan-300">
-                        2. Trạm Kiểm Định &amp; Tính Toán Kép
-                      </div>
-                      <div className="font-bold text-white">
-                        MacBook Pro 16&quot; (TMS) · Windows 11 XPS 16 (EVSIM)
-                      </div>
-                      <p className="text-[11px] text-slate-300">
-                        Tính toán phát thải động GLX-HDT-v1 (TTW &amp; WTW), đối chứng cự ly tiết giảm (-34.9%) và tỷ lệ chạy rỗng (2.7%).
-                      </p>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-white/5 border border-emerald-500/30 space-y-1">
-                      <div className="text-[10px] font-bold uppercase text-[#d6f65a]">
-                        3. Kết Xuất Workbook Excel 3 Sheet (.XLS)
-                      </div>
-                      <div className="font-bold text-white">
-                        1_Tong_Hop_ESG · 2_Chi_Tiet_Chuyen · 3_Kiem_Toan_QD23
-                      </div>
-                      <p className="text-[11px] text-slate-300">
-                        Kèm mã băm xác thực dữ liệu <code className="font-mono text-[#d6f65a]">{result.dataset_fingerprint}</code> chống chỉnh sửa thủ công.
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
                 {/* On-Screen Certificate Preview */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-4">
@@ -2606,54 +2050,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
-                {/* Multi-Device Pitch Deck & Hardware Mockup Suite Card */}
-                <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <h2 className="text-[15px] font-bold text-[#111827]">
-                        Bộ Ảnh Chụp Màn Hình &amp; Mockup 7 Thiết Bị Cho Hồ Sơ Thuyết Trình (Pitch Deck Suite)
-                      </h2>
-                      <p className="text-[12px] text-[#5f6368]">
-                        Tải trực tiếp ảnh bìa 2400x1260 và 4 slide tổng hợp đa thiết bị (MacBook Pro 16&quot;, Windows 11 XPS 16, Galaxy Z Fold, iPad Pro M4, iPhone Duo, iPhone 18 Pro Max, Galaxy S26 Ultra):
-                      </p>
-                    </div>
-                    <a
-                      href="/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png"
-                      download="00_ecomiles_flagship_cover_banner.png"
-                      className="px-3.5 py-2 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] text-xs font-extrabold"
-                    >
-                      Tải Ảnh Bìa 7 Thiết Bị (2400x1260 PNG)
-                    </a>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a
-                      href="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block rounded-xl overflow-hidden border border-[#d1d5db] bg-[#060d14] p-2"
-                    >
-                      <img
-                        src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                        alt="7-Device Hardware Stage"
-                        className="w-full h-auto rounded-lg"
-                        loading="lazy"
-                      />
-                    </a>
-                    <a
-                      href="/pitch-deck-screenshots/18_slide_composite_driver_and_maps_mobile_tablet.png"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block rounded-xl overflow-hidden border border-[#d1d5db] bg-[#f3f4ef] p-2"
-                    >
-                      <img
-                        src="/pitch-deck-screenshots/18_slide_composite_driver_and_maps_mobile_tablet.png"
-                        alt="Mobile and Foldable Fleet Lineup"
-                        className="w-full h-auto rounded-lg"
-                        loading="lazy"
-                      />
-                    </a>
-                  </div>
-                </div>
               </div>
             )}
 
@@ -2704,45 +2100,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
-                {/* 7-Device Zero-Knowledge Endpoint Isolation Strip */}
-                <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-4 text-white space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-[#d6f65a]" />
-                      <span className="text-xs font-bold text-[#d6f65a] uppercase tracking-wider">
-                        Cách Ly Bảo Mật Trên 7 Thiết Bị Đầu Cuối (AES-256-GCM &amp; Che SĐT Nghị Định 13/2023/NĐ-CP)
-                      </span>
-                    </div>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10.5px] font-mono">
-                      admin_can_decrypt = false (7/7 Endpoints)
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-[11px]">
-                    {[
-                      { name: 'MacBook Pro 16"', policy: 'Khóa KMS Doanh nghiệp' },
-                      { name: 'Windows 11 XPS 16', policy: 'Sandbox Đối chứng EVSIM' },
-                      { name: 'Galaxy Z Fold', policy: 'Chỉ tọa độ lộ trình xe tải' },
-                      { name: 'iPad Pro M4', policy: 'Phân quyền Trạm kho vận' },
-                      { name: 'iPhone Duo', policy: 'PIN 0000 + Che SĐT NĐ 13' },
-                      { name: 'iPhone 18 Pro Max', policy: 'PIN 0000 + PoD Mã hóa' },
-                      { name: 'Galaxy S26 Ultra', policy: 'GPS ẩn danh khách nhận' },
-                    ].map((ep, idx) => (
-                      <button
-                        key={ep.name}
-                        type="button"
-                        onClick={() => setPortalLightboxIdx(idx + 1)}
-                        className="p-2 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-left cursor-pointer transition-colors"
-                        title="Nhấn để phóng to ảnh thiết bị 2.4K"
-                      >
-                        <div className="font-bold text-white truncate flex items-center justify-between gap-1">
-                          <span className="truncate">{ep.name}</span>
-                          <ZoomIn className="w-3 h-3 text-[#d6f65a] shrink-0" />
-                        </div>
-                        <div className="text-[10px] text-emerald-300 mt-0.5 truncate">{ep.policy}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Role Approval Table */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
@@ -2817,57 +2174,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           ===================================================================== */}
       {activeRole === 'tester' && (
         <div className="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-5 space-y-3">
-          {/* 7-Device Benchmark & Telemetry Verification Strip */}
-          <div className="bg-[#060d14] border border-emerald-900/60 rounded-xl p-3.5 text-white space-y-2.5">
-            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-2.5 border-b border-white/10 pb-2.5">
-              <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                <img
-                  src="/pitch-deck-screenshots/00_ecomiles_clean_devices_hero_stage.png"
-                  alt="EcoMiles 7-Device Studio Stage"
-                  onClick={() => setPortalLightboxIdx(0)}
-                  className="h-9 w-auto rounded border border-white/15 bg-black/50 p-0.5 object-contain shrink-0 cursor-zoom-in"
-                />
-                <div className="min-w-0">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#d6f65a] block">
-                    Trạm Đối Chứng &amp; Kiểm Định Dữ Liệu 7 Thiết Bị (120 Đơn Hàng TP.HCM)
-                  </span>
-                  <span className="text-[11px] text-slate-300">
-                    MacBook Pro 16&quot; · Windows 11 XPS 16 · Galaxy Z Fold · iPad Pro M4 · iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-[11px]">
-                <button
-                  type="button"
-                  onClick={() => setPortalLightboxIdx(0)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#d6f65a] border border-[#d6f65a]/40 font-extrabold cursor-pointer transition-colors"
-                >
-                  <ZoomIn className="w-3 h-3" />
-                  <span>Xem Mockup 2.4K</span>
-                </button>
-                <a
-                  href="/#showcase"
-                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white font-bold transition-colors"
-                >
-                  Xem Sân Khấu 7 Thiết Bị
-                </a>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-              <div className="p-2 rounded-lg bg-white/5 border border-emerald-500/30">
-                <div className="text-[10px] font-bold text-[#d6f65a] uppercase">1. Đối Chứng Song Song (Master)</div>
-                <div className="font-bold text-white mt-0.5">Windows 11 XPS 16 (EVSIM) · MacBook Pro 16&quot; (TMS)</div>
-              </div>
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                <div className="text-[10px] font-bold text-emerald-300 uppercase">2. Bến Bãi &amp; Buồng Lái Xe Tải</div>
-                <div className="font-bold text-white mt-0.5">Galaxy Z Fold (Buồng lái) · iPad Pro M4 (Taplo 13&quot;)</div>
-              </div>
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                <div className="text-[10px] font-bold text-sky-300 uppercase">3. Thực Địa Giao Điểm ($0 API)</div>
-                <div className="font-bold text-white mt-0.5">iPhone Duo · iPhone 18 Pro Max · Galaxy S26 Ultra</div>
-              </div>
-            </div>
-          </div>
           <EvsimDualSimulator
             initialResult={result}
             onResultChange={(newRes) => setResult(newRes)}
@@ -3015,67 +2321,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <KeyRound className="w-3.5 h-3.5 text-[#1971c2]" />
                         <span>PIN: 0000</span>
                       </span>
-                      <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-xl bg-[#f3f4f6] border border-[#d1d5db]">
-                        {(
-                          [
-                            {
-                              id: 'iphone_18_pro_max',
-                              label: 'iPhone 18 Pro Max (Nắng Gắt)',
-                              foldable: false,
-                            },
-                            {
-                              id: 'galaxy_s26_ultra',
-                              label: 'Galaxy S26 Ultra (Hẻm Nhỏ)',
-                              foldable: false,
-                            },
-                            {
-                              id: 'iphone_duo_zfold',
-                              label: 'iPhone Duo / Z Fold (Gập Đôi)',
-                              foldable: true,
-                            },
-                          ] as const
-                        ).map((dev) => {
-                          const isActive =
-                            (dev.foldable && isFoldableDualView) ||
-                            (!dev.foldable &&
-                              !isFoldableDualView &&
-                              driverHardwareProfile === dev.id);
-                          return (
-                            <button
-                              key={dev.id}
-                              type="button"
-                              onClick={() => {
-                                setDriverHardwareProfile(dev.id);
-                                setIsFoldableDualView(dev.foldable);
-                              }}
-                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer ${
-                                isActive
-                                  ? 'bg-[#14532d] text-[#d6f65a] shadow-xs'
-                                  : 'text-[#374151] hover:bg-white'
-                              }`}
-                            >
-                              {dev.foldable && <SplitSquareVertical className="w-3 h-3" />}
-                              <span>{dev.label}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setPortalLightboxIdx(
-                            isFoldableDualView
-                              ? 5
-                              : driverHardwareProfile === 'galaxy_s26_ultra'
-                                ? 7
-                                : 6
-                          )
-                        }
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] text-[11px] font-extrabold cursor-pointer transition-colors"
-                      >
-                        <ZoomIn className="w-3 h-3" />
-                        <span>Xem Mockup 2.4K</span>
-                      </button>
                     </div>
                   </div>
 
@@ -3246,26 +2491,12 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         </span>
                       </div>
 
-                      {isFoldableDualView ? (
-                        <div className="rounded-xl border-2 border-[#14532d] overflow-hidden bg-[#060d14] shadow-md">
-                          <div className="px-3 py-1.5 bg-[#14532d] text-white text-[11px] font-bold flex items-center justify-between">
-                            <span>Màn Hình Kép (iPhone Duo / Z Fold): Dẫn Đường Trực Tiếp</span>
-                            <span className="text-[#d6f65a] font-mono">{driverRoute?.plate}</span>
-                          </div>
-                          <iframe
-                            src={`/maps/?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
-                            className="w-full h-[460px] border-0 bg-white"
-                            title="EcoMiles Foldable Dual-Screen Live Navigation"
-                          />
-                        </div>
-                      ) : (
-                        driverRoute && (
-                          <HcmcSingleRouteMapCanvas
-                            result={result}
-                            strategy={activeStrategy}
-                            selectedRouteId={driverRoute.route_id}
-                          />
-                        )
+                      {driverRoute && (
+                        <HcmcSingleRouteMapCanvas
+                          result={result}
+                          strategy={activeStrategy}
+                          selectedRouteId={driverRoute.route_id}
+                        />
                       )}
 
                       {driverMileTier === 'middle_mile_truck' ? (
@@ -3310,11 +2541,33 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   <div className="lg:col-span-6 bg-white border border-[#e5e7eb] rounded-xl p-4 space-y-3">
                     <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-2.5">
                       <h2 className="text-sm font-bold text-[#111827]">
-                        Danh Sách Điểm Dừng Theo Thứ Tự Tối Ưu ({customerStops.length} điểm)
+                        Danh Sách Điểm Dừng Theo Khu Vực &amp; Khung Giờ Hợp Pháp ({customerStops.length} điểm)
                       </h2>
                       <span className="text-xs text-[#5f6368]">
                         Tổng tải: <strong>{driverRoute?.kg_delivered} kg</strong>
                       </span>
+                    </div>
+
+                    {/* 3-Period QĐ 23/2018 Truck Restriction & Legal Delivery Window Bar */}
+                    <div className="p-2.5 rounded-xl bg-[#f8f5ec] border border-[#e5dec9] space-y-1.5 text-[11px]">
+                      <div className="flex items-center justify-between gap-2 font-bold text-[#111827]">
+                        <span>Khung giờ lưu thông xe tải nội đô TP.HCM (QĐ 23/2018):</span>
+                        <span className="text-[#14532d]">0 vi phạm giờ cấm</span>
+                      </div>
+                      <div className="grid grid-cols-3 rounded-lg overflow-hidden border border-[#d8cfbd] text-[10px] font-bold text-center">
+                        <div className="bg-[#ffedea] text-[#c92a2a] py-1 px-1 border-r border-[#d8cfbd]">
+                          06:00 - 09:00 · Cấm sáng
+                          <div className="font-normal text-[9.5px]">Giao vành đai ngoài</div>
+                        </div>
+                        <div className="bg-[#dcfae5] text-[#14532d] py-1 px-1 border-r border-[#d8cfbd]">
+                          09:00 - 16:00 · Mở nội đô
+                          <div className="font-normal text-[9.5px]">Giao Q.1, 3, 5, Phú Nhuận</div>
+                        </div>
+                        <div className="bg-[#ffedea] text-[#c92a2a] py-1 px-1">
+                          16:00 - 20:00 · Cấm chiều
+                          <div className="font-normal text-[9.5px]">Rời nội đô trước 15:50</div>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="space-y-2.5 max-h-[540px] overflow-y-auto pr-1">
@@ -3325,6 +2578,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         const prevLng = sIdx > 0 ? customerStops[sIdx - 1].lng : 106.6385;
                         const lockedCarMapsUrl = buildViaWaypointGoogleMapsUrl(prevLat, prevLng, stop);
                         const isSelectedNav = activeStop?.seq === stop.seq;
+                        const etaTotalMin = 9 * 60 + 5 + sIdx * 24;
+                        const etaH = String(Math.min(15, Math.floor(etaTotalMin / 60))).padStart(2, '0');
+                        const etaM = String(etaTotalMin % 60).padStart(2, '0');
+                        const safeEtaStr = `${etaH}:${etaM}`;
 
                         return (
                           <div
@@ -3342,11 +2599,28 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 <span className="w-6 h-6 rounded-full bg-[#111827] text-white font-bold text-[11px] flex items-center justify-center shrink-0">
                                   {stop.seq}
                                 </span>
-                                <div>
+                                <div className="space-y-1">
                                   <div className="font-bold text-[#111827]">{stop.address}</div>
-                                  <div className="text-[11px] text-[#5f6368] mt-0.5">
+                                  <div className="text-[11px] text-[#5f6368]">
                                     Mã đơn: <code className="font-mono">{stop.order_id}</code> · Tải:{' '}
-                                    <strong>{stop.kg} kg</strong> · Khung giờ: {stop.window_start} - {stop.window_end}
+                                    <strong>{stop.kg} kg</strong>
+                                  </div>
+                                  <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10.5px]">
+                                    <span
+                                      className={`px-2 py-0.5 rounded font-bold ${
+                                        stop.qd23_ban_conflict
+                                          ? 'bg-[#fff3bf] text-[#8f4e00] border border-[#fcc419]'
+                                          : 'bg-[#e8f0fb] text-[#1f3a5f] border border-[#bfdbfe]'
+                                      }`}
+                                    >
+                                      Khu vực: {stop.district} {stop.qd23_ban_conflict ? '(Vùng cấm 06-09h & 16-20h)' : '(Hành lang mở)'}
+                                    </span>
+                                    <span className="px-2 py-0.5 rounded bg-white border border-[#d1d5db] text-[#374151] font-semibold">
+                                      Hẹn giao: <b>{stop.window_start} - {stop.window_end}</b>
+                                    </span>
+                                    <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#04250e] font-bold">
+                                      Xe đến: {safeEtaStr} ({stop.qd23_ban_conflict ? 'Đã dời sau 09:00 né cấm tải' : 'Giờ mở hợp pháp'})
+                                    </span>
                                   </div>
                                 </div>
                               </div>
@@ -3371,7 +2645,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   : 'Chờ giao'}
                               </span>
                             </div>
-
                             <div className="flex flex-wrap items-center gap-2 pt-1">
                               {driverMileTier === 'middle_mile_truck' ? (
                                 <>
@@ -3569,213 +2842,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
             </div>
           </div>
 
-          {/* 3. Live 7-Device Endpoint Telemetry & Zero-Knowledge Session Matrix */}
-          <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#247b50]" />
-                <h2 className="text-[15px] font-bold text-[#111827]">
-                  3. Ma Trận Phiên Kết Nối 7 Thiết Bị Đầu Cuối &amp; Kiểm Toán Mã Hóa Zero-Knowledge
-                </h2>
-              </div>
-              <span className="px-2.5 py-0.5 rounded bg-[#dcfae5] text-[#04250e] text-[11px] font-bold">
-                7 / 7 Thiết bị Online · TLS 1.3 + AES-256-GCM
-              </span>
-            </div>
-            <div className="overflow-x-auto border border-[#e5e7eb] rounded-lg">
-              <table className="w-full border-collapse text-xs">
-                <thead className="bg-[#f9fafb] text-[#5f6368] border-b border-[#e5e7eb]">
-                  <tr>
-                    <th className="py-2 px-3 text-left">Thiết bị phần cứng</th>
-                    <th className="py-2 px-3 text-left">Vai trò &amp; Không gian</th>
-                    <th className="py-2 px-3 text-left">Tuyến kết nối trực tiếp</th>
-                    <th className="py-2 px-3 text-left">Chuẩn mã hóa phiên</th>
-                    <th className="py-2 px-3 text-left">Quyền giải mã của Admin</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#f2f2f2]">
-                  {[
-                    {
-                      device: 'MacBook Pro 16" (macOS)',
-                      role: 'Vai trò 1 · Điều phối viên B2B',
-                      route: '/dashboard',
-                      routeLabel: 'Mở Bảng Điều Khiển',
-                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
-                    },
-                    {
-                      device: 'Windows 11 XPS 16 (Workstation)',
-                      role: 'Vai trò 2 · Kiểm định viên EVSIM',
-                      route: '/benchmark',
-                      routeLabel: 'Mở Phòng Đối Chứng',
-                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
-                    },
-                    {
-                      device: 'Samsung Galaxy Z Fold (768×1024)',
-                      role: 'Vai trò 3 · Buồng lái OpenTruck HUD',
-                      route: '/maps',
-                      routeLabel: 'Mở Bản Đồ Xe Tải',
-                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
-                    },
-                    {
-                      device: 'iPad Pro M4 (1024×768 Landscape)',
-                      role: 'Vai trò 1 · Bảng điều khiển kho vận',
-                      route: '/dispatcher',
-                      routeLabel: 'Mở Điều Phối Kho',
-                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
-                    },
-                    {
-                      device: 'iPhone Duo Dual-Screen (750×834)',
-                      role: 'Vai trò 3 · Đa nhiệm 2 màn hình gập đôi',
-                      route: '/driver',
-                      routeLabel: 'Mở Ứng Dụng Tài Xế',
-                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
-                    },
-                    {
-                      device: 'iPhone 18 Pro Max (422×907)',
-                      role: 'Vai trò 3 · Tài xế chặng giữa (>500kg)',
-                      route: '/driver',
-                      routeLabel: 'Mở Ứng Dụng Tài Xế',
-                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
-                    },
-                    {
-                      device: 'Samsung Galaxy S26 Ultra (418×899)',
-                      role: 'Vai trò 3 · Dẫn đường trực tiếp Follow-Truck',
-                      route: '/maps',
-                      routeLabel: 'Mở Bản Đồ Xe Tải',
-                      cipher: 'TLS 1.3 · AES-256-GCM (BYOK)',
-                    },
-                  ].map((ep, idx) => (
-                    <tr
-                      key={ep.device}
-                      onClick={() => setPortalLightboxIdx(idx + 1)}
-                      title="Nhấn để phóng to ảnh thiết bị 2.4K"
-                      className="hover:bg-[#f0f7ff] cursor-pointer transition-colors"
-                    >
-                      <td className="py-2 px-3 font-bold text-[#111827]">
-                        <span className="inline-flex items-center gap-1.5 text-[#1971c2] hover:underline">
-                          <span>{ep.device}</span>
-                          <ZoomIn className="w-3 h-3 shrink-0" />
-                        </span>
-                      </td>
-                      <td className="py-2 px-3 text-[#5f6368]">{ep.role}</td>
-                      <td className="py-2 px-3 font-mono font-bold text-[#1971c2]">
-                        <a
-                          href={ep.route}
-                          onClick={(e) => e.stopPropagation()}
-                          className="hover:underline"
-                        >
-                          {ep.routeLabel}
-                        </a>
-                      </td>
-                      <td className="py-2 px-3 font-mono text-[#247b50]">{ep.cipher}</td>
-                      <td className="py-2 px-3">
-                        <span className="px-2 py-0.5 rounded bg-[#ffedea] text-[#831c1e] font-mono font-bold text-[11px]">
-                          admin_can_decrypt = false
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
       )}
-      {portalLightboxIdx !== null &&
-        typeof document !== 'undefined' &&
-        (() => {
-          const total = PORTAL_LIGHTBOX_ASSETS.length;
-          const safeIdx = ((portalLightboxIdx % total) + total) % total;
-          const activeAsset = PORTAL_LIGHTBOX_ASSETS[safeIdx];
-          return createPortal(
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-label={activeAsset.title}
-              className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/92 backdrop-blur-md p-3 sm:p-6"
-              onClick={() => setPortalLightboxIdx(null)}
-            >
-              <div
-                className="relative max-w-5xl w-full max-h-[92vh] flex flex-col rounded-2xl border border-[#d6f65a]/45 bg-slate-900/95 shadow-[0_25px_70px_rgba(0,0,0,0.95)] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-                  <div className="min-w-0">
-                    <div className="text-sm font-extrabold text-[#d6f65a] truncate">
-                      [{safeIdx + 1}/{total}] {activeAsset.title}
-                    </div>
-                    <div className="text-[11px] text-slate-300 truncate">{activeAsset.spec}</div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx((safeIdx - 1 + total) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Trước</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx((safeIdx + 1) % total)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-white/10"
-                    >
-                      <span>Tiếp</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                    <a
-                      href={activeAsset.src}
-                      download
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#d6f65a] hover:bg-[#c5e847] text-slate-950 font-extrabold text-xs"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>Tải PNG 2.4K</span>
-                    </a>
-                    <a
-                      href={activeAsset.liveHref}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs border border-emerald-400/30"
-                    >
-                      <span>Mở App Live</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(null)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-white/10 cursor-pointer"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                      <span>Đóng</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950/60">
-                  <img
-                    src={activeAsset.src}
-                    alt={activeAsset.title}
-                    className="max-h-[70vh] w-auto max-w-full object-contain rounded-xl drop-shadow-[0_24px_54px_rgba(0,0,0,0.9)]"
-                  />
-                </div>
-                <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-center gap-1.5">
-                  {PORTAL_LIGHTBOX_ASSETS.map((item, idx) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setPortalLightboxIdx(idx)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer border ${
-                        idx === safeIdx
-                          ? 'bg-[#d6f65a] text-slate-950 border-[#d6f65a]'
-                          : 'bg-slate-900 text-slate-300 border-white/10 hover:bg-slate-800'
-                      }`}
-                    >
-                      {item.shortLabel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>,
-            document.body
-          );
-        })()}
     </div>
   );
 }

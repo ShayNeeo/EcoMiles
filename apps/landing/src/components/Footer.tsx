@@ -161,7 +161,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
                   onClick={(e) => handleSmoothFooterScroll(e, '#showcase')}
                   className="hover:text-ecomiles-lime transition-colors"
                 >
-                  Hệ sinh thái 7 thiết bị
+                  Kiểm soát vùng cấm &amp; khung giờ
                 </a>
               </li>
               <li>

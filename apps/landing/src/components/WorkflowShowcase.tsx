@@ -100,7 +100,7 @@ export const WorkflowShowcase: React.FC = () => {
         'Thuật toán Carbon-Aware ALNS gom cụm theo quận, tự động dời lịch né vùng cấm tải QĐ 23/2018 & cầu 13T, đồng thời ghép 21 đơn thu hồi hàng chiều về kho Tân Bình.',
       inputSpec: '120 đơn hàng + Đồ thị đường phố thật TP.HCM',
       outputSpec: 'Lộ trình 243.7 km (-34.9% km · 0 lỗi QĐ 23 · 2.7% chạy rỗng)',
-      proofImage: '/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png',
+      proofImage: '/pitch-deck-screenshots/02_desktop_b2b_tms_evsim_dual_simulator.png',
       liveUrl: '/benchmark/',
       liveLabel: 'Mở Phòng Đối Chứng EVSIM',
       outcomes: [
@@ -118,7 +118,7 @@ export const WorkflowShowcase: React.FC = () => {
         'Phát hành lộ trình xuống điện thoại tài xế và bản đồ dẫn đường xe tải giọng nói tiếng Việt: xe >500kg dùng bản đồ xe tải né đường cấm, xe <=500kg mở thẳng Google Maps Waypoints miễn phí.',
       inputSpec: 'Lộ trình 7 xe tải đã phê duyệt trên trung tâm điều phối',
       outputSpec: 'Bản đồ dẫn đường trực tiếp & Google Maps Waypoints ($0 API)',
-      proofImage: '/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png',
+      proofImage: '/pitch-deck-screenshots/04_desktop_maps_overview_qd23_banned_zones.png',
       liveUrl: '/driver/',
       liveLabel: 'Mở Ứng Dụng Tài Xế',
       outcomes: [
@@ -235,7 +235,7 @@ export const WorkflowShowcase: React.FC = () => {
           ))}
         </div>
 
-        {/* Active Step Proof Panel (Flat Internal Structure — Zero Nested Sub-Cards) */}
+        {/* Active Step Proof Panel */}
         <div className="bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl shadow-black/50 mb-14">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div

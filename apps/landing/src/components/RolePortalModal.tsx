@@ -73,7 +73,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                     <LayoutDashboard className="w-4 h-4 text-ecomiles-lime" />
                   </div>
                   <img
-                    src="/pitch-deck-screenshots/26_mockup_macbook_pro_16_b2b_tms.png"
+                    src="/pitch-deck-screenshots/01_desktop_b2b_tms_fleet_overview.png"
                     alt="Trung Tâm Điều Phối Đội Xe B2B"
                     className="w-full h-28 object-contain mx-auto"
                   />
@@ -110,7 +110,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                     <SplitSquareVertical className="w-4 h-4 text-cyan-400" />
                   </div>
                   <img
-                    src="/pitch-deck-screenshots/27_mockup_windows_xps_16_evsim_dual.png"
+                    src="/pitch-deck-screenshots/02_desktop_b2b_tms_evsim_dual_simulator.png"
                     alt="Phòng Đối Chứng 2 Bên EVSIM"
                     className="w-full h-28 object-contain mx-auto"
                   />
@@ -147,7 +147,7 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
                     <Smartphone className="w-4 h-4 text-emerald-400" />
                   </div>
                   <img
-                    src="/pitch-deck-screenshots/23_mockup_iphone_duo_dual_screen.png"
+                    src="/pitch-deck-screenshots/04_desktop_maps_overview_qd23_banned_zones.png"
                     alt="Ứng Dụng Tài Xế 2 Chặng"
                     className="w-full h-28 object-contain mx-auto"
                   />
@@ -216,11 +216,6 @@ export const RolePortalModal: React.FC<RolePortalModalProps> = ({ isOpen, onClos
             {/* Dedicated OpenTruck Map Navigator Callout */}
             <div className="p-4 rounded-2xl bg-slate-950/90 border border-ecomiles-lime/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <img
-                  src="/pitch-deck-screenshots/24_mockup_samsung_zfold_tablet_cockpit.png"
-                  alt="Galaxy Z Fold Truck Map"
-                  className="w-12 h-14 object-contain shrink-0 hidden sm:block"
-                />
                 <div className="space-y-0.5">
                   <div className="text-xs font-black text-ecomiles-lime uppercase tracking-wider flex items-center gap-1.5">
                     <Compass className="w-3.5 h-3.5" />
