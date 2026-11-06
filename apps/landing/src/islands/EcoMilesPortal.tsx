@@ -2578,11 +2578,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         const prevLng = sIdx > 0 ? customerStops[sIdx - 1].lng : 106.6385;
                         const lockedCarMapsUrl = buildViaWaypointGoogleMapsUrl(prevLat, prevLng, stop);
                         const isSelectedNav = activeStop?.seq === stop.seq;
-                        const etaTotalMin = 9 * 60 + 5 + sIdx * 24;
-                        const etaH = String(Math.min(15, Math.floor(etaTotalMin / 60))).padStart(2, '0');
-                        const etaM = String(etaTotalMin % 60).padStart(2, '0');
-                        const safeEtaStr = `${etaH}:${etaM}`;
-
+                        const safeEtaStr = stop.eta_str || '09:05';
+                        const safeDepStr = stop.departure_str || '09:20';
+                        const isInnerZone = Boolean(stop.is_inner_city_qd23);
                         return (
                           <div
                             key={stKey}
@@ -2608,20 +2606,25 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10.5px]">
                                     <span
                                       className={`px-2 py-0.5 rounded font-bold ${
-                                        stop.qd23_ban_conflict
+                                        isInnerZone
                                           ? 'bg-[#fff3bf] text-[#8f4e00] border border-[#fcc419]'
                                           : 'bg-[#e8f0fb] text-[#1f3a5f] border border-[#bfdbfe]'
                                       }`}
                                     >
-                                      Khu vực: {stop.district} {stop.qd23_ban_conflict ? '(Vùng cấm 06-09h & 16-20h)' : '(Hành lang mở)'}
+                                      Khu vực: {stop.district} {isInnerZone ? '(Nội đô QĐ 23 · Cấm 06-09h & 16-20h)' : '(Vành đai mở)'}
                                     </span>
                                     <span className="px-2 py-0.5 rounded bg-white border border-[#d1d5db] text-[#374151] font-semibold">
-                                      Hẹn giao: <b>{stop.window_start} - {stop.window_end}</b>
+                                      Khung hẹn: <b>{stop.window_start} - {stop.window_end}</b>
                                     </span>
                                     <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#04250e] font-bold">
-                                      Xe đến: {safeEtaStr} ({stop.qd23_ban_conflict ? 'Đã dời sau 09:00 né cấm tải' : 'Giờ mở hợp pháp'})
+                                      Lịch xe: {safeEtaStr} - {safeDepStr}
                                     </span>
                                   </div>
+                                  {stop.schedule_note && (
+                                    <div className="text-[10.5px] font-semibold text-[#14532d]">
+                                      {stop.schedule_note}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
 

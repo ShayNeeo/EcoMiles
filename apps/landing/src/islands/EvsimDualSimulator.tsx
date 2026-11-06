@@ -34,14 +34,37 @@ import {
 const DEPOT_COORD = { lat: 10.8018, lng: 106.6385, label: 'Kho Tân Bình (364 Cộng Hòa)' };
 
 
+const HCMC_QD23_INNER_RING_POLYGON: LngLat[] = [
+  [106.642, 10.798], // Tân Bình / Cộng Hòa gate
+  [106.678, 10.812], // Phú Nhuận / Nguyễn Kiệm gate
+  [106.714, 10.810], // Bình Thạnh / Cầu Sài Gòn gate
+  [106.710, 10.772], // Quận 1 / Tôn Đức Thắng
+  [106.702, 10.752], // Quận 4 / Khánh Hội
+  [106.662, 10.746], // Quận 5 / Nguyễn Trãi
+  [106.632, 10.750], // Quận 6 / Phú Lâm
+  [106.638, 10.778], // Quận 11 / Lạc Long Quân
+];
+
 interface SimulatedTruckLeg {
   truckIdx: number;
   legIdxInRoute: number;
   plate: string;
+  capacityKg: number;
   fuel: 'diesel' | 'petrol';
   color: string;
-  tStartSec: number;
-  tEndSec: number;
+  tDepartSec: number;
+  tArriveSec: number;
+  tServiceStartSec: number;
+  tServiceEndSec: number;
+  waitQd23Min: number;
+  waitWindowMin: number;
+  restBreakMin: number;
+  isInnerCityQd23: boolean;
+  district: string;
+  windowStart: string;
+  windowEnd: string;
+  windowStr: string;
+  scheduleNote: string;
   path: LngLat[];
   loadRatioStart: number;
   loadRatioEnd: number;
@@ -49,12 +72,14 @@ interface SimulatedTruckLeg {
   isEmptyReturn: boolean;
   isBackhaulPickup: boolean;
   violatesQd23: boolean;
+  lateRisk: boolean;
   stopOrderId: string | null;
 }
 
 interface RouteGeometryBundle {
   truckIdx: number;
   plate: string;
+  capacityKg: number;
   color: string;
   stopCoords: LngLat[];
   fallbackLegs: LngLat[][];
@@ -65,10 +90,14 @@ interface RouteGeometryBundle {
 interface SimulatedTimelineSide {
   strategy: StrategySummary;
   legs: SimulatedTruckLeg[];
+  legsByTruck: SimulatedTruckLeg[][];
   routeGeometries: RouteGeometryBundle[];
   stopEvents: Array<{
     tSec: number;
     orderId: string;
+    district: string;
+    windowStr: string;
+    etaStr: string;
     lat: number;
     lng: number;
     kind: 'stop' | 'backhaul';
@@ -86,7 +115,6 @@ interface SimulatedTimelineSide {
     activeTrucks: number[];
   };
 }
-
 function isQd23PeakSec(tSec: number): boolean {
   const h = tSec / 3600;
   return (h >= 6 && h < 9) || (h >= 16 && h < 20);
@@ -98,136 +126,192 @@ function isQd23PeakSec(tSec: number): boolean {
  */
 function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean): SimulatedTimelineSide {
   const legs: SimulatedTruckLeg[] = [];
+  const legsByTruck: SimulatedTruckLeg[][] = [];
   const routeGeometries: RouteGeometryBundle[] = [];
   const stopEvents: SimulatedTimelineSide['stopEvents'] = [];
 
   strategy.routes.forEach((route: BenchmarkPlannedRoute, rIdx: number) => {
     const nonDepotStops = route.stops.filter((s) => s.kind === 'stop' || s.kind === 'backhaul');
-    if (nonDepotStops.length === 0) return;
+    if (nonDepotStops.length === 0) {
+      legsByTruck.push([]);
+      return;
+    }
 
-    // Full-day urban logistics shift pacing (06:20 -> 17:20) with 100% gapless leg transitions
-    // so every truck is continuously visible and driving along its road line throughout the shift.
-    const tRouteStartSec = isEcoMilesArm
-      ? 6 * 3600 + 300 + (rIdx % 5) * 120
-      : 6 * 3600 + 180 + (rIdx % 6) * 120;
-
-    const targetShiftSpanSec = isEcoMilesArm ? 12.6 * 3600 : 13.4 * 3600;
+    const depotStartStop = route.stops[0];
+    const tRouteStartSec = (depotStartStop?.service_end_min ?? 390) * 60;
     let curLat = DEPOT_COORD.lat;
     let curLng = DEPOT_COORD.lng;
     const totalStops = nonDepotStops.length;
 
     const stopCoords: LngLat[] = [[DEPOT_COORD.lng, DEPOT_COORD.lat]];
     const fallbackLegs: LngLat[][] = [];
-    const rawSegments: Array<{ path: LngLat[]; distanceKm: number; weight: number }> = [];
+    const truckLegs: SimulatedTruckLeg[] = [];
 
-    nonDepotStops.forEach((stop) => {
+    nonDepotStops.forEach((stop, sIdx) => {
       const streetSeg =
         stop.leg_path && stop.leg_path.length >= 2
-          ? { path: stop.leg_path, distanceKm: Math.max(0.45, computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat).distanceKm) }
+          ? {
+              path: stop.leg_path,
+              distanceKm: Math.max(
+                0.45,
+                computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat).distanceKm
+              ),
+            }
           : computeHcmcStreetPath(curLng, curLat, stop.lng, stop.lat);
       stopCoords.push([stop.lng, stop.lat]);
       fallbackLegs.push(streetSeg.path);
-      // Weight includes road distance + urban unloading/handling time equivalent so legs are gapless
-      rawSegments.push({
+
+      const prevEndSec =
+        truckLegs.length > 0 ? truckLegs[truckLegs.length - 1].tServiceEndSec : tRouteStartSec;
+      const tDepartSec = Math.max(prevEndSec, (stop.depart_prev_min ?? prevEndSec / 60) * 60);
+      const tArriveSec = Math.max(tDepartSec + 120, (stop.arrive_min ?? tDepartSec / 60 + 8) * 60);
+      const tServiceStartSec = Math.max(
+        tArriveSec,
+        (stop.service_start_min ?? tArriveSec / 60) * 60
+      );
+      const tServiceEndSec = Math.max(
+        tServiceStartSec + 180,
+        (stop.service_end_min ?? tServiceStartSec / 60 + 12) * 60
+      );
+
+      const isBh = stop.kind === 'backhaul';
+      const loadStart = isBh ? 0.35 : Math.max(0.1, 1 - sIdx / totalStops);
+      const loadEnd = isBh ? 0.55 : Math.max(0.05, 1 - (sIdx + 1) / totalStops);
+      const violatesQd23 =
+        isEcoMilesArm
+          ? false
+          : stop.qd23_ban_conflict ||
+            (route.capacity_kg > 500 &&
+              Boolean(stop.is_inner_city_qd23) &&
+              (isQd23PeakSec(tArriveSec) || isQd23PeakSec(tServiceStartSec)));
+
+      const legObj: SimulatedTruckLeg = {
+        truckIdx: rIdx,
+        legIdxInRoute: sIdx,
+        plate: route.plate,
+        capacityKg: route.capacity_kg,
+        fuel: route.fuel,
+        color: route.color,
+        tDepartSec,
+        tArriveSec,
+        tServiceStartSec,
+        tServiceEndSec,
+        waitQd23Min: stop.wait_qd23_min ?? 0,
+        waitWindowMin: stop.wait_window_min ?? 0,
+        restBreakMin: stop.rest_break_min ?? 0,
+        isInnerCityQd23: stop.is_inner_city_qd23 ?? false,
+        district: stop.district,
+        windowStart: stop.window_start,
+        windowEnd: stop.window_end,
+        windowStr: `${stop.window_start}-${stop.window_end}`,
+        scheduleNote: stop.schedule_note ?? '',
         path: streetSeg.path,
-        distanceKm: streetSeg.distanceKm,
-        weight: streetSeg.distanceKm + 1.15,
+        loadRatioStart: loadStart,
+        loadRatioEnd: loadEnd,
+        legKm: streetSeg.distanceKm,
+        isEmptyReturn: false,
+        isBackhaulPickup: isBh,
+        violatesQd23,
+        lateRisk: stop.late_risk,
+        stopOrderId: stop.order_id,
+      };
+
+      legs.push(legObj);
+      truckLegs.push(legObj);
+
+      stopEvents.push({
+        tSec: tServiceStartSec,
+        orderId: stop.order_id,
+        district: stop.district,
+        windowStr: `${stop.window_start}-${stop.window_end}`,
+        etaStr: stop.eta_str ?? stop.window_start,
+        lat: stop.lat,
+        lng: stop.lng,
+        kind: isBh ? 'backhaul' : 'stop',
+        violatesQd23,
+        lateRisk: stop.late_risk,
       });
+
       curLat = stop.lat;
       curLng = stop.lng;
     });
 
-    // Return leg to Kho Tân Bình DC along real HCMC street network
+    // Final return leg to Kho Tân Bình DC along real HCMC street network
     const retDepotStop = route.stops[route.stops.length - 1];
     const retSeg =
-      retDepotStop && retDepotStop.kind === 'depot' && retDepotStop.leg_path && retDepotStop.leg_path.length >= 2
-        ? { path: retDepotStop.leg_path, distanceKm: Math.max(0.6, computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat).distanceKm) }
+      retDepotStop &&
+      retDepotStop.kind === 'depot' &&
+      retDepotStop.leg_path &&
+      retDepotStop.leg_path.length >= 2
+        ? {
+            path: retDepotStop.leg_path,
+            distanceKm: Math.max(
+              0.6,
+              computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat).distanceKm
+            ),
+          }
         : computeHcmcStreetPath(curLng, curLat, DEPOT_COORD.lng, DEPOT_COORD.lat);
     stopCoords.push([DEPOT_COORD.lng, DEPOT_COORD.lat]);
     fallbackLegs.push(retSeg.path);
-    rawSegments.push({
-      path: retSeg.path,
-      distanceKm: retSeg.distanceKm,
-      weight: retSeg.distanceKm + 0.8,
-    });
 
-    const totalWeight = Math.max(1e-6, rawSegments.reduce((s, seg) => s + seg.weight, 0));
-    let clockSec = tRouteStartSec;
+    const prevEndSec =
+      truckLegs.length > 0 ? truckLegs[truckLegs.length - 1].tServiceEndSec : tRouteStartSec;
+    const tRetDepartSec = Math.max(
+      prevEndSec,
+      (retDepotStop?.depart_prev_min ?? prevEndSec / 60) * 60
+    );
+    const tRetArriveSec = Math.max(
+      tRetDepartSec + 240,
+      (retDepotStop?.arrive_min ?? tRetDepartSec / 60 + 14) * 60
+    );
 
-    nonDepotStops.forEach((stop, sIdx) => {
-      const seg = rawSegments[sIdx];
-      const legDurSec = Math.max(180, Math.round((seg.weight / totalWeight) * targetShiftSpanSec));
-      const t0 = clockSec;
-      const t1 = t0 + legDurSec;
-      const isBh = stop.kind === 'backhaul';
-      const loadStart = isBh ? 0.35 : Math.max(0.1, 1 - sIdx / totalStops);
-      const loadEnd = isBh ? 0.55 : Math.max(0.05, 1 - (sIdx + 1) / totalStops);
-      const inBanHour = !isEcoMilesArm && (stop.qd23_ban_conflict || isQd23PeakSec(t1));
-
-      legs.push({
-        truckIdx: rIdx,
-        legIdxInRoute: sIdx,
-        plate: route.plate,
-        fuel: route.fuel,
-        color: route.color,
-        tStartSec: t0,
-        tEndSec: t1,
-        path: seg.path,
-        loadRatioStart: loadStart,
-        loadRatioEnd: loadEnd,
-        legKm: seg.distanceKm,
-        isEmptyReturn: false,
-        isBackhaulPickup: isBh,
-        violatesQd23: inBanHour,
-        stopOrderId: stop.order_id,
-      });
-
-      stopEvents.push({
-        tSec: t1,
-        orderId: stop.order_id,
-        lat: stop.lat,
-        lng: stop.lng,
-        kind: isBh ? 'backhaul' : 'stop',
-        violatesQd23: inBanHour,
-        lateRisk: stop.late_risk,
-      });
-
-      clockSec = t1; // 100% gapless transition: truck never disappears between legs!
-    });
-
-    // Final return leg to Depot
-    const retRaw = rawSegments[rawSegments.length - 1];
-    const retDurSec = Math.max(240, Math.round((retRaw.weight / totalWeight) * targetShiftSpanSec));
-    const tRetEnd = clockSec + retDurSec;
-    legs.push({
+    const retLegObj: SimulatedTruckLeg = {
       truckIdx: rIdx,
       legIdxInRoute: nonDepotStops.length,
       plate: route.plate,
+      capacityKg: route.capacity_kg,
       fuel: route.fuel,
       color: route.color,
-      tStartSec: clockSec,
-      tEndSec: tRetEnd,
-      path: retRaw.path,
+      tDepartSec: tRetDepartSec,
+      tArriveSec: tRetArriveSec,
+      tServiceStartSec: tRetArriveSec,
+      tServiceEndSec: tRetArriveSec,
+      waitQd23Min: 0,
+      waitWindowMin: 0,
+      restBreakMin: 0,
+      isInnerCityQd23: false,
+      district: 'Tân Bình (Về kho)',
+      windowStart: '06:00',
+      windowEnd: '20:00',
+      windowStr: 'Về kho',
+      scheduleNote: retDepotStop?.schedule_note ?? 'Quay về Kho Tân Bình',
+      path: retSeg.path,
       loadRatioStart: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.55 : 0.0,
       loadRatioEnd: isEcoMilesArm && route.backhaul_orders_matched > 0 ? 0.55 : 0.0,
-      legKm: retRaw.distanceKm,
+      legKm: retSeg.distanceKm,
       isEmptyReturn: !isEcoMilesArm || route.backhaul_orders_matched === 0,
       isBackhaulPickup: isEcoMilesArm && route.backhaul_orders_matched > 0,
       violatesQd23: false,
+      lateRisk: false,
       stopOrderId: null,
-    });
+    };
+    legs.push(retLegObj);
+    truckLegs.push(retLegObj);
+    legsByTruck.push(truckLegs);
 
     routeGeometries.push({
       truckIdx: rIdx,
       plate: route.plate,
+      capacityKg: route.capacity_kg,
       color: route.color,
       stopCoords,
       fallbackLegs,
       tRouteStartSec,
-      tRouteEndSec: tRetEnd,
+      tRouteEndSec: tRetArriveSec,
     });
   });
-  // Build 15-minute bucketed KPI series from 06:00 (21600) to 20:00 (72000)
+
+  // Build 1-minute resolution KPI series from 06:00 (21600) to 20:00 (72000) driven by exact leg kinematics
   const tSecArr: number[] = [];
   const deliveredArr: number[] = [];
   const kmArr: number[] = [];
@@ -242,25 +326,37 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
   for (let t = 6 * 3600; t <= 20 * 3600; t += 60) {
     tSecArr.push(t);
     const deliv = stopEvents.filter((e) => e.tSec <= t).length;
+    const bhDone = stopEvents.filter((e) => e.tSec <= t && e.kind === 'backhaul').length;
     const bans = stopEvents.filter((e) => e.tSec <= t && e.violatesQd23).length;
 
     let rawKmAtT = 0;
+    let rawEmptyKmAtT = 0;
     let activeCount = 0;
     for (const l of legs) {
-      if (t >= l.tEndSec) {
+      if (t >= l.tArriveSec) {
         rawKmAtT += l.legKm;
-      } else if (t > l.tStartSec) {
-        const frac = (t - l.tStartSec) / Math.max(1, l.tEndSec - l.tStartSec);
+        if (l.isEmptyReturn) rawEmptyKmAtT += l.legKm;
+        if (t <= l.tServiceEndSec) activeCount++;
+      } else if (t >= l.tDepartSec) {
+        const frac = (t - l.tDepartSec) / Math.max(1, l.tArriveSec - l.tDepartSec);
         rawKmAtT += l.legKm * frac;
+        if (l.isEmptyReturn) rawEmptyKmAtT += l.legKm * frac;
         activeCount++;
       }
     }
     const progress = Math.min(1, rawKmAtT / totalLegKmSum);
     deliveredArr.push(deliv);
     kmArr.push(Number((strategy.km_total * progress).toFixed(1)));
-    emptyKmArr.push(Number((strategy.km_empty_return * progress).toFixed(1)));
-    backhaulArr.push(Math.round(strategy.backhaul_orders_matched * progress));
-    banArr.push(isEcoMilesArm ? 0 : Math.min(strategy.ban_violations, Math.max(Math.min(strategy.ban_violations, bans), Math.round(strategy.ban_violations * progress))));
+    emptyKmArr.push(
+      Number(
+        (
+          strategy.km_empty_return *
+          (isEcoMilesArm ? progress : Math.max(progress, rawEmptyKmAtT / Math.max(1, strategy.km_empty_return)))
+        ).toFixed(1)
+      )
+    );
+    backhaulArr.push(isEcoMilesArm ? bhDone : 0);
+    banArr.push(isEcoMilesArm ? 0 : Math.min(strategy.ban_violations, bans));
     co2Arr.push(Number((strategy.kg_co2_ttw * progress).toFixed(2)));
     activeTrucksArr.push(activeCount);
   }
@@ -268,6 +364,7 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
   return {
     strategy,
     legs,
+    legsByTruck,
     routeGeometries,
     stopEvents,
     kpiSeries: {
@@ -548,7 +645,37 @@ export function EvsimDualSimulator({
         )
       );
 
-      // 2. Planned Street-Following Route Polylines (drawn from `fullRoutePaths[rIdx]`)
+      // 1B. Draw HCMC QĐ 23/2018 Inner-City Restricted Zone Polygon (06:00-09:00 & 16:00-20:00 Ban Ring)
+      const banActiveNow = isQd23PeakSec(timeSec);
+      ctx.save();
+      ctx.beginPath();
+      HCMC_QD23_INNER_RING_POLYGON.forEach(([lng, lat], idx) => {
+        const [px, py] = toXY(lng, lat);
+        if (idx === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.closePath();
+      ctx.fillStyle = banActiveNow ? 'rgba(224, 49, 49, 0.12)' : 'rgba(47, 158, 68, 0.08)';
+      ctx.fill();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = banActiveNow ? 'rgba(201, 42, 42, 0.80)' : 'rgba(20, 83, 45, 0.55)';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.setLineDash([]);
+      const [ringLblX, ringLblY] = toXY(106.682, 10.778);
+      ctx.font = '700 9.5px system-ui, sans-serif';
+      const ringTxt = banActiveNow
+        ? 'VÙNG CẤM TẢI NỘI ĐÔ QĐ 23 (ĐANG CẤM >500KG)'
+        : 'VÙNG NỘI ĐÔ QĐ 23 (ĐANG MỞ LUỒNG 09-16H)';
+      const rtw = ctx.measureText(ringTxt).width;
+      ctx.fillStyle = banActiveNow ? 'rgba(153, 27, 27, 0.86)' : 'rgba(20, 83, 45, 0.82)';
+      ctx.fillRect(ringLblX - rtw / 2 - 5, ringLblY - 7, rtw + 10, 14);
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(ringTxt, ringLblX, ringLblY + 3);
+      ctx.restore();
+
+      // 2. Planned Street-Following Route Polylines
       const fullRoutePaths: LngLat[][] = side.routeGeometries.map((rg, rIdx) => {
         const legPaths = resolvedRouteLegs[rIdx] || rg.fallbackLegs;
         return cleanRoutePolylineSpikes(legPaths.flat());
@@ -564,17 +691,17 @@ export function EvsimDualSimulator({
           else ctx.lineTo(x, y);
         }
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
-        ctx.lineWidth = 4.4;
+        ctx.lineWidth = 4.2;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.stroke();
 
         ctx.strokeStyle = rg.color || (isRightEcoSide ? '#1971c2' : '#e03131');
-        ctx.lineWidth = 2.4;
+        ctx.lineWidth = 2.2;
         ctx.stroke();
       });
 
-      // 3. Customer Store Pins (Small Square Store Nodes & Star Diffs)
+      // 3. Customer Store Pins (Square Store Nodes & Star Diffs)
       for (const ev of side.stopEvents) {
         const [sx, sy] = toXY(ev.lng, ev.lat);
         const delivered = ev.tSec <= timeSec;
@@ -586,8 +713,14 @@ export function EvsimDualSimulator({
           ctx.translate(sx, sy);
           ctx.beginPath();
           for (let i = 0; i < 5; i++) {
-            ctx.lineTo(Math.cos(((18 + i * 72) / 180) * Math.PI) * 6.5, -Math.sin(((18 + i * 72) / 180) * Math.PI) * 6.5);
-            ctx.lineTo(Math.cos(((54 + i * 72) / 180) * Math.PI) * 3.0, -Math.sin(((54 + i * 72) / 180) * Math.PI) * 3.0);
+            ctx.lineTo(
+              Math.cos(((18 + i * 72) / 180) * Math.PI) * 6.5,
+              -Math.sin(((18 + i * 72) / 180) * Math.PI) * 6.5
+            );
+            ctx.lineTo(
+              Math.cos(((54 + i * 72) / 180) * Math.PI) * 3.0,
+              -Math.sin(((54 + i * 72) / 180) * Math.PI) * 3.0
+            );
           }
           ctx.closePath();
           ctx.fillStyle = isRightEcoSide ? '#12b886' : '#e03131';
@@ -597,7 +730,6 @@ export function EvsimDualSimulator({
           ctx.stroke();
           ctx.restore();
         } else if (ev.kind === 'backhaul') {
-          // Small Diamond Store Node for Backhaul Pickup Location
           ctx.save();
           ctx.translate(sx, sy);
           ctx.rotate(Math.PI / 4);
@@ -608,7 +740,6 @@ export function EvsimDualSimulator({
           ctx.strokeRect(-3.2, -3.2, 6.4, 6.4);
           ctx.restore();
         } else {
-          // Compact Square Customer Store Pin (3x3m store icon so it's never confused with a round moving truck!)
           ctx.fillStyle = delivered ? '#2f9e44' : '#ffffff';
           ctx.strokeStyle = delivered ? '#ffffff' : '#64748b';
           ctx.lineWidth = 1.3;
@@ -629,60 +760,165 @@ export function EvsimDualSimulator({
       ctx.textAlign = 'left';
       ctx.fillText(`Kho Tân Bình (${side.strategy.vehicles_used} xe)`, depX + 12, depY + 4);
 
-      // 5. Active Moving Trucks: Guaranteed 100% Locked onto `fullRoutePaths[rIdx]`
+      // 5. Real Discrete-Event Truck Kinematics (100% Driven by Exact Schedule Timestamps & QĐ 23 Gate Rules)
       side.routeGeometries.forEach((rg, rIdx) => {
-        const fullPath = fullRoutePaths[rIdx];
-        if (!fullPath || fullPath.length < 2) return;
+        const truckLegs = side.legsByTruck[rIdx] || [];
+        const resolvedLegs = resolvedRouteLegs[rIdx] || rg.fallbackLegs;
+        if (truckLegs.length === 0) return;
 
-        // Smooth arc-length traversal along the exact drawn road polyline (`fullPath`):
-        // 1 full route lap every 3600 simulated seconds (15 real seconds at x240 speed = ~25 px/sec at 60 FPS)
-        const lapSec = isRightEcoSide ? 3400 : 3900;
-        const phaseOffset = rIdx * 470;
-        const routeFrac = (((timeSec - 6 * 3600 + phaseOffset) % lapSec) + lapSec) % lapSec / lapSec;
+        let curLng = DEPOT_COORD.lng;
+        let curLat = DEPOT_COORD.lat;
+        let dx = 1;
+        let dy = 0;
+        let fillCol = '#2f9e44';
+        let statusTag = `Xe ${rIdx + 1}`;
+        let activeLegPath: LngLat[] | null = null;
+        let activeLegFrac = 0;
 
-        const isBanHourNow = !isRightEcoSide && isQd23PeakSec(timeSec);
-        const isBackhaulPhase = isRightEcoSide && routeFrac >= 0.72 && routeFrac <= 0.92;
-        const isEmptyReturnPhase = !isRightEcoSide && routeFrac >= 0.78;
+        const firstLeg = truckLegs[0];
+        const lastLeg = truckLegs[truckLegs.length - 1];
 
-        const fillCol =
-          isBanHourNow || isEmptyReturnPhase
-            ? '#e03131'
-            : isBackhaulPhase
-            ? '#1971c2'
-            : routeFrac < 0.55
-            ? '#2f9e44'
-            : '#f2c94c';
+        if (timeSec < firstLeg.tDepartSec) {
+          // Staging at Kho Tân Bình before scheduled departure (e.g. holding until 08:30 for 09:00 inner-city entry)
+          const angle = (rIdx / Math.max(1, side.routeGeometries.length)) * Math.PI * 2;
+          curLng = DEPOT_COORD.lng + Math.cos(angle) * 0.0022;
+          curLat = DEPOT_COORD.lat + Math.sin(angle) * 0.0022;
+          fillCol = '#f08c00';
+          const depH = String(Math.floor(firstLeg.tDepartSec / 3600)).padStart(2, '0');
+          const depM = String(Math.floor((firstLeg.tDepartSec % 3600) / 60)).padStart(2, '0');
+          statusTag = `Xe ${rIdx + 1} · Chờ ${depH}:${depM}`;
+        } else if (timeSec >= lastLeg.tServiceEndSec) {
+          // Completed full shift and returned to Kho Tân Bình
+          const angle = (rIdx / Math.max(1, side.routeGeometries.length)) * Math.PI * 2;
+          curLng = DEPOT_COORD.lng + Math.cos(angle) * 0.0018;
+          curLat = DEPOT_COORD.lat + Math.sin(angle) * 0.0018;
+          fillCol = '#14532d';
+          statusTag = `Xe ${rIdx + 1} · Về kho`;
+        } else {
+          const waitingGateLeg = truckLegs.find(
+            (l, idx) =>
+              idx > 0 &&
+              timeSec > truckLegs[idx - 1].tServiceEndSec &&
+              timeSec < l.tDepartSec
+          );
+          if (waitingGateLeg) {
+            const prevIdx = Math.max(0, waitingGateLeg.legIdxInRoute - 1);
+            const prevPoly = resolvedLegs[prevIdx] || truckLegs[prevIdx].path;
+            const pt = interpolateAlongStreetPathWithHeading(prevPoly, 1.0);
+            curLng = pt.lng;
+            curLat = pt.lat;
+            dx = pt.dx;
+            dy = pt.dy;
+            fillCol = '#f08c00';
+            statusTag = `Xe ${rIdx + 1} · Đợi 09:00`;
+          } else {
+            let activeIdx = truckLegs.findIndex(
+              (l) => timeSec >= l.tDepartSec && timeSec <= l.tServiceEndSec
+            );
+            if (activeIdx < 0) {
+              activeIdx = truckLegs.findIndex((l) => l.tDepartSec > timeSec) - 1;
+              if (activeIdx < 0) activeIdx = truckLegs.length - 1;
+            }
+            const leg = truckLegs[activeIdx];
+            const rawLegPoly = resolvedLegs[activeIdx] || leg.path;
+            const legPoly = rawLegPoly && rawLegPoly.length >= 2 ? rawLegPoly : leg.path;
+            activeLegPath = legPoly;
 
-        // Draw glowing directional motion comet-tail directly along `fullPath` behind the truck
-        ctx.beginPath();
-        const trailSteps = 10;
-        const trailSpan = 0.055;
-        for (let s = 0; s <= trailSteps; s++) {
-          const tf = Math.max(0, routeFrac - trailSpan * (1 - s / trailSteps));
-          const pt = interpolateAlongStreetPathWithHeading(fullPath, tf);
-          const [px, py] = toXY(pt.lng, pt.lat);
-          if (s === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
+            if (timeSec < leg.tArriveSec) {
+              activeLegFrac = Math.max(
+                0,
+                Math.min(1, (timeSec - leg.tDepartSec) / Math.max(1, leg.tArriveSec - leg.tDepartSec))
+              );
+              const pt = interpolateAlongStreetPathWithHeading(legPoly, activeLegFrac);
+              curLng = pt.lng;
+              curLat = pt.lat;
+              dx = pt.dx;
+              dy = pt.dy;
+              const isViolatingNow =
+                !isRightEcoSide && banActiveNow && leg.capacityKg > 500 && leg.isInnerCityQd23;
+              if (isViolatingNow) {
+                fillCol = '#e03131';
+                statusTag = `Xe ${rIdx + 1} · CẤM QĐ23 (${leg.district})`;
+              } else if (leg.isBackhaulPickup) {
+                fillCol = '#1971c2';
+                statusTag = `Xe ${rIdx + 1} → Ghép về`;
+              } else if (leg.isEmptyReturn) {
+                fillCol = '#e03131';
+                statusTag = `Xe ${rIdx + 1} → Về rỗng`;
+              } else if (leg.capacityKg <= 500 && leg.isInnerCityQd23 && banActiveNow) {
+                fillCol = '#0ca678';
+                statusTag = `Xe ${rIdx + 1} (<=500kg)`;
+              } else {
+                fillCol = '#2f9e44';
+                statusTag = `Xe ${rIdx + 1} → ${leg.district}`;
+              }
+            } else if (leg.waitQd23Min > 0 && timeSec < 9 * 3600) {
+              activeLegFrac = 0.78;
+              const pt = interpolateAlongStreetPathWithHeading(legPoly, activeLegFrac);
+              curLng = pt.lng;
+              curLat = pt.lat;
+              dx = pt.dx;
+              dy = pt.dy;
+              fillCol = '#f08c00';
+              statusTag = `Xe ${rIdx + 1} · Đợi 09:00`;
+            } else if (leg.restBreakMin > 0 && timeSec < leg.tArriveSec + leg.restBreakMin * 60) {
+              activeLegFrac = 1.0;
+              const pt = interpolateAlongStreetPathWithHeading(legPoly, 1.0);
+              curLng = pt.lng;
+              curLat = pt.lat;
+              dx = pt.dx;
+              dy = pt.dy;
+              fillCol = '#f08c00';
+              statusTag = `Xe ${rIdx + 1} · Nghỉ 20p`;
+            } else {
+              activeLegFrac = 1.0;
+              const pt = interpolateAlongStreetPathWithHeading(legPoly, 1.0);
+              curLng = pt.lng;
+              curLat = pt.lat;
+              dx = pt.dx;
+              dy = pt.dy;
+              const isViolatingNow =
+                !isRightEcoSide && banActiveNow && leg.capacityKg > 500 && leg.isInnerCityQd23;
+              if (isViolatingNow) {
+                fillCol = '#e03131';
+                statusTag = `Xe ${rIdx + 1} · CẤM QĐ23 (${leg.district})`;
+              } else if (leg.isBackhaulPickup) {
+                fillCol = '#1971c2';
+                statusTag = `Xe ${rIdx + 1} · Nhận hàng về`;
+              } else {
+                fillCol = '#14532d';
+                statusTag = `Xe ${rIdx + 1} · Giao ${leg.district}`;
+              }
+            }
+          }
         }
-        ctx.strokeStyle = fillCol;
-        ctx.lineWidth = 4.6;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
 
-        const { lng: curLng, lat: curLat, dx, dy } = interpolateAlongStreetPathWithHeading(
-          fullPath,
-          routeFrac
-        );
+        // Draw motion trail along active leg when moving
+        if (activeLegPath && activeLegFrac > 0.02 && activeLegFrac < 0.99) {
+          ctx.beginPath();
+          const trailSteps = 8;
+          const trailSpan = 0.22;
+          for (let s = 0; s <= trailSteps; s++) {
+            const tf = Math.max(0, activeLegFrac - trailSpan * (1 - s / trailSteps));
+            const pt = interpolateAlongStreetPathWithHeading(activeLegPath, tf);
+            const [px, py] = toXY(pt.lng, pt.lat);
+            if (s === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.strokeStyle = fillCol;
+          ctx.lineWidth = 4.4;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.stroke();
+        }
+
         const [tx, ty] = toXY(curLng, curLat);
 
-        // Outer visibility halo so moving trucks stand out clearly on the road line
         ctx.beginPath();
         ctx.arc(tx, ty, 10.5, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(17, 24, 39, 0.20)';
         ctx.fill();
 
-        // Main Truck Puck on the road line
         ctx.beginPath();
         ctx.arc(tx, ty, 7.6, 0, Math.PI * 2);
         ctx.fillStyle = fillCol;
@@ -691,7 +927,6 @@ export function EvsimDualSimulator({
         ctx.lineWidth = 2.2;
         ctx.stroke();
 
-        // Directional Heading Arrow inside the Truck Puck pointing down the street
         ctx.save();
         ctx.translate(tx, ty);
         ctx.rotate(Math.atan2(dy, dx));
@@ -705,19 +940,17 @@ export function EvsimDualSimulator({
         ctx.fill();
         ctx.restore();
 
-        // Compact Truck Number Tag (`Xe 1`, `Xe 2`...)
-        const tagText = `Xe ${rIdx + 1}`;
         ctx.font = '700 9px system-ui, sans-serif';
-        const tw = ctx.measureText(tagText).width;
-        ctx.fillStyle = 'rgba(17, 24, 39, 0.84)';
+        const tw = ctx.measureText(statusTag).width;
+        ctx.fillStyle =
+          fillCol === '#e03131' ? 'rgba(185, 28, 28, 0.92)' : 'rgba(17, 24, 39, 0.86)';
         ctx.fillRect(tx + 9, ty - 6, tw + 6, 12);
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'left';
-        ctx.fillText(tagText, tx + 12, ty + 3);
+        ctx.fillText(statusTag, tx + 12, ty + 3);
       });
       ctx.restore();
     };
-
     const drawSparkline = (
       canvas: HTMLCanvasElement | null,
       side: SimulatedTimelineSide,
@@ -1286,7 +1519,75 @@ export function EvsimDualSimulator({
                   const districts = Array.from(new Set(customerStops.map((s) => s.district)))
                     .slice(0, 3)
                     .join(' → ');
-                  const restrictedCount = customerStops.filter((s) => s.qd23_ban_conflict).length;
+                  const innerStopsCount = customerStops.filter((s) => s.is_inner_city_qd23).length;
+                  const panelSide = panel.isEco ? rightSide : leftSide;
+                  const truckLegs = panelSide.legsByTruck[rIdx] || [];
+                  const firstLeg = truckLegs[0];
+                  const lastLeg = truckLegs[truckLegs.length - 1];
+                  let liveStateText = 'Sẵn sàng tại kho';
+                  let liveStateClass = 'bg-slate-100 text-slate-700';
+
+                  if (firstLeg && lastLeg) {
+                    if (timeSec < firstLeg.tDepartSec) {
+                      const dH = String(Math.floor(firstLeg.tDepartSec / 3600)).padStart(2, '0');
+                      const dM = String(Math.floor((firstLeg.tDepartSec % 3600) / 60)).padStart(2, '0');
+                      liveStateText = `Chờ xuất kho ${dH}:${dM} (Né cấm 06-09h)`;
+                      liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                    } else if (timeSec >= lastLeg.tServiceEndSec) {
+                      liveStateText = `Đã về kho (${route.km.toFixed(1)} km)`;
+                      liveStateClass = 'bg-[#dcfae5] text-[#14532d]';
+                    } else {
+                      const waitingGateLeg = truckLegs.find(
+                        (l, idx) =>
+                          idx > 0 &&
+                          timeSec > truckLegs[idx - 1].tServiceEndSec &&
+                          timeSec < l.tDepartSec
+                      );
+                      if (waitingGateLeg) {
+                        liveStateText = `Đang chờ mở luồng 09:00 ngoài vành đai trước khi vào ${waitingGateLeg.district}`;
+                        liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                      } else {
+                        let aIdx = truckLegs.findIndex(
+                          (l) => timeSec >= l.tDepartSec && timeSec <= l.tServiceEndSec
+                        );
+                        if (aIdx < 0) aIdx = Math.max(0, truckLegs.findIndex((l) => l.tDepartSec > timeSec) - 1);
+                        const leg = truckLegs[aIdx] || firstLeg;
+                        const isViolatingNow =
+                          !panel.isEco &&
+                          isQd23PeakSec(timeSec) &&
+                          leg.capacityKg > 500 &&
+                          leg.isInnerCityQd23;
+                        if (timeSec < leg.tArriveSec) {
+                          if (isViolatingNow) {
+                            liveStateText = `VI PHẠM QĐ23 (Giờ cấm) → ${leg.district}`;
+                            liveStateClass = 'bg-[#ffedea] text-[#c92a2a]';
+                          } else if (leg.isBackhaulPickup) {
+                            liveStateText = `Đang đi nhận hàng về → ${leg.district}`;
+                            liveStateClass = 'bg-[#e8f0fb] text-[#1971c2]';
+                          } else {
+                            liveStateText = `Đang chạy → ${leg.district} (Khung ${leg.windowStr})`;
+                            liveStateClass = 'bg-[#eef7ee] text-[#2f9e44]';
+                          }
+                        } else if (leg.waitQd23Min > 0 && timeSec < 9 * 3600) {
+                          liveStateText = `Chờ mở luồng cấm tải 09:00 ngoài vành đai ${leg.district}`;
+                          liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                        } else if (leg.restBreakMin > 0 && timeSec < leg.tArriveSec + leg.restBreakMin * 60) {
+                          liveStateText = `Nghỉ 20p giữa ca (Luật TTATGT 2024 <=4h lái liên tục)`;
+                          liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                        } else if (isViolatingNow) {
+                          liveStateText = `VI PHẠM GIỜ CẤM QĐ23 tại ${leg.district}`;
+                          liveStateClass = 'bg-[#ffedea] text-[#c92a2a]';
+                        } else if (leg.isBackhaulPickup) {
+                          liveStateText = `Đang nhận hàng ghép chiều về tại ${leg.district}`;
+                          liveStateClass = 'bg-[#e8f0fb] text-[#1971c2]';
+                        } else {
+                          liveStateText = `Đang giao ${leg.stopOrderId} tại ${leg.district} (Khung ${leg.windowStr})`;
+                          liveStateClass = 'bg-[#dcfae5] text-[#14532d]';
+                        }
+                      }
+                    }
+                  }
+
                   return (
                     <div
                       key={`${route.plate}-${rIdx}`}
@@ -1300,7 +1601,7 @@ export function EvsimDualSimulator({
                           />
                           <span className="font-bold text-[#2f3440]">Xe {rIdx + 1}</span>
                           <span className="font-mono text-[10px] px-1 rounded bg-slate-100 text-slate-700 font-semibold">
-                            {route.plate}
+                            {route.plate} ({route.capacity_kg}kg)
                           </span>
                         </div>
                         <span className="font-mono font-bold text-[#2f3440]">
@@ -1314,17 +1615,26 @@ export function EvsimDualSimulator({
                         <span className="shrink-0 font-semibold">
                           {route.ban_conflicts > 0 ? (
                             <span className="px-1.5 py-0.5 rounded bg-[#ffedea] text-[#c92a2a]">
-                              {route.ban_conflicts} đơn phạm cấm 06-09h/16-20h
+                              {route.ban_conflicts} lỗi QĐ23
                             </span>
-                          ) : restrictedCount > 0 ? (
+                          ) : route.capacity_kg <= 500 ? (
+                            <span className="px-1.5 py-0.5 rounded bg-[#e8f0fb] text-[#1971c2]">
+                              Xe &lt;=500kg miễn trừ QĐ23
+                            </span>
+                          ) : innerStopsCount > 0 ? (
                             <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#14532d]">
-                              Đã dời {restrictedCount} đơn sang 09-16h · 0 lỗi
+                              Vào nội đô 09-16h · 0 lỗi
                             </span>
                           ) : (
                             <span className="px-1.5 py-0.5 rounded bg-[#eef7ee] text-[#2f9e44]">
-                              Hành lang mở · 0 lỗi QĐ23
+                              Vành đai mở · 0 lỗi
                             </span>
                           )}
+                        </span>
+                      </div>
+                      <div className="text-[10px] font-bold truncate">
+                        <span className={`inline-block px-1.5 py-0.5 rounded ${liveStateClass}`}>
+                          Lúc {clockStr}: {liveStateText}
                         </span>
                       </div>
                     </div>
