@@ -187,7 +187,7 @@ export function drawHcmcMapTiles(
           img.onerror = () => {
             TILE_CACHE.set(key, 'error');
           };
-          // 100% same-origin static tile asset — zero CORS, zero third-party rate limits!
+          // 100% same-origin static tile asset: zero CORS, zero third-party rate limits!
           img.src = `/tiles/${tileZ}/${tx}/${ty}.png`;
         }
       }

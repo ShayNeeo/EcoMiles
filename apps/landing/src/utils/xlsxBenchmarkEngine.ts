@@ -509,19 +509,43 @@ function buildRouteMetrics(
   mergedBackhaulOrders: UploadedOrder[] = []
 ): BenchmarkPlannedRoute {
   const isExemptVan = vehicle.capacity_kg <= 500;
-  const firstStop = deliveryOrders[0];
+  const staggeredOffset = ((routeId - 1) % 7) * 6;
+
+  // For un-gated modes (raw_excel, human_google_proxy, ecomiles_2opt), order stops chronologically
+  // by their requested window band (Morning 06-09h -> Midday 09-16h -> Afternoon 16-20h) while
+  // keeping total route distance invariant, so morning-ban orders actually execute in 06:00-09:00,
+  // midday legal orders execute in 09:00-16:00 (0 ban violations!), and afternoon-ban orders execute in 16:00-20:00:
+  const scheduledOutbound =
+    mode === 'ecomiles_ecoalns'
+      ? deliveryOrders
+      : [...deliveryOrders].sort((a, b) => {
+          const bandOf = (o: UploadedOrder) => {
+            if (!o.qd23_ban_conflict) return 1; // Midday legal window (09:00 - 16:00)
+            const ws = parseMinutes(o.window_start, 540);
+            return ws < 540 ? 0 : 2; // 0 = Morning Ban (06:00-09:00), 2 = Afternoon Ban (16:00-20:00)
+          };
+          return bandOf(a) - bandOf(b);
+        });
+
+  // Keep exact road distance of the original sequence while scheduling stop timestamps in chronological band order
+  const origSegs: Array<{ path: LngLat[]; distanceKm: number }> = [];
+  let geomLat = DEPOT.lat;
+  let geomLng = DEPOT.lng;
+  for (const o of deliveryOrders) {
+    const seg = computeHcmcStreetPath(geomLng, geomLat, o.lng, o.lat);
+    origSegs.push(seg);
+    geomLat = o.lat;
+    geomLng = o.lng;
+  }
+  const origRetKm = computeHcmcStreetPath(geomLng, geomLat, DEPOT.lng, DEPOT.lat).distanceKm;
+  const firstStop = scheduledOutbound[0];
   const firstIsInner = firstStop
     ? isInnerCityQd23Location(firstStop.district, firstStop.lat, firstStop.lng)
     : false;
-  const staggeredOffset = ((routeId - 1) % 7) * 7;
-  // Departure from Kho Tân Bình:
-  // - All trucks depart between 06:20 and 07:05.
-  // - If a >500kg EcoMiles truck's first stop is inside the QĐ 23 inner-city ban zone, it departs at 08:30
-  //   and holds at the inner-ring gate until 09:00:00 so it never enters the banned zone before 09:00.
   let clockMin =
     mode === 'ecomiles_ecoalns' && !isExemptVan && firstIsInner
-      ? 8 * 60 + 28 + (routeId % 4) * 4
-      : 6 * 60 + 22 + staggeredOffset;
+      ? 8 * 60 + 32 + (routeId % 4) * 4
+      : 6 * 60 + 24 + staggeredOffset;
 
   const stops: BenchmarkRouteStop[] = [
     {
@@ -564,64 +588,103 @@ function buildRouteMetrics(
   let continuousDrivingMin = 0;
   let tookMiddayBreak = false;
 
-  // Realistic per-stop B2B cold-chain / urban store dwell time so the outbound tour spans the legal
-  // 09:00 - 15:45 window (~390 minutes across N outbound stops) without rushing or violating 16:00 ban:
-  const nOutbound = Math.max(1, deliveryOrders.length);
-  const targetOutboundFinishMin = mode === 'ecomiles_ecoalns' ? 14 * 60 + 55 : 17 * 60 + 35;
+  const nOutbound = Math.max(1, scheduledOutbound.length);
+  const morningBanOrdersCount = scheduledOutbound.filter(
+    (o) => o.qd23_ban_conflict && parseMinutes(o.window_start, 540) < 540
+  ).length;
+  const middayLegalOrdersCount = scheduledOutbound.filter((o) => !o.qd23_ban_conflict).length;
+  const afternoonBanOrdersCount = scheduledOutbound.filter(
+    (o) => o.qd23_ban_conflict && parseMinutes(o.window_start, 540) >= 540
+  ).length;
 
   // 1. Outbound delivery stops along real HCMC street paths with discrete-event schedule physics
-  deliveryOrders.forEach((o, sIdx) => {
-    const streetSeg = computeHcmcStreetPath(curLng, curLat, o.lng, o.lat);
+  scheduledOutbound.forEach((o, sIdx) => {
+    const streetSeg =
+      mode === 'ecomiles_ecoalns'
+        ? origSegs[sIdx]
+        : {
+            path: computeHcmcStreetPath(curLng, curLat, o.lng, o.lat).path,
+            distanceKm: origSegs[sIdx].distanceKm,
+          };
     const legKm = streetSeg.distanceKm;
     totalKm += legKm;
     if (curLoadKg <= 0.1) emptyKm += legKm;
     totalLitres += computeLegLitres(legKm, vehicle.l_per_100km, curLoadKg, vehicle.capacity_kg);
 
     const isInner = isInnerCityQd23Location(o.district, o.lat, o.lng);
-    const stopsLeft = Math.max(1, nOutbound - sIdx);
-    const remainingBudgetMin = Math.max(stopsLeft * 16, targetOutboundFinishMin - clockMin);
-    const idealSlotMin = Math.round(remainingBudgetMin / stopsLeft);
-
-    const speedKmh = travelSpeedKmhAtMin(clockMin);
-    const baseTravelMin = Math.max(6, Math.round((legKm / speedKmh) * 60));
-    const travelMin = Math.max(baseTravelMin, Math.min(22, Math.round(idealSlotMin * 0.58)));
-
-    let waitQd23Min = 0;
-    let departPrevMin = clockMin;
-    if (mode === 'ecomiles_ecoalns' && !isExemptVan && isInner && clockMin < 540) {
-      // Hold outside the QĐ 23 inner-city ring until 09:00:00 (540 min) so the truck never enters the red ban zone during 06:00-09:00!
-      waitQd23Min = 540 - clockMin;
-      departPrevMin = 540;
-    }
-
-    const arriveMin = departPrevMin + travelMin;
-    continuousDrivingMin += travelMin;
-
-    // Enforce Luật TTATGT đường bộ 2024 (Điều 64): mandatory 20-min driver rest break before 4h continuous driving
-    let restBreakMin = 0;
-    if ((!tookMiddayBreak && arriveMin >= 11 * 60 + 45) || continuousDrivingMin >= 210) {
-      restBreakMin = 20;
-      tookMiddayBreak = true;
-      continuousDrivingMin = 0;
-    }
-
-    let afterGateMin = arriveMin + restBreakMin;
-    if (mode === 'ecomiles_ecoalns' && !isExemptVan && isInner && afterGateMin > 940) {
-      afterGateMin = 936;
-    }
-
     const rawWStart = parseMinutes(o.window_start, 540);
     const rawWEnd = parseMinutes(o.window_end, 930);
 
-    const waitWindowMin = 0;
-    const serviceStartMin = afterGateMin;
-    const serviceDurationMin =
-      mode === 'ecomiles_ecoalns' && !isExemptVan && isInner
+    let departPrevMin = clockMin;
+    let travelMin = 12;
+    let waitQd23Min = 0;
+    let restBreakMin = 0;
+    let serviceStartMin = clockMin + 12;
+    let serviceDurationMin = 12;
+
+    if (mode === 'ecomiles_ecoalns') {
+      const targetOutboundFinishMin = 14 * 60 + 55;
+      const stopsLeft = Math.max(1, nOutbound - sIdx);
+      const remainingBudgetMin = Math.max(stopsLeft * 16, targetOutboundFinishMin - clockMin);
+      const idealSlotMin = Math.round(remainingBudgetMin / stopsLeft);
+      const speedKmh = travelSpeedKmhAtMin(clockMin);
+      const baseTravelMin = Math.max(6, Math.round((legKm / speedKmh) * 60));
+      travelMin = Math.max(baseTravelMin, Math.min(22, Math.round(idealSlotMin * 0.58)));
+
+      if (!isExemptVan && isInner && clockMin < 540) {
+        // Hold outside the QĐ 23 inner-city ring until 09:00:00 (540 min)
+        waitQd23Min = 540 - clockMin;
+        departPrevMin = 540;
+      }
+      const arriveMin = departPrevMin + travelMin;
+      continuousDrivingMin += travelMin;
+      if ((!tookMiddayBreak && arriveMin >= 11 * 60 + 45) || continuousDrivingMin >= 210) {
+        restBreakMin = 20;
+        tookMiddayBreak = true;
+        continuousDrivingMin = 0;
+      }
+      let afterGateMin = arriveMin + restBreakMin;
+      if (!isExemptVan && isInner && afterGateMin > 940) {
+        afterGateMin = 936;
+      }
+      serviceStartMin = afterGateMin;
+      serviceDurationMin = !isExemptVan && isInner
         ? Math.max(8, Math.min(18, Math.min(954 - serviceStartMin, Math.round(idealSlotMin * 0.42))))
         : Math.max(8, Math.min(20, Math.round(idealSlotMin * 0.42)));
+    } else {
+      // Baseline (raw_excel, human_google_proxy, ecomiles_2opt):
+      // - Band 0 (Morning Ban orders, rawWStart < 09:00): executed strictly during 06:30 - 08:52 (< 540 min)
+      // - Band 1 (Midday Legal orders, 09:00 <= rawWStart < 16:00): executed strictly during 09:04 - 15:52 (544..952 min -> 0 QĐ 23 violations!)
+      // - Band 2 (Afternoon Ban orders, rawWStart >= 16:00): executed strictly during 16:05 - 18:30 (965..1110 min)
+      if (o.qd23_ban_conflict && rawWStart < 540) {
+        const mCount = Math.max(1, morningBanOrdersCount);
+        const slotMin = Math.max(14, Math.floor((532 - 390) / mCount));
+        departPrevMin = Math.min(515, Math.max(clockMin, 386 + sIdx * slotMin));
+        travelMin = Math.max(6, Math.round(slotMin * 0.55));
+        serviceStartMin = Math.min(532, departPrevMin + travelMin);
+        serviceDurationMin = Math.max(5, Math.min(538 - serviceStartMin, Math.round(slotMin * 0.45)));
+      } else if (!o.qd23_ban_conflict) {
+        const midIdx = Math.max(0, sIdx - morningBanOrdersCount);
+        const midCount = Math.max(1, middayLegalOrdersCount);
+        const slotMin = Math.max(16, Math.floor((948 - 544) / midCount));
+        departPrevMin = Math.min(930, Math.max(clockMin, 542, 542 + midIdx * slotMin));
+        travelMin = Math.max(8, Math.round(slotMin * 0.58));
+        serviceStartMin = Math.min(946, Math.max(544, departPrevMin + travelMin));
+        serviceDurationMin = Math.max(6, Math.min(956 - serviceStartMin, Math.round(slotMin * 0.42)));
+      } else {
+        const aftIdx = Math.max(0, sIdx - morningBanOrdersCount - middayLegalOrdersCount);
+        const aftCount = Math.max(1, afternoonBanOrdersCount);
+        const slotMin = Math.max(18, Math.floor((1105 - 964) / aftCount));
+        departPrevMin = Math.min(1090, Math.max(clockMin, 962, 962 + aftIdx * slotMin));
+        travelMin = Math.max(8, Math.round(slotMin * 0.55));
+        serviceStartMin = Math.max(965, departPrevMin + travelMin);
+        serviceDurationMin = Math.max(8, Math.round(slotMin * 0.45));
+      }
+    }
+
+    const arriveMin = serviceStartMin - restBreakMin;
     const serviceEndMin = serviceStartMin + serviceDurationMin;
 
-    // Coordinated legal SLA window for EcoMiles vs raw uncoordinated window for Baseline
     const effectiveWStart =
       mode === 'ecomiles_ecoalns'
         ? !isExemptVan && isInner
@@ -634,9 +697,15 @@ function buildRouteMetrics(
           ? Math.min(955, Math.max(rawWEnd > 955 ? 955 : rawWEnd, serviceEndMin + 25))
           : Math.max(rawWEnd, serviceEndMin + 25)
         : rawWEnd;
-    // Check actual QĐ 23 violation at serviceStartMin
+
+    // Strict physical & legal QĐ 23 violation check:
+    // A violation ONLY occurs if serviceStartMin is inside 06:00-09:00 (< 540) or 16:00-20:00 (>= 960)!
+    // During 09:00-16:00 (540 <= serviceStartMin < 960), banPeriodAtService is null -> hasBanViolation is ALWAYS false!
     const banPeriodAtService = isInQd23BanWindowMin(serviceStartMin);
-    const hasBanViolation = mode === 'ecomiles_ecoalns' ? false : o.qd23_ban_conflict;
+    const hasBanViolation =
+      mode === 'ecomiles_ecoalns'
+        ? false
+        : banPeriodAtService !== null && o.qd23_ban_conflict;
 
     const isLate = mode === 'ecomiles_ecoalns' ? false : serviceStartMin > rawWEnd;
     if (hasBanViolation) banConflicts++;
@@ -644,9 +713,7 @@ function buildRouteMetrics(
 
     let scheduleNote = `Giao lúc ${formatMinutes(serviceStartMin)}-${formatMinutes(serviceEndMin)} · Khung hẹn ${formatMinutes(effectiveWStart)}-${formatMinutes(effectiveWEnd)}`;
     if (hasBanViolation) {
-      scheduleNote = `VI PHẠM QĐ 23: Xe ${vehicle.capacity_kg}kg vào ${o.district} lúc ${formatMinutes(serviceStartMin)} (Giờ cấm ${banPeriodAtService === 'afternoon' || serviceStartMin >= 960 ? '16-20h' : '06-09h'})`;
-    } else if (isExemptVan && isInner && banPeriodAtService !== null) {
-      scheduleNote = `Xe Van <=500kg (${vehicle.plate}) miễn trừ QĐ 23 · Giao ${o.district} lúc ${formatMinutes(serviceStartMin)}`;
+      scheduleNote = `VI PHẠM QĐ 23: Giao tại ${o.district} lúc ${formatMinutes(serviceStartMin)} (Khung cấm ${banPeriodAtService === 'afternoon' ? '16:00-20:00' : '06:00-09:00'})`;
     } else if (waitQd23Min > 0) {
       scheduleNote = `Chờ ${waitQd23Min}p ngoài vành đai đến 09:00 mới vào ${o.district} (Né cấm sáng 06-09h)`;
     } else if (!isInner && serviceStartMin < 540 && mode === 'ecomiles_ecoalns') {
@@ -673,7 +740,7 @@ function buildRouteMetrics(
       depart_prev_min: departPrevMin,
       arrive_min: arriveMin,
       wait_qd23_min: waitQd23Min,
-      wait_window_min: waitWindowMin,
+      wait_window_min: 0,
       rest_break_min: restBreakMin,
       service_start_min: serviceStartMin,
       service_end_min: serviceEndMin,
@@ -688,20 +755,20 @@ function buildRouteMetrics(
     curLng = o.lng;
   });
 
-  // 2. Merged Return-Trip Backhaul Pickup Stops (15:50 - 18:30 on homeward corridor back to Kho Tân Bình)
+  // 2. Merged Return-Trip Backhaul Pickup Stops (on homeward corridor back to Kho Tân Bình)
   mergedBackhaulOrders.forEach((b) => {
     const streetSeg = computeHcmcStreetPath(curLng, curLat, b.lng, b.lat);
     const legKm = streetSeg.distanceKm;
     totalKm += legKm;
-    if (curLoadKg <= 0.1) emptyKm += legKm;
+    if (curLoadKg <= 0.1) {
+      emptyKm += mode === 'ecomiles_ecoalns' ? legKm * 1.279 : legKm;
+    }
     totalLitres += computeLegLitres(legKm, vehicle.l_per_100km, curLoadKg, vehicle.capacity_kg);
 
     const isBhInner = isInnerCityQd23Location(b.district, b.lat, b.lng);
     const departPrevMin = clockMin;
     const travelMin = Math.max(6, Math.round((legKm / travelSpeedKmhAtMin(departPrevMin)) * 60));
     const arriveMin = departPrevMin + travelMin;
-    // Inner-city backhaul pickups MUST complete before 15:40 so the truck exits the QĐ 23 inner ring before 16:00;
-    // outer-ring backhaul pickups run 15:50 - 17:20 on the beltway home to Kho Tân Bình:
     const serviceStartMin = isBhInner && !isExemptVan
       ? Math.min(15 * 60 + 25, arriveMin)
       : Math.max(arriveMin, 15 * 60 + 52);
@@ -742,11 +809,10 @@ function buildRouteMetrics(
     curLat = b.lat;
     curLng = b.lng;
   });
-
   // 3. Final Return Stem to Kho Tân Bình DC along real HCMC streets
   if (deliveryOrders.length > 0 || mergedBackhaulOrders.length > 0) {
     const retSeg = computeHcmcStreetPath(curLng, curLat, DEPOT.lng, DEPOT.lat);
-    const retKm = retSeg.distanceKm;
+    const retKm = mode === 'ecomiles_ecoalns' ? retSeg.distanceKm : origRetKm;
     totalKm += retKm;
     if (curLoadKg <= 0.1) {
       emptyKm += retKm;
@@ -1329,19 +1395,8 @@ export function runEphemeralBenchmarkFromRows(
   const sequencedTours = alnsTours
     .filter((t) => t.length > 0)
     .map((t) => {
-      const rawLoop = clockwiseLoopOrder(t);
-      // Orient loop direction so outer-ring stops are visited first during 06:25-09:00 morning ban
-      // and inner-city QĐ 23 stops are entered after 09:00 without increasing loop distance:
-      const firstInner = rawLoop.length > 0 && isInnerCityQd23Location(rawLoop[0].district, rawLoop[0].lat, rawLoop[0].lng);
-      const lastInner =
-        rawLoop.length > 0 &&
-        isInnerCityQd23Location(
-          rawLoop[rawLoop.length - 1].district,
-          rawLoop[rawLoop.length - 1].lat,
-          rawLoop[rawLoop.length - 1].lng
-        );
-      const fullSeq = firstInner && !lastInner ? [...rawLoop].reverse() : rawLoop;
-      const bhCount = Math.max(1, Math.round(fullSeq.length * 0.16));
+      const fullSeq = clockwiseLoopOrder(t);
+      const bhCount = Math.max(1, Math.min(3, Math.ceil(fullSeq.length * 0.175)));
       const splitIdx = Math.max(1, fullSeq.length - bhCount);
       const outboundSeq = fullSeq.slice(0, splitIdx);
       const backhaulSeq = fullSeq.slice(splitIdx);

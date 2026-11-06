@@ -177,13 +177,13 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
       const isBh = stop.kind === 'backhaul';
       const loadStart = isBh ? 0.35 : Math.max(0.1, 1 - sIdx / totalStops);
       const loadEnd = isBh ? 0.55 : Math.max(0.05, 1 - (sIdx + 1) / totalStops);
+      const isFirstBackhaulStem =
+        isBh && (sIdx === 0 || nonDepotStops[sIdx - 1]?.kind !== 'backhaul');
+      const isTailEmptySegment = isEcoMilesArm ? isFirstBackhaulStem : loadEnd <= 0.25;
       const violatesQd23 =
         isEcoMilesArm
           ? false
-          : stop.qd23_ban_conflict ||
-            (route.capacity_kg > 500 &&
-              Boolean(stop.is_inner_city_qd23) &&
-              (isQd23PeakSec(tArriveSec) || isQd23PeakSec(tServiceStartSec)));
+          : Boolean(stop.qd23_ban_conflict) && isQd23PeakSec(tServiceStartSec);
 
       const legObj: SimulatedTruckLeg = {
         truckIdx: rIdx,
@@ -209,7 +209,7 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
         loadRatioStart: loadStart,
         loadRatioEnd: loadEnd,
         legKm: streetSeg.distanceKm,
-        isEmptyReturn: false,
+        isEmptyReturn: isTailEmptySegment,
         isBackhaulPickup: isBh,
         violatesQd23,
         lateRisk: stop.late_risk,
@@ -322,6 +322,10 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
   const activeTrucksArr: number[] = [];
 
   const totalLegKmSum = Math.max(1, legs.reduce((s, l) => s + l.legKm, 0));
+  const totalEmptyLegKmSum = Math.max(
+    0.1,
+    legs.filter((l) => l.isEmptyReturn).reduce((s, l) => s + l.legKm, 0)
+  );
 
   for (let t = 6 * 3600; t <= 20 * 3600; t += 60) {
     tSecArr.push(t);
@@ -345,16 +349,10 @@ function buildSimulationSide(strategy: StrategySummary, isEcoMilesArm: boolean):
       }
     }
     const progress = Math.min(1, rawKmAtT / totalLegKmSum);
+    const emptyProgress = Math.min(1, rawEmptyKmAtT / totalEmptyLegKmSum);
     deliveredArr.push(deliv);
     kmArr.push(Number((strategy.km_total * progress).toFixed(1)));
-    emptyKmArr.push(
-      Number(
-        (
-          strategy.km_empty_return *
-          (isEcoMilesArm ? progress : Math.max(progress, rawEmptyKmAtT / Math.max(1, strategy.km_empty_return)))
-        ).toFixed(1)
-      )
-    );
+    emptyKmArr.push(Number((strategy.km_empty_return * emptyProgress).toFixed(1)));
     backhaulArr.push(isEcoMilesArm ? bhDone : 0);
     banArr.push(isEcoMilesArm ? 0 : Math.min(strategy.ban_violations, bans));
     co2Arr.push(Number((strategy.kg_co2_ttw * progress).toFixed(2)));
