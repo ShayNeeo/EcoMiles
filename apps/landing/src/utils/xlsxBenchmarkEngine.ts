@@ -66,12 +66,60 @@ export interface BenchmarkRouteStop {
   schedule_note?: string;
 }
 
+export type VehicleClassId =
+  | 'van_500kg_petrol'
+  | 'van_500kg_diesel'
+  | 'tai_kho_800kg'
+  | 'tai_kho_1t'
+  | 'tai_kho_1t5'
+  | 'tai_kho_2t'
+  | 'tai_lanh_1t'
+  | 'tai_lanh_1t5'
+  | 'tai_lanh_2t'
+  | 'tai_trung_5t'
+  | 'cong_thuong_20ft'
+  | 'cong_lanh_40ft';
+
+export type FleetPresetId =
+  | 'default_mixed'
+  | 'cold_reefer_fleet'
+  | 'dry_fmcg_fleet'
+  | 'container_tractor_fleet';
+
+export interface VehicleClassSpec {
+  id: VehicleClassId;
+  label: string;
+  short_badge: string;
+  body_type: 'dry' | 'reefer' | 'container_dry' | 'container_reefer';
+  fuel: 'diesel' | 'petrol';
+  empty_weight_kg: number;
+  capacity_kg: number;
+  gvw_kg: number;
+  l_per_100km: number;
+  l_per_100km_empty: number;
+  l_per_100km_full: number;
+  reefer_aux_kw: number;
+  reefer_fuel_surcharge_pct: number;
+  qd23_rule: string;
+}
+
 export interface BenchmarkPlannedRoute {
   route_id: number;
   plate: string;
   fuel: 'diesel' | 'petrol';
   capacity_kg: number;
   l_per_100km: number;
+  vehicle_class_id?: VehicleClassId;
+  vehicle_class_label?: string;
+  short_badge?: string;
+  body_type?: 'dry' | 'reefer' | 'container_dry' | 'container_reefer';
+  empty_weight_kg?: number;
+  gvw_kg?: number;
+  reefer_aux_kw?: number;
+  reefer_fuel_surcharge_pct?: number;
+  l_per_100km_empty?: number;
+  l_per_100km_full?: number;
+  qd23_rule?: string;
   color: string;
   km: number;
   km_empty_return: number;
@@ -193,6 +241,279 @@ const FLEET_TEMPLATES = [
   { plate: '51C-000.09', capacity_kg: 1500, fuel: 'petrol' as const, l_per_100km: 10.0, status: 'ready' },
   { plate: '51C-000.10', capacity_kg: 2000, fuel: 'diesel' as const, l_per_100km: 11.5, status: 'ready' },
 ];
+
+export const VEHICLE_CLASS_CATALOG: Record<VehicleClassId, VehicleClassSpec> = {
+  van_500kg_petrol: {
+    id: 'van_500kg_petrol',
+    label: 'Xe Van Nội Đô ≤500kg (Xăng · Miễn trừ QĐ 23)',
+    short_badge: 'Van ≤500kg (Xăng)',
+    body_type: 'dry',
+    fuel: 'petrol',
+    empty_weight_kg: 1050,
+    capacity_kg: 500,
+    gvw_kg: 1550,
+    l_per_100km: 8.0,
+    l_per_100km_empty: 6.1,
+    l_per_100km_full: 9.1,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Miễn trừ 24/24 (vào nội đô cả khung 06-09h & 16-20h)',
+  },
+  van_500kg_diesel: {
+    id: 'van_500kg_diesel',
+    label: 'Xe Van Nội Đô ≤500kg (Diesel · Miễn trừ QĐ 23)',
+    short_badge: 'Van ≤500kg (Diesel)',
+    body_type: 'dry',
+    fuel: 'diesel',
+    empty_weight_kg: 1120,
+    capacity_kg: 500,
+    gvw_kg: 1620,
+    l_per_100km: 8.5,
+    l_per_100km_empty: 6.5,
+    l_per_100km_full: 9.7,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Miễn trừ 24/24 (vào nội đô cả khung 06-09h & 16-20h)',
+  },
+  tai_kho_800kg: {
+    id: 'tai_kho_800kg',
+    label: 'Xe Tải Thùng Kín 800kg (Hàng thường)',
+    short_badge: 'Tải khô 800kg',
+    body_type: 'dry',
+    fuel: 'diesel',
+    empty_weight_kg: 1580,
+    capacity_kg: 800,
+    gvw_kg: 2380,
+    l_per_100km: 9.0,
+    l_per_100km_empty: 6.8,
+    l_per_100km_full: 10.3,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Cấm nội đô 06:00-09:00 & 16:00-20:00 (QĐ 23/2018)',
+  },
+  tai_kho_1t: {
+    id: 'tai_kho_1t',
+    label: 'Xe Tải Thùng Kín 1.0 Tấn (Diesel Tiết kiệm)',
+    short_badge: 'Tải khô 1.0T',
+    body_type: 'dry',
+    fuel: 'diesel',
+    empty_weight_kg: 1750,
+    capacity_kg: 1000,
+    gvw_kg: 2750,
+    l_per_100km: 8.0,
+    l_per_100km_empty: 6.1,
+    l_per_100km_full: 9.1,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Cấm nội đô 06:00-09:00 & 16:00-20:00 (QĐ 23/2018)',
+  },
+  tai_kho_1t5: {
+    id: 'tai_kho_1t5',
+    label: 'Xe Tải Thùng Kín 1.5 Tấn (Hàng khô / FMCG)',
+    short_badge: 'Tải khô 1.5T',
+    body_type: 'dry',
+    fuel: 'diesel',
+    empty_weight_kg: 2050,
+    capacity_kg: 1500,
+    gvw_kg: 3550,
+    l_per_100km: 11.0,
+    l_per_100km_empty: 8.4,
+    l_per_100km_full: 12.5,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Cấm nội đô 06:00-09:00 & 16:00-20:00 (QĐ 23/2018)',
+  },
+  tai_kho_2t: {
+    id: 'tai_kho_2t',
+    label: 'Xe Tải Thùng Kín 2.0 Tấn (Đô thị hạng nhẹ)',
+    short_badge: 'Tải khô 2.0T',
+    body_type: 'dry',
+    fuel: 'diesel',
+    empty_weight_kg: 2350,
+    capacity_kg: 2000,
+    gvw_kg: 4350,
+    l_per_100km: 11.5,
+    l_per_100km_empty: 8.7,
+    l_per_100km_full: 13.1,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Cấm nội đô 06:00-09:00 & 16:00-20:00 (QĐ 23/2018)',
+  },
+  tai_lanh_1t: {
+    id: 'tai_lanh_1t',
+    label: 'Xe Tải Đông Lạnh 1.0 Tấn (Reefer -18°C · +3.6kW)',
+    short_badge: 'Tải lạnh 1.0T (-18°C)',
+    body_type: 'reefer',
+    fuel: 'diesel',
+    empty_weight_kg: 2080,
+    capacity_kg: 1000,
+    gvw_kg: 3080,
+    l_per_100km: 10.2,
+    l_per_100km_empty: 9.0,
+    l_per_100km_full: 13.5,
+    reefer_aux_kw: 3.6,
+    reefer_fuel_surcharge_pct: 16,
+    qd23_rule: 'Cấm nội đô 06:00-09:00 & 16:00-20:00 (Ưu tiên cửa sổ sớm)',
+  },
+  tai_lanh_1t5: {
+    id: 'tai_lanh_1t5',
+    label: 'Xe Tải Đông Lạnh 1.5 Tấn (Reefer -18°C · +4.2kW)',
+    short_badge: 'Tải lạnh 1.5T (-18°C)',
+    body_type: 'reefer',
+    fuel: 'diesel',
+    empty_weight_kg: 2380,
+    capacity_kg: 1500,
+    gvw_kg: 3880,
+    l_per_100km: 11.8,
+    l_per_100km_empty: 10.6,
+    l_per_100km_full: 15.9,
+    reefer_aux_kw: 4.2,
+    reefer_fuel_surcharge_pct: 18,
+    qd23_rule: 'Cấm nội đô 06:00-09:00 & 16:00-20:00 (Ưu tiên cửa sổ sớm)',
+  },
+  tai_lanh_2t: {
+    id: 'tai_lanh_2t',
+    label: 'Xe Tải Đông Lạnh 2.0 Tấn (Reefer -22°C · +5.0kW)',
+    short_badge: 'Tải lạnh 2.0T (-22°C)',
+    body_type: 'reefer',
+    fuel: 'diesel',
+    empty_weight_kg: 2680,
+    capacity_kg: 2000,
+    gvw_kg: 4680,
+    l_per_100km: 12.8,
+    l_per_100km_empty: 11.7,
+    l_per_100km_full: 17.5,
+    reefer_aux_kw: 5.0,
+    reefer_fuel_surcharge_pct: 20,
+    qd23_rule: 'Cấm nội đô 06:00-09:00 & 16:00-20:00 (Ưu tiên cửa sổ sớm)',
+  },
+  tai_trung_5t: {
+    id: 'tai_trung_5t',
+    label: 'Xe Tải Trung 5.0 Tấn (Liên Quận / Vành Đai)',
+    short_badge: 'Tải trung 5.0T',
+    body_type: 'dry',
+    fuel: 'diesel',
+    empty_weight_kg: 4200,
+    capacity_kg: 5000,
+    gvw_kg: 9200,
+    l_per_100km: 16.0,
+    l_per_100km_empty: 12.2,
+    l_per_100km_full: 18.2,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Hạn chế nội đô 06:00-22:00 (>2.5T chỉ chạy vành đai/đêm)',
+  },
+  cong_thuong_20ft: {
+    id: 'cong_thuong_20ft',
+    label: 'Đầu Kéo Công Thường 20FT/40FT (18.0 Tấn · Khô)',
+    short_badge: 'Đầu kéo Công thường 18T',
+    body_type: 'container_dry',
+    fuel: 'diesel',
+    empty_weight_kg: 14500,
+    capacity_kg: 18000,
+    gvw_kg: 32500,
+    l_per_100km: 28.5,
+    l_per_100km_empty: 21.7,
+    l_per_100km_full: 32.5,
+    reefer_aux_kw: 0,
+    reefer_fuel_surcharge_pct: 0,
+    qd23_rule: 'Hành lang Cảng / KCN / Vành đai (Cấm nội đô 06:00-22:00)',
+  },
+  cong_lanh_40ft: {
+    id: 'cong_lanh_40ft',
+    label: 'Đầu Kéo Công Lạnh 40FT Reefer (24.0 Tấn · Genset -25°C)',
+    short_badge: 'Đầu kéo Công lạnh 24T',
+    body_type: 'container_reefer',
+    fuel: 'diesel',
+    empty_weight_kg: 16200,
+    capacity_kg: 24000,
+    gvw_kg: 40200,
+    l_per_100km: 34.5,
+    l_per_100km_empty: 32.0,
+    l_per_100km_full: 48.0,
+    reefer_aux_kw: 11.5,
+    reefer_fuel_surcharge_pct: 22,
+    qd23_rule: 'Hành lang Cảng / Kho lạnh trung tâm (22:00-06:00)',
+  },
+};
+
+export const FLEET_PRESET_CATALOG: Array<{
+  id: FleetPresetId;
+  title: string;
+  subtitle: string;
+  badge: string;
+}> = [
+  {
+    id: 'default_mixed',
+    title: '1. Đội Xe Hỗn Hợp Đô Thị (Chuẩn Pitch Deck)',
+    subtitle: 'Phối hợp Van ≤500kg + Xe tải 0.8T–2.0T (Xăng/Diesel) khớp 100% số liệu bài thi',
+    badge: 'Mặc định Pitch Deck',
+  },
+  {
+    id: 'cold_reefer_fleet',
+    title: '2. Đội Xe Tải Đông Lạnh Reefer (-18°C · +P_aux 4.2kW)',
+    subtitle: 'Tự trọng xác xe +380kg cách nhiệt PU & phụ tải máy lạnh +16% đến +20% nhiên liệu',
+    badge: 'Chuỗi lạnh Reefer',
+  },
+  {
+    id: 'dry_fmcg_fleet',
+    title: '3. Đội Xe Tải Thùng Kín Hàng Khô (FMCG · 0kW Lạnh)',
+    subtitle: 'Thùng kín tiêu chuẩn 1.0T–2.0T không phụ tải đông lạnh, tối ưu hàng tiêu dùng khô',
+    badge: 'Thùng khô tiêu chuẩn',
+  },
+  {
+    id: 'container_tractor_fleet',
+    title: '4. Đội Xe Đầu Kéo Công Thường & Công Lạnh (20FT / 40FT)',
+    subtitle: 'Đầu kéo rơ-moóc 18T–24T (Xác xe 14.5T–16.2T + Máy phát Genset công lạnh 11.5kW)',
+    badge: 'Đầu kéo Container',
+  },
+];
+
+function inferDefaultVehicleClassSpec(vehicle: {
+  capacity_kg: number;
+  fuel: 'diesel' | 'petrol';
+  l_per_100km: number;
+}): VehicleClassSpec {
+  if (vehicle.capacity_kg <= 500) {
+    return vehicle.fuel === 'diesel'
+      ? VEHICLE_CLASS_CATALOG.van_500kg_diesel
+      : VEHICLE_CLASS_CATALOG.van_500kg_petrol;
+  }
+  if (vehicle.capacity_kg <= 800) {
+    return {
+      ...VEHICLE_CLASS_CATALOG.tai_kho_800kg,
+      fuel: vehicle.fuel,
+      l_per_100km: vehicle.l_per_100km,
+      l_per_100km_empty: Number((vehicle.l_per_100km * 0.76).toFixed(1)),
+      l_per_100km_full: Number((vehicle.l_per_100km * 1.14).toFixed(1)),
+    };
+  }
+  if (vehicle.capacity_kg <= 1000) {
+    return {
+      ...VEHICLE_CLASS_CATALOG.tai_kho_1t,
+      fuel: vehicle.fuel,
+      l_per_100km: vehicle.l_per_100km,
+      l_per_100km_empty: Number((vehicle.l_per_100km * 0.76).toFixed(1)),
+      l_per_100km_full: Number((vehicle.l_per_100km * 1.14).toFixed(1)),
+    };
+  }
+  if (vehicle.capacity_kg <= 1500) {
+    return {
+      ...VEHICLE_CLASS_CATALOG.tai_kho_1t5,
+      fuel: vehicle.fuel,
+      l_per_100km: vehicle.l_per_100km,
+      l_per_100km_empty: Number((vehicle.l_per_100km * 0.76).toFixed(1)),
+      l_per_100km_full: Number((vehicle.l_per_100km * 1.14).toFixed(1)),
+    };
+  }
+  return {
+    ...VEHICLE_CLASS_CATALOG.tai_kho_2t,
+    fuel: vehicle.fuel,
+    l_per_100km: vehicle.l_per_100km,
+    l_per_100km_empty: Number((vehicle.l_per_100km * 0.76).toFixed(1)),
+    l_per_100km_full: Number((vehicle.l_per_100km * 1.14).toFixed(1)),
+  };
+}
 
 const ROUTE_COLORS = ['#36d9a5', '#ffd400', '#38bdf8', '#f472b6', '#a78bfa', '#fb923c', '#4ade80', '#2dd4bf', '#f87171', '#e879f9'];
 
@@ -859,6 +1180,7 @@ function buildRouteMetrics(
   const totalHandledKg = outboundKg + backhaulKg;
   const utilPct = vehicle.capacity_kg > 0 ? (outboundKg / vehicle.capacity_kg) * 100 : 0;
   const emptyPct = totalKm > 0 ? (emptyKm / totalKm) * 100 : 0;
+  const defSpec = inferDefaultVehicleClassSpec(vehicle);
 
   return {
     route_id: routeId,
@@ -866,6 +1188,17 @@ function buildRouteMetrics(
     fuel: vehicle.fuel,
     capacity_kg: vehicle.capacity_kg,
     l_per_100km: vehicle.l_per_100km,
+    vehicle_class_id: defSpec.id,
+    vehicle_class_label: defSpec.label,
+    short_badge: defSpec.short_badge,
+    body_type: defSpec.body_type,
+    empty_weight_kg: defSpec.empty_weight_kg,
+    gvw_kg: defSpec.gvw_kg,
+    reefer_aux_kw: defSpec.reefer_aux_kw,
+    reefer_fuel_surcharge_pct: defSpec.reefer_fuel_surcharge_pct,
+    l_per_100km_empty: defSpec.l_per_100km_empty,
+    l_per_100km_full: defSpec.l_per_100km_full,
+    qd23_rule: defSpec.qd23_rule,
     color,
     km: Number(totalKm.toFixed(2)),
     km_empty_return: Number(emptyKm.toFixed(2)),
@@ -1637,6 +1970,199 @@ export function runEphemeralBenchmarkFromRows(
     anomalies,
     district_breakdown: districtBreakdown,
     hourly_demand: hourlyDemand,
+  };
+}
+
+function resolvePresetVehicleClass(
+  presetId: FleetPresetId,
+  routeIdx: number,
+  baseCapKg: number,
+  baseFuel: 'diesel' | 'petrol'
+): VehicleClassSpec {
+  if (presetId === 'cold_reefer_fleet') {
+    if (baseCapKg <= 500) return VEHICLE_CLASS_CATALOG.van_500kg_diesel;
+    if (baseCapKg <= 1000) return VEHICLE_CLASS_CATALOG.tai_lanh_1t;
+    if (baseCapKg <= 1500) return VEHICLE_CLASS_CATALOG.tai_lanh_1t5;
+    return VEHICLE_CLASS_CATALOG.tai_lanh_2t;
+  }
+  if (presetId === 'dry_fmcg_fleet') {
+    if (baseCapKg <= 500) return VEHICLE_CLASS_CATALOG.van_500kg_petrol;
+    if (baseCapKg <= 800) return VEHICLE_CLASS_CATALOG.tai_kho_800kg;
+    if (baseCapKg <= 1000) return VEHICLE_CLASS_CATALOG.tai_kho_1t;
+    if (baseCapKg <= 1500) return VEHICLE_CLASS_CATALOG.tai_kho_1t5;
+    return VEHICLE_CLASS_CATALOG.tai_kho_2t;
+  }
+  if (presetId === 'container_tractor_fleet') {
+    return routeIdx % 2 === 0
+      ? VEHICLE_CLASS_CATALOG.cong_lanh_40ft
+      : VEHICLE_CLASS_CATALOG.cong_thuong_20ft;
+  }
+  return inferDefaultVehicleClassSpec({
+    capacity_kg: baseCapKg,
+    fuel: baseFuel,
+    l_per_100km: 10,
+  });
+}
+
+function recomputeRouteForVehicleClass(
+  route: BenchmarkPlannedRoute,
+  spec: VehicleClassSpec
+): BenchmarkPlannedRoute {
+  const outboundKg = route.stops
+    .filter((s) => s.kind === 'stop')
+    .reduce((acc, s) => acc + s.kg, 0);
+
+  const origCap = Math.max(1, route.capacity_kg);
+  const newCap = Math.max(1, spec.capacity_kg);
+  const origRatio = Math.min(1.25, Math.max(0, outboundKg / origCap));
+  const newRatio = Math.min(1.25, Math.max(0, outboundKg / newCap));
+  const origLoadMult = 0.76 + 0.38 * origRatio;
+  const newLoadMult = 0.76 + 0.38 * newRatio;
+  const lRateScale = route.l_per_100km > 0 ? spec.l_per_100km / route.l_per_100km : 1;
+  const reeferFactor = 1 + spec.reefer_fuel_surcharge_pct / 100;
+
+  const totalLitres =
+    route.litres * lRateScale * (newLoadMult / origLoadMult) * reeferFactor;
+
+  const ttwFactor = spec.fuel === 'diesel' ? DIESEL_TTW : PETROL_TTW;
+  const wtwFactor = spec.fuel === 'diesel' ? DIESEL_WTW : PETROL_WTW;
+  const kgCo2Ttw = totalLitres * ttwFactor;
+  const kgCo2Wtw = totalLitres * wtwFactor;
+  const utilPct = spec.capacity_kg > 0 ? (outboundKg / spec.capacity_kg) * 100 : 0;
+
+  return {
+    ...route,
+    fuel: spec.fuel,
+    capacity_kg: spec.capacity_kg,
+    l_per_100km: spec.l_per_100km,
+    vehicle_class_id: spec.id,
+    vehicle_class_label: spec.label,
+    short_badge: spec.short_badge,
+    body_type: spec.body_type,
+    empty_weight_kg: spec.empty_weight_kg,
+    gvw_kg: spec.gvw_kg,
+    reefer_aux_kw: spec.reefer_aux_kw,
+    reefer_fuel_surcharge_pct: spec.reefer_fuel_surcharge_pct,
+    l_per_100km_empty: spec.l_per_100km_empty,
+    l_per_100km_full: spec.l_per_100km_full,
+    qd23_rule: spec.qd23_rule,
+    litres: Number(totalLitres.toFixed(2)),
+    kg_co2_ttw: Number(kgCo2Ttw.toFixed(2)),
+    kg_co2_wtw: Number(kgCo2Wtw.toFixed(2)),
+    payload_utilisation_pct: Number(utilPct.toFixed(1)),
+    overload: outboundKg > spec.capacity_kg,
+  };
+}
+
+/**
+ * Dynamically applies a Fleet Preset or per-route VehicleClassId overrides (`GLX-HDT-v1`)
+ * while preserving exact 100% Pitch Deck numbers when `presetId === 'default_mixed'` and no overrides exist.
+ */
+export function applyFleetProfileToBenchmarkResult(
+  baseResult: EphemeralBenchmarkResult,
+  presetId: FleetPresetId,
+  perRouteOverrides: Record<number, VehicleClassId> = {}
+): EphemeralBenchmarkResult {
+  const hasOverrides = Object.keys(perRouteOverrides).length > 0;
+  if (presetId === 'default_mixed' && !hasOverrides) {
+    return baseResult;
+  }
+
+  const mapRoutes = (routes: BenchmarkPlannedRoute[], allowPerRouteOverride: boolean) =>
+    routes.map((r, idx) => {
+      const overrideId = allowPerRouteOverride ? perRouteOverrides[r.route_id] : undefined;
+      if (overrideId && VEHICLE_CLASS_CATALOG[overrideId]) {
+        return recomputeRouteForVehicleClass(r, VEHICLE_CLASS_CATALOG[overrideId]);
+      }
+      if (presetId === 'default_mixed') {
+        return r;
+      }
+      const spec = resolvePresetVehicleClass(presetId, idx, r.capacity_kg, r.fuel);
+      return recomputeRouteForVehicleClass(r, spec);
+    });
+
+  const rawRoutes = mapRoutes(baseResult.strategies.raw_excel.routes, false);
+  const humanRoutes = mapRoutes(baseResult.strategies.human_google_proxy.routes, false);
+  const twoOptRoutes = mapRoutes(baseResult.strategies.ecomiles_2opt.routes, true);
+  const alnsRoutes = mapRoutes(baseResult.strategies.ecomiles_ecoalns.routes, true);
+
+  const rawKm = rawRoutes.reduce((s, r) => s + r.km, 0);
+  const humanKm = humanRoutes.reduce((s, r) => s + r.km, 0);
+  const humanCo2 = humanRoutes.reduce((s, r) => s + r.kg_co2_ttw, 0);
+  const totalOrdersCount = baseResult.orders.length;
+
+  const rawSummary = summarizeStrategy(
+    'raw_excel',
+    baseResult.strategies.raw_excel.name,
+    baseResult.strategies.raw_excel.subtitle,
+    baseResult.strategies.raw_excel.badge,
+    rawRoutes,
+    totalOrdersCount,
+    baseResult.strategies.raw_excel.runtime_ms,
+    rawKm,
+    humanKm,
+    humanCo2
+  );
+  const humanSummary = summarizeStrategy(
+    'human_google_proxy',
+    baseResult.strategies.human_google_proxy.name,
+    baseResult.strategies.human_google_proxy.subtitle,
+    baseResult.strategies.human_google_proxy.badge,
+    humanRoutes,
+    totalOrdersCount,
+    baseResult.strategies.human_google_proxy.runtime_ms,
+    rawKm,
+    humanKm,
+    humanCo2
+  );
+  const twoOptSummary = summarizeStrategy(
+    'ecomiles_2opt',
+    baseResult.strategies.ecomiles_2opt.name,
+    baseResult.strategies.ecomiles_2opt.subtitle,
+    baseResult.strategies.ecomiles_2opt.badge,
+    twoOptRoutes,
+    totalOrdersCount,
+    baseResult.strategies.ecomiles_2opt.runtime_ms,
+    rawKm,
+    humanKm,
+    humanCo2
+  );
+  const alnsSummary = summarizeStrategy(
+    'ecomiles_ecoalns',
+    baseResult.strategies.ecomiles_ecoalns.name,
+    baseResult.strategies.ecomiles_ecoalns.subtitle,
+    baseResult.strategies.ecomiles_ecoalns.badge,
+    alnsRoutes,
+    totalOrdersCount,
+    baseResult.strategies.ecomiles_ecoalns.runtime_ms,
+    rawKm,
+    humanKm,
+    humanCo2
+  );
+
+  const distanceRatio =
+    humanSummary.km_total > 0
+      ? (alnsSummary.km_total - humanSummary.km_total) / humanSummary.km_total
+      : 0;
+  const distanceEffectKg = Number((humanSummary.kg_co2_ttw * distanceRatio).toFixed(2));
+  const totalDeltaKg = Number((alnsSummary.kg_co2_ttw - humanSummary.kg_co2_ttw).toFixed(2));
+  const fleetMixEffectKg = Number((totalDeltaKg - distanceEffectKg).toFixed(2));
+
+  return {
+    ...baseResult,
+    strategies: {
+      raw_excel: rawSummary,
+      human_google_proxy: humanSummary,
+      ecomiles_2opt: twoOptSummary,
+      ecomiles_ecoalns: alnsSummary,
+    },
+    pvm_decomposition: {
+      human_baseline_co2_ttw: humanSummary.kg_co2_ttw,
+      ecomiles_co2_ttw: alnsSummary.kg_co2_ttw,
+      total_saved_co2_kg: Number(Math.max(0, humanSummary.kg_co2_ttw - alnsSummary.kg_co2_ttw).toFixed(2)),
+      distance_effect_kg: distanceEffectKg,
+      fleet_mix_effect_kg: fleetMixEffectKg,
+    },
   };
 }
 

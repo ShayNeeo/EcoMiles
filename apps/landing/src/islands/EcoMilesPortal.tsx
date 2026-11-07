@@ -42,8 +42,13 @@ import {
   parseCsvToRows,
   runEphemeralBenchmarkFromRows,
   buildAutomatedExcelWorkbookXml,
+  applyFleetProfileToBenchmarkResult,
+  VEHICLE_CLASS_CATALOG,
+  FLEET_PRESET_CATALOG,
   type EphemeralBenchmarkResult,
   type StrategySummary,
+  type VehicleClassId,
+  type FleetPresetId,
 } from '../utils/xlsxBenchmarkEngine';
 import {
   B2B_COMPANIES,
@@ -352,7 +357,16 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     pathname === '/dispatcher' || pathname === '/app' ? 'routing' : 'overview'
   );
   const [selectedTenantId, setSelectedTenantId] = useState<string>(B2B_COMPANIES[1].tenant_id);
-  const [result, setResult] = useState<EphemeralBenchmarkResult | null>(null);
+  const [baseResult, setResult] = useState<EphemeralBenchmarkResult | null>(null);
+  const [fleetPresetId, setFleetPresetId] = useState<FleetPresetId>('default_mixed');
+  const [perRouteVehicleClass, setPerRouteVehicleClass] = useState<Record<number, VehicleClassId>>({});
+  const result = useMemo(
+    () =>
+      baseResult
+        ? applyFleetProfileToBenchmarkResult(baseResult, fleetPresetId, perRouteVehicleClass)
+        : null,
+    [baseResult, fleetPresetId, perRouteVehicleClass]
+  );
   const [columnInspection, setColumnInspection] = useState<ColumnMappingInspection[]>([]);
   const [selectedStrategyId, setSelectedStrategyId] = useState<StrategySummary['id']>('ecomiles_ecoalns');
   const [selectedRouteId, setSelectedRouteId] = useState<number | 'ALL'>('ALL');
@@ -1324,34 +1338,105 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
 
                 {/* Active Truck Fleet & Order Completion Table */}
-                <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                {/* Active Truck Fleet & Dynamic Vehicle Class / Weight / Reefer Physics Table */}
+                <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-4">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#e5e7eb] pb-3.5">
                     <div>
-                      <h2 className="text-[16px] font-bold text-[#111827]">
-                        Bảng Giám Sát Đội Xe Tải &amp; Tiến Độ Giao Hàng Hôm Nay
-                      </h2>
-                      <p className="text-[12px] text-[#5f6368]">
-                         Bấm vào từng chuyến xe để xem lộ trình chi tiết hoặc chuyển sang màn hình của tài xế đó.
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="text-[16px] font-bold text-[#111827]">
+                          Bảng Giám Sát Đội Xe &amp; Cấu Hình Đầu Xe / Thùng Lạnh (GLX-HDT-v1)
+                        </h2>
+                        <span className="px-2 py-0.5 rounded bg-[#e8f0fb] text-[#1f3a5f] text-[11px] font-bold">
+                          Biến Trọng Lượng &amp; Nhiệt Lạnh Động
+                        </span>
+                      </div>
+                      <p className="text-[12px] text-[#5f6368] mt-0.5">
+                        Điều phối viên có thể chọn <b>tổ hợp đội xe mẫu</b> hoặc đổi trực tiếp <b>loại đầu xe (Van ≤500kg, Tải khô, Tải đông lạnh Reefer -18°C, Đầu kéo Công thường 20/40FT, Đầu kéo Công lạnh 40FT Genset)</b> trên từng chuyến để tính lại tự trọng xác xe, tải trọng hàng và CO₂e tức thì.
                       </p>
                     </div>
-                    <span className="text-[12px] text-[#5f6368]">
-                      Cập nhật theo thời gian thực · Chuẩn GLEC v3.2
-                    </span>
+                    {(fleetPresetId !== 'default_mixed' || Object.keys(perRouteVehicleClass).length > 0) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFleetPresetId('default_mixed');
+                          setPerRouteVehicleClass({});
+                          setStatusBanner('Đã khôi phục cấu hình đội xe hỗn hợp mặc định (khớp 100% số liệu Pitch Deck).');
+                        }}
+                        className="px-3 py-1.5 rounded-lg border border-[#b9dfbf] bg-[#eef7ee] hover:bg-[#dcfae5] text-[12px] font-bold text-[#14532d] cursor-pointer shrink-0"
+                      >
+                        Khôi phục mặc định Pitch Deck
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 4 Fleet Preset Cards + GLX-HDT-v1 Physics Equation Callout */}
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
+                      {FLEET_PRESET_CATALOG.map((preset) => {
+                        const isSelected =
+                          fleetPresetId === preset.id && Object.keys(perRouteVehicleClass).length === 0;
+                        return (
+                          <button
+                            key={preset.id}
+                            type="button"
+                            onClick={() => {
+                              setFleetPresetId(preset.id);
+                              setPerRouteVehicleClass({});
+                              setStatusBanner(
+                                `Đã áp dụng cấu hình "${preset.title}" theo mô hình vật lý tải trọng GLX-HDT-v1.`
+                              );
+                            }}
+                            className={`text-left p-3 rounded-lg border transition-colors cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#eef7ee] border-[#2f9e44] ring-1 ring-[#2f9e44]'
+                                : 'bg-[#f9fafb] border-[#e5e7eb] hover:bg-white'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-1.5 mb-1">
+                              <span className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-white border border-[#d1d5db] text-[#1f3a5f]">
+                                {preset.badge}
+                              </span>
+                              {isSelected && (
+                                <span className="text-[11px] font-bold text-[#247b50]">Đang chọn</span>
+                              )}
+                            </div>
+                            <div className="text-[12.5px] font-bold text-[#111827] leading-snug">
+                              {preset.title}
+                            </div>
+                            <div className="text-[11px] text-[#5f6368] mt-1 leading-relaxed">
+                              {preset.subtitle}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="bg-[#f8fafc] border border-[#dbeafe] rounded-lg px-3.5 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2 text-[11.5px] text-[#1e3a8a]">
+                      <div>
+                        <span className="font-bold">Công thức Vật lý Tải trọng &amp; Nhiệt lạnh GLX-HDT-v1 (ISO 14083 / GLEC v3.2): </span>
+                        <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-[#bfdbfe] text-[#1e40af]">
+                          M_tổng(k) = M_xác_xe + M_hàng(k)  ⇒  Lít(k) = d_k × (L_chuẩn/100) × [0.76 + 0.38 × (M_hàng(k) / M_tải_max)] × (1 + %P_aux_lạnh)
+                        </code>
+                      </div>
+                      <div className="text-[11px] text-[#475569] shrink-0">
+                        Diesel: <b>2.68 kg/L</b> (TTW) · <b>3.24 kg/L</b> (WTW) | Xăng: <b>2.31</b> · <b>2.82 kg/L</b>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="overflow-x-auto">
-                    <table className="w-full border-collapse text-[13px] tabular-nums">
+                    <table className="w-full border-collapse text-[12.5px] tabular-nums">
                       <thead>
-                        <tr className="border-b border-[#e5e7eb] text-[#5f6368] text-[12px]">
-                          <th className="py-2.5 px-3 text-left font-medium">Biển số &amp; Tài xế</th>
-                          <th className="py-2.5 px-3 text-left font-medium">Loại nhiên liệu</th>
-                          <th className="py-2.5 px-3 text-left font-medium">Tiến độ hoàn thành đơn</th>
-                          <th className="py-2.5 px-3 text-right font-medium">Tải trọng (kg)</th>
-                          <th className="py-2.5 px-3 text-right font-medium">Tổng cự ly</th>
-                          <th className="py-2.5 px-3 text-right font-medium">Km chạy rỗng</th>
-                          <th className="py-2.5 px-3 text-right font-medium">Đơn ghép về</th>
-                          <th className="py-2.5 px-3 text-right font-medium">CO₂e TTW</th>
-                          <th className="py-2.5 px-3 text-right font-medium">Thao tác</th>
+                        <tr className="border-b border-[#e5e7eb] text-[#5f6368] text-[11.5px]">
+                          <th className="py-2.5 px-2.5 text-left font-medium">Biển số &amp; Tài xế</th>
+                          <th className="py-2.5 px-2.5 text-left font-medium">Loại Đầu Xe &amp; Thùng Hàng (Chọn trực tiếp)</th>
+                          <th className="py-2.5 px-2.5 text-right font-medium">Xác xe + Tải hàng (kg)</th>
+                          <th className="py-2.5 px-2.5 text-right font-medium">Định mức (Rỗng → Đầy)</th>
+                          <th className="py-2.5 px-2.5 text-left font-medium">Tiến độ giao</th>
+                          <th className="py-2.5 px-2.5 text-right font-medium">Tổng cự ly</th>
+                          <th className="py-2.5 px-2.5 text-right font-medium">Km rỗng / Ghép về</th>
+                          <th className="py-2.5 px-2.5 text-right font-medium">Nhiên liệu &amp; CO₂e</th>
+                          <th className="py-2.5 px-2.5 text-right font-medium">Thao tác</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[#f2f2f2]">
@@ -1365,13 +1450,23 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             .slice(-2)
                             .map((w) => w[0])
                             .join('');
+                          const emptyWeightKg = r.empty_weight_kg ?? 1750;
+                          const reeferKw = r.reefer_aux_kw ?? 0;
+                          const reeferPct = r.reefer_fuel_surcharge_pct ?? 0;
+                          const lEmpty = r.l_per_100km_empty ?? Number((r.l_per_100km * 0.76).toFixed(1));
+                          const lFull =
+                            r.l_per_100km_full ??
+                            Number((r.l_per_100km * 1.14 * (1 + reeferPct / 100)).toFixed(1));
+                          const bodyType = r.body_type ?? 'dry';
+                          const isReefer = bodyType === 'reefer' || bodyType === 'container_reefer';
+                          const isContainer = bodyType === 'container_dry' || bodyType === 'container_reefer';
 
                           return (
                             <tr key={r.route_id} className="hover:bg-[#f9fafb]">
-                              <td className="py-3 px-3">
-                                <div className="flex items-center gap-2.5">
+                              <td className="py-2.5 px-2.5">
+                                <div className="flex items-center gap-2">
                                   <span
-                                    className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
+                                    className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
                                     style={{
                                       backgroundColor: idx % 2 === 0 ? '#e8f0fb' : '#dcfae5',
                                       color: idx % 2 === 0 ? '#1f3a5f' : '#04250e',
@@ -1381,25 +1476,80 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   </span>
                                   <div>
                                     <div className="font-bold text-[#111827]">{r.plate}</div>
-                                    <div className="text-[11.5px] text-[#5f6368]">{driverName}</div>
+                                    <div className="text-[11px] text-[#5f6368]">{driverName}</div>
                                   </div>
                                 </div>
                               </td>
-                              <td className="py-3 px-3">
-                                <span
-                                  className={`px-2 py-0.5 rounded text-[11.5px] font-semibold ${
-                                    r.fuel === 'diesel'
-                                      ? 'bg-[#e8f0fb] text-[#1f3a5f]'
-                                      : 'bg-[#fffbeb] text-[#92400e]'
-                                  }`}
+                              <td className="py-2.5 px-2.5 min-w-[235px]">
+                                <select
+                                  aria-label={`Chọn loại đầu xe cho ${r.plate}`}
+                                  value={r.vehicle_class_id || 'tai_kho_1t'}
+                                  onChange={(e) => {
+                                    const nextClassId = e.target.value as VehicleClassId;
+                                    setPerRouteVehicleClass((prev) => ({
+                                      ...prev,
+                                      [r.route_id]: nextClassId,
+                                    }));
+                                    const spec = VEHICLE_CLASS_CATALOG[nextClassId];
+                                    setStatusBanner(
+                                      `Xe ${r.plate}: Đã đổi sang "${spec.label}" (Xác xe ${spec.empty_weight_kg.toLocaleString('en-US')} kg · Tải tối đa ${spec.capacity_kg.toLocaleString('en-US')} kg · Định mức ${spec.l_per_100km_empty}→${spec.l_per_100km_full} L/100km).`
+                                    );
+                                  }}
+                                  className="w-full px-2 py-1 rounded border border-[#d1d5db] bg-white text-[11.5px] font-bold text-[#111827] cursor-pointer"
                                 >
-                                  {r.fuel === 'diesel' ? 'Dầu Diesel' : 'Xăng RON95'}
-                                </span>
+                                  {Object.values(VEHICLE_CLASS_CATALOG).map((spec) => (
+                                    <option key={spec.id} value={spec.id}>
+                                      {spec.label}
+                                    </option>
+                                  ))}
+                                </select>
+                                <div className="flex flex-wrap items-center gap-1 mt-1">
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                      r.fuel === 'diesel'
+                                        ? 'bg-[#e8f0fb] text-[#1f3a5f]'
+                                        : 'bg-[#fffbeb] text-[#92400e]'
+                                    }`}
+                                  >
+                                    {r.fuel === 'diesel' ? 'Dầu Diesel' : 'Xăng RON95'}
+                                  </span>
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                      isReefer
+                                        ? 'bg-[#e0f2fe] text-[#0369a1]'
+                                        : isContainer
+                                          ? 'bg-[#f3e8ff] text-[#6b21a8]'
+                                          : 'bg-[#f3f4f6] text-[#374151]'
+                                    }`}
+                                  >
+                                    {isReefer
+                                      ? `Thùng lạnh (+${reeferKw}kW · +${reeferPct}% dầu)`
+                                      : isContainer
+                                        ? 'Công thường (Khô · 0kW lạnh)'
+                                        : 'Thùng kín thường (0kW lạnh)'}
+                                  </span>
+                                </div>
                               </td>
-                              <td className="py-3 px-3 min-w-[160px]">
-                                <div className="flex items-center justify-between text-[12px] mb-1">
+                              <td className="py-2.5 px-2.5 text-right font-mono">
+                                <div className="font-bold text-[#111827]">
+                                  Hàng: {r.kg_delivered.toLocaleString('en-US')} / {r.capacity_kg.toLocaleString('en-US')} kg ({r.payload_utilisation_pct}%)
+                                </div>
+                                <div className="text-[11px] text-[#5f6368]">
+                                  Xác xe: {emptyWeightKg.toLocaleString('en-US')} kg · Tổng: {Math.round(emptyWeightKg + r.kg_delivered).toLocaleString('en-US')} kg
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-2.5 text-right font-mono">
+                                <div className="font-semibold text-[#111827]">
+                                  {lEmpty} → {lFull} L/100km
+                                </div>
+                                <div className="text-[10.5px] text-[#5f6368]">
+                                  Chuẩn: {r.l_per_100km} L/100km
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-2.5 min-w-[135px]">
+                                <div className="flex items-center justify-between text-[11.5px] mb-1">
                                   <span className="font-semibold text-[#111827]">
-                                    {doneStops}/{stopsCount} điểm giao
+                                    {doneStops}/{stopsCount} điểm
                                   </span>
                                   <span className="text-[#247b50] font-bold">{pct}%</span>
                                 </div>
@@ -1410,22 +1560,26 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   />
                                 </div>
                               </td>
-                              <td className="py-3 px-3 text-right font-mono">
-                                {r.kg_delivered}/{r.capacity_kg} kg ({r.payload_utilisation_pct}%)
-                              </td>
-                              <td className="py-3 px-3 text-right font-mono font-bold text-[#111827]">
+                              <td className="py-2.5 px-2.5 text-right font-mono font-bold text-[#111827]">
                                 {r.km} km
                               </td>
-                              <td className="py-3 px-3 text-right font-mono text-[#5f6368]">
-                                {r.km_empty_return} km ({r.empty_running_pct}%)
+                              <td className="py-2.5 px-2.5 text-right font-mono">
+                                <div className="text-[#5f6368]">
+                                  Rỗng: {r.km_empty_return} km ({r.empty_running_pct}%)
+                                </div>
+                                <div className="text-[11px] font-semibold text-[#247b50]">
+                                  Ghép về: +{r.backhaul_orders_matched} đơn ({r.backhaul_kg_recovered} kg)
+                                </div>
                               </td>
-                              <td className="py-3 px-3 text-right font-mono font-semibold text-[#247b50]">
-                                +{r.backhaul_orders_matched} đơn ({r.backhaul_kg_recovered} kg)
+                              <td className="py-2.5 px-2.5 text-right font-mono">
+                                <div className="font-bold text-[#111827]">
+                                  {r.kg_co2_ttw} kg CO₂e
+                                </div>
+                                <div className="text-[11px] text-[#5f6368]">
+                                  {r.litres} L · WTW {r.kg_co2_wtw} kg
+                                </div>
                               </td>
-                              <td className="py-3 px-3 text-right font-mono font-bold text-[#111827]">
-                                {r.kg_co2_ttw} kg
-                              </td>
-                              <td className="py-3 px-3 text-right">
+                              <td className="py-2.5 px-2.5 text-right">
                                 <div className="inline-flex items-center gap-1.5">
                                   <button
                                     type="button"
@@ -1433,7 +1587,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                       setSelectedRouteId(r.route_id);
                                       setUserTab('routing');
                                     }}
-                                    className="px-2.5 py-1 rounded border border-[#d1d5db] bg-white hover:bg-[#f3f4f6] text-xs font-semibold text-[#1971c2] cursor-pointer"
+                                    className="px-2 py-1 rounded border border-[#d1d5db] bg-white hover:bg-[#f3f4f6] text-xs font-semibold text-[#1971c2] cursor-pointer"
                                   >
                                     Xem tuyến
                                   </button>
@@ -1586,8 +1740,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     </button>
                   </div>
 
-                  {/* Algorithm Controls */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+                  {/* Algorithm & Vehicle Class Controls */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 text-xs">
                     <div>
                       <label className="block font-semibold text-[#5f6368] mb-1">Chiến lược giải thuật:</label>
                       <select
@@ -1604,6 +1758,31 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       </select>
                     </div>
 
+                    <div>
+                      <label className="block font-semibold text-[#5f6368] mb-1">
+                        Cấu hình đầu xe &amp; Thùng (GLX-HDT-v1):
+                      </label>
+                      <select
+                        aria-label="Chọn cấu hình đội xe và loại thùng"
+                        value={fleetPresetId}
+                        onChange={(e) => {
+                          const nextPreset = e.target.value as FleetPresetId;
+                          setFleetPresetId(nextPreset);
+                          setPerRouteVehicleClass({});
+                          const found = FLEET_PRESET_CATALOG.find((p) => p.id === nextPreset);
+                          setStatusBanner(
+                            `Đã chuyển đội xe sang "${found?.title || nextPreset}" và tính lại nhiên liệu/CO₂e theo trọng lượng.`
+                          );
+                        }}
+                        className="w-full p-2 rounded-lg border border-[#d1d5db] bg-white font-bold text-[#111827]"
+                      >
+                        {FLEET_PRESET_CATALOG.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <div>
                       <div className="flex justify-between font-semibold text-[#5f6368] mb-1">
                         <span>Bán kính gom cụm địa lý:</span>

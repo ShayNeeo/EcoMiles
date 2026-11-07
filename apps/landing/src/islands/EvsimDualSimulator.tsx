@@ -17,9 +17,12 @@ import {
   parseCsvToRows,
   runEphemeralBenchmarkFromRows,
   buildAutomatedExcelWorkbookXml,
+  applyFleetProfileToBenchmarkResult,
+  FLEET_PRESET_CATALOG,
   type EphemeralBenchmarkResult,
   type BenchmarkPlannedRoute,
   type StrategySummary,
+  type FleetPresetId,
 } from '../utils/xlsxBenchmarkEngine';
 import { inspectExcelHeaderMapping, type ColumnMappingInspection } from '../utils/tenantPrivacyEngine';
 import { drawHcmcMapTiles, projectLatLngToCanvas, type MercatorViewport } from '../utils/hcmcMapTiles';
@@ -438,7 +441,12 @@ export function EvsimDualSimulator({
   initialResult?: EphemeralBenchmarkResult | null;
   onResultChange?: (res: EphemeralBenchmarkResult) => void;
 }) {
-  const [result, setResult] = useState<EphemeralBenchmarkResult | null>(initialResult || null);
+  const [baseResult, setResult] = useState<EphemeralBenchmarkResult | null>(initialResult || null);
+  const [fleetPresetId, setFleetPresetId] = useState<FleetPresetId>('default_mixed');
+  const result = useMemo(
+    () => (baseResult ? applyFleetProfileToBenchmarkResult(baseResult, fleetPresetId, {}) : null),
+    [baseResult, fleetPresetId]
+  );
   const onResultChangeRef = useRef(onResultChange);
   useEffect(() => {
     onResultChangeRef.current = onResultChange;
@@ -1210,6 +1218,31 @@ export function EvsimDualSimulator({
               <option value="raw_excel">B0: Thứ tự dòng Excel gốc (ERP)</option>
             </select>
           </label>
+
+          <label className="flex flex-col">
+            <span>Đầu xe &amp; Thùng lạnh/thường (GLX-HDT-v1)</span>
+            <select
+              aria-label="Chọn cấu hình đầu xe và thùng lạnh/thường"
+              value={fleetPresetId}
+              onChange={(e) => {
+                const nextPreset = e.target.value as FleetPresetId;
+                setFleetPresetId(nextPreset);
+                const found = FLEET_PRESET_CATALOG.find((p) => p.id === nextPreset);
+                if (found) {
+                  setUploadNotice(
+                    `Đã áp dụng "${found.title}" (${found.subtitle})`
+                  );
+                }
+              }}
+              className="mt-0.5 text-[12.5px] text-[#2f3440] font-semibold px-2 py-1 border border-[#d8cfbd] rounded-md bg-white"
+            >
+              {FLEET_PRESET_CATALOG.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.title}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         {/* EVSIM #gain Box */}
@@ -1513,7 +1546,6 @@ export function EvsimDualSimulator({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[156px] overflow-y-auto pr-1">
                 {panel.st.routes.map((route, rIdx) => {
                   const customerStops = route.stops.filter((s) => s.kind !== 'depot');
-                  const nonDepotCount = customerStops.length;
                   const districts = Array.from(new Set(customerStops.map((s) => s.district)))
                     .slice(0, 3)
                     .join(' → ');
@@ -1599,11 +1631,19 @@ export function EvsimDualSimulator({
                           />
                           <span className="font-bold text-[#2f3440]">Xe {rIdx + 1}</span>
                           <span className="font-mono text-[10px] px-1 rounded bg-slate-100 text-slate-700 font-semibold">
-                            {route.plate} ({route.capacity_kg}kg)
+                            {route.plate} · {route.short_badge || `${route.capacity_kg}kg`}
                           </span>
                         </div>
                         <span className="font-mono font-bold text-[#2f3440]">
-                          {route.km.toFixed(1)} km · {nonDepotCount} điểm
+                          {route.km.toFixed(1)} km · {route.kg_co2_ttw}kg CO₂
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-1.5 text-[10px] text-[#4b5563]">
+                        <span>
+                          Xác: <b className="text-[#2f3440]">{(route.empty_weight_kg ?? 1750).toLocaleString('en-US')}kg</b> · Hàng: <b className="text-[#2f3440]">{route.kg_delivered}/{route.capacity_kg}kg</b>
+                        </span>
+                        <span>
+                          {route.l_per_100km_empty ?? Number((route.l_per_100km * 0.76).toFixed(1))}→{route.l_per_100km_full ?? Number((route.l_per_100km * 1.14).toFixed(1))} L/100km
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-1.5 text-[10px]">
