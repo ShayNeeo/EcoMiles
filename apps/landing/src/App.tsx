@@ -42,10 +42,10 @@ export function App() {
   };
 
   return (
-    <div className="site-shell min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-ecomiles-lime selection:text-slate-950">
+    <div className="site-shell min-h-screen bg-[#F8FAFC] text-[#0F172A] antialiased selection:bg-[#14532D] selection:text-white">
       <a
         href="#main-content"
-        className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-full bg-ecomiles-lime px-4 py-2 text-sm font-bold text-slate-950 shadow-xl transition-transform focus:translate-y-0"
+        className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-full bg-[#14532D] px-4 py-2 text-sm font-bold text-white shadow-xl transition-transform focus:translate-y-0"
       >
         Bỏ qua điều hướng
       </a>

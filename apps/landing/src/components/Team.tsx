@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface TeamMember {
@@ -16,9 +17,9 @@ const members: TeamMember[] = [
     name: 'Nguyễn Thu Thuỷ',
     role: (
       <>
-        Nghiên Cứu &amp; Cung Cấp Kiến Thức
+        Nghiên cứu &amp; Cung cấp kiến thức
         <br />
-        Logistics &amp; Chuỗi Cung Ứng
+        Logistics &amp; Chuỗi cung ứng
       </>
     ),
     image: '/team/thuy.jpg',
@@ -28,9 +29,9 @@ const members: TeamMember[] = [
     name: 'Phạm Quốc Thanh',
     role: (
       <>
-        Phụ Trách Công Nghệ
+        Phụ trách công nghệ
         <br />
-        &amp; Kiến Trúc Hệ Thống
+        &amp; Kiến trúc hệ thống
       </>
     ),
     image: '/team/thanh.jpg',
@@ -40,9 +41,9 @@ const members: TeamMember[] = [
     name: 'Nguyễn Ngọc Khánh Phương',
     role: (
       <>
-        Nghiên Cứu Thị Trường
+        Nghiên cứu thị trường
         <br />
-        &amp; Phát Triển Bền Vững
+        &amp; Phát triển bền vững
       </>
     ),
     image: '/team/phuong.jpg',
@@ -52,9 +53,9 @@ const members: TeamMember[] = [
     name: 'Nguyễn Hồng Phúc',
     role: (
       <>
-        Mô Hình Tài Chính
+        Mô hình tài chính
         <br />
-        &amp; Kế Hoạch Vốn
+        &amp; Kế hoạch vốn
       </>
     ),
     image: '/team/phuc.jpg',
@@ -64,9 +65,9 @@ const members: TeamMember[] = [
     name: 'Lê Thị Hoàng Ngân',
     role: (
       <>
-        Nghiên Cứu Thị Trường
+        Nghiên cứu thị trường
         <br />
-        &amp; Thương Mại Điện Tử
+        &amp; Thương mại điện tử
       </>
     ),
     image: '/team/ngan.jpg',
@@ -86,11 +87,11 @@ export const Team: React.FC = () => {
 
       gsap.fromTo(
         '.gsap-team-card',
-        { y: 28, opacity: 0 },
+        { y: 24, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.6,
+          duration: 0.5,
           stagger: 0.1,
           ease: 'power3.out',
           scrollTrigger: {
@@ -109,58 +110,57 @@ export const Team: React.FC = () => {
       ref={sectionRef}
       id="team"
       aria-labelledby="team-heading"
-      className="relative isolate overflow-hidden bg-ecomiles-ink px-4 py-24 text-white sm:px-6 sm:py-32 lg:px-8 scroll-mt-24"
+      className="relative isolate overflow-hidden bg-[#F8FAFC] px-4 py-20 sm:px-6 sm:py-28 lg:px-8 scroll-mt-24 border-t border-slate-200/80"
     >
       <div className="relative z-10 mx-auto max-w-7xl">
-        <div className="grid items-end gap-10 border-b border-white/10 pb-12 lg:grid-cols-[1.35fr_0.65fr] lg:pb-16">
+        <div className="grid items-end gap-8 border-b border-slate-200 pb-10 lg:grid-cols-[1.35fr_0.65fr] lg:pb-12">
           <div>
             <h2
               id="team-heading"
-              className="max-w-4xl text-balance text-3xl font-extrabold leading-[1.04] tracking-[-0.03em] text-white sm:text-5xl lg:text-6xl"
+              className="max-w-4xl text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight"
             >
-              Đội Ngũ Sáng Lập Liên Ngành{' '}
-              <span className="block pt-2 text-ecomiles-lime">Từ Nghiên Cứu Đến Khởi Nghiệp 2026</span>
+              Đội ngũ sáng lập liên ngành{' '}
+              <span className="text-[#14532D]">từ nghiên cứu đến khởi nghiệp 2026</span>
             </h2>
           </div>
 
-          <div className="lg:pb-1">
-            <p className="max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
-              Dự án hội tụ năng lực chuyên sâu về kinh tế vận tải, công nghệ phần mềm, phát triển bền vững và vận hành
-              giao nhận hàng hóa đô thị.
+          <div>
+            <p className="max-w-xl text-base text-[#475569] leading-relaxed">
+              Dự án hội tụ năng lực chuyên sâu về kinh tế vận tải, công nghệ phần mềm, phát triển bền vững và vận hành giao nhận hàng hóa đô thị.
             </p>
           </div>
         </div>
 
-        <div className="mt-14 flex flex-wrap justify-center gap-x-6 gap-y-12 sm:gap-x-8 md:gap-y-14 lg:mt-20 lg:gap-x-10">
+        <div className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-10 sm:gap-x-8 md:gap-y-12 lg:gap-x-10">
           {members.map((member, index) => (
             <article
               key={member.name}
-              className="gsap-team-card group min-w-0 w-[calc(50%-0.75rem)] max-w-[230px] text-center max-[359px]:w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.34rem)] lg:w-[calc(33.333%-1.67rem)] lg:max-w-[280px]"
+              className="gsap-team-card group min-w-0 w-[calc(50%-0.75rem)] max-w-[220px] text-center max-[359px]:w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.34rem)] lg:w-[calc(20%-1.6rem)]"
             >
-              <div className="relative mx-auto aspect-square w-full max-w-[220px]">
-                <div className="relative h-full overflow-hidden rounded-full border border-white/15 bg-[#e8f0e4] shadow-2xl shadow-black/50 transition duration-300 group-hover:-translate-y-1 group-hover:border-ecomiles-lime/60">
+              <div className="relative mx-auto aspect-square w-full max-w-[190px]">
+                <div className="relative h-full overflow-hidden rounded-full border-2 border-slate-200 bg-[#e8f0e4] shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:border-[#14532D]">
                   <img
                     src={member.image}
                     alt={`Chân dung ${member.name}`}
-                    width="440"
-                    height="440"
-                    loading="eager"
+                    width="400"
+                    height="400"
+                    loading="lazy"
                     decoding="async"
-                    className="h-full w-full object-cover saturate-[0.85] transition duration-500 group-hover:scale-[1.03] group-hover:saturate-100"
+                    className="h-full w-full object-cover saturate-[0.9] transition duration-300 group-hover:scale-[1.03] group-hover:saturate-100"
                     style={{ objectPosition: member.imagePosition }}
                   />
                 </div>
 
-                <span className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-full border border-ecomiles-lime/40 bg-ecomiles-ink font-mono text-xs font-bold text-ecomiles-lime shadow-lg sm:h-9 sm:w-9">
+                <span className="absolute bottom-1 right-1 flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#14532D] font-mono text-xs font-bold text-white shadow-sm sm:h-8 sm:w-8">
                   {String(index + 1).padStart(2, '0')}
                 </span>
               </div>
 
-              <div className="mx-auto mt-5 max-w-[260px] space-y-2">
-                <h3 className="font-barlow text-lg font-extrabold uppercase leading-tight tracking-[0.025em] text-white sm:text-xl">
+              <div className="mx-auto mt-4 space-y-1">
+                <h3 className="text-base font-bold text-[#0F172A] leading-snug">
                   {member.name}
                 </h3>
-                <p className="text-xs font-bold leading-5 text-ecomiles-lime sm:text-sm text-balance">
+                <p className="text-xs font-semibold leading-5 text-[#14532D]">
                   {member.role}
                 </p>
               </div>

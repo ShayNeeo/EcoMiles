@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T00:00:00.000Z",
+  "title": "Design System: EcoMiles B2B Logistics & Carbon SaaS",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Deep Forest Emerald",
+        "canonical": "#14532d",
+        "tonalRamp": ["#052e16", "#0f3f22", "#14532d", "#166534", "#15803d", "#22c55e", "#bbf7d0", "#f0fdf4"]
+      },
+      "canvas-alabaster": {
+        "role": "neutral",
+        "displayName": "Alabaster Ground",
+        "canonical": "#f8fafc",
+        "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#94a3b8", "#e2e8f0", "#f1f5f9", "#f8fafc"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Concise sentence-case hero headline." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings without eyebrow kickers." },
+      "body": { "displayName": "Body", "purpose": "Clear Vietnamese business copy at 65-72ch." },
+      "label": { "displayName": "Monospace Label", "purpose": "License plates, KMS fingerprints, and tabular metrics." }
+    },
+    "shadows": [
+      { "name": "focal-frame", "value": "0 16px 40px -16px rgba(15, 23, 42, 0.10)", "purpose": "Hero product showcase frame and dialogs." },
+      { "name": "interactive-lift", "value": "0 8px 24px -12px rgba(15, 23, 42, 0.08)", "purpose": "Active pricing tier and interactive hover lift." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Smooth deceleration for tab switches and modal reveals." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary CTA for entering workspace or submitting pilot form.",
+      "html": "<button class=\"ds-btn-primary\">Vào Hệ Thống Điều Phối</button>",
+      "css": ".ds-btn-primary { background: #14532d; color: #ffffff; padding: 12px 22px; font-weight: 700; font-size: 14px; border: 1px solid #14532d; border-radius: 12px; cursor: pointer; transition: background 0.18s ease, box-shadow 0.18s ease; } .ds-btn-primary:hover { background: #0f3f22; box-shadow: 0 8px 20px -10px rgba(20, 83, 45, 0.45); } .ds-btn-primary:focus-visible { outline: 2px solid #14532d; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Surface Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary action on daylight surfaces.",
+      "html": "<button class=\"ds-btn-secondary\">Xem Đối Chứng 2 Bản Đồ</button>",
+      "css": ".ds-btn-secondary { background: #ffffff; color: #0f172a; padding: 12px 20px; font-weight: 600; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 12px; cursor: pointer; transition: background 0.18s ease, border-color 0.18s ease; } .ds-btn-secondary:hover { background: #f8fafc; border-color: #94a3b8; } .ds-btn-secondary:focus-visible { outline: 2px solid #14532d; outline-offset: 2px; }"
+    },
+    {
+      "name": "Enterprise Credential Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Authenticated login input with high-contrast border and emerald focus ring.",
+      "html": "<input class=\"ds-input\" type=\"email\" value=\"orchestrator@nvc-cold.vn\" />",
+      "css": ".ds-input { background: #ffffff; color: #0f172a; padding: 10px 14px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 10px; width: 260px; } .ds-input:focus-visible { outline: 2px solid #14532d; outline-offset: 1px; border-color: #14532d; }"
+    },
+    {
+      "name": "Tenant Security Pill",
+      "kind": "chip",
+      "refersTo": "chip-security",
+      "description": "Displays locked multi-tenant KMS isolation state in the authenticated header.",
+      "html": "<span class=\"ds-chip-sec\">BYOK AES-256-GCM · Đã khóa phiên</span>",
+      "css": ".ds-chip-sec { display: inline-flex; align-items: center; background: #eef7ee; color: #14532d; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }"
+    },
+    {
+      "name": "Ledger Card Container",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Crisp daylight container for KPIs, pricing matrix, and fleet tables.",
+      "html": "<div class=\"ds-card\"><strong>Giảm 34,9% quãng đường</strong><p>243,7 km so với 374,4 km thủ công.</p></div>",
+      "css": ".ds-card { background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.06); } .ds-card p { color: #475569; margin: 6px 0 0; font-size: 13px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Daylight Control Ledger",
+    "overview": "EcoMiles pairs the crisp legibility of a modern financial ledger with the spatial clarity of an urban cartographic atlas. Designed for logistics dispatchers working under bright warehouse/office lighting and enterprise executives evaluating Scope 3 carbon compliance, the interface favors daylight paper surfaces, decisive forest-emerald actions, and live operational proof over dark decorative chrome.",
+    "keyCharacteristics": [
+      "Daylight-first surfaces (#f8fafc alabaster ground with #ffffff crisp paper containers)",
+      "Visual-first product proof replacing verbose paragraphs",
+      "Tabular numeric discipline (tabular-nums) across every km, kg, VND, and CO2e reading"
+    ],
+    "rules": [
+      { "name": "The Anti-Gym Rule", "body": "Never pair a near-black page background with neon lime/red bordered membership boxes on marketing or pricing surfaces; B2B logistics trust lives on crisp daylight paper.", "section": "colors" },
+      { "name": "The Zero-Kicker Rule", "body": "Never place an uppercase pill or eyebrow kicker above h1 or h2 headings; let the heading carry its own hierarchy.", "section": "typography" },
+      { "name": "The Monospace Restraint Rule", "body": "Use monospace only for genuine identifiers (license plates, SHA-256/KMS hashes, numeric cells), never as a tech costume on marketing copy.", "section": "typography" }
+    ],
+    "dos": [
+      "Do keep public landing copy concise and pair every claim with a real product visual or interactive control.",
+      "Do enforce font-variant-numeric: tabular-nums on every numeric KPI, table column, timer, and price.",
+      "Do require explicit Đăng xuất before switching between B2B company tenants."
+    ],
+    "donts": [
+      "Don't use dark gym-card pricing blocks, neon yellow full-bleed fills, or gradient text.",
+      "Don't place eyebrow kickers above section headings or use thick border-l-4 stripes.",
+      "Don't expose developer acronyms (JSON, Bearer DEMO, raw code tags) on public marketing sections."
+    ]
+  }
+}

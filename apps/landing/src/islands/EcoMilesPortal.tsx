@@ -26,16 +26,21 @@ import {
   EyeOff,
   Eye,
   Users,
-  Activity,
   Database,
   SplitSquareVertical,
-  Building2,
   Search,
   KeyRound,
   ArrowRight,
   RefreshCw,
   Play,
   Zap,
+  Clock,
+  Sliders,
+  ShieldAlert,
+  DollarSign,
+  Leaf,
+  Info,
+  Gauge,
 } from 'lucide-react';
 import {
   parseXlsxToRows,
@@ -55,9 +60,19 @@ import {
   buildBlindedAdminRow,
   inspectExcelHeaderMapping,
   redactVietnamesePii,
+  DEMO_CREDENTIAL_ACCOUNTS,
+  getCompanySecurityPolicy,
+  formatReceiverForTenantPolicy,
+  buildCompany14DayTelemetry,
+  encryptTenantPayloadAesGcm,
+  decryptTenantPayloadAesGcm,
   type AppRole,
   type CompanyTenant,
   type ColumnMappingInspection,
+  type AuthenticatedSession,
+  type DemoCredentialAccount,
+  type CompanySecurityPolicy,
+  type EncryptedTenantEnvelope,
 } from '../utils/tenantPrivacyEngine';
 import { EvsimDualSimulator } from './EvsimDualSimulator';
 
@@ -376,25 +391,49 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
   const [activeNavStopSeq, setActiveNavStopSeq] = useState<number>(1);
   const [voiceNavNotice, setVoiceNavNotice] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [maskPii, setMaskPii] = useState<boolean>(true);
   const [clusterRadiusKm, setClusterRadiusKm] = useState<number>(3.0);
   const [enforceQd23Ban, setEnforceQd23Ban] = useState<boolean>(true);
   const [enableBackhaul, setEnableBackhaul] = useState<boolean>(true);
   const [statusBanner, setStatusBanner] = useState<string>('');
-  const [showLoginGate, setShowLoginGate] = useState<boolean>(
-    pathname === '/dashboard' || pathname === '/app' || pathname === '/portal'
+  // Authenticated Session State (Fixes Zalo FB-05: Real Multi-Company Login & Logout)
+  const [authenticatedSession, setAuthenticatedSession] = useState<AuthenticatedSession | null>(null);
+
+  // Login Form States
+  const [loginUsername, setLoginUsername] = useState<string>('orchestrator@nvc-cold.vn');
+  const [loginPassword, setLoginPassword] = useState<string>('NvcCold@2026!');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loginLoading, setLoginLoading] = useState<boolean>(false);
+  const [selectedDemoPreset, setSelectedDemoPreset] = useState<DemoCredentialAccount | null>(
+    DEMO_CREDENTIAL_ACCOUNTS[0]
   );
-  const [loginLoadingRole, setLoginLoadingRole] = useState<AppRole | null>(null);
-  const [authSessionInfo, setAuthSessionInfo] = useState<{
-    token: string;
-    account: string;
-    endpoint: string;
-    latencyMs: number;
+  // DPO Unmask & Audit Log State (NVC-COLD & Privacy Policies)
+  const [dpoUnmaskedRows, setDpoUnmaskedRows] = useState<Set<string>>(new Set());
+  const [dpoAuditLogs, setDpoAuditLogs] = useState<
+    Array<{ timestamp: string; operator: string; external_id: string; reason: string }>
+  >([]);
+
+  // Carbon Value Scenario Toggle (Mentor Minh Insight #6 & #7)
+  const [carbonScenario, setCarbonScenario] = useState<1 | 2 | 3>(1);
+
+  // Personal Driver Preferences (Fixes Zalo FB-04: personal route setup)
+  const [avoidNarrowAlleys, setAvoidNarrowAlleys] = useState<boolean>(true);
+  const [autoRestAlert, setAutoRestAlert] = useState<boolean>(true);
+  const [vietnameseVoiceNav, setVietnameseVoiceNav] = useState<boolean>(true);
+
+  // Zero-Knowledge Live WebCrypto AES-256-GCM Verification State (Admin View)
+  const [cryptoTestState, setCryptoTestState] = useState<{
+    running: boolean;
+    envelope: EncryptedTenantEnvelope | null;
+    successMessage: string | null;
+    errorMessage: string | null;
+    step: 'idle' | 'encrypted' | 'cross_failed' | 'self_success';
   }>({
-    token: 'ecm_sess_demo_2026',
-    account: 'orchestrator@namvietcold.vn',
-    endpoint: 'GET /api/vehicles (200 OK)',
-    latencyMs: 12,
+    running: false,
+    envelope: null,
+    successMessage: null,
+    errorMessage: null,
+    step: 'idle',
   });
   const [roleApprovals, setRoleApprovals] = useState([
     {
@@ -424,6 +463,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     [selectedTenantId]
   );
 
+  const activePolicy: CompanySecurityPolicy = useMemo(
+    () => getCompanySecurityPolicy(activeCompany.tenant_id),
+    [activeCompany.tenant_id]
+  );
+
   // Sync URL route with Role & Sidebar Tab
   useEffect(() => {
     const tid = window.setTimeout(() => {
@@ -437,13 +481,16 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
         setActiveRole('user');
         setUserTab('routing');
       } else {
-        setActiveRole(defaultRole);
+        if (authenticatedSession) {
+          setActiveRole(authenticatedSession.role);
+        } else {
+          setActiveRole(defaultRole);
+        }
       }
     }, 0);
     return () => window.clearTimeout(tid);
-  }, [pathname, defaultRole]);
-
-  const loadCompanyWorkbook = async (fileName: string, companyName?: string) => {
+  }, [pathname, defaultRole, authenticatedSession]);
+  const loadCompanyWorkbook = async (fileName: string, companyName?: string, keyFp?: string) => {
     try {
       const resp = await fetch(`/samples/${fileName}`);
       if (!resp.ok) return;
@@ -458,7 +505,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       setStopStatusOverrides({});
       if (companyName) {
         setStatusBanner(
-          `Đã chuyển sang không gian dữ liệu riêng của "${companyName}" (${bench.rows_valid} đơn hàng · Khóa mã hóa ${activeCompany.key_fingerprint}).`
+          `Đã chuyển sang không gian dữ liệu riêng của "${companyName}" (${bench.rows_valid} đơn hàng · Khóa mã hóa ${keyFp || activeCompany.key_fingerprint}).`
         );
       }
     } catch (e) {
@@ -466,7 +513,32 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     }
   };
 
+  // Auto-issue real signed HMAC evaluator session when opening /benchmark directly
   useEffect(() => {
+    if (pathname !== '/benchmark' || authenticatedSession) return;
+    let cancelled = false;
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'evaluator@vsic-evsim.vn', password: 'EvsimAudit@2026' }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!cancelled && data?.ok && data.session) {
+          setAuthenticatedSession(data.session);
+        }
+      })
+      .catch(() => {
+        // ignore offline fallback on public benchmark
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname, authenticatedSession]);
+
+  // Load company workbook ONLY when authenticated (or on public /benchmark sandbox)
+  useEffect(() => {
+    if (!authenticatedSession && pathname !== '/benchmark') return;
     let cancelled = false;
     const fileName = activeCompany.default_sample_file;
     fetch(`/samples/${fileName}`)
@@ -486,8 +558,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     return () => {
       cancelled = true;
     };
-  }, [activeCompany.tenant_id, activeCompany.default_sample_file]);
-
+  }, [authenticatedSession, pathname, activeCompany.tenant_id, activeCompany.default_sample_file]);
   const handleUploadCustomFile = async (file: File) => {
     try {
       const lower = file.name.toLowerCase();
@@ -513,7 +584,36 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
   const handleExportExcel3Sheet = () => {
     if (!result) return;
-    const xml = buildAutomatedExcelWorkbookXml(result, selectedStrategyId);
+    const sanitizeOrderAddress = (addr: string) =>
+      activePolicy.strip_address_on_export ? redactVietnamesePii(addr).text : addr;
+    const exportSafeResult: EphemeralBenchmarkResult =
+      activePolicy.strip_address_on_export ||
+      activePolicy.pseudonymize_customer_name ||
+      activePolicy.mask_phone_by_default
+        ? {
+            ...result,
+            orders: result.orders.map((o, idx) => {
+              const fmt = formatReceiverForTenantPolicy(
+                activeCompany.tenant_id,
+                {
+                  row_num: o.row_num || idx + 1,
+                  external_id: o.external_id,
+                  receiver: o.receiver,
+                  phone: o.phone,
+                  address: o.address,
+                },
+                false
+              );
+              return {
+                ...o,
+                receiver: fmt.display_receiver,
+                phone: fmt.display_phone,
+                address: sanitizeOrderAddress(fmt.display_address),
+              };
+            }),
+          }
+        : result;
+    const xml = buildAutomatedExcelWorkbookXml(exportSafeResult, selectedStrategyId);
     const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -524,7 +624,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     a.remove();
     URL.revokeObjectURL(url);
     setStatusBanner(
-      `Đã kết xuất Báo cáo Excel 3 Sheet tự động cho ${activeCompany.short_name} (Mã xác thực ${result.dataset_fingerprint}).`
+      `Đã kết xuất Báo cáo Excel 3 Sheet tự động cho ${activeCompany.short_name} (${activePolicy.strip_address_on_export ? 'Đã lọc địa chỉ & SĐT theo NĐ 13/2023 · ' : ''}Mã xác thực ${result.dataset_fingerprint}).`
     );
   };
 
@@ -545,13 +645,429 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     );
   };
 
+  const handleSelectPreset = (acc: DemoCredentialAccount) => {
+    setSelectedDemoPreset(acc);
+    setLoginUsername(acc.username);
+    setLoginPassword(acc.password);
+    setLoginError(null);
+  };
+
+  const completeLoginSession = (sess: AuthenticatedSession) => {
+    setDpoUnmaskedRows(new Set());
+    setDpoAuditLogs([]);
+    setAuthenticatedSession(sess);
+    setActiveRole(sess.role);
+    if (sess.tenant_id && sess.tenant_id !== 'SYS-ADMIN') {
+      const comp = B2B_COMPANIES.find((c) => c.tenant_id === sess.tenant_id);
+      if (comp) {
+        setSelectedTenantId(comp.tenant_id);
+        loadCompanyWorkbook(comp.default_sample_file, comp.short_name, comp.key_fingerprint);
+      }
+    }
+    if (sess.role === 'driver') {
+      if (typeof sess.driver_route_idx === 'number') {
+        setSelectedDriverRouteIdx(sess.driver_route_idx);
+      }
+      navigate({ to: '/driver' });
+    } else if (sess.role === 'tester') {
+      navigate({ to: '/benchmark' });
+    } else if (sess.role === 'admin') {
+      navigate({ to: '/audit' });
+    } else {
+      navigate({ to: '/dashboard' });
+    }
+    setLoginLoading(false);
+    setStatusBanner(
+      `Đăng nhập thành công với vai trò ${sess.label_vi} (${sess.username}) · Phân vùng ${sess.tenant_id}`
+    );
+  };
+
+  const handleLoginSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setLoginLoading(true);
+    setLoginError(null);
+    const inputUser = loginUsername.trim();
+    const inputPass = loginPassword;
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: inputUser, password: inputPass }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.ok && data.session) {
+          completeLoginSession(data.session);
+          return;
+        }
+      }
+      const errData = await res.json().catch(() => ({}));
+      setLoginError(
+        errData.error ||
+          `HTTP ${res.status}: Sai tên đăng nhập hoặc mật khẩu doanh nghiệp. Vui lòng kiểm tra lại thông tin xác thực.`
+      );
+      setLoginLoading(false);
+      return;
+    } catch {
+      const matchedAccount = DEMO_CREDENTIAL_ACCOUNTS.find(
+        (a) => a.username.toLowerCase() === inputUser.toLowerCase()
+      );
+      if (!matchedAccount || matchedAccount.password !== inputPass) {
+        setLoginError(
+          'HTTP 401: Sai tên đăng nhập hoặc mật khẩu doanh nghiệp. Vui lòng kiểm tra lại thông tin xác thực.'
+        );
+        setLoginLoading(false);
+        return;
+      }
+      const policy = getCompanySecurityPolicy(matchedAccount.tenant_id);
+      const mockSession: AuthenticatedSession = {
+        token: `ecm_v2_${matchedAccount.account_id}_${Date.now()}`,
+        account_id: matchedAccount.account_id,
+        username: matchedAccount.username,
+        label_vi: matchedAccount.label_vi,
+        role: matchedAccount.role,
+        tenant_id: matchedAccount.tenant_id,
+        driver_route_idx: matchedAccount.driver_route_idx,
+        driver_code: matchedAccount.driver_code,
+        assigned_plate: matchedAccount.assigned_plate,
+        key_fingerprint:
+          matchedAccount.tenant_id === 'SYS-ADMIN'
+            ? 'KMS-SYS-ZERO'
+            : B2B_COMPANIES.find((c) => c.tenant_id === matchedAccount.tenant_id)?.key_fingerprint ||
+              'KMS-DEFAULT',
+        policy_id:
+          matchedAccount.role === 'admin'
+            ? 'ZERO-KNOWLEDGE-BLIND'
+            : matchedAccount.role === 'tester'
+              ? 'SANDBOX-EVAL'
+              : policy.policy_id,
+        issued_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 28800000).toISOString(),
+      };
+      completeLoginSession(mockSession);
+      return;
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      if (authenticatedSession?.token) {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${authenticatedSession.token}` },
+        });
+      }
+    } catch {
+      // ignore network errors
+    }
+    // Complete ephemeral RAM & sessionStorage shred on logout (Finding 3 fix)
+    setResult(null);
+    setColumnInspection([]);
+    setStopStatusOverrides({});
+    setSearchQuery('');
+    setDpoUnmaskedRows(new Set());
+    setDpoAuditLogs([]);
+    setCryptoTestState({
+      running: false,
+      envelope: null,
+      successMessage: null,
+      errorMessage: null,
+      step: 'idle',
+    });
+    if (typeof window !== 'undefined') {
+      try {
+        window.sessionStorage?.clear();
+      } catch {
+        // ignore storage restrictions
+      }
+    }
+    setAuthenticatedSession(null);
+    setStatusBanner(
+      'Đã đăng xuất an toàn. Khóa phiên và toàn bộ dữ liệu RAM tạm thời của doanh nghiệp đã được hủy.'
+    );
+  };
+
+  // STRICT UNAUTHENTICATED GATE: Zero protected workspace DOM or company data rendered before login
+  if (!authenticatedSession && pathname !== '/benchmark') {
+    return (
+      <div
+        data-ui="ecomiles-b2b-signin-gate"
+        className="min-h-screen bg-[#f8fafc] text-[#0f172a] antialiased flex flex-col"
+        style={{ fontFamily: '"Be Vietnam Pro", "Inter", system-ui, -apple-system, sans-serif' }}
+      >
+        <header className="bg-white border-b border-[#e2e8f0] px-4 sm:px-6 py-3">
+          <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
+            <a href="/" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[#14532d] text-white flex items-center justify-center font-black text-sm">
+                EM
+              </div>
+              <div>
+                <div className="font-extrabold text-sm text-[#0f172a] leading-none">
+                  EcoMiles <span className="text-[#16a34a]">TMS</span>
+                </div>
+                <div className="text-xs text-[#475569] mt-0.5">
+                  Cổng Xác Thực Đa Doanh Nghiệp &amp; Phân Quyền Bảo Mật NĐ 13/2023
+                </div>
+              </div>
+            </a>
+            <a
+              href="/"
+              className="px-3 py-1.5 rounded-lg border border-[#cbd5e1] bg-white hover:bg-[#f8fafc] text-xs font-semibold text-[#0f172a]"
+            >
+              Về trang chủ
+            </a>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
+          <div
+            role="region"
+            aria-label="Cổng đăng nhập bảo mật đa doanh nghiệp EcoMiles"
+            className="w-full max-w-5xl bg-white text-[#0f172a] rounded-2xl border border-[#e2e8f0] shadow-[0_20px_50px_-20px_rgba(15,23,42,0.12)] overflow-hidden"
+          >
+            <div className="px-6 py-4 bg-[#14532d] text-white flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h1 className="text-lg sm:text-xl font-bold text-white">
+                  Đăng Nhập Hệ Thống Quản Trị Vận Tải &amp; Tài Khoản Tài Xế EcoMiles
+                </h1>
+                <p className="text-xs text-emerald-100 mt-0.5">
+                  Mỗi doanh nghiệp sở hữu khóa mã hóa AES-256-GCM và chính sách bảo vệ dữ liệu riêng biệt.
+                </p>
+              </div>
+              <span className="px-2.5 py-1 rounded-md bg-white/15 text-white text-xs font-mono font-semibold">
+                HMAC-SHA256 Session
+              </span>
+            </div>
+
+            <div className="p-5 sm:p-6 bg-[#f8fafc] grid grid-cols-1 lg:grid-cols-12 gap-5">
+              <div className="lg:col-span-6 space-y-4">
+                <div>
+                  <h2 className="text-sm font-bold text-[#0f172a] flex items-center gap-2">
+                    <KeyRound className="w-4 h-4 text-[#16a34a]" />
+                    <span>Chọn Tài Khoản Điền Sẵn (1 Chạm Để Kiểm Thử)</span>
+                  </h2>
+                  <p className="text-xs text-[#475569] mt-0.5">
+                    Bấm vào tài khoản mẫu bên dưới để tự động điền Email &amp; Mật khẩu tương ứng:
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-[#334155]">
+                    1. Ba Doanh Nghiệp B2B (Khóa KMS &amp; Chính Sách Riêng)
+                  </div>
+                  <div className="space-y-2">
+                    {DEMO_CREDENTIAL_ACCOUNTS.filter((a) => a.role === 'user').map((acc) => {
+                      const isSelected = selectedDemoPreset?.account_id === acc.account_id;
+                      return (
+                        <button
+                          key={acc.account_id}
+                          type="button"
+                          onClick={() => handleSelectPreset(acc)}
+                          className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-white border-[#14532d] shadow-sm ring-2 ring-[#14532d]/15'
+                              : 'bg-white border-[#e2e8f0] hover:border-[#cbd5e1]'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-xs text-[#0f172a]">{acc.label_vi}</span>
+                            <span className="px-2 py-0.5 rounded text-xs font-bold bg-[#f0fdf4] text-[#14532d] border border-[#bbf7d0]">
+                              {acc.badge_vi}
+                            </span>
+                          </div>
+                          <div className="text-xs text-[#475569] mt-1">{acc.subtitle_vi}</div>
+                          <div className="text-xs font-mono text-[#0f172a] mt-1">{acc.username}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-[#334155]">
+                    2. Tài Khoản Tài Xế Cá Nhân (3 Công Ty · Gắn Theo Biển Số Xe)
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {DEMO_CREDENTIAL_ACCOUNTS.filter((a) => a.role === 'driver').map((acc) => {
+                      const isSelected = selectedDemoPreset?.account_id === acc.account_id;
+                      return (
+                        <button
+                          key={acc.account_id}
+                          type="button"
+                          onClick={() => handleSelectPreset(acc)}
+                          className={`text-left p-2.5 rounded-xl border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-white border-[#14532d] shadow-sm ring-2 ring-[#14532d]/15'
+                              : 'bg-white border-[#e2e8f0] hover:border-[#cbd5e1]'
+                          }`}
+                        >
+                          <div className="font-bold text-xs text-[#0f172a] truncate">{acc.label_vi}</div>
+                          <div className="text-xs font-mono font-semibold text-[#14532d] mt-0.5">
+                            {acc.assigned_plate}
+                          </div>
+                          <div className="text-xs font-mono text-[#475569] mt-0.5 truncate">{acc.username}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-[#334155]">
+                    3. Kiểm Thử Đối Chứng &amp; Quản Trị Hạ Tầng Zero-Knowledge
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {DEMO_CREDENTIAL_ACCOUNTS.filter((a) => a.role === 'tester' || a.role === 'admin').map((acc) => {
+                      const isSelected = selectedDemoPreset?.account_id === acc.account_id;
+                      return (
+                        <button
+                          key={acc.account_id}
+                          type="button"
+                          onClick={() => handleSelectPreset(acc)}
+                          className={`text-left p-2.5 rounded-xl border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-white border-[#14532d] shadow-sm ring-2 ring-[#14532d]/15'
+                              : 'bg-white border-[#e2e8f0] hover:border-[#cbd5e1]'
+                          }`}
+                        >
+                          <div className="font-bold text-xs text-[#0f172a] truncate">{acc.label_vi}</div>
+                          <div className="text-xs font-mono text-[#475569] mt-0.5 truncate">{acc.username}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-6 bg-white border border-[#e2e8f0] rounded-xl p-5 space-y-4 flex flex-col justify-between">
+                <form onSubmit={handleLoginSubmit} className="space-y-4">
+                  <div>
+                    <h2 className="text-base font-bold text-[#0f172a]">
+                      Thông Tin Đăng Nhập Doanh Nghiệp
+                    </h2>
+                    <p className="text-xs text-[#475569] mt-0.5">
+                      Xác thực qua <code className="font-mono">POST /api/auth/login</code> và khóa cứng phạm vi dữ liệu theo công ty.
+                    </p>
+                  </div>
+
+                  {statusBanner && (
+                    <div className="p-2.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-xs font-semibold text-[#14532d]">
+                      {statusBanner}
+                    </div>
+                  )}
+
+                  <div className="space-y-1">
+                    <label htmlFor="ecm-login-email" className="block text-xs font-bold text-[#334155]">
+                      Email / Tài khoản:
+                    </label>
+                    <input
+                      id="ecm-login-email"
+                      name="username"
+                      type="email"
+                      required
+                      value={loginUsername}
+                      onChange={(e) => setLoginUsername(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-lg border border-[#cbd5e1] bg-white text-xs font-mono text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <label htmlFor="ecm-login-password" className="block text-xs font-bold text-[#334155]">
+                        Mật khẩu:
+                      </label>
+                      <span className="text-xs text-[#475569]">Có thể nhập sai để kiểm thử HTTP 401</span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        id="ecm-login-password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        className="w-full pl-3 pr-10 py-2.5 rounded-lg border border-[#cbd5e1] bg-white text-xs font-mono text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#475569] hover:text-[#0f172a] cursor-pointer"
+                        title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {(() => {
+                    const targetTenant = selectedDemoPreset?.tenant_id || 'TNT-NAMVIET-002';
+                    const pol = getCompanySecurityPolicy(targetTenant);
+                    return (
+                      <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold text-[#0f172a]">Chính sách bảo mật áp dụng:</span>
+                          <span className="px-2 py-0.5 rounded font-mono font-bold text-xs bg-[#eef7ee] text-[#14532d] border border-[#bbf7d0]">
+                            {selectedDemoPreset?.role === 'admin' ? 'ZERO-KNOWLEDGE-BLIND' : pol.policy_id}
+                          </span>
+                        </div>
+                        <div className="text-xs text-[#475569]">
+                          {selectedDemoPreset?.role === 'admin'
+                            ? 'Quản trị viên chỉ giám sát hạ tầng máy chủ; 0% quyền giải mã tên, SĐT và địa chỉ khách hàng.'
+                            : pol.summary_vi}
+                        </div>
+                        {selectedDemoPreset?.role !== 'admin' && (
+                          <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-[#e2e8f0] text-xs text-[#475569]">
+                            <div>Ngân hàng đối soát: <strong className="text-[#0f172a]">{pol.invoice_bank_name}</strong></div>
+                            <div>Mã số thuế: <strong className="text-[#0f172a]">{pol.tax_code_mst}</strong></div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  {loginError && (
+                    <div
+                      role="alert"
+                      className="p-3 rounded-lg bg-[#fef2f2] border border-[#dc2626] text-[#991b1b] text-xs font-semibold flex items-start gap-2"
+                    >
+                      <AlertTriangle className="w-4 h-4 text-[#dc2626] shrink-0 mt-0.5" />
+                      <div>
+                        <div className="font-bold">Từ Chối Xác Thực (HTTP 401)</div>
+                        <div className="mt-0.5">{loginError}</div>
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loginLoading}
+                    className="w-full py-3 px-4 rounded-xl bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                  >
+                    <Lock className="w-4 h-4" />
+                    <span>{loginLoading ? 'Đang xác thực phiên...' : 'Đăng Nhập Hệ Thống'}</span>
+                  </button>
+                </form>
+
+                <div className="text-xs text-[#475569] pt-2 border-t border-[#e2e8f0] leading-relaxed">
+                  Phiên làm việc sau khi đăng nhập được khóa cứng với doanh nghiệp đã chọn. Muốn chuyển sang công ty khác, người dùng bắt buộc phải bấm <strong>Đăng xuất</strong> để thu hồi khóa phiên.
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   if (!result) {
     return (
       <div className="min-h-screen bg-[#f3f4f6] text-[#111827] flex items-center justify-center p-8">
         <div className="bg-white border border-[#e5e7eb] rounded-xl p-8 text-center space-y-3 shadow-sm">
-          <div className="w-7 h-7 rounded-full border-2 border-[#1971c2] border-t-transparent animate-spin mx-auto" />
+          <div className="w-7 h-7 rounded-full border-2 border-[#14532d] border-t-transparent animate-spin mx-auto" />
           <p className="text-sm font-semibold text-[#111827]">
-            Đang khởi tạo Hệ thống Quản trị Vận tải B2B EcoMiles...
+            Đang nạp dữ liệu phân vùng bảo mật của {activeCompany.short_name}...
           </p>
         </div>
       </div>
@@ -637,86 +1153,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     },
   ];
 
-  const switchRole = (role: AppRole) => {
-    setActiveRole(role);
-    if (role === 'tester') navigate({ to: '/benchmark' });
-    else if (role === 'driver') navigate({ to: '/driver' });
-    else if (role === 'admin') navigate({ to: '/audit' });
-    else navigate({ to: '/dashboard' });
-  };
-
-  const handleFastApiLogin = async (
-    targetRole: AppRole,
-    targetTenantId?: string,
-    targetDriverIdx?: number
-  ) => {
-    setLoginLoadingRole(targetRole);
-    const t0 = performance.now();
-    let endpointCalled = 'GET /api/health';
-    let statusOk = 200;
-    try {
-      if (targetRole === 'driver') {
-        endpointCalled = 'GET /api/driver/route (X-Driver-Pin: 0000)';
-        const r = await fetch('/api/driver/route', {
-          headers: { 'X-Driver-Pin': '0000' },
-        });
-        statusOk = r.status || 200;
-      } else if (targetRole === 'admin') {
-        endpointCalled = 'GET /api/health (Bearer DEMO · Zero-Knowledge)';
-        const r = await fetch('/api/health', {
-          headers: { Authorization: 'Bearer DEMO' },
-        });
-        statusOk = r.status || 200;
-      } else if (targetRole === 'tester') {
-        endpointCalled = 'GET /api/report (Bearer DEMO · EVSIM Sandbox)';
-        const r = await fetch('/api/report', {
-          headers: { Authorization: 'Bearer DEMO' },
-        });
-        statusOk = r.status || 200;
-      } else {
-        endpointCalled = 'GET /api/vehicles (Bearer DEMO · Tenant Auth)';
-        const r = await fetch('/api/vehicles', {
-          headers: { Authorization: 'Bearer DEMO' },
-        });
-        statusOk = r.status || 200;
-      }
-    } catch {
-      statusOk = 200;
-    }
-    const latencyMs = Math.max(4, Math.round(performance.now() - t0));
-    const nextComp =
-      B2B_COMPANIES.find((c) => c.tenant_id === (targetTenantId || selectedTenantId)) ||
-      activeCompany;
-
-    if (targetTenantId && targetTenantId !== selectedTenantId) {
-      setSelectedTenantId(targetTenantId);
-      await loadCompanyWorkbook(nextComp.default_sample_file, nextComp.short_name);
-    }
-    if (typeof targetDriverIdx === 'number') {
-      setSelectedDriverRouteIdx(targetDriverIdx);
-    }
-
-    const accountMap: Record<AppRole, string> = {
-      user: `orchestrator@${nextComp.code.toLowerCase()}.vn`,
-      tester: 'evaluator@vsic-evsim.vn',
-      driver: `driver.${activeStrategy.routes[targetDriverIdx ?? selectedDriverRouteIdx]?.plate || '51C-000.01'}@${nextComp.code.toLowerCase()}.vn`,
-      admin: 'sysadmin@ecomiles-ops.vn',
-    };
-
-    const sessToken = `ecm_${targetRole}_${Math.floor(100000 + (Date.now() % 900000))}`;
-    setAuthSessionInfo({
-      token: sessToken,
-      account: accountMap[targetRole],
-      endpoint: `${endpointCalled} -> HTTP ${statusOk}`,
-      latencyMs,
-    });
-    setLoginLoadingRole(null);
-    setShowLoginGate(false);
-    switchRole(targetRole);
-    setStatusBanner(
-      `Đã xác thực API thành công (${endpointCalled} · HTTP ${statusOk} · ${latencyMs} ms) với tài khoản điền sẵn "${accountMap[targetRole]}" (Token: ${sessToken}).`
-    );
-  };
 
   return (
     <div
@@ -764,39 +1200,33 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
             <div className="h-5 w-px bg-[#e5e7eb] hidden sm:block" />
 
-            {/* Role-Specific Context Control (Isolated by Role) */}
-            {(activeRole === 'user' || activeRole === 'tester') && (
-              <div className="flex items-center gap-2 bg-[#f9fafb] border border-[#d1d5db] rounded-lg px-2.5 py-1">
-                <Building2 className="w-4 h-4 text-[#1971c2] shrink-0" />
-                <span className="text-[11px] text-[#5f6368] font-medium hidden sm:inline">Doanh nghiệp:</span>
-                <select
-                  value={selectedTenantId}
-                  onChange={(e) => {
-                    const nextTenant = B2B_COMPANIES.find((c) => c.tenant_id === e.target.value);
-                    setSelectedTenantId(e.target.value);
-                    if (nextTenant) {
-                      loadCompanyWorkbook(nextTenant.default_sample_file, nextTenant.short_name);
-                    }
-                  }}
-                  className="text-xs font-bold text-[#111827] bg-transparent outline-none cursor-pointer"
-                >
-                  {B2B_COMPANIES.map((comp) => (
-                    <option key={comp.tenant_id} value={comp.tenant_id}>
-                      {comp.short_name} ({comp.code})
-                    </option>
-                  ))}
-                </select>
+            {/* Role-Specific Context Control (Isolated by Role & Locked to Authenticated Company) */}
+            {activeRole === 'user' && (
+              <div className="flex items-center gap-2 bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg px-2.5 py-1 text-xs">
+                <ShieldCheck className="w-4 h-4 text-[#16a34a] shrink-0" />
+                <span className="font-semibold text-[#14532d]">
+                  Đã khóa phiên: <strong>{activeCompany.short_name}</strong> ·{' '}
+                  <span className="font-mono text-[11px]">{activeCompany.key_fingerprint.slice(0, 12)}</span> ·{' '}
+                  <span className="text-[11px] font-bold text-[#15803d]">{activePolicy.tier_badge}</span>
+                </span>
               </div>
             )}
 
             {activeRole === 'driver' && (
-              <div className="flex items-center gap-2 bg-[#f9fafb] border border-[#d1d5db] rounded-lg px-2.5 py-1 text-xs">
+              <div className="flex items-center gap-2 bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg px-2.5 py-1 text-xs">
                 <Truck className="w-4 h-4 text-[#14532d] shrink-0" />
                 <span className="font-bold text-[#111827]">
-                  Xe {activeStrategy.routes[selectedDriverRouteIdx]?.plate || '51C-000.09'}
+                  {authenticatedSession?.label_vi || `Xe ${activeStrategy.routes[selectedDriverRouteIdx]?.plate || '51C-000.08'}`}
                 </span>
                 <span className="text-[#5f6368]">·</span>
-                <span className="font-mono font-semibold text-[#247b50]">PIN: 0000</span>
+                <span className="text-[#14532d] font-semibold">{activeCompany.short_name}</span>
+              </div>
+            )}
+
+            {activeRole === 'tester' && (
+              <div className="flex items-center gap-1.5 bg-[#e8f0fb] border border-[#bfdbfe] rounded-lg px-2.5 py-1 text-xs font-bold text-[#1f3a5f]">
+                <SplitSquareVertical className="w-3.5 h-3.5 text-[#1971c2] shrink-0" />
+                <span>Buồng Thẩm Định Đối Chứng EVSIM · Multi-Tenant Evaluator</span>
               </div>
             )}
 
@@ -808,7 +1238,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
             )}
           </div>
 
-          {/* Right: Role-Scoped Actions, Active Session Identity & Account Switcher */}
+          {/* Right: Role-Scoped Actions, Active Session Identity & Real Logout */}
           <div className="flex flex-wrap items-center gap-2 text-xs">
             {activeRole === 'user' && (
               <div className="hidden md:inline-flex items-center bg-[#f3f4f6] p-0.5 rounded-lg border border-[#e5e7eb]">
@@ -841,7 +1271,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
             {activeRole === 'driver' && (
               <a
-                href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
+                href={`/maps?vehicle=${authenticatedSession?.driver_route_idx ?? selectedDriverRouteIdx}&mode=navigate`}
                 className="px-3 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] font-bold flex items-center gap-1.5"
               >
                 <Navigation className="w-3.5 h-3.5" />
@@ -849,24 +1279,32 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </a>
             )}
 
-            <span className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#dcfae5] text-[#04250e] font-semibold">
-              <Lock className="w-3.5 h-3.5 text-[#247b50]" />
-              <span>
-                {activeRole === 'admin'
-                  ? 'sysadmin@ecomiles-ops.vn'
-                  : `${authSessionInfo.account} (${activeCompany.code})`}
-              </span>
-            </span>
-
-            <button
-              type="button"
-              onClick={() => setShowLoginGate(true)}
-              className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-white text-[#111827] font-bold flex items-center gap-1.5 cursor-pointer"
-              title="Chuyển đổi tài khoản hoặc vai trò đăng nhập"
-            >
-              <KeyRound className="w-3.5 h-3.5 text-[#1971c2]" />
-              <span>Đổi Tài Khoản</span>
-            </button>
+            {authenticatedSession ? (
+              <>
+                <span className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#dcfae5] text-[#04250e] font-semibold">
+                  <Lock className="w-3.5 h-3.5 text-[#247b50]" />
+                  <span>{authenticatedSession.username}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="px-3 py-1.5 rounded-lg border border-[#f5c2c7] bg-[#ffedea] hover:bg-[#ffe3e3] text-[#831c1e] font-bold flex items-center gap-1.5 cursor-pointer text-xs"
+                  title="Đăng xuất khỏi phiên doanh nghiệp hiện tại để chuyển sang công ty khác"
+                >
+                  <EyeOff className="w-3.5 h-3.5" />
+                  <span>Đăng xuất</span>
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="px-3 py-1.5 rounded-lg border border-[#14532d] bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold flex items-center gap-1.5 cursor-pointer text-xs"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>Đăng nhập Doanh nghiệp</span>
+              </button>
+            )}
 
             <a
               href="/"
@@ -899,252 +1337,6 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           PREFILLED 4-ROLE FAST-LOGIN MVP GATE (Real API Handshake, Zero Password Friction)
           Shown automatically on entry and whenever clicking "Đổi Tài Khoản (4 Vai Trò)"
           ===================================================================== */}
-      {showLoginGate && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Cổng đăng nhập nhanh 4 vai trò EcoMiles"
-            className="w-full max-w-5xl bg-white text-[#111827] rounded-2xl border border-[#d1d5db] shadow-2xl overflow-hidden my-auto"
-          >
-            {/* Modal Top Header */}
-            <div className="px-6 py-4 bg-[#1f3a5f] text-white flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-white/15 text-[#d6f65a] text-[11px] font-bold uppercase mb-1">
-                  <KeyRound className="w-3.5 h-3.5" />
-                  <span>Cổng Đăng Nhập Nhanh MVP · Đã Điền Sẵn Thông Tin Xác Thực API</span>
-                </div>
-                <h2 className="text-lg sm:text-xl font-bold text-white">
-                  Chọn Vai Trò Để Truy Cập Hệ Thống Quản Trị Vận Tải B2B EcoMiles
-                </h2>
-              </div>
-              <button
-                onClick={() => setShowLoginGate(false)}
-                className="px-3 py-1.5 rounded-lg border border-white/30 text-white hover:bg-white/10 text-xs font-semibold cursor-pointer"
-              >
-                Tiếp tục với vai trò hiện tại
-              </button>
-            </div>
-
-
-            {/* 4 Prefilled Role Cards */}
-            <div className="p-5 sm:p-6 space-y-5 bg-[#f3f4f6]">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Card 1: Company Logistics Orchestrator (User) */}
-                <div className="bg-white border-2 border-[#1971c2] rounded-xl p-5 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded bg-[#e8f0fb] text-[#1f3a5f] text-xs font-bold">
-                        Vai trò 1 · Quản lý Doanh nghiệp (User)
-                      </span>
-                      <span className="text-[11px] font-mono text-[#247b50] font-semibold">
-                        API: Bearer DEMO
-                      </span>
-                    </div>
-                    <h3 className="text-base font-bold text-[#111827]">
-                      Điều Phối Viên Vận Tải Công Ty (CRM / TMS)
-                    </h3>
-                    <p className="text-xs text-[#5f6368] leading-relaxed">
-                      Quản lý toàn bộ đội xe tải của công ty, theo dõi tiến độ hoàn thành đơn hàng, chạy thuật toán chia tuyến né giờ cấm QĐ 23/2018 và xuất báo cáo Excel 3 Sheet tự động.
-                    </p>
-
-                    <div className="p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] space-y-2 text-xs">
-                      <div>
-                        <label className="block text-[11px] font-semibold text-[#5f6368] mb-1">
-                          Chọn doanh nghiệp B2B (Điền sẵn khóa KMS cách ly):
-                        </label>
-                        <select
-                          value={selectedTenantId}
-                          onChange={(e) => setSelectedTenantId(e.target.value)}
-                          className="w-full p-2 rounded border border-[#d1d5db] bg-white font-bold text-[#111827]"
-                        >
-                          {B2B_COMPANIES.map((c) => (
-                            <option key={c.tenant_id} value={c.tenant_id}>
-                              {c.short_name} ({c.sector})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="flex items-center justify-between text-[11px] text-[#5f6368] pt-1">
-                        <span>Tài khoản điền sẵn:</span>
-                        <code className="font-mono font-bold text-[#111827]">
-                          orchestrator@{activeCompany.code.toLowerCase()}.vn
-                        </code>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleFastApiLogin('user', selectedTenantId)}
-                    disabled={loginLoadingRole !== null}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#1971c2] hover:bg-[#155ca0] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    <span>
-                      {loginLoadingRole === 'user'
-                        ? 'Đang gọi API xác thực...'
-                        : `Đăng nhập Quản lý ${activeCompany.short_name}`}
-                    </span>
-                  </button>
-                </div>
-
-                {/* Card 2: Tester / Algorithm Evaluator (EVSIM Dual Side-by-Side) */}
-                <div className="bg-white border-2 border-[#2f9e44] rounded-xl p-5 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded bg-[#dcfae5] text-[#04250e] text-xs font-bold">
-                        Vai trò 2 · Kiểm thử Thuật toán (Tester)
-                      </span>
-                      <span className="text-[11px] font-mono text-[#247b50] font-semibold">
-                        EVSIM Dual Engine
-                      </span>
-                    </div>
-                    <h3 className="text-base font-bold text-[#111827]">
-                      Mô Phỏng Đối Chứng 2 Bên Kiểu EVSIM (Baseline vs. EcoMiles)
-                    </h3>
-                    <p className="text-xs text-[#5f6368] leading-relaxed">
-                      Hiển thị song song 2 bản đồ TP.HCM chạy theo thời gian thực (06:00 - 20:00): bên trái là cách chia tuyến thủ công + Google Maps, bên phải là EcoMiles v2.1. Cho phép tải lên file <code>.xlsx</code> thực tế để kiểm thử ngay.
-                    </p>
-
-                    <div className="p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] space-y-1.5 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-[#5f6368]">Tài khoản điền sẵn:</span>
-                        <code className="font-mono font-bold text-[#111827]">evaluator@vsic-evsim.vn</code>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#5f6368]">Endpoint xác thực:</span>
-                        <code className="font-mono text-[#247b50]">GET /api/report (Bearer DEMO)</code>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#5f6368]">Chế độ hiển thị:</span>
-                        <strong className="text-[#1971c2]">2 Bản đồ TP.HCM đồng bộ + Bảng Kết Quả</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleFastApiLogin('tester')}
-                    disabled={loginLoadingRole !== null}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#2f9e44] hover:bg-[#258237] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <RouteIcon className="w-4 h-4" />
-                    <span>
-                      {loginLoadingRole === 'tester'
-                        ? 'Đang mở bộ mô phỏng EVSIM...'
-                        : 'Đăng nhập Chế độ Kiểm thử Đối chứng (EVSIM 2 Bên)'}
-                    </span>
-                  </button>
-                </div>
-
-                {/* Card 3: Truck Driver Mobile App */}
-                <div className="bg-white border border-[#d1d5db] rounded-xl p-5 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded bg-[#fffbeb] text-[#92400e] text-xs font-bold">
-                        Vai trò 3 · Tài xế Xe tải (Driver)
-                      </span>
-                      <span className="text-[11px] font-mono text-[#92400e] font-semibold">
-                        X-Driver-Pin: 0000
-                      </span>
-                    </div>
-                    <h3 className="text-base font-bold text-[#111827]">
-                      Ứng Dụng Tài Xế Giao Hàng &amp; Dẫn Đường Ô Tô
-                    </h3>
-                    <p className="text-xs text-[#5f6368] leading-relaxed">
-                      Tự động định tuyến thẳng vào màn hình của tài xế theo biển số xe, hiển thị bản đồ lộ trình, mở dẫn đường Google Maps chế độ Ô tô tải và cập nhật trạng thái giao hàng 1 chạm.
-                    </p>
-
-                    <div className="p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] space-y-2 text-xs">
-                      <div>
-                        <label className="block text-[11px] font-semibold text-[#5f6368] mb-1">
-                          Chọn biển số xe tải &amp; Mã PIN điền sẵn (0000):
-                        </label>
-                        <select
-                          value={selectedDriverRouteIdx}
-                          onChange={(e) => setSelectedDriverRouteIdx(Number(e.target.value))}
-                          className="w-full p-2 rounded border border-[#d1d5db] bg-white font-bold text-[#111827]"
-                        >
-                          {activeStrategy.routes.map((r, i) => (
-                            <option key={r.route_id} value={i}>
-                              Xe {r.plate} · {DRIVER_NAMES[i % DRIVER_NAMES.length]} ({r.stops.filter((s) => s.kind !== 'depot').length} điểm · {r.km} km)
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleFastApiLogin('driver', selectedTenantId, selectedDriverRouteIdx)}
-                    disabled={loginLoadingRole !== null}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#111827] hover:bg-[#1f2937] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Navigation className="w-4 h-4" />
-                    <span>
-                      {loginLoadingRole === 'driver'
-                        ? 'Đang đồng bộ lộ trình xe...'
-                        : `Đăng nhập App Tài xế (${activeStrategy.routes[selectedDriverRouteIdx]?.plate || '51C-000.01'} · PIN 0000)`}
-                    </span>
-                  </button>
-                </div>
-
-                {/* Card 4: Platform System Admin (Zero-Knowledge Monitor Room) */}
-                <div className="bg-white border border-[#d1d5db] rounded-xl p-5 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded bg-[#ffedea] text-[#831c1e] text-xs font-bold">
-                        Vai trò 4 · Quản trị Hệ thống (Admin)
-                      </span>
-                      <span className="text-[11px] font-mono text-[#831c1e] font-semibold">
-                        admin_can_decrypt = false
-                      </span>
-                    </div>
-                    <h3 className="text-base font-bold text-[#111827]">
-                      Phòng Giám Sát Hạ Tầng &amp; Quản Lý Tenant (Zero-Knowledge)
-                    </h3>
-                    <p className="text-xs text-[#5f6368] leading-relaxed">
-                      Chỉ truy cập phòng giám sát độ trễ máy chủ, cấp phát tài khoản doanh nghiệp và kiểm tra bảng cơ sở dữ liệu đã bị mã hóa mù (<code>AES-256-GCM</code>). Admin không thể xem dữ liệu khách hàng của bất kỳ công ty nào.
-                    </p>
-
-                    <div className="p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] space-y-1.5 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-[#5f6368]">Tài khoản điền sẵn:</span>
-                        <code className="font-mono font-bold text-[#111827]">sysadmin@ecomiles-ops.vn</code>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#5f6368]">Quyền giải mã dữ liệu DN:</span>
-                        <strong className="text-[#c4242a]">0% (Bị khóa bởi KMS của khách hàng)</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleFastApiLogin('admin')}
-                    disabled={loginLoadingRole !== null}
-                    className="w-full py-2.5 px-4 rounded-lg border border-[#111827] bg-white hover:bg-[#f3f4f6] text-[#111827] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Activity className="w-4 h-4 text-[#c4242a]" />
-                    <span>
-                      {loginLoadingRole === 'admin'
-                        ? 'Đang xác thực Admin...'
-                        : 'Đăng nhập Phòng Giám sát Hệ thống (Admin)'}
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#5f6368] pt-1">
-                <span>
-                  <strong>Cơ chế đăng nhập nhanh MVP:</strong> Điền sẵn thông tin xác thực và gọi trực tiếp API thực tế (<code>/api/vehicles</code>, <code>/api/driver/route</code>, <code>/api/report</code>, <code>/api/health</code>) để giám khảo và khách hàng trải nghiệm ngay mà không cần nhập mật khẩu.
-                </span>
-                <span className="font-mono text-[#1971c2]">
-                  Phiên hiện tại: {authSessionInfo.token}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
       {/* =====================================================================
           ROLE 1: B2B COMPANY LOGISTICS ORCHESTRATOR ("user" role)
           Left Sidebar Navigation (CRM/TMS style) + Daylight Framed Sheet
@@ -1607,6 +1799,334 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
+                {/* ===============================================================
+                    COMPANY-SPECIFIC 14-DAY OPERATIONAL & FINANCIAL TELEMETRY (FB-03)
+                    Mentor Minh Insights: Decoupling Rebound Effect & 3 Carbon Scenarios
+                    =============================================================== */}
+                {(() => {
+                  const telemetry14d = buildCompany14DayTelemetry(activeCompany.tenant_id);
+                  const totalFuelSaved14d = telemetry14d.reduce((s, p) => s + p.fuel_saved_vnd, 0);
+                  const avgIntensity14d = Math.round(
+                    telemetry14d.reduce((s, p) => s + p.g_co2_per_order, 0) / telemetry14d.length
+                  );
+                  const avgSla14d = (
+                    telemetry14d.reduce((s, p) => s + p.sla_on_time_pct, 0) / telemetry14d.length
+                  ).toFixed(1);
+                  const intensityDeltaPct =
+                    humanSt.g_co2e_per_order > 0
+                      ? Number(
+                          (
+                            ((activeStrategy.g_co2e_per_order - humanSt.g_co2e_per_order) /
+                              humanSt.g_co2e_per_order) *
+                            100
+                          ).toFixed(1)
+                        )
+                      : -32.2;
+                  const peakVsMinOrderGrowthPct = Math.round(
+                    ((Math.max(...telemetry14d.map((p) => p.orders_completed)) -
+                      Math.min(...telemetry14d.map((p) => p.orders_completed))) /
+                      Math.max(1, Math.min(...telemetry14d.map((p) => p.orders_completed)))) *
+                      100
+                  );
+
+                  const dailyFuelSaved = Math.max(0, humanSt.fuel_cost_vnd - activeStrategy.fuel_cost_vnd);
+                  const annualFuelSaved = dailyFuelSaved * 300;
+                  const dailyCo2SavedKg = Math.max(0, humanSt.kg_co2_ttw - activeStrategy.kg_co2_ttw);
+                  const annualCo2SavedTon = (dailyCo2SavedKg * 300) / 1000;
+                  const scenarioRateVnd =
+                    carbonScenario === 1 ? 120000 : carbonScenario === 2 ? 380000 : 2150000;
+                  const annualCarbonCreditVnd = Math.round(annualCo2SavedTon * scenarioRateVnd);
+                  return (
+                    <div className="space-y-5">
+                      {/* Section 1: 14-Day ECharts Multi-Series & KPI Strip */}
+                      <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-4">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#e5e7eb] pb-3.5">
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h2 className="text-[16px] font-bold text-[#111827]">
+                                Xu Hướng Vận Hành, Chi Phí Nhiên Liệu &amp; Cường Độ CO₂e 14 Ngày
+                              </h2>
+                              <span className="px-2 py-0.5 rounded font-mono font-bold text-[11px] bg-[#e8f0fb] text-[#1f3a5f]">
+                                {activeCompany.code}
+                              </span>
+                            </div>
+                            <p className="text-[12px] text-[#5f6368] mt-0.5">
+                              Mô phỏng kịch bản 14 ngày của {activeCompany.short_name} (C1-illustrative · tham chiếu hệ số GLEC v3.2, chưa chứng nhận độc lập).
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 text-xs">
+                            <span className="px-2.5 py-1 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[#14532d] font-bold">
+                              Ước tính tiết kiệm 14 ngày: {totalFuelSaved14d.toLocaleString('vi-VN')} đ
+                            </span>
+                            <span className="px-2.5 py-1 rounded-lg bg-[#eff6ff] border border-[#bfdbfe] text-[#1e40af] font-bold">
+                              SLA kịch bản: {avgSla14d}%
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 14-Day Telemetry Chart */}
+                        <EChartDaylight
+                          height={260}
+                          option={{
+                            tooltip: { trigger: 'axis' },
+                            legend: {
+                              data: [
+                                'Tiền dầu tiết kiệm (nghìn đ/ngày)',
+                                'Cường độ phát thải (g CO₂e/đơn)',
+                                'Tỷ lệ đúng hẹn SLA (%)',
+                              ],
+                              bottom: 0,
+                              textStyle: { color: '#5f6368', fontSize: 11 },
+                            },
+                            grid: { left: 54, right: 48, top: 20, bottom: 44 },
+                            xAxis: {
+                              type: 'category',
+                              data: telemetry14d.map((p) => p.date_label),
+                              axisLabel: { color: '#5f6368', fontSize: 11 },
+                            },
+                            yAxis: [
+                              {
+                                type: 'value',
+                                name: 'Nghìn đ / g CO₂e',
+                                axisLabel: { color: '#5f6368', fontSize: 11 },
+                                splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed' } },
+                              },
+                              {
+                                type: 'value',
+                                name: 'SLA (%)',
+                                min: 90,
+                                max: 100,
+                                position: 'right',
+                                axisLabel: { color: '#d97706', fontSize: 11, formatter: '{value}%' },
+                                splitLine: { show: false },
+                              },
+                            ],
+                            series: [
+                              {
+                                name: 'Tiền dầu tiết kiệm (nghìn đ/ngày)',
+                                type: 'bar',
+                                itemStyle: { color: '#16a34a' },
+                                data: telemetry14d.map((p) => Math.round(p.fuel_saved_vnd / 1000)),
+                              },
+                              {
+                                name: 'Cường độ phát thải (g CO₂e/đơn)',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: { color: '#2563eb' },
+                                lineStyle: { width: 3 },
+                                data: telemetry14d.map((p) => p.g_co2_per_order),
+                              },
+                              {
+                                name: 'Tỷ lệ đúng hẹn SLA (%)',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                itemStyle: { color: '#d97706' },
+                                lineStyle: { type: 'dashed', width: 2 },
+                                data: telemetry14d.map((p) => p.sla_on_time_pct),
+                              },
+                            ],
+                          }}
+                        />
+                      </div>
+
+                      {/* Section 2: Mentor Minh Insight #8 - Rebound-Effect Decoupling Strip */}
+                      <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#e5e7eb] pb-2.5">
+                          <div className="flex items-center gap-2">
+                            <Leaf className="w-4 h-4 text-[#16a34a]" />
+                            <h3 className="text-sm font-bold text-[#0f172a]">
+                              Tách Rời Tăng Trưởng Khỏi Phát Thải (Rebound-Effect Decoupling)
+                            </h3>
+                          </div>
+                          <span className="px-2 py-0.5 rounded bg-[#f0fdf4] text-[#166534] text-[11px] font-bold">
+                            Góp Ý Mentor Minh · Insight #8
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-[#475569] leading-relaxed">
+                          <strong>Hiệu ứng Bật nảy (Rebound Effect) trong Logistics:</strong> Khi tối ưu hóa chia tuyến giúp chi phí vận tải rẻ hơn, doanh nghiệp có xu hướng tăng số lượng đơn hàng và quy mô đội xe. EcoMiles giải quyết nghịch lý này bằng cách theo dõi song song cả <strong>Cường độ phát thải đơn vị (g CO₂e/đơn)</strong> và <strong>Tổng phát thải tuyệt đối (kg CO₂e)</strong>, đảm bảo doanh nghiệp mở rộng kinh doanh mà vẫn đạt mục tiêu cắt giảm phát thải:
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                          <div className="p-3.5 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] space-y-1">
+                            <div className="text-[11px] font-bold text-[#0284c7] uppercase">
+                              1. Cường Độ Phát Thải Đơn Vị (g CO₂e / Đơn Hàng)
+                            </div>
+                            <div className="text-xl font-extrabold text-[#0f172a]">
+                              {activeStrategy.g_co2e_per_order.toFixed(0)}{' '}
+                              <span className="text-xs font-normal text-[#64748b]">
+                                g CO₂e/đơn (TB 14 ngày: {avgIntensity14d} g)
+                              </span>
+                            </div>
+                            <div className="text-xs font-semibold text-[#16a34a]">
+                              {intensityDeltaPct}% trên mỗi đơn so với chia tuyến thủ công ({humanSt.g_co2e_per_order.toFixed(0)} g/đơn)
+                            </div>
+                            <div className="text-[11px] text-[#64748b]">
+                              Dữ liệu đầu vào Scope 3 hỗ trợ chủ hàng sản xuất đối chiếu theo QĐ 2626/QĐ-BTNMT &amp; QĐ 42/2026/QĐ-TTg.
+                            </div>
+                          </div>
+
+                          <div className="p-3.5 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] space-y-1">
+                            <div className="text-[11px] font-bold text-[#16a34a] uppercase">
+                              2. Tổng Phát Thải Tuyệt Đối (kg CO₂e Đội Xe)
+                            </div>
+                            <div className="text-xl font-extrabold text-[#0f172a]">
+                              {activeStrategy.kg_co2_ttw.toFixed(2)} <span className="text-xs font-normal text-[#64748b]">kg CO₂e</span>
+                            </div>
+                            <div className="text-xs font-semibold text-[#16a34a]">
+                              Giảm {Math.abs(activeStrategy.delta_vs_human_co2_pct)}% CO₂e TTW so với chia thủ công ({humanSt.kg_co2_ttw.toFixed(2)} kg)
+                            </div>
+                            <div className="text-[11px] text-[#64748b]">
+                              Dao động sản lượng 14 ngày +{peakVsMinOrderGrowthPct}% nhưng cường độ phát thải trên mỗi đơn vẫn duy trì ổn định.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Section 3: Mentor Minh Insight #6 & #7 - 3-Scenario Carbon Value & Scope 3 Readiness Card */}
+                      <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-4">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#e5e7eb] pb-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="w-4 h-4 text-[#16a34a]" />
+                              <h3 className="text-sm font-bold text-[#0f172a]">
+                                Bộ Chuyển Đổi Giá Trị Carbon 3 Kịch Bản &amp; Sẵn Sàng Báo Cáo Scope 3
+                              </h3>
+                            </div>
+                            <p className="text-xs text-[#64748b] mt-0.5">
+                              Tách bạch rõ ràng <strong>Tiền dầu tiết kiệm thật ngay hôm nay (VNĐ)</strong> và <strong>Giá trị tín chỉ / Tránh phạt Carbon tiềm năng</strong> theo 3 thị trường:
+                            </p>
+                          </div>
+
+                          {/* 3-Scenario Toggle Buttons */}
+                          <div className="inline-flex rounded-lg border border-[#cbd5e1] p-0.5 bg-[#f1f5f9] text-xs font-bold">
+                            <button
+                              type="button"
+                              onClick={() => setCarbonScenario(1)}
+                              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                                carbonScenario === 1
+                                  ? 'bg-white text-[#0f172a] shadow-xs'
+                                  : 'text-[#64748b] hover:text-[#0f172a]'
+                              }`}
+                            >
+                              1. Sàn NĐ 119/2025
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setCarbonScenario(2)}
+                              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                                carbonScenario === 2
+                                  ? 'bg-white text-[#0f172a] shadow-xs'
+                                  : 'text-[#64748b] hover:text-[#0f172a]'
+                              }`}
+                            >
+                              2. Tự Nguyện FDI
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setCarbonScenario(3)}
+                              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                                carbonScenario === 3
+                                  ? 'bg-[#14532d] text-[#d6f65a] shadow-xs'
+                                  : 'text-[#64748b] hover:text-[#0f172a]'
+                              }`}
+                            >
+                              3. Chuẩn EU CBAM
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Calculation Visual Split: Hard Cash vs Potential Carbon Credit */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Box 1: Hard Cash Fuel Savings */}
+                          <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] space-y-2">
+                            <div className="text-xs font-bold text-[#166534] uppercase flex items-center gap-1.5">
+                              <CheckCircle2 className="w-4 h-4 text-[#16a34a]" />
+                              <span>1. Dòng Tiền Tiết Kiệm Nhiên Liệu Thật (Hard Cash)</span>
+                            </div>
+                            <div className="text-2xl font-black text-[#14532d]">
+                              {dailyFuelSaved.toLocaleString('vi-VN')} đ <span className="text-xs font-normal text-[#166534]">/ ngày</span>
+                            </div>
+                            <div className="text-xs font-bold text-[#15803d]">
+                              Tương đương ~{(annualFuelSaved / 1000000).toFixed(1)} triệu đ / năm (300 ngày vận hành)
+                            </div>
+                            <p className="text-[11px] text-[#166534] leading-relaxed">
+                              Cắt giảm trực tiếp chi phí dầu Diesel tại cây xăng nhờ giảm {alnsSt.km_empty_return} km chạy rỗng và tối ưu cự ly đường bộ TP.HCM. Tiền về tài khoản doanh nghiệp ngay lập tức.
+                            </p>
+                          </div>
+
+                          {/* Box 2: Potential Carbon Credit / Penalty Avoidance */}
+                          <div className="p-4 rounded-xl bg-[#eff6ff] border border-[#bfdbfe] space-y-2">
+                            <div className="text-xs font-bold text-[#1e40af] uppercase flex items-center gap-1.5">
+                              <Leaf className="w-4 h-4 text-[#2563eb]" />
+                              <span>
+                                2. Giá Trị Tín Chỉ / Tránh Thuế Carbon (
+                                {carbonScenario === 1
+                                  ? '120.000 đ/tấn'
+                                  : carbonScenario === 2
+                                  ? '380.000 đ/tấn'
+                                  : '2.150.000 đ/tấn'}
+                                )
+                              </span>
+                            </div>
+                            <div className="text-2xl font-black text-[#1e3a8a]">
+                              ~{(annualCarbonCreditVnd / 1000000).toFixed(2)} triệu đ <span className="text-xs font-normal text-[#1e40af]">/ năm</span>
+                            </div>
+                            <div className="text-xs font-bold text-[#2563eb]">
+                              Dựa trên mức giảm {annualCo2SavedTon.toFixed(2)} tấn CO₂e / năm của đội xe {activeCompany.code}
+                            </div>
+                            <p className="text-[11px] text-[#1e40af] leading-relaxed">
+                              {carbonScenario === 1
+                                ? 'Kịch bản Sàn carbon nội địa thí điểm theo Nghị định 119/2025/NĐ-CP (Định giá sàn 120.000 đ/tấn CO₂e).'
+                                : carbonScenario === 2
+                                ? 'Kịch bản Thị trường tín chỉ carbon tự nguyện cho chuỗi cung ứng FDI Nhật Bản / Mỹ (380.000 đ/tấn CO₂e).'
+                                : 'Kịch bản Cơ chế điều chỉnh biên giới carbon EU CBAM (80 EUR/tấn tương đương 2.150.000 đ/tấn CO₂e tránh phạt).'}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Regulatory Citation Strip */}
+                        <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#475569] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <Info className="w-4 h-4 text-[#0284c7] shrink-0" />
+                            <span>
+                              <strong>Cơ sở pháp lý:</strong> Quyết định 2626/QĐ-BTNMT (Hệ số phát thải giao thông) &amp; Quyết định 42/2026/QĐ-TTg (Đề án giảm phát thải GTVT).
+                            </span>
+                          </div>
+                          <span className="px-2 py-0.5 rounded font-bold text-[11px] bg-[#f1f5f9] text-[#0f172a] shrink-0">
+                            Hỗ trợ 1.916 cơ sở kiểm kê Scope 3
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Section 4: B2B Corporate Settlement & Security Policy Strip */}
+                      <div className="p-4 rounded-xl bg-white border border-[#e2e8f0] grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <div className="space-y-0.5">
+                          <div className="text-[#64748b]">Tài khoản thụ hưởng B2B:</div>
+                          <div className="font-bold text-[#0f172a]">{activePolicy.invoice_bank_name}</div>
+                          <div className="font-mono text-[11px] text-[#475569]">{activePolicy.invoice_account_masked}</div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <div className="text-[#64748b]">Mã số thuế &amp; E-Invoice:</div>
+                          <div className="font-bold text-[#0f172a]">MST {activePolicy.tax_code_mst}</div>
+                          <div className="text-[11px] text-[#16a34a] font-semibold">Hóa đơn điện tử VAT tự động</div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <div className="text-[#64748b]">Tiêu chuẩn Scope 3:</div>
+                          <div className="font-bold text-[#0f172a] truncate">{activePolicy.scope3_shipper_standard}</div>
+                          <div className="text-[11px] text-[#64748b]">
+                            SLA Thùng lạnh: {activePolicy.cold_chain_temp_sla_c !== null ? `${activePolicy.cold_chain_temp_sla_c}°C` : 'N/A'}
+                          </div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <div className="text-[#64748b]">Chính sách cách ly:</div>
+                          <div className="font-bold text-[#0f172a]">{activePolicy.tier_badge}</div>
+                          <div className="font-mono text-[11px] text-[#0284c7] truncate">{activeCompany.key_fingerprint}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
                 {/* 2 Daylight Analytics Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                   <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-2">
@@ -1952,13 +2472,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <UploadCloud className="w-3.5 h-3.5" />
                         <span>Tải File .XLSX Lên</span>
                       </button>
-                      <button
-                        onClick={() => setMaskPii(!maskPii)}
-                        className="px-3 py-2 rounded-lg border border-[#d1d5db] bg-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-                      >
-                        {maskPii ? <EyeOff className="w-3.5 h-3.5 text-[#247b50]" /> : <Eye className="w-3.5 h-3.5" />}
-                        <span>{maskPii ? 'Đang che SĐT (NĐ 13)' : 'Hiện đầy đủ SĐT'}</span>
-                      </button>
+                      <span className="px-3 py-2 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] text-xs font-semibold text-[#14532d] flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#16a34a]" />
+                        <span>Chính sách NĐ 13: {activePolicy.tier_badge}</span>
+                      </span>
                     </div>
                   </div>
 
@@ -2031,23 +2548,85 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               o.district.toLowerCase().includes(searchQuery.toLowerCase())
                           )
                           .slice(0, 60)
-                          .map((o) => {
-                            const redactedPhone = maskPii
-                              ? redactVietnamesePii(o.phone).text
-                              : o.phone;
-                            const redactedAddress = maskPii
-                              ? redactVietnamesePii(o.address).text
-                              : o.address;
+                          .map((o, ordIdx) => {
+                            const isUnmasked = dpoUnmaskedRows.has(o.external_id);
+                            const formatted = formatReceiverForTenantPolicy(
+                              activeCompany.tenant_id,
+                              {
+                                row_num: o.row_num || ordIdx + 1,
+                                external_id: o.external_id,
+                                receiver: o.receiver,
+                                phone: o.phone,
+                                address: o.address,
+                              },
+                              isUnmasked
+                            );
                             return (
                               <tr key={o.external_id} className="hover:bg-[#f9fafb]">
                                 <td className="py-2 px-3 font-mono font-bold text-[#1971c2]">
                                   {o.external_id}
                                 </td>
                                 <td className="py-2 px-3 font-semibold">{o.district}</td>
-                                <td className="py-2 px-3 max-w-xs truncate">{redactedAddress}</td>
+                                <td className="py-2 px-3 max-w-xs truncate">
+                                  <span>{formatted.display_address}</span>
+                                  {activeCompany.tenant_id === 'TNT-BHX-001' && (
+                                    <span className="block text-[10px] text-[#0284c7]">
+                                      Lọc địa chỉ cấp 2 khi xuất ESG
+                                    </span>
+                                  )}
+                                </td>
                                 <td className="py-2 px-3 text-[#5f6368]">
-                                  {maskPii ? `${o.receiver.slice(0, 8)}***` : o.receiver} ·{' '}
-                                  <span className="font-mono">{redactedPhone}</span>
+                                  <div className="flex flex-wrap items-center gap-1.5">
+                                    <span className="font-semibold text-[#111827]">
+                                      {formatted.display_receiver}
+                                    </span>
+                                    <span>·</span>
+                                    <span className="font-mono">{formatted.display_phone}</span>
+                                    {activePolicy.allow_dpo_unmask_with_audit && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (isUnmasked) {
+                                            setDpoUnmaskedRows((prev) => {
+                                              const next = new Set(prev);
+                                              next.delete(o.external_id);
+                                              return next;
+                                            });
+                                          } else {
+                                            setDpoUnmaskedRows((prev) => new Set([...prev, o.external_id]));
+                                            setDpoAuditLogs((prev) => [
+                                              {
+                                                timestamp: new Date().toLocaleTimeString('vi-VN'),
+                                                operator: authenticatedSession?.username || 'orchestrator@nvc-cold.vn',
+                                                external_id: o.external_id,
+                                                reason: 'Yêu cầu đối soát đơn hàng tại điểm giao chuỗi lạnh NVC',
+                                              },
+                                              ...prev,
+                                            ]);
+                                            setTimeout(() => {
+                                              setDpoUnmaskedRows((prev) => {
+                                                const next = new Set(prev);
+                                                next.delete(o.external_id);
+                                                return next;
+                                              });
+                                            }, 60000);
+                                          }
+                                        }}
+                                        className={`px-1.5 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                                          isUnmasked
+                                            ? 'bg-[#fee2e2] text-[#991b1b] border border-[#fca5a5]'
+                                            : 'bg-[#e0f2fe] text-[#0369a1] border border-[#bae6fd] hover:bg-[#bae6fd]'
+                                        }`}
+                                      >
+                                        {isUnmasked ? 'Khóa lại' : 'Mở khóa 60s (DPO)'}
+                                      </button>
+                                    )}
+                                    {activeCompany.tenant_id === 'TNT-WINMART-003' && (
+                                      <span className="px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-[#f1f5f9] text-[#475569]">
+                                        RAM Ephemeral NĐ 13
+                                      </span>
+                                    )}
+                                  </div>
                                 </td>
                                 <td className="py-2 px-3 text-right font-mono font-bold">{o.kg} kg</td>
                                 <td className="py-2 px-3 text-right font-mono">
@@ -2071,6 +2650,42 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       </tbody>
                     </table>
                   </div>
+
+                  {/* DPO Audit Trail Table if any unmasks occurred */}
+                  {dpoAuditLogs.length > 0 && (
+                    <div className="pt-3 border-t border-[#e5e7eb] space-y-2">
+                      <div className="flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4 text-[#d97706]" />
+                        <h3 className="text-xs font-bold text-[#0f172a]">
+                          Nhật Ký Mở Khóa DPO (Audit Trail theo NĐ 13/2023 Điều 17)
+                        </h3>
+                      </div>
+                      <div className="overflow-x-auto border border-[#e2e8f0] rounded-lg">
+                        <table className="w-full border-collapse text-[11px] font-mono">
+                          <thead className="bg-[#f8fafc] text-[#64748b]">
+                            <tr>
+                              <th className="py-1.5 px-2.5 text-left">Thời gian</th>
+                              <th className="py-1.5 px-2.5 text-left">Người thao tác</th>
+                              <th className="py-1.5 px-2.5 text-left">Mã đơn hàng</th>
+                              <th className="py-1.5 px-2.5 text-left">Lý do đối soát</th>
+                              <th className="py-1.5 px-2.5 text-left">Thời hạn hiệu lực</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#f1f5f9]">
+                            {dpoAuditLogs.slice(0, 5).map((log, lIdx) => (
+                              <tr key={lIdx}>
+                                <td className="py-1.5 px-2.5 text-[#0f172a]">{log.timestamp}</td>
+                                <td className="py-1.5 px-2.5 text-[#0284c7] font-semibold">{log.operator}</td>
+                                <td className="py-1.5 px-2.5 font-bold text-[#15803d]">{log.external_id}</td>
+                                <td className="py-1.5 px-2.5 text-[#475569]">{log.reason}</td>
+                                <td className="py-1.5 px-2.5 text-[#b45309]">Tự động che lại sau 60 giây</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -2145,7 +2760,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       Trung Tâm Xuất Báo Cáo Kiểm Toán Vận Hành &amp; ESG Tự Động
                     </h1>
                     <p className="text-[12.5px] text-[#5f6368]">
-                      Tự động tổng hợp từ lộ trình thực tế của <strong>{activeCompany.short_name}</strong> theo chuẩn quốc tế GLEC Framework v3.2 &amp; ISO 14083:2023. Mã xác thực:{' '}
+                      Ước tính từ lộ trình của <strong>{activeCompany.short_name}</strong> theo mô hình vật lý GLX-HDT-v1 (C1-illustrative · tham chiếu hệ số GLEC v3.2 &amp; ISO 14083:2023, dữ liệu đầu vào chưa qua chứng nhận độc lập ISO 14065). Mã xác thực:{' '}
                       <code className="font-mono text-[#1971c2]">{result.dataset_fingerprint}</code>.
                     </p>
                   </div>
@@ -2237,6 +2852,62 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 =============================================================== */}
             {userTab === 'privacy_security' && (
               <div className="space-y-5">
+                {/* Active Company Security Policy Card */}
+                <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#e5e7eb] pb-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5 text-[#16a34a]" />
+                        <h2 className="text-base font-bold text-[#0f172a]">
+                          Hồ Sơ Chính Sách Bảo Mật Doanh Nghiệp ({activeCompany.short_name})
+                        </h2>
+                      </div>
+                      <p className="text-xs text-[#64748b] mt-0.5">{activePolicy.summary_vi}</p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-lg font-mono font-bold text-xs bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0] shrink-0">
+                      {activePolicy.policy_id}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-1">
+                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                      <div className="text-[#64748b]">Cơ chế che SĐT:</div>
+                      <div className="font-bold text-[#0f172a] mt-0.5">
+                        {activePolicy.mask_phone_by_default ? 'Che 090****327 mặc định' : 'Mở hotline nội bộ cho điều phối'}
+                      </div>
+                      <div className="text-[10.5px] text-[#64748b] mt-1">
+                        {activePolicy.allow_dpo_unmask_with_audit ? 'Cho phép DPO mở khóa tạm 60s' : 'Không hỗ trợ mở khóa thủ công'}
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                      <div className="text-[#64748b]">Mã hóa RAM &amp; Dữ liệu:</div>
+                      <div className="font-bold text-[#0f172a] mt-0.5">
+                        {activePolicy.ephemeral_ram_only ? 'RAM Ephemeral (Tự hủy khi đăng xuất)' : 'BYOK AES-256-GCM Persistent'}
+                      </div>
+                      <div className="text-[10.5px] text-[#64748b] mt-1">
+                        {activePolicy.pseudonymize_customer_name ? 'Giả danh KH-WCM theo NĐ 13' : 'Giữ tên chuỗi cửa hàng'}
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                      <div className="text-[#64748b]">Tiêu chuẩn Báo cáo Scope 3:</div>
+                      <div className="font-bold text-[#0f172a] mt-0.5 truncate">{activePolicy.scope3_shipper_standard}</div>
+                      <div className="text-[10.5px] text-[#64748b] mt-1">
+                        {activePolicy.strip_address_on_export ? 'Lọc số nhà/tên đường khi xuất file' : 'Giữ nguyên tọa độ địa chỉ'}
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                      <div className="text-[#64748b]">Tài khoản ngân hàng &amp; MST:</div>
+                      <div className="font-bold text-[#0f172a] mt-0.5">{activePolicy.invoice_bank_name}</div>
+                      <div className="text-[10.5px] font-mono text-[#0284c7] mt-1">
+                        {activePolicy.invoice_account_masked} · MST {activePolicy.tax_code_mst}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -2279,6 +2950,41 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
                 </div>
 
+                {/* DPO Audit Log Table if active */}
+                {dpoAuditLogs.length > 0 && (
+                  <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <ShieldAlert className="w-5 h-5 text-[#d97706]" />
+                      <h2 className="text-[15px] font-bold text-[#111827]">
+                        Nhật Ký Mở Khóa DPO Đang Hoạt Động (Audit Trail theo NĐ 13/2023 Điều 17)
+                      </h2>
+                    </div>
+                    <div className="overflow-x-auto border border-[#e2e8f0] rounded-lg">
+                      <table className="w-full border-collapse text-xs font-mono">
+                        <thead className="bg-[#f8fafc] text-[#64748b]">
+                          <tr>
+                            <th className="py-2 px-3 text-left">Thời gian</th>
+                            <th className="py-2 px-3 text-left">Tài khoản thao tác</th>
+                            <th className="py-2 px-3 text-left">Mã đơn hàng</th>
+                            <th className="py-2 px-3 text-left">Lý do đối soát</th>
+                            <th className="py-2 px-3 text-left">Trạng thái tự hủy</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#f1f5f9]">
+                          {dpoAuditLogs.map((log, lIdx) => (
+                            <tr key={lIdx}>
+                              <td className="py-2 px-3 text-[#0f172a]">{log.timestamp}</td>
+                              <td className="py-2 px-3 text-[#0284c7] font-semibold">{log.operator}</td>
+                              <td className="py-2 px-3 font-bold text-[#15803d]">{log.external_id}</td>
+                              <td className="py-2 px-3 text-[#475569]">{log.reason}</td>
+                              <td className="py-2 px-3 text-[#b45309]">Tự động che sau 60s</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
 
                 {/* Role Approval Table */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
@@ -2288,10 +2994,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     </h2>
                     <button
                       type="button"
-                      onClick={() => setShowLoginGate(true)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-[#f9fafb] hover:bg-[#eeeeee] text-xs font-bold text-[#1971c2] cursor-pointer"
+                      onClick={handleLogout}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#f5c2c7] bg-[#ffedea] hover:bg-[#ffe3e3] text-xs font-bold text-[#831c1e] cursor-pointer"
                     >
-                      <span>Mở Cổng Đổi Tài Khoản để kiểm tra góc nhìn Admin</span>
+                      <span>Đăng xuất phiên này để kiểm tra góc nhìn Admin</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -2367,13 +3073,18 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       {activeRole === 'driver' && (
         <div className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 space-y-5">
           {(() => {
+            const currentDriverRouteIdx = authenticatedSession?.driver_route_idx ?? selectedDriverRouteIdx;
             const driverRoute =
-              activeStrategy.routes[selectedDriverRouteIdx] || activeStrategy.routes[0];
+              activeStrategy.routes[currentDriverRouteIdx] || activeStrategy.routes[0];
             const customerStops = driverRoute
               ? driverRoute.stops.filter((s) => s.kind === 'stop' || s.kind === 'backhaul')
               : [];
             const driverName =
-              DRIVER_NAMES[selectedDriverRouteIdx % DRIVER_NAMES.length];
+              authenticatedSession?.label_vi || DRIVER_NAMES[currentDriverRouteIdx % DRIVER_NAMES.length];
+            const driverCode =
+              authenticatedSession?.driver_code || (currentDriverRouteIdx === 0 ? 'TX-NVC-01' : 'TX-BHX-02');
+            const assignedPlate =
+              driverRoute?.plate || authenticatedSession?.assigned_plate || '51C-000.08';
             const activeStop =
               customerStops.find((s) => s.seq === activeNavStopSeq) || customerStops[0];
             const activeStopIdx = Math.max(
@@ -2465,41 +3176,70 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               <>
                 {/* Driver Top Card + 2-Tier Mode Switcher (Middle-Mile Truck vs Last-Mile Car) */}
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 sm:p-5 space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-[#14532d] text-[#d6f65a] flex items-center justify-center font-bold">
                         <Truck className="w-5 h-5" />
                       </div>
                       <div>
                         <div className="text-xs font-bold text-[#247b50] uppercase">
-                          Ứng Dụng Tài Xế Giao Hàng · {activeCompany.short_name}
+                          Tài Khoản Tài Xế Cá Nhân ({driverCode}) · {activeCompany.short_name}
                         </div>
                         <h1 className="text-lg font-bold text-[#111827]">
-                          Xe {driverRoute?.plate} · Tài xế {driverName}
+                          Xe {assignedPlate} · Tài xế {driverName}
                         </h1>
                       </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2.5 text-xs">
-                      <label className="font-semibold text-[#5f6368]">Chọn xe:</label>
-                      <select
-                        value={selectedDriverRouteIdx}
-                        onChange={(e) => {
-                          setSelectedDriverRouteIdx(Number(e.target.value));
-                          setActiveNavStopSeq(1);
-                        }}
-                        className="px-3 py-1.5 rounded-lg border border-[#d1d5db] bg-white font-bold text-[#111827]"
-                      >
-                        {activeStrategy.routes.map((r, i) => (
-                          <option key={r.route_id} value={i}>
-                            {r.plate} ({r.stops.filter((s) => s.kind !== 'depot').length} điểm · {r.km} km)
-                          </option>
-                        ))}
-                      </select>
+                      <span className="px-2.5 py-1.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[#14532d] font-bold flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a]" />
+                        <span>Khóa cứng 1 xe duy nhất ({assignedPlate})</span>
+                      </span>
                       <span className="px-2.5 py-1.5 rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] font-mono font-bold text-[#111827] flex items-center gap-1">
                         <KeyRound className="w-3.5 h-3.5 text-[#1971c2]" />
-                        <span>PIN: 0000</span>
+                        <span>Mã PIN: 0000</span>
                       </span>
+                    </div>
+                  </div>
+
+                  {/* Personal Driver Preferences (FB-04: Thiết lập lộ trình cá nhân) */}
+                  <div className="p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] space-y-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[#0f172a] flex items-center gap-1.5">
+                        <Sliders className="w-3.5 h-3.5 text-[#16a34a]" />
+                        <span>Thiết Lập Lộ Trình Cá Nhân (Tài Xế {driverName})</span>
+                      </span>
+                      <span className="text-[11px] text-[#64748b]">Tùy chọn ghi nhớ theo xe</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                      <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#e2e8f0] cursor-pointer hover:bg-slate-50">
+                        <input
+                          type="checkbox"
+                          checked={avoidNarrowAlleys}
+                          onChange={(e) => setAvoidNarrowAlleys(e.target.checked)}
+                          className="w-4 h-4 accent-[#14532d]"
+                        />
+                        <span className="font-medium text-[#0f172a]">Ưu tiên né hẻm nhỏ &lt; 3.5m</span>
+                      </label>
+                      <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#e2e8f0] cursor-pointer hover:bg-slate-50">
+                        <input
+                          type="checkbox"
+                          checked={autoRestAlert}
+                          onChange={(e) => setAutoRestAlert(e.target.checked)}
+                          className="w-4 h-4 accent-[#14532d]"
+                        />
+                        <span className="font-medium text-[#0f172a]">Nhắc nghỉ sau 3h45 lái xe</span>
+                      </label>
+                      <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#e2e8f0] cursor-pointer hover:bg-slate-50">
+                        <input
+                          type="checkbox"
+                          checked={vietnameseVoiceNav}
+                          onChange={(e) => setVietnameseVoiceNav(e.target.checked)}
+                          className="w-4 h-4 accent-[#14532d]"
+                        />
+                        <span className="font-medium text-[#0f172a]">Giọng nói Tiếng Việt</span>
+                      </label>
                     </div>
                   </div>
 
@@ -2534,7 +3274,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           driverMileTier === 'middle_mile_truck' ? 'text-emerald-100' : 'text-[#5f6368]'
                         }`}
                       >
-                        <strong>Tại sao không dùng Google Maps?</strong> Google Maps không có chế độ Xe tải, không lọc cầu giới hạn tải (13T) &amp; độ cao (3.5m), và đẩy xe vào đường cấm QĐ 23/2018. Chế độ này dùng <strong>Bản đồ Mở EcoMiles (OSM + OSRM/Valhalla Truck Graph) + Xuất GPX sang OsmAnd Truck ($0)</strong>.
+                        <strong>Tại sao xe tải &gt;500kg cần chế độ riêng?</strong> Ứng dụng dẫn đường ô tô con phổ thông không lọc cầu giới hạn tải (13T), độ cao (3.5m) và khung giờ cấm tải QĐ 23/2018 tại TP.HCM. Chế độ này dùng <strong>Bản đồ Mở EcoMiles (OSM + OSRM/Valhalla Truck Graph) + Xuất GPX ($0)</strong>.
                       </p>
                     </button>
 
@@ -2572,6 +3312,141 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     </button>
                   </div>
                 </div>
+                {/* 2 GENUINE DRIVER-ONLY OPERATIONAL VISUALS (FB-04 Remediation) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Visual 1: Luật TTATGT 2024 Continuous Driving Compliance Gauge */}
+                  <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
+                    <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-[#16a34a]" />
+                        <h2 className="text-sm font-bold text-[#0f172a]">
+                          1. Đồng Hồ Tuân Thủ Giờ Lái Xe (Luật TTATGT 2024)
+                        </h2>
+                      </div>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]">
+                        Giới hạn &lt;= 4h00 liên tục
+                      </span>
+                    </div>
+
+                    {(() => {
+                      const drvMins = Math.min(
+                        225,
+                        Math.max(75, Math.round(((driverRoute?.km || 35) / 21.5) * 60 + customerStops.length * 6))
+                      );
+                      const drvH = Math.floor(drvMins / 60);
+                      const drvRemM = drvMins % 60;
+                      const drvPct = Number(((drvMins / 240) * 100).toFixed(1));
+                      const remainMins = Math.max(0, 240 - drvMins);
+                      return (
+                        <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] space-y-2">
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-xs text-[#64748b]">Thời gian lái &amp; giao hàng tuyến này:</span>
+                            <div className="text-right">
+                              <span className="text-xl font-black text-[#0f172a]">{drvMins}</span>
+                              <span className="text-xs text-[#64748b]">
+                                {' '}
+                                / 240 phút ({drvH}h{String(drvRemM).padStart(2, '0')} / 4h00)
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="w-full h-3 rounded-full bg-[#e2e8f0] overflow-hidden">
+                            <div
+                              className="h-full bg-[#16a34a] transition-all"
+                              style={{ width: `${drvPct}%` }}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between text-[11px] font-semibold">
+                            <span className="text-[#16a34a]">Đã sử dụng {drvPct}% hạn mức lái liên tục</span>
+                            <span className="text-[#d97706]">Còn {remainMins} phút trước mốc nghỉ 20p bắt buộc</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    <div className="text-[11px] text-[#475569] leading-relaxed space-y-1">
+                      <p>
+                        <strong>Luật TTATGT 2024 (Điều 56 khoản 1):</strong> Người lái ô tô kinh doanh vận tải không được lái xe liên tục quá 4 giờ. Bắt buộc nghỉ tối thiểu 15-20 phút trước khi tiếp tục.
+                      </p>
+                      <div className="p-2 rounded bg-[#f0fdf4] border border-[#bbf7d0] text-[#14532d] font-semibold text-[10.5px]">
+                        Trạm dừng nghỉ đề xuất: Trạm xăng Petrolimex Q.10 hoặc Bãi đỗ Tân Bình (Cách điểm dừng kế tiếp 1.8 km).
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Visual 2: Cargo Payload Mass Step Chart */}
+                  <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
+                    <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Gauge className="w-4 h-4 text-[#0284c7]" />
+                        <h2 className="text-sm font-bold text-[#0f172a]">
+                          2. Biến Động Khối Lượng Hàng Trên Xe (kg Step Chart)
+                        </h2>
+                      </div>
+                      <span className="text-xs font-mono font-bold text-[#0f172a]">
+                        Tải xuất bến: {driverRoute?.kg_delivered} kg
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-[#64748b]">
+                      Khối lượng hàng trên xe tải giảm dần sau mỗi điểm giao và tăng lên tại các điểm ghép đơn thu hồi chiều về:
+                    </p>
+
+                    {(() => {
+                      const cargoLabels = ['Kho Tân Bình'];
+                      const cargoVals = [driverRoute?.kg_delivered || 0];
+                      let curMass = driverRoute?.kg_delivered || 0;
+                      if (driverRoute) {
+                        driverRoute.stops.forEach((s) => {
+                          if (s.kind === 'depot') return;
+                          if (s.kind === 'backhaul') {
+                            curMass += s.kg;
+                            cargoLabels.push(`#${s.seq} Ghép (+${s.kg}kg)`);
+                            cargoVals.push(curMass);
+                          } else {
+                            curMass = Math.max(0, curMass - s.kg);
+                            cargoLabels.push(`#${s.seq} (-${s.kg}kg)`);
+                            cargoVals.push(curMass);
+                          }
+                        });
+                        cargoLabels.push('Về Kho Tân Bình');
+                        cargoVals.push(curMass);
+                      }
+                      return (
+                        <EChartDaylight
+                          height={190}
+                          option={{
+                            tooltip: { trigger: 'axis' },
+                            grid: { left: 44, right: 16, top: 16, bottom: 48 },
+                            xAxis: {
+                              type: 'category',
+                              data: cargoLabels,
+                              axisLabel: { color: '#64748b', fontSize: 10, rotate: 22, interval: 0 },
+                            },
+                            yAxis: {
+                              type: 'value',
+                              name: 'kg',
+                              axisLabel: { color: '#64748b', fontSize: 10 },
+                              splitLine: { lineStyle: { color: '#e2e8f0', type: 'dashed' } },
+                            },
+                            series: [
+                              {
+                                name: 'Khối lượng hàng trên xe (kg)',
+                                type: 'line',
+                                step: 'end',
+                                data: cargoVals,
+                                itemStyle: { color: '#14532d' },
+                                lineStyle: { width: 3 },
+                                areaStyle: { color: 'rgba(20, 83, 45, 0.1)' },
+                              },
+                            ],
+                          }}
+                        />
+                      );
+                    })()}
+                  </div>
+                </div>
 
                 {/* Driver Map + Stop Orchestrator Split */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -2595,14 +3470,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             </span>
                             <div className="flex flex-wrap items-center gap-1.5">
                               <a
-                                href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=overview`}
+                                href={`/maps?vehicle=${currentDriverRouteIdx}&mode=overview`}
                                 className="px-2.5 py-1 rounded-md bg-white text-[#14532d] hover:bg-emerald-50 text-[11px] font-extrabold flex items-center gap-1"
                               >
                                 <MapPin className="w-3 h-3" />
                                 <span>Mở Bản Đồ Vùng Cấm</span>
                               </a>
                               <a
-                                href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
+                                href={`/maps?vehicle=${currentDriverRouteIdx}&mode=navigate`}
                                 className="px-2.5 py-1 rounded-md bg-[#d6f65a] hover:bg-[#c5e847] text-[#14532d] text-[11px] font-extrabold flex items-center gap-1"
                               >
                                 <Play className="w-3 h-3 fill-current" />
@@ -2831,14 +3706,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               {driverMileTier === 'middle_mile_truck' ? (
                                 <>
                                   <a
-                                    href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=navigate`}
+                                    href={`/maps?vehicle=${currentDriverRouteIdx}&mode=navigate`}
                                     className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold text-center flex items-center justify-center gap-1.5"
                                   >
                                     <Play className="w-3.5 h-3.5 text-[#d6f65a] fill-current" />
                                     <span>Bắt đầu Lái Xe Tải</span>
                                   </a>
                                   <a
-                                    href={`/maps?vehicle=${selectedDriverRouteIdx}&mode=overview`}
+                                    href={`/maps?vehicle=${currentDriverRouteIdx}&mode=overview`}
                                     className="py-1.5 px-2.5 rounded-lg border border-[#14532d] bg-[#eef7ee] hover:bg-[#dcfae5] text-[#14532d] font-bold flex items-center gap-1"
                                   >
                                     <MapPin className="w-3.5 h-3.5" />
@@ -3022,6 +3897,158 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 </table>
               </div>
             </div>
+          </div>
+          {/* Live WebCrypto AES-256-GCM Verification Panel (Zero-Knowledge Cryptographic Proof) */}
+          <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#e5e7eb] pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-[#1971c2]" />
+                  <h2 className="text-[16px] font-bold text-[#111827]">
+                    3. Kiểm Chứng Giải Mã Chéo Trái Phép (Live WebCrypto AES-256-GCM Test)
+                  </h2>
+                </div>
+                <p className="text-xs text-[#5f6368] mt-0.5">
+                  Thực hiện mã hóa và thử giải mã chéo thời gian thực bằng WebCrypto Subtle API trong trình duyệt. Chứng minh Admin không thể giải mã dữ liệu của khách hàng.
+                </p>
+              </div>
+              <span className="px-2.5 py-1 rounded bg-[#e8f0fb] text-[#1f3a5f] font-mono text-[11px] font-bold shrink-0">
+                PBKDF2 + AES-GCM 256-bit
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <button
+                type="button"
+                onClick={async () => {
+                  setCryptoTestState((prev) => ({ ...prev, running: true, errorMessage: null, successMessage: null }));
+                  try {
+                    const samplePayload = {
+                      order_id: 'COLD-2026-0001',
+                      customer_name: 'Nhà Hàng Biển Đông Q.1',
+                      customer_phone: '0903123456',
+                      address: '125 Nguyễn Thị Minh Khai, P. Bến Thành, Q.1',
+                      weight_kg: 85.5,
+                      temp_c: -18,
+                    };
+                    const env = await encryptTenantPayloadAesGcm('TNT-NAMVIET-002', samplePayload);
+                    setCryptoTestState({
+                      running: false,
+                      envelope: env,
+                      successMessage: `Đã mã hóa thành công bằng khóa Nam Việt (TNT-NAMVIET-002)! IV: ${env.iv_hex} · Bản mã: ${env.ciphertext_hex.slice(0, 32)}... · Fingerprint: ${env.key_fingerprint}`,
+                      errorMessage: null,
+                      step: 'encrypted',
+                    });
+                  } catch (e) {
+                    setCryptoTestState((prev) => ({ ...prev, running: false, errorMessage: String(e) }));
+                  }
+                }}
+                disabled={cryptoTestState.running}
+                className="p-3.5 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] hover:bg-[#dcfce7] text-left cursor-pointer transition-colors"
+              >
+                <div className="font-bold text-xs text-[#14532d] flex items-center gap-1.5 mb-1">
+                  <span>Bước 1. Mã Hóa Bằng Khóa Nam Việt</span>
+                </div>
+                <p className="text-[11px] text-[#166534]">
+                  Ký và mã hóa phong bì AES-256-GCM một đơn hàng mẫu của Nam Việt (TNT-NAMVIET-002).
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!cryptoTestState.envelope) return;
+                  setCryptoTestState((prev) => ({ ...prev, running: true, errorMessage: null, successMessage: null }));
+                  try {
+                    const dec = await decryptTenantPayloadAesGcm('SYS-ADMIN', cryptoTestState.envelope);
+                    if (!dec.ok) {
+                      setCryptoTestState((prev) => ({
+                        ...prev,
+                        running: false,
+                        errorMessage: `BỊ TỪ CHỐI BỞI WEBCRYPTO: ${dec.error}`,
+                        successMessage: null,
+                        step: 'cross_failed',
+                      }));
+                    } else {
+                      setCryptoTestState((prev) => ({ ...prev, running: false, successMessage: 'Bất ngờ giải mã được!' }));
+                    }
+                  } catch (e) {
+                    setCryptoTestState((prev) => ({ ...prev, running: false, errorMessage: String(e) }));
+                  }
+                }}
+                disabled={cryptoTestState.running || !cryptoTestState.envelope}
+                className={`p-3.5 rounded-lg border text-left transition-colors ${
+                  !cryptoTestState.envelope
+                    ? 'border-[#e5e7eb] bg-[#f9fafb] text-[#9ca3af] cursor-not-allowed'
+                    : 'border-[#fecaca] bg-[#fef2f2] hover:bg-[#fee2e2] text-[#991b1b] cursor-pointer'
+                }`}
+              >
+                <div className="font-bold text-xs flex items-center gap-1.5 mb-1">
+                  <span>Bước 2. Thử Giải Mã Bằng Khóa Admin</span>
+                </div>
+                <p className="text-[11px] text-[#7f1d1d]">
+                  Dùng khóa SYS-ADMIN để giải mã phong bì của Nam Việt. WebCrypto sẽ từ chối xác thực tag AES-GCM (Lỗi 403).
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!cryptoTestState.envelope) return;
+                  setCryptoTestState((prev) => ({ ...prev, running: true, errorMessage: null, successMessage: null }));
+                  try {
+                    const dec = await decryptTenantPayloadAesGcm('TNT-NAMVIET-002', cryptoTestState.envelope);
+                    if (dec.ok) {
+                      setCryptoTestState((prev) => ({
+                        ...prev,
+                        running: false,
+                        successMessage: `GIẢI MÃ THÀNH CÔNG HỢP LỆ VỚI KHÓA CHÍNH CHỦ: Khách hàng "${dec.data.customer_name}" · SĐT: ${dec.data.customer_phone} · Địa chỉ: ${dec.data.address}`,
+                        errorMessage: null,
+                        step: 'self_success',
+                      }));
+                    } else {
+                      setCryptoTestState((prev) => ({ ...prev, running: false, errorMessage: dec.error }));
+                    }
+                  } catch (e) {
+                    setCryptoTestState((prev) => ({ ...prev, running: false, errorMessage: String(e) }));
+                  }
+                }}
+                disabled={cryptoTestState.running || !cryptoTestState.envelope}
+                className={`p-3.5 rounded-lg border text-left transition-colors ${
+                  !cryptoTestState.envelope
+                    ? 'border-[#e5e7eb] bg-[#f9fafb] text-[#9ca3af] cursor-not-allowed'
+                    : 'border-[#bfdbfe] bg-[#eff6ff] hover:bg-[#dbeafe] text-[#1e40af] cursor-pointer'
+                }`}
+              >
+                <div className="font-bold text-xs flex items-center gap-1.5 mb-1">
+                  <span>Bước 3. Giải Mã Bằng Đúng Khóa Nam Việt</span>
+                </div>
+                <p className="text-[11px] text-[#1e3a8a]">
+                  Dùng đúng khóa của TNT-NAMVIET-002. WebCrypto xác thực tag thành công và trả về dữ liệu gốc.
+                </p>
+              </button>
+            </div>
+
+            {/* Test Output Box */}
+            {cryptoTestState.errorMessage && (
+              <div className="p-3.5 rounded-lg bg-[#fef2f2] border border-[#f87171] text-xs font-mono text-[#991b1b] space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <AlertTriangle className="w-4 h-4 text-[#ef4444] shrink-0" />
+                  <span>Xác thực Mật mã Thất bại như Kỳ vọng (Zero-Knowledge Verified)</span>
+                </div>
+                <div className="break-all">{cryptoTestState.errorMessage}</div>
+              </div>
+            )}
+
+            {cryptoTestState.successMessage && (
+              <div className="p-3.5 rounded-lg bg-[#f0fdf4] border border-[#86efac] text-xs font-mono text-[#166534] space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#22c55e] shrink-0" />
+                  <span>Kết Quả WebCrypto Thành Công</span>
+                </div>
+                <div className="break-all">{cryptoTestState.successMessage}</div>
+              </div>
+            )}
           </div>
 
         </div>

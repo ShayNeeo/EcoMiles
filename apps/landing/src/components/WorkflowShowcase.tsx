@@ -15,15 +15,6 @@ import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
-const revealItem = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: REVEAL_EASE },
-  },
-};
-
 interface WorkflowStepSpec {
   num: string;
   title: string;
@@ -75,73 +66,73 @@ export const WorkflowShowcase: React.FC = () => {
   const steps: WorkflowStepSpec[] = [
     {
       num: '01',
-      title: 'Nhập Bảng Tính Đơn Hàng (.XLSX)',
-      icon: <FileSpreadsheet className="w-5 h-5 text-ecomiles-lime" />,
-      badge: 'Đầu Vào ERP / Excel',
+      title: 'Nhập bảng tính đơn hàng (.XLSX)',
+      icon: <FileSpreadsheet className="w-5 h-5 text-[#14532D]" />,
+      badge: 'Đầu vào ERP / Excel',
       summary:
-        'Tải lên file .XLSX / .CSV (80 - 500 đơn/ca) từ ERP: từ điển cột thông minh tự động nhận diện Mã đơn, Địa chỉ, Quận/Huyện, Trọng lượng (kg) và phát hiện sớm 28 đơn vướng giờ cấm tải QĐ 23/2018.',
+        'Tải lên file .XLSX / .CSV đơn hàng: hệ thống tự động nhận diện mã đơn, địa chỉ, tải trọng và cảnh báo sớm các đơn vướng giờ cấm tải QĐ 23/2018.',
       inputSpec: 'File .XLSX / .CSV (120 đơn Chuỗi Lạnh hoặc 80 đơn FMCG)',
       outputSpec: '120 bản ghi chuẩn hóa + Gắn nhãn vùng cấm QĐ 23/2018',
       proofImage: '/pitch-deck-screenshots/01_desktop_b2b_tms_fleet_overview.png',
       liveUrl: '/dashboard/',
-      liveLabel: 'Thử Tải File .XLSX Trên Bảng Điều Khiển',
+      liveLabel: 'Thử tải file trên bảng điều khiển',
       outcomes: [
-        'Tự động ánh xạ 100% cột tiếng Việt / tiếng Anh không cần sửa tay',
+        'Tự động nhận diện cột tiếng Việt / tiếng Anh không cần chỉnh sửa tay',
         'Phát hiện tức thì 28 đơn rơi vào khung giờ cấm 06:00-09:00 & 16:00-20:00',
-        'Chỉ cần huy động 7/10 xe tải để phục vụ 100% 120 đơn hàng',
+        'Huy động 7/10 xe tải để phục vụ 100% 120 đơn hàng',
       ],
     },
     {
       num: '02',
-      title: 'Tối Ưu Lộ Trình & Ghép Đơn Chiều Về (< 1s)',
-      icon: <Route className="w-5 h-5 text-emerald-400" />,
-      badge: 'Né Giờ Cấm & Backhaul',
+      title: 'Tối ưu lộ trình & Ghép đơn chiều về (< 1s)',
+      icon: <Route className="w-5 h-5 text-[#14532D]" />,
+      badge: 'Né giờ cấm & Backhaul',
       summary:
-        'Thuật toán Carbon-Aware ALNS gom cụm theo quận, tự động dời lịch né vùng cấm tải QĐ 23/2018 & cầu 13T, đồng thời ghép 21 đơn thu hồi hàng chiều về kho Tân Bình.',
+        'Thuật toán gom cụm theo quận, tự động dời lịch né vùng cấm tải QĐ 23/2018 & cầu 13T, đồng thời ghép 21 đơn thu hồi hàng chiều về kho.',
       inputSpec: '120 đơn hàng + Đồ thị đường phố thật TP.HCM',
-      outputSpec: 'Lộ trình 243.7 km (-34.9% km · 0 lỗi QĐ 23 · 2.7% chạy rỗng)',
+      outputSpec: 'Lộ trình 243,7 km (-34,9% km · 0 vi phạm · 2,7% chạy rỗng)',
       proofImage: '/pitch-deck-screenshots/02_desktop_b2b_tms_evsim_dual_simulator.png',
       liveUrl: '/benchmark/',
-      liveLabel: 'Mở Phòng Đối Chứng EVSIM',
+      liveLabel: 'Mở phòng đối chứng EVSIM',
       outcomes: [
-        'Tiết giảm 130.7 km mỗi ca vận hành (-34.9% tổng quãng đường)',
+        'Tiết giảm 130,7 km mỗi ca vận hành (-34,9% tổng quãng đường)',
         'Khử 28/28 lỗi vi phạm giờ cấm QĐ 23/2018 (tránh phạt 5.000.000đ/lỗi)',
-        'Hạ tỷ lệ xe chạy rỗng từ 32.8% (122.9 km) xuống chỉ còn 2.7% (6.5 km)',
+        'Hạ tỷ lệ xe chạy rỗng từ 32,8% xuống chỉ còn 2,7%',
       ],
     },
     {
       num: '03',
-      title: 'Đồng Bộ App Tài Xế & Dẫn Đường ($0 API)',
-      icon: <Navigation className="w-5 h-5 text-emerald-300" />,
-      badge: 'Thực Địa 2 Chặng ($0 API)',
+      title: 'Đồng bộ App tài xế & Dẫn đường ($0 API)',
+      icon: <Navigation className="w-5 h-5 text-[#14532D]" />,
+      badge: 'Thực địa 2 chặng ($0 API)',
       summary:
-        'Phát hành lộ trình xuống điện thoại tài xế và bản đồ dẫn đường xe tải giọng nói tiếng Việt: xe >500kg dùng bản đồ xe tải né đường cấm, xe <=500kg mở thẳng Google Maps Waypoints miễn phí.',
-      inputSpec: 'Lộ trình 7 xe tải đã phê duyệt trên trung tâm điều phối',
+        'Phát hành lộ trình xuống điện thoại tài xế và bản đồ dẫn đường xe tải giọng nói tiếng Việt: né đường cấm nội đô, không tốn phí Google API.',
+      inputSpec: 'Lộ trình 7 xe tải đã duyệt từ trung tâm điều phối',
       outputSpec: 'Bản đồ dẫn đường trực tiếp & Google Maps Waypoints ($0 API)',
       proofImage: '/pitch-deck-screenshots/04_desktop_maps_overview_qd23_banned_zones.png',
       liveUrl: '/driver/',
-      liveLabel: 'Mở Ứng Dụng Tài Xế',
+      liveLabel: 'Mở ứng dụng tài xế',
       outcomes: [
-        '0đ chi phí bản đồ API hàng tháng (tiết kiệm 7.500.000đ/tháng phí Google API)',
-        'Thuyết minh giọng nói tiếng Việt đọc tên đường rẽ và cảnh báo cầu 13T / 4.5m',
-        'Cập nhật trạng thái Đã đến / Đã giao xong về trung tâm trong < 50ms',
+        'Tiết kiệm 7.500.000đ/tháng chi phí bản đồ API',
+        'Thuyết minh giọng nói tiếng Việt đọc tên đường rẽ và cảnh báo cầu 13T',
+        'Cập nhật trạng thái giao hàng tức thì về trung tâm điều phối',
       ],
     },
     {
       num: '04',
-      title: 'Xuất Báo Cáo Kiểm Toán ESG 3 Sheet',
-      icon: <FileCheck2 className="w-5 h-5 text-ecomiles-lime" />,
+      title: 'Xuất báo cáo kiểm toán ESG 3 Sheet',
+      icon: <FileCheck2 className="w-5 h-5 text-[#14532D]" />,
       badge: 'Chuẩn ISO 14083 / GLEC v3.2',
       summary:
-        'Tính chính xác phát thải CO₂e theo tải trọng thực tế sau từng điểm dỡ hàng và kết xuất tự động Báo cáo Excel 3 Sheet (.XLS), CSV, PDF phục vụ kiểm toán chuỗi cung ứng xanh.',
-      inputSpec: 'Toàn bộ chuyến xe hoàn thành + Hệ số phát thải GLEC v3.2',
-      outputSpec: 'Báo cáo Excel 3 Sheet (-39.2% CO₂e · Bảo mật NĐ 13/2023)',
+        'Ước tính phát thải CO₂e theo tải trọng thực sau từng điểm dỡ hàng (mô hình GLX-HDT-v1) và kết xuất tự động sổ cái Excel 3 Sheet hỗ trợ đối soát Scope 3.',
+      inputSpec: 'Toàn bộ chuyến xe hoàn thành + Hệ số tham chiếu GLEC v3.2',
+      outputSpec: 'Sổ cái Excel 3 Sheet (-32,2% CO₂e · Bảo mật NĐ 13/2023)',
       proofImage: '/pitch-deck-screenshots/20_slide_composite_4role_enterprise_architecture.png',
       liveUrl: '/portal/audit/',
-      liveLabel: 'Mở Cổng Kiểm Toán ESG',
+      liveLabel: 'Mở cổng kiểm toán ESG',
       outcomes: [
-        'Cắt giảm 39.2% lượng phát thải CO₂e (tiết kiệm 36.14 kg CO₂e mỗi ca)',
-        'Xuất báo cáo Excel 3 Sheet sẵn sàng nộp kiểm toán chuỗi cung ứng xanh',
+        'Cắt giảm 32,2% CO₂e TTW (từ 83,57 kg xuống 56,66 kg CO₂e mỗi ca)',
+        'Xuất sổ cái dữ liệu đầu vào hỗ trợ thẩm định khí nhà kính & Scope 3',
         'Cách ly dữ liệu khách hàng độc lập cho từng doanh nghiệp B2B',
       ],
     },
@@ -153,90 +144,84 @@ export const WorkflowShowcase: React.FC = () => {
     <section
       ref={sectionRef}
       id="workflow"
-      className="relative overflow-hidden border-t border-white/5 bg-slate-950 px-4 py-20 sm:px-6 sm:py-28 lg:px-8 scroll-mt-24"
+      className="relative overflow-hidden border-t border-slate-200/80 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8 scroll-mt-24"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-white/5" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-slate-200" aria-hidden="true">
         <motion.div
-          className="h-full origin-left bg-gradient-to-r from-ecomiles-mint via-ecomiles-lime to-ecomiles-sage will-change-transform"
+          className="h-full origin-left bg-[#14532D] will-change-transform"
           style={{ scaleX: shouldReduceMotion ? 1 : smoothProgress }}
         />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div
-          initial={shouldReduceMotion ? false : 'hidden'}
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.4 }}
-          variants={revealItem}
-          className="text-center max-w-2xl mx-auto mb-12"
-        >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            4 Bước Khép Kín Từ File Excel Đến <span className="text-ecomiles-lime">Báo Cáo ESG</span>
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
+            4 bước vận hành từ bảng tính đến báo cáo ESG
           </h2>
 
-          <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">
-            Bấm vào từng bước bên dưới để xem đầu vào, đầu ra và giao diện vận hành thực tế trong hệ thống EcoMiles.
+          <p className="mt-4 text-base text-[#475569] leading-relaxed">
+            Quy trình khép kín giúp doanh nghiệp tự động hóa từ khâu tiếp nhận đơn hàng đến phân bổ xe và nghiệm thu báo cáo phát thải.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
             <button
               type="button"
-              onClick={() => {
-                setIsPlaying((p) => !p);
-                setProgress(0);
-              }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-ecomiles-lime/40 bg-slate-900 text-xs font-bold text-ecomiles-lime hover:bg-ecomiles-lime hover:text-slate-950 transition-all cursor-pointer"
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#0F172A] bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition-colors cursor-pointer"
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-              <span>{isPlaying ? 'Tạm dừng trình diễn' : 'Tự động chạy 4 bước'}</span>
+              <span>{isPlaying ? 'Tạm dừng tự động chạy' : 'Xem tự động 4 bước'}</span>
             </button>
             {isPlaying && (
-              <div className="w-32 h-2 rounded-full bg-slate-800 border border-white/10 overflow-hidden">
+              <div className="w-32 h-1.5 rounded-full bg-slate-200 overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-ecomiles-mint to-ecomiles-lime rounded-full transition-all duration-75"
+                  className="h-full bg-[#14532D] transition-all duration-75"
                   style={{ width: `${progress}%` }}
                 />
               </div>
             )}
           </div>
-        </motion.div>
+        </div>
 
         {/* 4 Step Selector Buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-8">
-          {steps.map((item, idx) => (
-            <button
-              key={item.num}
-              type="button"
-              onClick={() => {
-                setActiveStep(idx);
-                setProgress(0);
-              }}
-              aria-pressed={activeStep === idx}
-              className={`relative overflow-hidden p-4 rounded-2xl text-left transition-colors duration-200 border flex flex-col justify-between cursor-pointer ${
-                activeStep === idx
-                  ? 'bg-slate-900 border-ecomiles-lime shadow-lg shadow-black/40'
-                  : 'bg-slate-900/45 border-white/10 hover:bg-slate-900/80 text-slate-300 hover:text-white'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span
-                  className={`font-barlow font-extrabold text-xl ${
-                    activeStep === idx ? 'text-ecomiles-lime' : 'text-slate-400'
-                  }`}
-                >
-                  Bước {item.num}
-                </span>
-                {item.icon}
-              </div>
-              <div className="text-sm font-bold leading-snug text-white">
-                {item.title}
-              </div>
-            </button>
-          ))}
+          {steps.map((item, idx) => {
+            const isSelected = activeStep === idx;
+            return (
+              <button
+                key={item.num}
+                type="button"
+                onClick={() => {
+                  setActiveStep(idx);
+                  setProgress(0);
+                }}
+                aria-pressed={isSelected}
+                className={`relative overflow-hidden p-4 rounded-xl text-left transition-all duration-200 border flex flex-col justify-between cursor-pointer ${
+                  isSelected
+                    ? 'bg-emerald-50/70 border-2 border-[#14532D] text-[#0F172A] shadow-sm'
+                    : 'bg-[#F8FAFC] border-slate-200 text-[#475569] hover:bg-slate-50 hover:text-[#0F172A]'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span
+                    className={`font-barlow font-extrabold text-lg ${
+                      isSelected ? 'text-[#14532D]' : 'text-slate-400'
+                    }`}
+                  >
+                    Bước {item.num}
+                  </span>
+                  {item.icon}
+                </div>
+                <div className="text-sm font-bold leading-snug text-[#0F172A]">
+                  {item.title}
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Active Step Proof Panel */}
-        <div className="bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl shadow-black/50 mb-14">
+        <div className="bg-[#F8FAFC] rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-12">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activeStep}
@@ -247,35 +232,35 @@ export const WorkflowShowcase: React.FC = () => {
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
             >
               {/* Left 6 Cols: Step Details & Outcomes */}
-              <div className="lg:col-span-6 space-y-5">
-                <div className="pb-4 border-b border-white/10">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-ecomiles-lime">
+              <div className="lg:col-span-6 space-y-4">
+                <div className="pb-3 border-b border-slate-200">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#14532D] bg-emerald-100/60 px-2.5 py-1 rounded-full border border-emerald-200">
                     Bước {current.num} / 04 · {current.badge}
                   </span>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                  <h3 className="text-2xl font-bold text-[#0F172A] mt-2.5">
                     {current.title}
                   </h3>
                 </div>
 
-                <p className="text-sm sm:text-base text-slate-200 leading-relaxed">
+                <p className="text-sm sm:text-base text-[#475569] leading-relaxed">
                   {current.summary}
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4 border-y border-white/10 text-xs sm:text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-3 border-y border-slate-200 text-xs sm:text-sm">
                   <div>
-                    <div className="text-xs font-bold uppercase text-slate-300">Đầu vào (Input)</div>
-                    <div className="font-semibold text-white mt-1">{current.inputSpec}</div>
+                    <div className="text-xs font-bold uppercase text-slate-500">Đầu vào (Input)</div>
+                    <div className="font-semibold text-[#0F172A] mt-1">{current.inputSpec}</div>
                   </div>
                   <div>
-                    <div className="text-xs font-bold uppercase text-ecomiles-lime">Đầu ra (Output)</div>
-                    <div className="font-semibold text-ecomiles-lime mt-1">{current.outputSpec}</div>
+                    <div className="text-xs font-bold uppercase text-[#14532D]">Đầu ra (Output)</div>
+                    <div className="font-bold text-[#14532D] mt-1">{current.outputSpec}</div>
                   </div>
                 </div>
 
-                <div className="space-y-2.5 text-xs sm:text-sm">
+                <div className="space-y-2 text-xs sm:text-sm">
                   {current.outcomes.map((out, i) => (
-                    <div key={i} className="flex items-start gap-2.5 text-slate-200 font-medium">
-                      <Check className="w-4 h-4 text-ecomiles-lime shrink-0 mt-0.5" />
+                    <div key={i} className="flex items-start gap-2 text-[#334155]">
+                      <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
                       <span>{out}</span>
                     </div>
                   ))}
@@ -284,7 +269,7 @@ export const WorkflowShowcase: React.FC = () => {
                 <div className="pt-2">
                   <a
                     href={current.liveUrl}
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-ecomiles-lime hover:bg-yellow-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-black/40 transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#14532D] hover:bg-[#0F3F22] text-white font-bold text-xs sm:text-sm shadow-sm transition-colors"
                   >
                     <span>{current.liveLabel}</span>
                     <ArrowUpRight className="w-4 h-4" />
@@ -307,15 +292,15 @@ export const WorkflowShowcase: React.FC = () => {
                     setIsZoomed(true);
                   }
                 }}
-                className="group relative lg:col-span-6 flex flex-col items-center justify-center bg-slate-950/90 rounded-2xl p-3 sm:p-5 border border-white/10 hover:border-ecomiles-lime/50 cursor-zoom-in transition-all overflow-hidden"
+                className="group relative lg:col-span-6 flex flex-col items-center justify-center bg-white rounded-xl p-3 sm:p-4 border border-slate-200 hover:border-emerald-600/40 cursor-zoom-in transition-all shadow-sm"
               >
                 <img
                   src={current.proofImage}
                   alt={`Giao diện thực tế Bước ${current.num}: ${current.title}`}
-                  className="max-h-[380px] w-auto max-w-full object-contain rounded-xl shadow-2xl group-hover:scale-[1.015] transition-transform duration-300"
+                  className="max-h-[360px] w-auto max-w-full object-contain rounded-lg group-hover:scale-[1.01] transition-transform duration-300"
                 />
-                <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-900/90 border border-white/20 text-xs font-semibold text-slate-200 group-hover:text-ecomiles-lime">
-                  <Maximize2 className="w-3.5 h-3.5" />
+                <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/95 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm">
+                  <Maximize2 className="w-3.5 h-3.5 text-[#14532D]" />
                   <span>Phóng to</span>
                 </div>
               </div>
@@ -324,41 +309,41 @@ export const WorkflowShowcase: React.FC = () => {
         </div>
 
         {/* Verified Benchmark Comparison Table */}
-        <div className="bg-slate-900/60 rounded-3xl p-6 sm:p-9 border border-white/10">
-          <h3 className="text-xl font-bold text-white text-center mb-6">
-            Đối Chứng Thực Nghiệm (120 Đơn Chuỗi Lạnh TP.HCM): <span className="text-slate-300">Chia Tuyến Thủ Công</span> vs{' '}
-            <span className="text-ecomiles-lime">EcoMiles v2.1</span>
+        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <h3 className="text-lg sm:text-xl font-bold text-[#0F172A] text-center mb-6">
+            Đối chứng thực nghiệm (120 đơn Chuỗi Lạnh TP.HCM): <span className="text-slate-500 font-normal">Thủ công</span> vs{' '}
+            <span className="text-[#14532D]">EcoMiles</span>
           </h3>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm tabular-nums">
               <thead>
-                <tr className="border-b border-white/10 text-slate-300">
-                  <th className="py-3 px-4">Chỉ Số Kiểm Định (Cùng Đồ Thị Đường Phố TP.HCM)</th>
-                  <th className="py-3 px-4">Chia Quận Thủ Công + Google Maps</th>
-                  <th className="py-3 px-4 text-ecomiles-lime">Thuật Toán EcoMiles (Carbon-Aware ALNS)</th>
+                <tr className="border-b border-slate-200 bg-slate-50 text-[#0F172A]">
+                  <th className="py-3 px-4 rounded-l-lg">Chỉ số kiểm định</th>
+                  <th className="py-3 px-4">Chia quận thủ công</th>
+                  <th className="py-3 px-4 text-[#14532D] font-bold rounded-r-lg">Thuật toán EcoMiles</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-slate-200">
+              <tbody className="divide-y divide-slate-100 text-[#334155]">
                 <tr>
-                  <td className="py-3 px-4 font-bold text-white">Tổng quãng đường đội xe</td>
-                  <td className="py-3 px-4">374.4 km (12 chuyến xe rời rạc)</td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">243.7 km (7 chuyến xe · Giảm 34.9%)</td>
+                  <td className="py-3 px-4 font-bold text-[#0F172A]">Tổng quãng đường đội xe</td>
+                  <td className="py-3 px-4">374,4 km (12 chuyến xe)</td>
+                  <td className="py-3 px-4 font-bold text-[#14532D]">243,7 km (7 chuyến · Giảm 34,9%)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-white">Quãng đường &amp; Tỷ lệ chạy rỗng</td>
-                  <td className="py-3 px-4">122.9 km chạy rỗng (32.8%)</td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">6.5 km chạy rỗng (2.7% · Ghép 21 đơn chiều về)</td>
+                  <td className="py-3 px-4 font-bold text-[#0F172A]">Quãng đường &amp; Tỷ lệ chạy rỗng</td>
+                  <td className="py-3 px-4">122,9 km chạy rỗng (32,8%)</td>
+                  <td className="py-3 px-4 font-bold text-[#14532D]">6,5 km chạy rỗng (2,7% · Ghép 21 đơn chiều về)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-white">Vi phạm giờ cấm tải QĐ 23/2018</td>
-                  <td className="py-3 px-4 text-rose-400 font-semibold">28 đơn vi phạm khung 06-09h &amp; 16-20h</td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">0 vi phạm (Tự động dời lịch &amp; né vùng cấm đỏ)</td>
+                  <td className="py-3 px-4 font-bold text-[#0F172A]">Vi phạm giờ cấm tải QĐ 23/2018</td>
+                  <td className="py-3 px-4 text-rose-600 font-medium">28 đơn vi phạm giờ cao điểm</td>
+                  <td className="py-3 px-4 font-bold text-[#14532D]">0 vi phạm (Tự động né 100% giờ cấm)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-white">Phát thải CO₂e (Chuẩn ISO 14083 / GLEC v3.2)</td>
-                  <td className="py-3 px-4">92.21 kg CO₂e (WTW)</td>
-                  <td className="py-3 px-4 font-bold text-emerald-400">56.07 kg CO₂e (WTW · Giảm 39.2%)</td>
+                  <td className="py-3 px-4 font-bold text-[#0F172A]">Ước tính CO₂e TTW (GLX-HDT-v1 / GLEC v3.2)</td>
+                  <td className="py-3 px-4">83,57 kg CO₂e</td>
+                  <td className="py-3 px-4 font-bold text-[#14532D]">56,66 kg CO₂e (Giảm 32,2%)</td>
                 </tr>
               </tbody>
             </table>
@@ -374,27 +359,27 @@ export const WorkflowShowcase: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setIsZoomed(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/92 backdrop-blur-xl p-4 sm:p-8 cursor-zoom-out"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 sm:p-8 cursor-zoom-out"
           >
             <motion.div
-              initial={{ scale: 0.94, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.94, opacity: 0 }}
+              exit={{ scale: 0.95, opacity: 0 }}
               transition={{ type: 'spring', damping: 26, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-6xl max-h-[92vh] w-full bg-slate-900 border border-white/20 rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col items-center cursor-default"
+              className="relative max-w-5xl max-h-[92vh] w-full bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col items-center cursor-default"
             >
-              <div className="w-full flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+              <div className="w-full flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-ecomiles-lime bg-ecomiles-lime/10 px-2.5 py-1 rounded-full border border-ecomiles-lime/20">
+                  <span className="text-xs font-bold text-[#14532D] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
                     Bước {current.num} / 04 · {current.badge}
                   </span>
-                  <h4 className="text-sm sm:text-base font-bold text-white truncate">{current.title}</h4>
+                  <h4 className="text-sm sm:text-base font-bold text-[#0F172A] truncate">{current.title}</h4>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsZoomed(false)}
-                  className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors border border-white/10 cursor-pointer"
+                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
                   aria-label="Đóng ảnh"
                 >
                   <X className="w-5 h-5" />
@@ -404,7 +389,7 @@ export const WorkflowShowcase: React.FC = () => {
                 <img
                   src={current.proofImage}
                   alt={current.title}
-                  className="max-h-[78vh] w-auto max-w-full object-contain rounded-xl border border-white/10 shadow-2xl"
+                  className="max-h-[76vh] w-auto max-w-full object-contain rounded-lg border border-slate-200 shadow-md"
                 />
               </div>
             </motion.div>

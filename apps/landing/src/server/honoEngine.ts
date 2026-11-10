@@ -11,6 +11,13 @@
 
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import {
+  B2B_COMPANIES,
+  DEMO_CREDENTIAL_ACCOUNTS,
+  getCompanySecurityPolicy,
+  buildCompany14DayTelemetry,
+  type AuthenticatedSession,
+} from '../utils/tenantPrivacyEngine.ts';
 
 export interface Order {
   id: number;
@@ -649,7 +656,7 @@ api.use(
   cors({
     origin: '*',
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'Authorization', 'X-Driver-Pin', 'Accept', 'Origin'],
+    allowHeaders: ['Content-Type', 'Authorization', 'X-Driver-Pin', 'Accept', 'Origin', 'Cookie'],
   })
 );
 
@@ -997,6 +1004,266 @@ api.post('/ingest/events', async (c) => {
     dedupe: true,
     limits: { max_upload_bytes: 33554432, max_data_rows: 50000 },
   });
+});
+
+// =============================================================================
+// 13. MULTI-TENANT AUTH, LOGOUT & ISOLATED TENANT SUMMARY (FB-05 remediation)
+// =============================================================================
+
+export const revokedTokens = new Set<string>();
+
+function getSessionSecretString(): string {
+  const envSecret =
+    typeof process !== 'undefined' && process.env ? process.env.ECOMILES_SESSION_SECRET : undefined;
+  return envSecret && envSecret.length >= 16 ? envSecret : 'ecomiles_session_hmac_secret_2026_q1';
+}
+
+async function getHmacKey(): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  return globalThis.crypto.subtle.importKey(
+    'raw',
+    enc.encode(getSessionSecretString()),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign', 'verify']
+  );
+}
+
+function base64UrlEncode(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+function base64UrlDecode(base64Url: string): string {
+  let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) {
+    base64 += '=';
+  }
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
+}
+
+function bufferToHex(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let hex = '';
+  for (let i = 0; i < bytes.length; i++) {
+    hex += bytes[i].toString(16).padStart(2, '0');
+  }
+  return hex;
+}
+
+export async function signSessionToken(session: AuthenticatedSession): Promise<string> {
+  const { token: _omittedToken, ...payloadWithoutToken } = session;
+  const payloadStr = JSON.stringify(payloadWithoutToken);
+  const payloadB64 = base64UrlEncode(payloadStr);
+  const dataToSign = `ecm_v2.${payloadB64}`;
+  const key = await getHmacKey();
+  const signature = await globalThis.crypto.subtle.sign(
+    'HMAC',
+    key,
+    new TextEncoder().encode(dataToSign) as unknown as BufferSource
+  );
+  const hexHmac = bufferToHex(signature);
+  return `${dataToSign}.${hexHmac}`;
+}
+
+export async function verifySessionToken(token: string): Promise<AuthenticatedSession | null> {
+  if (!token || revokedTokens.has(token)) return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  const [prefix, payloadB64, hexHmac] = parts;
+  if (prefix !== 'ecm_v2') return null;
+  // Strict canonical 64-char lowercase hex check prevents case/parseInt malleability bypass of revokedTokens
+  if (!/^[0-9a-f]{64}$/.test(hexHmac)) return null;
+
+  const dataToSign = `ecm_v2.${payloadB64}`;
+  const key = await getHmacKey();
+
+  const sigBytes = new Uint8Array(32);
+  for (let i = 0; i < 32; i++) {
+    sigBytes[i] = parseInt(hexHmac.slice(i * 2, i * 2 + 2), 16);
+  }
+
+  const isValid = await globalThis.crypto.subtle.verify(
+    'HMAC',
+    key,
+    sigBytes as unknown as BufferSource,
+    new TextEncoder().encode(dataToSign) as unknown as BufferSource
+  );
+
+  if (!isValid) return null;
+
+  try {
+    const jsonStr = base64UrlDecode(payloadB64);
+    const session = JSON.parse(jsonStr) as AuthenticatedSession;
+    const expMs = new Date(session.expires_at).getTime();
+    if (!Number.isFinite(expMs) || expMs <= Date.now()) {
+      return null;
+    }
+    session.token = token;
+    return session;
+  } catch {
+    return null;
+  }
+}
+
+function extractToken(c: { req: { header: (name: string) => string | undefined } }): string | null {
+  const authHeader = c.req.header('Authorization') || c.req.header('authorization');
+  if (authHeader) {
+    const parts = authHeader.split(/\s+/);
+    if (parts.length === 2 && parts[0].toLowerCase() === 'bearer') {
+      return parts[1].trim();
+    }
+  }
+  const cookie = c.req.header('Cookie') || c.req.header('cookie');
+  if (cookie) {
+    const match = cookie.match(/(?:^|;\s*)ecm_session=([^;]+)/);
+    if (match) {
+      return decodeURIComponent(match[1]);
+    }
+  }
+  return null;
+}
+
+api.post('/auth/login', async (c) => {
+  let body: { username?: string; password?: string };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json(
+      {
+        ok: false,
+        error: 'Sai tên đăng nhập hoặc mật khẩu doanh nghiệp. Vui lòng kiểm tra lại thông tin xác thực.',
+      },
+      401
+    );
+  }
+
+  const username = (body.username || '').trim().toLowerCase();
+  const password = body.password || '';
+
+  const account = DEMO_CREDENTIAL_ACCOUNTS.find(
+    (acc) => acc.username.toLowerCase() === username && acc.password === password
+  );
+
+  if (!account) {
+    return c.json(
+      {
+        ok: false,
+        error: 'Sai tên đăng nhập hoặc mật khẩu doanh nghiệp. Vui lòng kiểm tra lại thông tin xác thực.',
+      },
+      401
+    );
+  }
+
+  const issuedAt = new Date().toISOString();
+  const expiresAt = new Date(Date.now() + 8 * 3600 * 1000).toISOString();
+  const policy = getCompanySecurityPolicy(account.tenant_id);
+  const company = B2B_COMPANIES.find((comp) => comp.tenant_id === account.tenant_id);
+
+  let policyId: AuthenticatedSession['policy_id'];
+  if (account.role === 'admin') {
+    policyId = 'ZERO-KNOWLEDGE-BLIND';
+  } else if (account.role === 'tester') {
+    policyId = 'SANDBOX-EVAL';
+  } else {
+    policyId = policy.policy_id;
+  }
+
+  const sessionData: AuthenticatedSession = {
+    token: '',
+    account_id: account.account_id,
+    username: account.username,
+    label_vi: account.label_vi,
+    role: account.role,
+    tenant_id: account.tenant_id,
+    ...(account.driver_route_idx !== undefined ? { driver_route_idx: account.driver_route_idx } : {}),
+    ...(account.driver_code ? { driver_code: account.driver_code } : {}),
+    ...(account.assigned_plate ? { assigned_plate: account.assigned_plate } : {}),
+    key_fingerprint: company?.key_fingerprint ?? `KMS-${account.tenant_id}-AES256GCM`,
+    policy_id: policyId,
+    issued_at: issuedAt,
+    expires_at: expiresAt,
+  };
+
+  const token = await signSessionToken(sessionData);
+  sessionData.token = token;
+
+  c.header('Set-Cookie', `ecm_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=28800`);
+  return c.json({ ok: true, session: sessionData }, 200);
+});
+
+api.post('/auth/logout', async (c) => {
+  const token = extractToken(c);
+  if (token) {
+    const validSession = await verifySessionToken(token);
+    if (validSession) {
+      if (revokedTokens.size >= 4096) {
+        const oldest = revokedTokens.values().next().value;
+        if (oldest) revokedTokens.delete(oldest);
+      }
+      revokedTokens.add(token);
+    }
+  }
+  c.header('Set-Cookie', 'ecm_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0');
+  return c.json({ ok: true, revoked: true }, 200);
+});
+
+api.get('/auth/me', async (c) => {
+  const token = extractToken(c);
+  if (!token) {
+    return c.json({ ok: false, error: 'Phiên đăng nhập đã hết hạn hoặc đã đăng xuất.' }, 401);
+  }
+  const session = await verifySessionToken(token);
+  if (!session) {
+    return c.json({ ok: false, error: 'Phiên đăng nhập đã hết hạn hoặc đã đăng xuất.' }, 401);
+  }
+  return c.json({ ok: true, session }, 200);
+});
+
+api.get('/tenant/:tenantId/summary', async (c) => {
+  const token = extractToken(c);
+  if (!token) {
+    return c.json({ ok: false, error: 'Phiên đăng nhập đã hết hạn hoặc đã đăng xuất.' }, 401);
+  }
+  const session = await verifySessionToken(token);
+  if (!session) {
+    return c.json({ ok: false, error: 'Phiên đăng nhập đã hết hạn hoặc đã đăng xuất.' }, 401);
+  }
+
+  const requestedTenantId = c.req.param('tenantId');
+
+  if (session.role !== 'tester' && session.tenant_id !== requestedTenantId) {
+    return c.json(
+      {
+        ok: false,
+        code: 'CROSS_TENANT_ACCESS_DENIED',
+        error: 'Truy cập bị từ chối: Khóa phiên của bạn không có quyền đọc dữ liệu của doanh nghiệp khác.',
+      },
+      403
+    );
+  }
+
+  return c.json(
+    {
+      ok: true,
+      tenant_id: requestedTenantId,
+      policy: getCompanySecurityPolicy(requestedTenantId),
+      telemetry_14d: buildCompany14DayTelemetry(requestedTenantId),
+    },
+    200
+  );
 });
 
 // App wrapper that responds to both /api/* and /*

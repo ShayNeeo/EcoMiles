@@ -4,14 +4,15 @@
 @tailwind utilities;
 
 :root {
-  --glx-ink: #030817;
-  --glx-surface: #08101f;
-  --glx-panel: #111a2c;
-  --glx-lime: #ffd400;
-  --glx-mint: #36d9a5;
-  --glx-sage: #83c5a8;
-  --glx-ivory: #f8fafc;
-  --glx-muted: #94a3b8;
+  --glx-ink: #0f172a;
+  --glx-surface: #f8fafc;
+  --glx-panel: #ffffff;
+  --glx-forest: #14532d;
+  --glx-emerald: #16a34a;
+  --glx-border: #e2e8f0;
+  --glx-muted: #475569;
+  --glx-lime: #15803d;
+  --glx-ivory: #ffffff;
 }
 
 * { 
@@ -22,17 +23,18 @@
 
 html {
   scroll-behavior: auto;
-  background-color: var(--glx-ink);
-  color-scheme: dark;
+  background-color: #f8fafc;
+  color-scheme: light;
 }
 
 body { 
   font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; 
   -webkit-font-smoothing: antialiased; 
   -moz-osx-font-smoothing: grayscale; 
-  background-color: var(--glx-ink);
-  color: var(--glx-ivory);
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
   overflow-x: hidden;
+  font-variant-numeric: tabular-nums;
 }
 
 body::before {
@@ -42,14 +44,16 @@ body::before {
   pointer-events: none;
   content: '';
   background:
-    radial-gradient(circle at 12% 10%, rgb(54 217 165 / 0.065), transparent 30rem),
-    radial-gradient(circle at 92% 32%, rgb(255 212 0 / 0.045), transparent 34rem),
-    var(--glx-ink);
+    radial-gradient(circle at 12% 10%, rgb(20 83 45 / 0.035), transparent 30rem),
+    radial-gradient(circle at 92% 32%, rgb(22 163 74 / 0.03), transparent 34rem),
+    #f8fafc;
 }
 
 .site-shell {
   position: relative;
   isolation: isolate;
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
 .site-shell::before {
@@ -59,9 +63,9 @@ body::before {
   pointer-events: none;
   content: '';
   background:
-    linear-gradient(90deg, transparent 0, rgb(255 255 255 / 0.025) 50%, transparent 100%),
-    radial-gradient(circle at 18% 8%, rgb(54 217 165 / 0.07), transparent 26rem),
-    radial-gradient(circle at 84% 36%, rgb(255 212 0 / 0.045), transparent 28rem);
+    linear-gradient(90deg, transparent 0, rgb(15 23 42 / 0.015) 50%, transparent 100%),
+    radial-gradient(circle at 18% 8%, rgb(20 83 45 / 0.03), transparent 26rem),
+    radial-gradient(circle at 84% 36%, rgb(22 163 74 / 0.025), transparent 28rem);
 }
 
 .site-shell::after {
@@ -70,9 +74,9 @@ body::before {
   z-index: -1;
   pointer-events: none;
   content: '';
-  opacity: 0.22;
-  background-image: radial-gradient(rgb(255 212 0 / 0.13) 0.7px, transparent 0.7px);
-  background-size: 20px 20px;
+  opacity: 0.15;
+  background-image: radial-gradient(rgb(15 23 42 / 0.08) 0.7px, transparent 0.7px);
+  background-size: 24px 24px;
   mask-image: linear-gradient(to bottom, black, transparent 78%);
 }
 
@@ -88,7 +92,7 @@ main > section:not(:first-child)::after {
   height: 1px;
   pointer-events: none;
   content: '';
-  background: linear-gradient(90deg, transparent, rgb(255 212 0 / 0.2), transparent);
+  background: #e2e8f0;
   transform: translateX(-50%);
 }
 
@@ -111,13 +115,13 @@ main > section:not(:first-child)::after {
 }
 
 ::selection {
-  color: var(--glx-ink);
-  background: var(--glx-lime);
+  color: #ffffff;
+  background: #14532d;
 }
 
 :where(a, button, input, select, textarea):focus-visible {
-  outline: 3px solid var(--glx-lime);
-  outline-offset: 3px;
+  outline: 2px solid #14532d;
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -135,19 +139,19 @@ main > section:not(:first-child)::after {
   }
 }
 
-/* Custom Sleek Dark Scrollbar */
+/* Custom Sleek Light Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--glx-ink);
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #25324a;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b4b68;
+  background: #94a3b8;
 }
 
 /* 16:9 Landscape Presentation Print Styles (Without Subtitles) */
