@@ -1,40 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --glx-ink: #0f172a;
-  --glx-surface: #f8fafc;
-  --glx-panel: #ffffff;
-  --glx-forest: #14532d;
-  --glx-emerald: #16a34a;
-  --glx-border: #e2e8f0;
-  --glx-muted: #475569;
-  --glx-lime: #15803d;
-  --glx-ivory: #ffffff;
+  --em-paper: #F6F1E7;
+  --em-paper-card: #FBF8F1;
+  --em-paper-pure: #FFFFFF;
+  --em-paper-sunken: #ECE5D7;
+  --em-ink: #101418;
+  --em-ink-body: #2A2F36;
+  --em-ink-muted: #5B5F66;
+  --em-line: #D8D2C4;
+  --em-line-strong: #BDB5A3;
+  --em-route: #1B45D7;
+  --em-green: #0B7A3B;
+  --em-amber: #A64B08;
+  --em-red: #B42318;
+  --em-font-display: 'Archivo', 'IBM Plex Sans', system-ui, sans-serif;
+  --em-font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --em-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 }
 
-* { 
-  margin: 0; 
-  padding: 0; 
-  box-sizing: border-box; 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: auto;
-  background-color: #f8fafc;
+  background-color: var(--em-paper);
   color-scheme: light;
 }
 
-body { 
-  font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; 
-  -webkit-font-smoothing: antialiased; 
-  -moz-osx-font-smoothing: grayscale; 
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
+body {
+  font-family: var(--em-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--em-paper) !important;
+  color: var(--em-ink) !important;
   overflow-x: hidden;
   font-variant-numeric: tabular-nums;
+}
+
+h1, h2, .font-display {
+  font-family: var(--em-font-display);
+}
+
+.font-mono, code, pre {
+  font-family: var(--em-font-mono);
 }
 
 body::before {
@@ -43,17 +57,14 @@ body::before {
   z-index: -2;
   pointer-events: none;
   content: '';
-  background:
-    radial-gradient(circle at 12% 10%, rgb(20 83 45 / 0.035), transparent 30rem),
-    radial-gradient(circle at 92% 32%, rgb(22 163 74 / 0.03), transparent 34rem),
-    #f8fafc;
+  background: var(--em-paper);
 }
 
 .site-shell {
   position: relative;
   isolation: isolate;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--em-paper);
+  color: var(--em-ink);
 }
 
 .site-shell::before {
@@ -62,10 +73,7 @@ body::before {
   z-index: -1;
   pointer-events: none;
   content: '';
-  background:
-    linear-gradient(90deg, transparent 0, rgb(15 23 42 / 0.015) 50%, transparent 100%),
-    radial-gradient(circle at 18% 8%, rgb(20 83 45 / 0.03), transparent 26rem),
-    radial-gradient(circle at 84% 36%, rgb(22 163 74 / 0.025), transparent 28rem);
+  background: linear-gradient(90deg, transparent 0, rgb(16 20 24 / 0.015) 50%, transparent 100%);
 }
 
 .site-shell::after {
@@ -74,8 +82,8 @@ body::before {
   z-index: -1;
   pointer-events: none;
   content: '';
-  opacity: 0.15;
-  background-image: radial-gradient(rgb(15 23 42 / 0.08) 0.7px, transparent 0.7px);
+  opacity: 0.14;
+  background-image: radial-gradient(rgb(16 20 24 / 0.12) 0.7px, transparent 0.7px);
   background-size: 24px 24px;
   mask-image: linear-gradient(to bottom, black, transparent 78%);
 }
@@ -92,10 +100,9 @@ main > section:not(:first-child)::after {
   height: 1px;
   pointer-events: none;
   content: '';
-  background: #e2e8f0;
+  background: var(--em-line);
   transform: translateX(-50%);
 }
-
 
 .text-balance {
   text-wrap: balance;
@@ -115,8 +122,8 @@ main > section:not(:first-child)::after {
 }
 
 ::selection {
-  color: #ffffff;
-  background: #14532d;
+  color: var(--em-paper);
+  background: var(--em-ink);
 }
 
 :where(a, button, input, select, textarea):focus-visible {

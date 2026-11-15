@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 240" fill="none" role="img" aria-label="QD 23/2018 HCMC inner-city truck ban corridor">
+  <rect width="920" height="240" fill="#FBF8F1" stroke="#D8D2C4" stroke-width="1"/>
+  <text x="32" y="34" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" letter-spacing="1.4" fill="#101418">QUYẾT ĐỊNH 23/2018/QĐ-UBND · CỬA SỔ NỘI ĐÔ TP.HCM</text>
+  <text x="888" y="34" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#0B7A3B">28 → 0 VI PHẠM</text>
+
+  <!-- Hour grid 00..24 -->
+  <rect x="32" y="56" width="856" height="44" fill="#ECE5D7" stroke="#D8D2C4" stroke-width="1"/>
+  <!-- 00-06 Open (25%) -->
+  <rect x="32" y="56" width="214" height="44" fill="#EEF2FC"/>
+  <!-- 06-09 Ban (12.5%) -->
+  <rect x="246" y="56" width="107" height="44" fill="#FDF3E7"/>
+  <rect x="246" y="56" width="107" height="4" fill="#A64B08"/>
+  <!-- 09-16 Open (29.17%) -->
+  <rect x="353" y="56" width="250" height="44" fill="#EAF5EE"/>
+  <rect x="353" y="56" width="250" height="4" fill="#0B7A3B"/>
+  <!-- 16-20 Ban (16.67%) -->
+  <rect x="603" y="56" width="143" height="44" fill="#FDF3E7"/>
+  <rect x="603" y="56" width="143" height="4" fill="#A64B08"/>
+  <!-- 20-24 Open (16.67%) -->
+  <rect x="746" y="56" width="142" height="44" fill="#EEF2FC"/>
+
+  <text x="139" y="83" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#1B45D7">00–06 MỞ</text>
+  <text x="299" y="83" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#A64B08">06–09 CẤM</text>
+  <text x="478" y="83" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#0B7A3B">09–16 HÀNH LANG MỞ</text>
+  <text x="674" y="83" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#A64B08">16–20 CẤM</text>
+  <text x="817" y="83" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#1B45D7">20–24 MỞ</text>
+
+  <!-- Vehicle class track 1: Van <2.5T continuous -->
+  <text x="32" y="138" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#101418">VAN &lt;2.5T (NỘI ĐÔ)</text>
+  <path d="M210 134 H888" stroke="#1B45D7" stroke-width="3.5"/>
+  <rect x="878" y="128" width="10" height="10" fill="#1B45D7"/>
+
+  <!-- Vehicle class track 2: Reefer / Dry 3.5T+ stages outside ban -->
+  <text x="32" y="182" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#101418">LẠNH 3.5T+ (ĐỢI CỬA SỔ)</text>
+  <path d="M210 178 H246" stroke="#101418" stroke-width="3.5"/>
+  <path d="M246 178 H353" stroke="#A64B08" stroke-width="3" stroke-dasharray="4 4"/>
+  <path d="M353 178 H603" stroke="#0B7A3B" stroke-width="4"/>
+  <path d="M603 178 H746" stroke="#A64B08" stroke-width="3" stroke-dasharray="4 4"/>
+  <path d="M746 178 H888" stroke="#1B45D7" stroke-width="3.5"/>
+  <circle cx="353" cy="178" r="5" fill="#0B7A3B"/>
+  <circle cx="603" cy="178" r="5" fill="#A64B08"/>
+  <rect x="878" y="172" width="10" height="10" fill="#0B7A3B"/>
+
+  <text x="32" y="216" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#5B5F66">Nét đứt cam = xe tải nặng chờ tại vành đai đúng luật · Nét liền = di chuyển hợp lệ không phạt nguội</text>
+</svg>

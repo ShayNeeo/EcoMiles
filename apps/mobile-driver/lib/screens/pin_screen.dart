@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../api/client.dart';
 import '../models/driver_route.dart';
+import '../theme/ecomiles_theme.dart';
 import 'route_list.dart';
 
 class PinScreen extends StatefulWidget {
@@ -69,7 +70,15 @@ class _PinScreenState extends State<PinScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('GreenLogix tài xế')),
+      appBar: AppBar(
+        title: const Row(
+          children: [
+            EcoMilesReturnMark(size: 24),
+            SizedBox(width: 10),
+            Text('EcoMiles tài xế'),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

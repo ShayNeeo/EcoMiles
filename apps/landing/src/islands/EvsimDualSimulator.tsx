@@ -761,7 +761,7 @@ export function EvsimDualSimulator({
       ctx.lineWidth = 2;
       ctx.fillRect(depX - 9, depY - 9, 18, 18);
       ctx.strokeRect(depX - 9, depY - 9, 18, 18);
-      ctx.fillStyle = '#14532d';
+      ctx.fillStyle = '#101418';
       ctx.font = '700 10px system-ui, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(`Kho Tân Bình (${side.strategy.vehicles_used} xe)`, depX + 12, depY + 4);
@@ -798,7 +798,7 @@ export function EvsimDualSimulator({
           const angle = (rIdx / Math.max(1, side.routeGeometries.length)) * Math.PI * 2;
           curLng = DEPOT_COORD.lng + Math.cos(angle) * 0.0018;
           curLat = DEPOT_COORD.lat + Math.sin(angle) * 0.0018;
-          fillCol = '#14532d';
+          fillCol = '#101418';
           statusTag = `Xe ${rIdx + 1} · Về kho`;
         } else {
           const waitingGateLeg = truckLegs.find(
@@ -892,7 +892,7 @@ export function EvsimDualSimulator({
                 fillCol = '#1971c2';
                 statusTag = `Xe ${rIdx + 1} · Nhận hàng về`;
               } else {
-                fillCol = '#14532d';
+                fillCol = '#101418';
                 statusTag = `Xe ${rIdx + 1} · Giao ${leg.district}`;
               }
             }
@@ -1356,7 +1356,7 @@ export function EvsimDualSimulator({
                   className={`px-2 py-0.5 rounded font-bold text-[11px] ${
                     isBanActive
                       ? 'bg-[#ffedea] text-[#c92a2a] border border-[#ffc9c9]'
-                      : 'bg-[#dcfae5] text-[#14532d] border border-[#b9dfbf]'
+                      : 'bg-[#dcfae5] text-[#101418] border border-[#b9dfbf]'
                   }`}
                 >
                   {isMorningBan
@@ -1371,7 +1371,7 @@ export function EvsimDualSimulator({
                     : 'Toàn bộ xe tải nhẹ <= 2.5T được phép giao hàng hợp pháp trong khu vực nội đô TP.HCM'}
                 </span>
               </div>
-              <div className="text-[11.5px] font-semibold text-[#14532d]">
+              <div className="text-[11.5px] font-semibold text-[#101418]">
                 Cách xử lý của EcoMiles:{' '}
                 {isMorningBan
                   ? 'Giao vành đai ngoài (Tân Bình, Gò Vấp, Thủ Đức) lúc 06-09h, đợi 09:02 mới vào nội đô'
@@ -1396,7 +1396,7 @@ export function EvsimDualSimulator({
                 type="button"
                 onClick={() => setTimeSec(10.5 * 3600)}
                 style={{ width: '50%' }}
-                className="bg-[#dcfae5] hover:bg-[#c3fae8] text-[#14532d] flex items-center justify-center border-r border-[#d8cfbd] cursor-pointer truncate px-1"
+                className="bg-[#dcfae5] hover:bg-[#c3fae8] text-[#101418] flex items-center justify-center border-r border-[#d8cfbd] cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 10:30 (Khung giờ mở nội đô 09:00 - 16:00)"
               >
                 09:00 - 16:00 · Khung mở nội đô (Giao Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh)
@@ -1420,7 +1420,7 @@ export function EvsimDualSimulator({
         );
       })()}
       {uploadNotice && (
-        <div className="px-4 py-2 bg-[#eef7ee] border-b border-[#b9dfbf] text-[12px] text-[#14532d] flex items-center justify-between">
+        <div className="px-4 py-2 bg-[#eef7ee] border-b border-[#b9dfbf] text-[12px] text-[#101418] flex items-center justify-between">
           <div className="flex items-center gap-2 font-semibold">
             <CheckCircle2 className="w-4 h-4 text-[#2f9e44]" />
             <span>{uploadNotice}</span>
@@ -1565,7 +1565,7 @@ export function EvsimDualSimulator({
                       liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
                     } else if (timeSec >= lastLeg.tServiceEndSec) {
                       liveStateText = `Đã về kho (${route.km.toFixed(1)} km)`;
-                      liveStateClass = 'bg-[#dcfae5] text-[#14532d]';
+                      liveStateClass = 'bg-[#dcfae5] text-[#101418]';
                     } else {
                       const waitingGateLeg = truckLegs.find(
                         (l, idx) =>
@@ -1612,7 +1612,7 @@ export function EvsimDualSimulator({
                           liveStateClass = 'bg-[#e8f0fb] text-[#1971c2]';
                         } else {
                           liveStateText = `Đang giao ${leg.stopOrderId} tại ${leg.district} (Khung ${leg.windowStr})`;
-                          liveStateClass = 'bg-[#dcfae5] text-[#14532d]';
+                          liveStateClass = 'bg-[#dcfae5] text-[#101418]';
                         }
                       }
                     }
@@ -1660,7 +1660,7 @@ export function EvsimDualSimulator({
                               Xe &lt;=500kg miễn trừ QĐ23
                             </span>
                           ) : innerStopsCount > 0 ? (
-                            <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#14532d]">
+                            <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#101418]">
                               Vào nội đô 09-16h · 0 lỗi
                             </span>
                           ) : (

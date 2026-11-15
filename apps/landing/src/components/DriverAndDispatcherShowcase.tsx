@@ -161,15 +161,15 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     <section
       id="showcase"
       ref={sectionRef}
-      className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#F8FAFC] border-t border-slate-200/80 scroll-mt-16 overflow-hidden"
+      className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#F6F1E7] border-t border-slate-200/80 scroll-mt-16 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10 space-y-8">
         <div className="flex flex-col items-center text-center space-y-4">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight max-w-4xl">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight max-w-4xl">
             Giao đúng hẹn mà không vi phạm giờ cấm tải nội đô TP.HCM
           </h2>
 
-          <p className="max-w-2xl text-base text-[#475569] leading-relaxed">
+          <p className="max-w-2xl text-base text-[#5B5F66] leading-relaxed">
             Bản đồ xe tải tự động hiển thị vùng cấm tải QĐ 23/2018 màu đỏ, khung giờ khách hẹn và giờ xe đến hợp pháp.
           </p>
 
@@ -183,7 +183,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 </div>
               </div>
               <div className="bg-emerald-50/80 border-b sm:border-b-0 sm:border-r border-slate-200 px-4 py-3 text-left">
-                <div className="font-extrabold text-[#14532D] uppercase">09:00 - 16:00 · Khung mở nội đô</div>
+                <div className="font-extrabold text-[#101418] uppercase">09:00 - 16:00 · Khung mở nội đô</div>
                 <div className="text-slate-600 mt-0.5">
                   Tập trung giao dứt điểm các đơn vùng lõi (Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh).
                 </div>
@@ -208,14 +208,14 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   onClick={() => setSelectedId(view.id)}
                   aria-pressed={isActive}
                   className={`relative px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center gap-2 cursor-pointer ${
-                    isActive ? 'text-white' : 'text-[#475569] hover:text-[#0F172A]'
+                    isActive ? 'text-white' : 'text-[#5B5F66] hover:text-[#101418]'
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="activeWorkspaceTabPill"
                       transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-                      className="absolute inset-0 rounded-xl bg-[#14532D] shadow-sm"
+                      className="absolute inset-0 rounded-xl bg-[#101418] shadow-sm"
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-2">
@@ -250,9 +250,9 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 </div>
 
                 {/* Compact Time-Window & Restricted Area Resolution Table */}
-                <div className="rounded-xl bg-[#F8FAFC] border border-slate-200 p-4 space-y-2.5">
+                <div className="rounded-xl bg-[#F6F1E7] border border-slate-200 p-4 space-y-2.5">
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <span className="font-bold text-[#14532D] uppercase tracking-wider">
+                    <span className="font-bold text-[#101418] uppercase tracking-wider">
                       Ví dụ xử lý khung giờ &amp; vùng cấm tải:
                     </span>
                     <span className="text-slate-600 font-medium">{activeView.timeWindowRule}</span>
@@ -260,22 +260,22 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs tabular-nums">
                       <thead>
-                        <tr className="border-b border-slate-200 text-[#0F172A] font-semibold">
+                        <tr className="border-b border-slate-200 text-[#101418] font-semibold">
                           <th className="py-2 pr-3">Đơn / Chặng</th>
                           <th className="py-2 pr-3">Khu vực</th>
                           <th className="py-2 pr-3">Khung giờ hẹn</th>
                           <th className="py-2 pr-3">Ràng buộc</th>
-                          <th className="py-2 text-[#14532D]">Lịch xe đến</th>
+                          <th className="py-2 text-[#101418]">Lịch xe đến</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-200/60 text-[#334155]">
                         {activeView.samplePackages.map((pkg) => (
                           <tr key={pkg.orderCode}>
-                            <td className="py-2 pr-3 font-mono font-bold text-[#0F172A]">{pkg.orderCode}</td>
+                            <td className="py-2 pr-3 font-mono font-bold text-[#101418]">{pkg.orderCode}</td>
                             <td className="py-2 pr-3">{pkg.area}</td>
                             <td className="py-2 pr-3 font-mono">{pkg.customerWindow}</td>
                             <td className="py-2 pr-3 text-amber-700 font-medium">{pkg.restrictionNote}</td>
-                            <td className="py-2 font-bold text-[#14532D]">{pkg.plannedArrival}</td>
+                            <td className="py-2 font-bold text-[#101418]">{pkg.plannedArrival}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -287,16 +287,16 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
               {/* Right 5 Cols: Role Context, Highlights & Direct Launch Button */}
               <div className="lg:col-span-5 flex flex-col justify-between space-y-5">
                 <div className="space-y-3">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#14532D] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                    <Truck className="w-3.5 h-3.5 text-[#14532D]" />
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#101418] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                    <Truck className="w-3.5 h-3.5 text-[#101418]" />
                     <span>{activeView.roleBadge}</span>
                   </span>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#0F172A] leading-snug">
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#101418] leading-snug">
                     {activeView.title}
                   </h3>
 
-                  <p className="text-sm text-[#475569] leading-relaxed">
+                  <p className="text-sm text-[#5B5F66] leading-relaxed">
                     {activeView.description}
                   </p>
                 </div>
@@ -304,7 +304,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 <div className="space-y-2 border-y border-slate-200 py-4">
                   {activeView.highlights.map((hl, idx) => (
                     <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#334155]">
-                      <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-[#0B7A3B] shrink-0 mt-0.5" />
                       <span>{hl}</span>
                     </div>
                   ))}
@@ -313,7 +313,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   <a
                     href={activeView.liveRouteUrl}
-                    className="flex-1 py-3 px-4 rounded-xl bg-[#14532D] hover:bg-[#0F3F22] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-colors"
+                    className="flex-1 py-3 px-4 rounded-xl bg-[#101418] hover:bg-[#1B45D7] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-colors"
                   >
                     <span>{activeView.liveRouteLabel}</span>
                     <ArrowUpRight className="w-4 h-4" />

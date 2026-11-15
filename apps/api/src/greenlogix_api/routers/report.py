@@ -198,13 +198,59 @@ def report_html(payload: ReportOut) -> str:
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>EcoMiles CO₂ report</title>
 <style>
-body {{ font-family: sans-serif; font-size: 11px; margin: 24px; }}
-h1 {{ font-size: 16px; margin: 0 0 12px; }}
-h2 {{ font-size: 12px; margin: 18px 0 6px; }}
-table {{ border-collapse: collapse; width: 100%; }}
-td, th {{ border: 1px solid #999; padding: 3px 6px; text-align: left; }}
-.foot {{ margin-top: 18px; color: #444; }}
+@page {{ size: A4; margin: 16mm; }}
+body {{
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5px; line-height: 1.45; margin: 0; padding: 20px 24px;
+  background: #F6F1E7; color: #101418;
+}}
+.sheet-head {{
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 2px solid #101418; padding-bottom: 10px; margin-bottom: 14px;
+}}
+.brand {{ display: flex; align-items: center; gap: 10px; }}
+.brand-word {{
+  font-family: "Archivo", "IBM Plex Sans", system-ui, sans-serif;
+  font-size: 13px; font-weight: 800; letter-spacing: .06em; color: #101418;
+}}
+.brand-word span {{ color: #1B45D7; }}
+.stamp {{
+  border: 1.5px solid #0B7A3B; color: #0B7A3B; background: #FBF8F1;
+  padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+}}
+h1 {{ font-size: 16px; margin: 0 0 10px; font-weight: 800; color: #101418; }}
+h2 {{
+  font-size: 11px; margin: 16px 0 6px; text-transform: uppercase;
+  letter-spacing: .05em; color: #1B45D7; border-left: 3px solid #1B45D7; padding-left: 6px;
+}}
+table {{
+  border-collapse: collapse; width: 100%; background: #FBF8F1;
+  border: 1px solid #D8D2C4; font-variant-numeric: tabular-nums;
+}}
+th {{
+  background: #EFE9DB; color: #101418; font-weight: 700; font-size: 9.5px;
+  text-transform: uppercase; letter-spacing: .04em;
+}}
+td, th {{ border: 1px solid #D8D2C4; padding: 5px 8px; text-align: left; }}
+.foot {{
+  margin-top: 16px; padding: 8px 10px; background: #FBF8F1;
+  border: 1px solid #D8D2C4; border-left: 3px solid #A64B08;
+  color: #5B5F66; font-size: 9.5px;
+}}
 </style></head><body>
+<div class="sheet-head">
+  <div class="brand">
+    <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <rect width="32" height="32" rx="6" fill="#101418"/>
+      <path d="M8 23V9.5L16 18.5L24 9.5V23" stroke="#FBF8F1" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"/>
+      <path d="M24 23H8" stroke="#1B45D7" stroke-width="2.2" stroke-linecap="square"/>
+      <circle cx="8" cy="23" r="2.2" fill="#0B7A3B"/>
+    </svg>
+    <div class="brand-word">ECO<span>MILES</span> · CARBON AUDIT LEDGER</div>
+  </div>
+  <div class="stamp">ISO 14083 / GLEC v3.2</div>
+</div>
 <h1>EcoMiles — before/after CO₂ report</h1>
 <h2>Totals</h2>
 <table><tr><th>metric</th><th>baseline</th><th>optimized</th><th>delta</th><th>delta %</th></tr>

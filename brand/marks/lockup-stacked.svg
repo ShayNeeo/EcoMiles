@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 144" fill="none" role="img" aria-label="EcoMiles stacked lockup">
+  <path d="M106 66 V18 L130 44 L154 18 V66 H106" stroke="#101418" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter"/>
+  <g transform="translate(23,68)" stroke="#101418" stroke-width="5.6" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M18 15 H4 V41 H18 M4 28 H15"/>
+    <path d="M44 15 H29 V41 H44"/>
+    <path d="M55 15 H71 V41 H55 Z"/>
+    <path d="M82 41 V15 L93 30 L104 15 V41"/>
+    <path d="M116 15 V41"/>
+    <path d="M128 15 V41 H142"/>
+    <path d="M167 15 H153 V41 H167 M153 28 H164"/>
+    <path d="M193 15 H179 V28 H193 V41 H179"/>
+  </g>
+  <rect x="227" y="104" width="8" height="8" fill="#1B45D7"/>
+  <text x="130" y="132" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="700" letter-spacing="1.6" fill="#5B5F66">ĐƯỜNG VỀ KHÔNG TRỐNG.</text>
+</svg>

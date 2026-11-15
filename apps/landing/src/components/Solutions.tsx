@@ -38,7 +38,7 @@ export const Solutions: React.FC = () => {
   const solutions = [
     {
       id: '01',
-      icon: <Route className="w-5 h-5 text-[#14532D]" />,
+      icon: <Route className="w-5 h-5 text-[#101418]" />,
       badge: 'Tối ưu tuyến đa ràng buộc',
       title: 'Phân cụm & Khử đoạn chạy chồng chéo',
       description:
@@ -55,7 +55,7 @@ export const Solutions: React.FC = () => {
     },
     {
       id: '02',
-      icon: <Clock className="w-5 h-5 text-[#14532D]" />,
+      icon: <Clock className="w-5 h-5 text-[#101418]" />,
       badge: 'Tuân thủ QĐ 23/2018 & Cầu 13T',
       title: 'Tự động né khung giờ cấm tải nội đô',
       description:
@@ -72,7 +72,7 @@ export const Solutions: React.FC = () => {
     },
     {
       id: '03',
-      icon: <RefreshCw className="w-5 h-5 text-[#14532D]" />,
+      icon: <RefreshCw className="w-5 h-5 text-[#101418]" />,
       badge: 'Ghép đơn chiều về (Backhaul)',
       title: 'Biến chuyến xe quay về rỗng thành doanh thu',
       description:
@@ -89,7 +89,7 @@ export const Solutions: React.FC = () => {
     },
     {
       id: '04',
-      icon: <BarChart3 className="w-5 h-5 text-[#14532D]" />,
+      icon: <BarChart3 className="w-5 h-5 text-[#101418]" />,
       badge: 'Kiểm toán ISO 14083 / GLEC v3.2',
       title: 'Đo lường phát thải động & Xuất báo cáo ESG',
       description:
@@ -114,10 +114,10 @@ export const Solutions: React.FC = () => {
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight">
             4 trụ cột công nghệ tối ưu hóa vận tải B2B
           </h2>
-          <p className="mt-4 text-base text-[#475569] leading-relaxed">
+          <p className="mt-4 text-base text-[#5B5F66] leading-relaxed">
             Thay thế việc chia tuyến thủ công bằng thuật toán đa ràng buộc, bản đồ né giờ cấm tải TP.HCM và báo cáo phát thải tự động.
           </p>
         </div>
@@ -126,7 +126,7 @@ export const Solutions: React.FC = () => {
           {solutions.map((item) => (
             <div
               key={item.id}
-              className="gsap-solution-card flex flex-col justify-between rounded-2xl border border-slate-200 bg-[#F8FAFC] hover:bg-white hover:border-emerald-600/40 p-6 sm:p-7 shadow-sm hover:shadow-md transition-all"
+              className="gsap-solution-card flex flex-col justify-between rounded-2xl border border-slate-200 bg-[#F6F1E7] hover:bg-white hover:border-emerald-600/40 p-6 sm:p-7 shadow-sm hover:shadow-md transition-all"
             >
               <div>
                 {/* Visual Thumbnail */}
@@ -140,7 +140,7 @@ export const Solutions: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between gap-3 mb-3">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-[#14532D] border border-emerald-200">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-[#101418] border border-emerald-200">
                     {item.icon}
                     <span>{item.badge}</span>
                   </span>
@@ -149,17 +149,17 @@ export const Solutions: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold text-[#0F172A] mb-2 leading-snug">
+                <h3 className="text-xl font-bold text-[#101418] mb-2 leading-snug">
                   {item.title}
                 </h3>
-                <p className="text-sm text-[#475569] leading-relaxed mb-4">
+                <p className="text-sm text-[#5B5F66] leading-relaxed mb-4">
                   {item.description}
                 </p>
 
                 <div className="space-y-2 pt-2 border-t border-slate-200/80 mb-6">
                   {item.metrics.map((metric, idx) => (
                     <div key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-[#334155]">
-                      <CheckCircle2 className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-[#0B7A3B] shrink-0 mt-0.5" />
                       <span>{metric}</span>
                     </div>
                   ))}
@@ -168,10 +168,10 @@ export const Solutions: React.FC = () => {
 
               <a
                 href={item.liveHref}
-                className="inline-flex items-center justify-between px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-[#0F172A] hover:text-[#14532D] hover:border-[#14532D] transition-colors"
+                className="inline-flex items-center justify-between px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-[#101418] hover:text-[#101418] hover:border-[#101418] transition-colors"
               >
                 <span>{item.liveLabel}</span>
-                <ArrowUpRight className="w-4 h-4 text-[#14532D]" />
+                <ArrowUpRight className="w-4 h-4 text-[#101418]" />
               </a>
             </div>
           ))}

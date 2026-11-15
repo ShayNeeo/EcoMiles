@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
 import 'screens/pin_screen.dart';
+import 'theme/ecomiles_theme.dart';
 
 void main() {
-  runApp(const GreenLogixDriverApp());
+  runApp(const EcoMilesDriverApp());
 }
 
-class GreenLogixDriverApp extends StatelessWidget {
-  const GreenLogixDriverApp({super.key});
+class EcoMilesDriverApp extends StatelessWidget {
+  const EcoMilesDriverApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'GreenLogix Driver',
-      home: PinScreen(),
+    return MaterialApp(
+      title: 'EcoMiles Driver',
+      theme: buildEcoMilesDriverTheme(),
+      home: const PinScreen(),
     );
   }
 }

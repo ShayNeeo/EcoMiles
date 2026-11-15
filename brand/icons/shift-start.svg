@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img" aria-label="Start shift dispatch gate">
+  <!-- Chamfered gate frame + decisive route advance arrow + stop bar -->
+  <path d="M3 5H15L19 9V19H3V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M7 12H14.5M11.5 8.5L15 12L11.5 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect x="19" y="15.5" width="3" height="3.5" fill="currentColor"/>
+</svg>

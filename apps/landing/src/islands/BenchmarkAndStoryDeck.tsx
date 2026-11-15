@@ -655,13 +655,13 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                 {
                   name: 'CO₂e trực tiếp (kg)',
                   type: 'bar',
-                  itemStyle: { color: '#36d9a5' },
+                  itemStyle: { color: '#0B7A3B' },
                   data: [rawSt.kg_co2_ttw, humanSt.kg_co2_ttw, twoOptSt.kg_co2_ttw, alnsSt.kg_co2_ttw],
                 },
                 {
                   name: 'CO₂e vòng đời (kg)',
                   type: 'bar',
-                  itemStyle: { color: '#ffd400' },
+                  itemStyle: { color: '#A64B08' },
                   data: [rawSt.kg_co2_wtw, humanSt.kg_co2_wtw, twoOptSt.kg_co2_wtw, alnsSt.kg_co2_wtw],
                 },
               ],
@@ -735,7 +735,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                   name: 'Điểm giao hợp lệ',
                   type: 'scatter',
                   symbolSize: 7,
-                  itemStyle: { color: '#36d9a5' },
+                  itemStyle: { color: '#0B7A3B' },
                   data: result.orders
                     .filter(
                       (o) =>
@@ -766,7 +766,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                   name: 'Kho Tân Bình DC',
                   type: 'scatter',
                   symbolSize: 15,
-                  itemStyle: { color: '#ffd400', borderColor: '#0f172a', borderWidth: 2 },
+                  itemStyle: { color: '#ffd400', borderColor: '#101418', borderWidth: 2 },
                   data: [[106.661, 10.801, 'Kho Trung Tâm Tân Bình (10.801, 106.661)']],
                 },
               ],

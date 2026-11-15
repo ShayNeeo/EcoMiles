@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EcoMiles — Living Brand Book v1.0</title>
+<link rel="icon" type="image/svg+xml" href="marks/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --em-paper:#F6F1E7;
+    --em-paper-card:#FBF8F1;
+    --em-paper-pure:#FFFFFF;
+    --em-paper-sunken:#ECE5D7;
+    --em-ink:#101418;
+    --em-ink-body:#2A2F36;
+    --em-ink-muted:#5B5F66;
+    --em-ink-inverse:#F6F1E7;
+    --em-ink-inverse-muted:#C9C3B6;
+    --em-line:#D8D2C4;
+    --em-line-strong:#BDB5A3;
+    --em-route:#1B45D7;
+    --em-route-tint:#EEF2FC;
+    --em-green:#0B7A3B;
+    --em-green-tint:#EAF5EE;
+    --em-amber:#A64B08;
+    --em-amber-tint:#FDF3E7;
+    --em-red:#B42318;
+    --em-red-tint:#FCECEB;
+    --em-font-display:'Archivo','IBM Plex Sans',system-ui,sans-serif;
+    --em-font-body:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+    --em-font-mono:'JetBrains Mono',ui-monospace,monospace;
+    --em-draw:600ms;
+    --em-ease:cubic-bezier(0.22,1,0.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--em-paper);color:var(--em-ink)}
+  body{
+    background:var(--em-paper);
+    color:var(--em-ink);
+    font-family:var(--em-font-body);
+    font-size:15px;
+    line-height:1.6;
+    font-variant-numeric:tabular-nums;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:32px 40px 96px}
+  .mono{font-family:var(--em-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding-bottom:16px;border-bottom:1px solid var(--em-line);color:var(--em-ink-muted);
+    flex-wrap:wrap;
+  }
+  .topbar-brand{display:flex;align-items:center;gap:12px;color:var(--em-ink)}
+  .topbar-nav{display:flex;flex-wrap:wrap;gap:14px}
+  .topbar-nav a{
+    color:var(--em-ink-muted);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;
+  }
+  .topbar-nav a:hover{color:var(--em-ink);border-bottom-color:var(--em-ink)}
+
+  .hero{padding:56px 0 44px;border-bottom:1px solid var(--em-line)}
+  .hero-kicker{color:var(--em-green);margin-bottom:14px}
+  .hero h1{
+    font-family:var(--em-font-display);font-weight:800;
+    font-size:clamp(42px,7.5vw,96px);line-height:.94;letter-spacing:-.045em;max-width:920px;
+  }
+  .hero h1 .stop{color:var(--em-route)}
+  .hero-sub{margin-top:20px;max-width:660px;font-size:17px;color:var(--em-ink-body)}
+  .hero-route-box{
+    margin-top:34px;border:1px solid var(--em-line);background:var(--em-paper-card);padding:20px 24px;
+  }
+  .hero-route-head{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;
+  }
+  .btn-replay{
+    background:var(--em-ink);color:var(--em-ink-inverse);border:1px solid var(--em-ink);
+    font-family:var(--em-font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    padding:7px 12px;cursor:pointer;
+  }
+  .btn-replay:hover{background:var(--em-route);border-color:var(--em-route)}
+  .draw-line{
+    stroke-dasharray:520;
+    stroke-dashoffset:520;
+    animation:drawRoute var(--em-draw) var(--em-ease) forwards;
+  }
+  .draw-dot{opacity:0;animation:dotLand 180ms ease-out 520ms forwards}
+  @keyframes drawRoute{to{stroke-dashoffset:0}}
+  @keyframes dotLand{to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){
+    .draw-line{animation:none;stroke-dashoffset:0}
+    .draw-dot{animation:none;opacity:1}
+  }
+
+  .section{padding:52px 0;border-bottom:1px solid var(--em-line)}
+  .shead{display:flex;align-items:baseline;gap:16px;margin-bottom:20px}
+  .shead .num{color:var(--em-route)}
+  .shead h2{font-family:var(--em-font-display);font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.025em}
+  .lead{max-width:740px;color:var(--em-ink-body);margin-bottom:28px}
+
+  .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--em-line);border:1px solid var(--em-line)}
+  .card{border:1px solid var(--em-line);background:var(--em-paper-card);padding:24px}
+  .card-dark{border:1px solid var(--em-ink);background:var(--em-ink);color:var(--em-ink-inverse);padding:24px}
+  .kpi{background:var(--em-paper-card);padding:20px}
+  .kpi .val{font-family:var(--em-font-mono);font-size:26px;font-weight:700;letter-spacing:-.03em}
+  .kpi .lbl{font-size:12.5px;color:var(--em-ink-muted);margin-top:4px}
+  .kpi .delta{font-family:var(--em-font-mono);font-size:11px;color:var(--em-green);margin-top:8px}
+
+  .mark-stage{
+    display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:stretch;
+  }
+  .mark-grid-box{
+    border:1px solid var(--em-line);background:var(--em-paper-pure);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;
+    background-image:
+      linear-gradient(to right,rgba(16,20,24,.06) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(16,20,24,.06) 1px,transparent 1px);
+    background-size:16px 16px;
+  }
+  .optical-row{
+    display:flex;flex-wrap:wrap;align-items:flex-end;gap:24px;
+    padding:20px 24px;border:1px solid var(--em-line);background:var(--em-paper-card);
+  }
+  .optical-item{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:52px}
+  .optical-item figcaption{font-family:var(--em-font-mono);font-size:10px;color:var(--em-ink-muted)}
+
+  .lockup-box{
+    border:1px solid var(--em-line);background:var(--em-paper-card);padding:24px;
+    display:flex;flex-direction:column;justify-content:space-between;gap:14px;
+  }
+  .lockup-box.dark{background:var(--em-ink);border-color:var(--em-ink);color:var(--em-ink-inverse)}
+
+  .swatch{
+    display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:14px;
+    padding:12px 16px;border-bottom:1px solid var(--em-line);background:var(--em-paper-card);
+  }
+  .swatch-table{border:1px solid var(--em-line);border-bottom:none}
+  .chip{width:52px;height:40px;border:1px solid rgba(16,20,24,.15)}
+
+  .type-specimen{border:1px solid var(--em-line);background:var(--em-paper-card);padding:24px;margin-bottom:16px}
+  .type-specimen .big{font-size:clamp(30px,4.5vw,56px);line-height:1.04;letter-spacing:-.035em;font-weight:800;margin:10px 0}
+  .type-table{width:100%;border-collapse:collapse;border:1px solid var(--em-line);background:var(--em-paper-pure)}
+  .type-table th,.type-table td{
+    text-align:left;padding:10px 14px;border-bottom:1px solid var(--em-line);font-size:13px;
+  }
+  .type-table th{font-family:var(--em-font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--em-ink-muted);background:var(--em-paper-card)}
+
+  .icon-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--em-line);border:1px solid var(--em-line);
+  }
+  .icon-cell{
+    background:var(--em-paper-card);padding:20px 18px;display:grid;grid-template-columns:56px 1fr;gap:4px 16px;align-items:center;text-align:left;
+  }
+  .icon-cell .icon-pair{
+    grid-row:span 2;display:flex;flex-direction:column;align-items:center;gap:8px;
+    padding:10px;background:var(--em-paper-pure);border:1px solid var(--em-line);color:var(--em-ink);
+  }
+  .icon-cell .icon-reason{font-size:12.5px;line-height:1.45;color:var(--em-ink-body)}
+  .story-stack{display:flex;flex-direction:column;gap:18px;margin-top:24px}
+  .story-frame{border:1px solid var(--em-line);background:var(--em-paper-card);padding:18px}
+  .story-frame img{display:block;width:100%;height:auto}
+
+  .surface-card{border:1px solid var(--em-line);background:var(--em-paper-card);padding:24px}
+  .driver-preview{background:var(--em-ink);color:var(--em-ink-inverse);padding:22px}
+  .driver-btn{
+    display:block;width:100%;margin-top:16px;padding:16px;text-align:center;
+    background:var(--em-green);color:#fff;font-family:var(--em-font-body);font-weight:700;font-size:16px;border-radius:8px;
+  }
+  .qd-strip{display:flex;height:14px;border:1px solid var(--em-line);margin-top:12px}
+  .qd-strip span{display:block;height:100%}
+
+  .ban-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .ban-item{border:1px solid var(--em-line);background:var(--em-paper-card);padding:14px 16px;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .ban-word{text-decoration:line-through;color:var(--em-red);font-weight:600}
+
+  .code-block{
+    background:var(--em-ink);color:var(--em-ink-inverse);padding:18px 20px;
+    font-family:var(--em-font-mono);font-size:12px;line-height:1.55;overflow-x:auto;
+  }
+  .foot{padding-top:32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--em-ink-muted)}
+
+  @media (max-width:980px){
+    .wrap{padding:24px 20px 64px}
+    .grid-2,.grid-3,.grid-4,.mark-stage,.ban-grid{grid-template-columns:1fr}
+    .icon-grid{grid-template-columns:1fr}
+  }
+  @media print{
+    body{background:#fff}
+    .wrap{padding:12px 16px}
+    .topbar-nav,.btn-replay{display:none}
+    .section{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <svg width="24" height="24" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#101418" stroke-width="7.5" stroke-linecap="square" stroke-linejoin="miter"/>
+      </svg>
+      <span class="mono" style="color:var(--em-ink);font-weight:700">ECOMILES · BRAND BOOK v1.0</span>
+    </div>
+    <nav class="topbar-nav mono" aria-label="Brand Book Sections">
+      <a href="#thesis">01 Bản sắc</a>
+      <a href="#marks">02 Dấu hiệu</a>
+      <a href="#colour">03 Màu sắc</a>
+      <a href="#type">04 Kiểu chữ</a>
+      <a href="#graphics">05 Đồ họa</a>
+      <a href="#voice">06 Ngôn ngữ</a>
+      <a href="#surfaces">07 Bề mặt</a>
+      <a href="#tokens">08 Tokens</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="mono hero-kicker">GATE G1 SIGNED · 16.11.2026 · ASPHALT &amp; PAPER · RETURN M</div>
+    <h1>Đường về<br>không trống<span class="stop">.</span></h1>
+    <p class="hero-sub">Một nét tuyến liên tục: đứt khi xe chạy rỗng, liền khi đã ghép hàng chiều về, khép lại tại điểm dừng. Bản sắc không đến từ chiếc lá xanh mà từ cơ chế kinh tế và phát thải kiểm toán được trên từng cây số.</p>
+
+    <div class="hero-route-box">
+      <div class="hero-route-head">
+        <span class="mono" style="color:var(--em-ink-muted)">TUYẾN ĐỐI CHỨNG TP.HCM · BỘ 120 ĐƠN CHUỖI LẠNH</span>
+        <button class="btn-replay" type="button" id="replayRoute">Chạy lại tuyến (600ms)</button>
+      </div>
+      <svg id="heroRouteSvg" width="100%" height="128" viewBox="0 0 1040 128" fill="none" role="img" aria-label="HCMC return route mechanism">
+        <path d="M28 74 H480" stroke="#5B5F66" stroke-width="3.5" stroke-dasharray="10 8"/>
+        <path id="matchedLeg" class="draw-line" d="M480 74 H988" stroke="#1B45D7" stroke-width="4.5"/>
+        <circle cx="28" cy="74" r="7" fill="#101418"/>
+        <circle class="draw-dot" cx="480" cy="74" r="8" fill="#0B7A3B"/>
+        <rect class="draw-dot" x="980" y="66" width="16" height="16" fill="#0B7A3B"/>
+        <text x="28" y="34" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" letter-spacing="1.4" fill="#5B5F66">51C-123.45 · CÁT LÁI · RỖNG 32,8%</text>
+        <text x="480" y="34" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" letter-spacing="1.4" fill="#0B7A3B">GHÉP HÀNG CHIỀU VỀ · SÓNG THẦN</text>
+        <text x="996" y="34" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" letter-spacing="1.4" fill="#101418">KCN TÂN BÌNH · RỖNG 2,7%</text>
+        <text x="28" y="112" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#5B5F66">374,4 → 243,7 km (−34,9%)</text>
+        <text x="480" y="112" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#0B7A3B">28 → 0 VI PHẠM QĐ 23/2018</text>
+        <text x="996" y="112" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#0B7A3B">83,57 → 56,66 kg CO₂e · ISO 14083</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="thesis" class="section">
+    <div class="shead"><span class="num mono">01</span><h2>Bản sắc &amp; Số chứng minh</h2></div>
+    <p class="lead">EcoMiles đứng trên đúng hai cực tính cách. Mọi màn hình phải thuyết phục được cả tài xế ngoài bãi xe lúc 06:40 sáng lẫn kiểm toán viên ESG khi ký báo cáo.</p>
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="mono" style="color:var(--em-amber);margin-bottom:8px">CỰC 01 · ĐƯỜNG PHỐ VIỆT</div>
+        <h3 style="font-family:var(--em-font-display);font-size:22px;margin-bottom:8px">Biết rõ giờ cấm 6–9 và 16–20</h3>
+        <p style="color:var(--em-ink-body)">Biển số 51C, thùng lạnh không chờ được, tài xế nghỉ 15 phút sau 4 giờ lái. Nói thẳng vào ca chạy, không sương mù MBA.</p>
+      </div>
+      <div class="card">
+        <div class="mono" style="color:var(--em-route);margin-bottom:8px">CỰC 02 · NHÀ ĐẦU TƯ SẮC GỌN</div>
+        <h3 style="font-family:var(--em-font-display);font-size:22px;margin-bottom:8px">Điềm tĩnh, định lượng, chuẩn kiểm toán</h3>
+        <p style="color:var(--em-ink-body)">Cùng một bộ số đi thẳng từ phòng điều phối vào slide gọi vốn và hồ sơ ISO 14083 / GLEC v3.2. Không phô trương, không xin xỏ.</p>
+      </div>
+    </div>
+    <div class="grid-4">
+      <div class="kpi"><div class="val">243,7 km</div><div class="lbl">Quãng đường sau tối ưu</div><div class="delta">−34,9% từ 374,4 km</div></div>
+      <div class="kpi"><div class="val">2,7%</div><div class="lbl">Tỷ lệ chạy rỗng</div><div class="delta">−30,1 điểm % từ 32,8%</div></div>
+      <div class="kpi"><div class="val">28 → 0</div><div class="lbl">Vi phạm QĐ 23/2018</div><div class="delta">Đạt chuẩn khung giờ cấm</div></div>
+      <div class="kpi"><div class="val">56,66 kg</div><div class="lbl">Phát thải CO₂e / 120 đơn</div><div class="delta">ISO 14083 · GLEC v3.2</div></div>
+    </div>
+  </section>
+
+  <section id="marks" class="section">
+    <div class="shead"><span class="num mono">02</span><h2>Dấu hiệu · Return M &amp; Lockups</h2></div>
+    <p class="lead">Chọn phương án A (Return M): chữ M khép kín chân đáy thành một vòng về hoàn chỉnh. Vượt bài test nhớ trong 5 giây: ai cũng vẽ lại được bằng một nét gấp và một đáy khép.</p>
+
+    <div class="mark-stage" style="margin-bottom:20px">
+      <div class="mark-grid-box">
+        <svg width="160" height="160" viewBox="0 0 64 64" fill="none">
+          <rect x="12" y="14" width="40" height="40" stroke="#1B45D7" stroke-width="0.6" stroke-dasharray="2 2"/>
+          <path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#101418" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+        <div class="mono" style="margin-top:12px;color:var(--em-ink-muted)">64×64 · LỀ AN TOÀN 12 UNIT · SW 6</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px;justify-content:space-between">
+        <div class="optical-row">
+          <figure class="optical-item">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#101418" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+            <figcaption>64px · SW 6</figcaption>
+          </figure>
+          <figure class="optical-item">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none"><path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#101418" stroke-width="7.5" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+            <figcaption>32px · SW 7.5</figcaption>
+          </figure>
+          <figure class="optical-item">
+            <svg width="24" height="24" viewBox="0 0 64 64" fill="none"><path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#101418" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+            <figcaption>24px · SW 8</figcaption>
+          </figure>
+          <figure class="optical-item">
+            <svg width="16" height="16" viewBox="0 0 64 64" fill="none"><path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#101418" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+            <figcaption>16px · SW 10</figcaption>
+          </figure>
+          <figure class="optical-item">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#101418"/><path d="M7 25.5 V7.5 L16 18.5 L25 7.5 V25.5 H7" stroke="#F6F1E7" stroke-width="3.8" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+            <figcaption>FAVICON</figcaption>
+          </figure>
+          <figure class="optical-item">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="14" fill="#101418"/><path d="M14 50 V18 L32 38 L50 18 V50 H14" stroke="#F6F1E7" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+            <figcaption>APP ICON</figcaption>
+          </figure>
+        </div>
+        <div class="card" style="padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div class="mono" style="color:var(--em-green);margin-bottom:6px">CHỨNG NHẬN ISO 14083 · CHỈ DÙNG KHI ĐÃ KIỂM CHỨNG</div>
+            <div style="font-size:13.5px;color:var(--em-ink-body)">Dấu mộc xanh chỉ đóng trên báo cáo phát thải đã đối chiếu hệ số GLEC v3.2 và lộ trình thực tế.</div>
+          </div>
+          <svg width="240" height="62" viewBox="0 0 280 72" fill="none">
+            <rect x="1.5" y="1.5" width="277" height="69" fill="#EAF5EE" stroke="#0B7A3B" stroke-width="3"/>
+            <rect x="14" y="14" width="44" height="44" fill="#0B7A3B"/>
+            <path d="M22 49 V23 L36 39 L50 23 V49 H22" stroke="#F6F1E7" stroke-width="4.5" stroke-linecap="square" stroke-linejoin="miter"/>
+            <text x="72" y="31" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" letter-spacing="1.6" fill="#0B7A3B">VERIFIED · ISO 14083</text>
+            <text x="72" y="51" font-family="Archivo, sans-serif" font-size="18" font-weight="800" letter-spacing="-0.4" fill="#101418">GLEC v3.2 AUDITED</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="lockup-box">
+        <div class="mono" style="color:var(--em-ink-muted)">LOCKUP NGANG · NỀN GIẤY SÁNG</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <svg width="40" height="40" viewBox="0 0 64 64" fill="none"><path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#101418" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+          <span style="font-family:var(--em-font-display);font-weight:800;font-size:36px;letter-spacing:-.045em;line-height:1">ECOMILES<span style="display:inline-block;width:8px;height:8px;background:var(--em-route);margin-left:4px"></span></span>
+        </div>
+        <div style="font-size:12.5px;color:var(--em-ink-muted)">Ô vuông cuối chữ là điểm dừng tuyến (cobalt trên nền sáng). Tuyệt đối không đặt chữ "Logistics Xanh B2B" dưới logo.</div>
+      </div>
+      <div class="lockup-box dark">
+        <div class="mono" style="color:var(--em-ink-inverse-muted)">LOCKUP NGANG · NỀN NHỰA ĐƯỜNG</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <svg width="40" height="40" viewBox="0 0 64 64" fill="none"><path d="M12 54 V14 L32 38 L52 14 V54 H12" stroke="#F6F1E7" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+          <span style="font-family:var(--em-font-display);font-weight:800;font-size:36px;letter-spacing:-.045em;line-height:1;color:#F6F1E7">ECOMILES<span style="display:inline-block;width:8px;height:8px;background:#0B7A3B;margin-left:4px"></span></span>
+        </div>
+        <div style="font-size:12.5px;color:var(--em-ink-inverse-muted)">Dùng trên header ứng dụng tài xế ban đêm, nhãn thùng xe hoặc khung xác thực đã ghép chuyến.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="colour" class="section">
+    <div class="shead"><span class="num mono">03</span><h2>Màu sắc · Asphalt &amp; Paper</h2></div>
+    <p class="lead">Xanh lá (#0B7A3B) chỉ xuất hiện trên số liệu đã kiểm chứng, chuyến đã ghép hoặc chứng từ đã phát hành. Giả sử con số đó chưa kiểm chứng: nếu màu xanh vẫn còn ở đó, phải xóa ngay.</p>
+    <div class="swatch-table">
+      <div class="swatch"><span class="chip" style="background:#F6F1E7"></span><div><strong>Paper Canvas</strong><div class="mono" style="color:var(--em-ink-muted)">#F6F1E7 · --em-paper</div></div><span class="mono">NỀN CHÍNH</span></div>
+      <div class="swatch"><span class="chip" style="background:#FBF8F1"></span><div><strong>Paper Card</strong><div class="mono" style="color:var(--em-ink-muted)">#FBF8F1 · --em-paper-card</div></div><span class="mono">KHỐI SỔ CÁI</span></div>
+      <div class="swatch"><span class="chip" style="background:#101418"></span><div><strong>Asphalt Ink</strong><div class="mono" style="color:var(--em-ink-muted)">#101418 · --em-ink</div></div><span class="mono">16.43:1 · CHỮ CHÍNH</span></div>
+      <div class="swatch"><span class="chip" style="background:#1B45D7"></span><div><strong>Route Cobalt</strong><div class="mono" style="color:var(--em-ink-muted)">#1B45D7 · --em-route</div></div><span class="mono">6.48:1 · TUYẾN CHẠY</span></div>
+      <div class="swatch"><span class="chip" style="background:#0B7A3B"></span><div><strong>Verified Green</strong><div class="mono" style="color:var(--em-ink-muted)">#0B7A3B · --em-green</div></div><span class="mono">4.83:1 · CHỨNG NHẬN</span></div>
+      <div class="swatch"><span class="chip" style="background:#A64B08"></span><div><strong>Window Amber</strong><div class="mono" style="color:var(--em-ink-muted)">#A64B08 · --em-amber</div></div><span class="mono">5.14:1 · CỬA SỔ QĐ 23</span></div>
+      <div class="swatch"><span class="chip" style="background:#B42318"></span><div><strong>Violation Red</strong><div class="mono" style="color:var(--em-ink-muted)">#B42318 · --em-red</div></div><span class="mono">5.84:1 · VI PHẠM / 401</span></div>
+    </div>
+  </section>
+
+  <section id="type" class="section">
+    <div class="shead"><span class="num mono">04</span><h2>Kiểu chữ · Archivo + IBM Plex Sans + JetBrains Mono</h2></div>
+    <p class="lead">Tất cả phông chữ đều đã kiểm chứng đầy đủ bộ dấu tiếng Việt (U+1EA0–1EF9). JetBrains Mono bật tabular-nums bắt buộc cho biển số, km và kg CO₂e.</p>
+
+    <div class="type-specimen">
+      <div class="mono" style="color:var(--em-route)">DISPLAY · ARCHIVO 800 · BIỂN BÁO ĐÔ THỊ</div>
+      <div class="big" style="font-family:var(--em-font-display)">Đường về không trống.</div>
+      <div style="font-family:var(--em-font-display);font-weight:700;font-size:20px;color:var(--em-ink-body)">Kiểm tra dấu: Ắ Ằ Ẳ Ẵ Ặ · Ế Ề Ể Ễ Ệ · Ớ Ờ Ở Ỡ Ợ · Ứ Ừ Ử Ữ Ự · Ỷ Ỹ</div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="mono" style="color:var(--em-ink-muted)">BODY · IBM PLEX SANS 400/600 · TÀI LIỆU KIỂM TOÁN</div>
+      <p style="font-size:16px;margin-top:8px;max-width:740px">Xe lạnh 3,5 tấn xuất phát từ Cát Lái lúc 05:45, trả hàng tại Bình Dương rồi ghép thêm 1,4 tấn hàng về KCN Tân Bình trước 15:30 để tránh khung cấm tải nội đô QĐ 23/2018.</p>
+    </div>
+
+    <div class="type-specimen">
+      <div class="mono" style="color:var(--em-green)">DATA · JETBRAINS MONO 700 · CỘT THẲNG HÀNG</div>
+      <div style="font-family:var(--em-font-mono);font-size:16px;font-weight:700;margin-top:8px">51C-123.45  |  243,7 km  |  02,7% RỖNG  |  00 VI PHẠM  |  56,66 kg CO₂e</div>
+    </div>
+
+    <table class="type-table">
+      <thead><tr><th>Cấp bậc</th><th>Font</th><th>Size / Line</th><th>Dùng cho</th></tr></thead>
+      <tbody>
+        <tr><td>Hero</td><td>Archivo 800</td><td>clamp(40px, 6.4vw, 84px) / 0.96</td><td>Luận điểm đầu trang chủ</td></tr>
+        <tr><td>H2 Section</td><td>Archivo 700–800</td><td>clamp(24px, 2.6vw, 34px) / 1.12</td><td>Tiêu đề mục, không đặt pill eyebrow phía trên</td></tr>
+        <tr><td>Body</td><td>IBM Plex Sans 400</td><td>15px / 1.60</td><td>Thuyết minh nghiệp vụ (65–72ch)</td></tr>
+        <tr><td>Mono Label / Metric</td><td>JetBrains Mono 600–700</td><td>11px–26px / tabular-nums</td><td>Biển số, khung giờ QĐ 23, số km / kg CO₂e / ECM-SHA256</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="graphics" class="section">
+    <div class="shead"><span class="num mono">05</span><h2>Đồ họa tuyến &amp; Bộ 15 icon bản địa</h2></div>
+    <p class="lead">Mọi đường chia đoạn, sơ đồ và biểu tượng đều sinh từ ba thực tế vận tải Việt Nam: cột mốc vát góc 45° trên quốc lộ, phiếu giao hàng có dấu mộc vuông ở góc, và đối chiếu nét đứt (rỗng) sang nét liền (đã ghép chuyến).</p>
+
+    <div class="card" style="margin-bottom:20px;padding:18px 24px">
+      <div class="mono" style="color:var(--em-ink-muted);margin-bottom:10px">CHIA ĐOẠN CHUYỂN TRẠNG THÁI (ĐỨT → LIỀN → ĐIỂM DỪNG)</div>
+      <svg width="100%" height="24" viewBox="0 0 960 24" fill="none">
+        <path d="M0 12 H440" stroke="#BDB5A3" stroke-width="2" stroke-dasharray="8 8"/>
+        <path d="M440 12 H948" stroke="#101418" stroke-width="2"/>
+        <circle cx="440" cy="12" r="4.5" fill="#1B45D7"/>
+        <rect x="948" y="7" width="10" height="10" fill="#101418"/>
+      </svg>
+    </div>
+
+    <div class="icon-grid">
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 18V5L12 13.5L20 5V18H7" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><rect x="2.5" y="16.5" width="3.5" height="3.5" fill="currentColor"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 18V5L12 13.5L20 5V18H7" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter"/><rect x="2.5" y="16.5" width="3.5" height="3.5" fill="currentColor"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">route-loop</span>
+        <span class="icon-reason">Chữ M Return-Loop khép đáy tại ô vuông điểm dừng, lấy từ ký hiệu tuyến khép kín.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M3 7H17.5L14 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M21 17H13" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-dasharray="2.5 2.5"/><path d="M12 17H6.5L10 20.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="12" cy="17" r="2.2" fill="currentColor"/><rect x="19" y="5.5" width="3" height="3" fill="currentColor"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 7H17.5L14 3.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M21 17H13" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-dasharray="2.5 2.5"/><path d="M12 17H6.5L10 20.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="12" cy="17" r="2.2" fill="currentColor"/><rect x="19" y="5.5" width="3" height="3" fill="currentColor"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">backhaul-match</span>
+        <span class="icon-reason">Chiều đi nét liền, chiều về chuyển từ đứt nét (rỗng) sang liền tại điểm ghép đơn.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 4H16L20 8V20H4V4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"/><path d="M7.5 15.5H12.5L15.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="7.5" cy="15.5" r="2" fill="currentColor"/><rect x="14" y="8" width="3.5" height="3.5" fill="currentColor"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4H16L20 8V20H4V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><path d="M7.5 15.5H12.5L15.5 11.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="7.5" cy="15.5" r="2" fill="currentColor"/><rect x="14" y="8" width="3.5" height="3.5" fill="currentColor"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">stop-node</span>
+        <span class="icon-reason">Khung cột mốc vát góc 45° chứa điểm xuất phát tròn và ô vuông điểm dừng kho.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="4" width="19" height="16" stroke="currentColor" stroke-width="1.8"/><rect x="5" y="7" width="4" height="10" fill="currentColor"/><rect x="15" y="7" width="4" height="10" fill="currentColor"/><path d="M12 7.5V16.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M10.5 10L12 8L13.5 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="4" width="19" height="16" stroke="currentColor" stroke-width="2"/><rect x="5" y="7" width="4" height="10" fill="currentColor"/><rect x="15" y="7" width="4" height="10" fill="currentColor"/><path d="M12 7.5V16.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">qd23-window</span>
+        <span class="icon-reason">Hai khối chặn 06–09 và 16–20 của QĐ 23/2018 kẹp giữa hành lang thông xe 09–16.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M2.5 15.5V7.5H14.5L19.5 11V15.5H17.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M8.5 15.5H13" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M14.5 7.5V11H19.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter"/><circle cx="6.2" cy="16" r="2.2" stroke="currentColor" stroke-width="1.8"/><circle cx="15.3" cy="16" r="2.2" stroke="currentColor" stroke-width="1.8"/><path d="M2.5 20.5H21.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2.5 15.5V7.5H14.5L19.5 11V15.5H17.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="6.2" cy="16" r="2.2" stroke="currentColor" stroke-width="2"/><circle cx="15.3" cy="16" r="2.2" stroke="currentColor" stroke-width="2"/><path d="M2.5 20.5H21.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">truck-van</span>
+        <span class="icon-reason">Van &lt;2,5T đầu cụt nội đô; vạch nền liền bên dưới biểu thị quyền chạy xuyên giờ cấm.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M2 15.5V5.5H14V15.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M6 8V13M10 8V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M14 8.5H18.5L21.5 11.5V15.5H19.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M8.5 15.5H15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><circle cx="6" cy="16" r="2.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.2" cy="16" r="2.2" stroke="currentColor" stroke-width="1.8"/><path d="M2 20.5H9" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2.5 2" stroke-linecap="square"/><path d="M11 20.5H21.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 15.5V5.5H14V15.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M14 8.5H18.5L21.5 11.5V15.5H19.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="6" cy="16" r="2.2" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="16" r="2.2" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">truck-dry</span>
+        <span class="icon-reason">Xe tải thùng kín 3,5–5T với gân thùng dọc và vệt đường chờ cửa sổ chuyển tiếp.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="12.5" height="9.5" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><rect x="14.5" y="5" width="3" height="3.5" fill="currentColor"/><path d="M14.5 9.5H19L21.5 12V15.5H19.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M5 9.5L7.5 11L10 9.5M5 12.5L7.5 14L10 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="6" cy="16.2" r="2.1" stroke="currentColor" stroke-width="1.8"/><circle cx="17.2" cy="16.2" r="2.1" stroke="currentColor" stroke-width="1.8"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="12.5" height="9.5" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter"/><rect x="14.5" y="5" width="3" height="3.5" fill="currentColor"/><path d="M14.5 9.5H19L21.5 12V15.5H19.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="6" cy="16.2" r="2.1" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="16.2" r="2.1" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">truck-reefer</span>
+        <span class="icon-reason">Xe đông lạnh −18°C: cụm giàn lạnh gắn mũi thùng và vạch đối lưu nhiệt, bỏ bông tuyết sáo mòn.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M1.5 13V4.5H15V13H1.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><path d="M5.5 7V10.5M9 7V10.5M12.5 7V10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M15 7.5H19.5L22 10.5V15.5H20" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><path d="M1.5 15.5H15.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><circle cx="4.5" cy="17" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="9.5" cy="17" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="17" r="2" stroke="currentColor" stroke-width="1.8"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M1.5 13V4.5H15V13H1.5Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter"/><path d="M15 7.5H19.5L22 10.5V15.5H20" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><circle cx="4.5" cy="17" r="2" stroke="currentColor" stroke-width="2"/><circle cx="9.5" cy="17" r="2" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="17" r="2" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">truck-container</span>
+        <span class="icon-reason">Đầu kéo 40ft Cát Lái · rơ-moóc 2 trục sau gánh container có gân thép (nhóm GLX-HDT-v1).</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 3H15.5L20 7.5V21H4V3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><path d="M15 3V8H20" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter"/><path d="M7.5 10.5H16.5M7.5 14H13" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><path d="M7.5 17.5H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><rect x="13.5" y="15" width="4" height="4" fill="currentColor"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 3H15.5L20 7.5V21H4V3Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter"/><path d="M7.5 10.5H16.5M7.5 14H13" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><rect x="13.5" y="15" width="4" height="4" fill="currentColor"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">iso-ledger</span>
+        <span class="icon-reason">Phiếu giao nhận vát góc + dòng số liệu thẳng cột + mộc kiểm toán vuông ISO 14083.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M3 5H15L19 9V19H3V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><path d="M7 12H14.5M11.5 8.5L15 12L11.5 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><rect x="19" y="15.5" width="3" height="3.5" fill="currentColor"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 5H15L19 9V19H3V5Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter"/><path d="M7 12H14.5M11.5 8.5L15 12L11.5 15.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">shift-start</span>
+        <span class="icon-reason">Cổng xuất bến vát góc với mũi tên lệnh xuất ca và chốt dừng, không dùng nút play giải trí.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 13.5H9V9.5H14V5.5H19.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><rect x="17.5" y="3.5" width="3.5" height="3.5" fill="currentColor"/><path d="M3.5 19H20.5" stroke="currentColor" stroke-width="2" stroke-dasharray="2.5 3" stroke-linecap="square"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 13.5H9V9.5H14V5.5H19.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><rect x="17.5" y="3.5" width="3.5" height="3.5" fill="currentColor"/><path d="M3.5 19H20.5" stroke="currentColor" stroke-width="2" stroke-dasharray="2.5 3" stroke-linecap="square"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">offline-signal</span>
+        <span class="icon-reason">Đường nối đứt ở dưới (mất sóng hầm kho), nhưng chuỗi điểm dừng lưu cục bộ vẫn giữ nguyên.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M2.5 12H8.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/><rect x="10.5" y="7" width="3" height="10" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 12H21.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/><circle cx="12" cy="4" r="1.5" fill="currentColor"/><path d="M4 18.5H20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2.5" stroke-linecap="square"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2.5 12H8.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/><rect x="10.5" y="7" width="3" height="10" stroke="currentColor" stroke-width="2"/><path d="M15.5 12H21.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">driver-rest</span>
+        <span class="icon-reason">Nhịp nghỉ bắt buộc 15 phút sau mỗi 4 giờ lái liên tục trong mô phỏng rời rạc.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="5" height="13" stroke="currentColor" stroke-width="1.8"/><rect x="15" y="9" width="5" height="8" fill="currentColor"/><path d="M2.5 20H21.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M12 4V17" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="5" height="13" stroke="currentColor" stroke-width="2"/><rect x="15" y="9" width="5" height="8" fill="currentColor"/><path d="M2.5 20H21.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">co2-audit</span>
+        <span class="icon-reason">Cột rỗng baseline (83,57 kg) đối chiếu cột đặc sau tối ưu (56,66 kg) trên cân sổ cái, không lá cây.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 5H12L15 8V20H4V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><path d="M7 11H12" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><rect x="7" y="14" width="5" height="3" fill="currentColor"/><path d="M15 9.5H18.5V16.5C18.5 17.5 19.5 18 20.2 17.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><rect x="17" y="6" width="3" height="3" fill="currentColor"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5H12L15 8V20H4V5Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter"/><rect x="7" y="14" width="5" height="3" fill="currentColor"/><rect x="17" y="6" width="3" height="3" fill="currentColor"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">fuel-diesel</span>
+        <span class="icon-reason">Can dầu vát góc 45° với vạch định mức TTW 2,68 / WTW 3,24 kg CO₂e/lít.</span>
+      </div>
+
+      <div class="icon-cell">
+        <div class="icon-pair">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="6" width="19" height="12" stroke="currentColor" stroke-width="2"/><path d="M5.5 10.5H8.5M10.5 10.5H13.5M15.5 10.5H18.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M5.5 14H9.5M11.5 14H13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><rect x="15.5" y="13" width="3" height="2.5" fill="currentColor"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="6" width="19" height="12" stroke="currentColor" stroke-width="2.2"/><path d="M5.5 10.5H18.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><rect x="15.5" y="13" width="3" height="2.5" fill="currentColor"/></svg>
+        </div>
+        <span class="mono" style="color:var(--em-ink)">plate-id</span>
+        <span class="icon-reason">Biển số xe tải thương mại 51C-123.45 với nhịp gạch ngang và dấu vuông phân tách.</span>
+      </div>
+    </div>
+
+    <div class="story-stack">
+      <div class="story-frame">
+        <div class="mono" style="color:var(--em-ink-muted);margin-bottom:10px">ĐỒ HỌA NGHIỆP VỤ 01 · THUẾ CHẠY RỖNG 32,8% → VÒNG LẶP 2,7%</div>
+        <img src="graphics/story-empty-return.svg" alt="So sánh chạy rỗng chiều về trước và sau EcoMiles">
+      </div>
+      <div class="story-frame">
+        <div class="mono" style="color:var(--em-ink-muted);margin-bottom:10px">ĐỒ HỌA NGHIỆP VỤ 02 · HÀNH LANG CẤM TẢI QĐ 23/2018 TP.HCM</div>
+        <img src="graphics/story-qd23-corridor.svg" alt="Sơ đồ cửa sổ cấm tải QĐ 23/2018 tại TP.HCM">
+      </div>
+      <div class="story-frame">
+        <div class="mono" style="color:var(--em-ink-muted);margin-bottom:10px">ĐỒ HỌA NGHIỆP VỤ 03 · TỪ PHIẾU XUẤT KHO GIẤY ĐẾN MỘC ISO 14083</div>
+        <img src="graphics/story-waybill-to-iso.svg" alt="Quy trình chuyển từ phiếu giấy Excel sang sổ phát thải ISO 14083">
+      </div>
+    </div>
+  </section>
+
+  <section id="voice" class="section">
+    <div class="shead"><span class="num mono">06</span><h2>Giọng nói &amp; Danh sách cấm</h2></div>
+    <p class="lead">Tiếng Việt làm gốc. Số đứng trước tính từ. Một khái niệm chỉ mang đúng một tên gọi trên toàn bộ giao diện (ví dụ: luôn dùng "quãng đường rỗng"). Không dùng dấu gạch ngang dài (em-dash) trong UI.</p>
+    <div class="ban-grid">
+      <div class="ban-item"><span class="ban-word">Lá cây / Quả địa cầu / Bắt tay</span><span class="mono">THAY BẰNG RETURN M</span></div>
+      <div class="ban-item"><span class="ban-word">Vòng tròn xanh quanh icon</span><span class="mono">TRÙNG 20 ĐỐI THỦ</span></div>
+      <div class="ban-item"><span class="ban-word">Gradient tím AI / Glassmorphism</span><span class="mono">MẤT ĐỘ TƯƠNG PHẢN NGOÀI NẮNG</span></div>
+      <div class="ban-item"><span class="ban-word">Dark Neon / 3D Isometric Truck</span><span class="mono">SAI BỐI CẢNH VẬN TẢI</span></div>
+      <div class="ban-item"><span class="ban-word">"Giải pháp toàn diện · Hệ sinh thái"</span><span class="mono">SÁO RỖNG · CẮT BỎ</span></div>
+      <div class="ban-item"><span class="ban-word">"Xanh hóa · Đột phá 4.0 · Tối ưu nhất"</span><span class="mono">THAY BẰNG SỐ ĐO THỰC</span></div>
+    </div>
+  </section>
+
+  <section id="surfaces" class="section">
+    <div class="shead"><span class="num mono">07</span><h2>Ứng dụng trên 3 bề mặt sản phẩm</h2></div>
+    <div class="grid-3">
+      <div class="surface-card">
+        <div class="mono" style="color:var(--em-route);margin-bottom:10px">01 · LANDING (PERSUADE)</div>
+        <div style="font-family:var(--em-font-display);font-weight:800;font-size:24px;line-height:1.05;margin-bottom:10px">Chứng minh ngay khung hình đầu</div>
+        <p style="font-size:13.5px;color:var(--em-ink-body)">Giấy ấm #F6F1E7, Return M sắc nét trên thanh điều hướng, một bản đồ đối chứng TP.HCM và đúng một hành động chính.</p>
+      </div>
+      <div class="surface-card">
+        <div class="mono" style="color:var(--em-amber);margin-bottom:10px">02 · DISPATCHER (OPERATE)</div>
+        <div style="font-family:var(--em-font-display);font-weight:800;font-size:24px;line-height:1.05;margin-bottom:10px">Sổ cái dày, thoáng, không trang trí</div>
+        <p style="font-size:13.5px;color:var(--em-ink-body)">Dải giờ cấm 06–09 / 16–20 luôn hiển thị. Số liệu chưa kiểm chứng giữ màu mực #101418 hoặc nhãn n/a.</p>
+        <div class="qd-strip"><span style="width:25%;background:#EEF2FC"></span><span style="width:12.5%;background:#A64B08"></span><span style="width:29%;background:#0B7A3B"></span><span style="width:16.5%;background:#A64B08"></span><span style="width:17%;background:#EEF2FC"></span></div>
+      </div>
+      <div class="driver-preview">
+        <div class="mono" style="color:var(--em-ink-inverse-muted)">03 · DRIVER (SUNLIGHT / 2AM)</div>
+        <div style="font-family:var(--em-font-mono);font-size:13px;margin-top:10px;color:#C9C3B6">51C-123.45 · CA SÁNG · QĐ 23 OK</div>
+        <div style="font-family:var(--em-font-display);font-weight:800;font-size:24px;margin-top:6px">Còn 3 điểm giao</div>
+        <div class="driver-btn">Bắt đầu ca (48px target)</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tokens" class="section" style="border-bottom:none">
+    <div class="shead"><span class="num mono">08</span><h2>Nguồn token đa nền tảng</h2></div>
+    <p class="lead">Tất cả màu sắc, kiểu chữ, bo góc và thời gian chuyển động được sinh tự động từ <code class="mono">brand/tokens.json</code> qua <code class="mono">uv run python brand/build_tokens.py</code>.</p>
+    <div class="code-block">brand/tokens.json
+  ├── brand/dist/tokens.css                 (Astro Landing + FastAPI Jinja Dispatcher)
+  ├── brand/dist/tokens.ts                  (TypeScript islands &amp; charts)
+  └── brand/dist/ecomiles_brand_tokens.dart (Flutter Driver App)</div>
+  </section>
+
+  <footer class="foot mono">
+    <span>ECOMILES · BRAND SYSTEM v1.0 · G1+G2+G4 COMPLETE</span>
+    <span>CHỈ TRONG BRANCH DEV · KHÔNG DÙNG LÁ CÂY</span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('replayRoute')?.addEventListener('click', () => {
+    const line = document.getElementById('matchedLeg');
+    const dots = document.querySelectorAll('.draw-dot');
+    if (!line) return;
+    line.style.animation = 'none';
+    dots.forEach((d) => { d.style.animation = 'none'; d.style.opacity = '0'; });
+    void line.getBoundingClientRect();
+    line.style.animation = '';
+    dots.forEach((d) => { d.style.animation = ''; d.style.opacity = ''; });
+  });
+</script>
+</body>
+</html>

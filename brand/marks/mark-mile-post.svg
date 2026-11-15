@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="EcoMiles mile post mark">
+  <path d="M18 56 V16" stroke="currentColor" stroke-width="6" stroke-linecap="square"/>
+  <path d="M18 12 H44 L54 22 V32 L44 42 H18 Z" stroke="currentColor" stroke-width="6" stroke-linejoin="miter"/>
+  <path d="M45 27 H33" stroke="currentColor" stroke-width="5" stroke-linecap="square"/>
+  <path d="M33 21 L26 27 L33 33 Z" fill="currentColor"/>
+</svg>

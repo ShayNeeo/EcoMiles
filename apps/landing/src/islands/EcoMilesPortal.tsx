@@ -38,10 +38,10 @@ import {
   Sliders,
   ShieldAlert,
   DollarSign,
-  Leaf,
   Info,
   Gauge,
 } from 'lucide-react';
+import { Co2AuditIcon, IsoLedgerIcon } from '../components/EcoMilesMark';
 import {
   parseXlsxToRows,
   parseCsvToRows,
@@ -319,7 +319,7 @@ function HcmcSingleRouteMapCanvas({
     ctx.lineWidth = 2;
     ctx.fillRect(dx - 8, dy - 8, 16, 16);
     ctx.strokeRect(dx - 8, dy - 8, 16, 16);
-    ctx.fillStyle = '#14532d';
+    ctx.fillStyle = '#101418';
     ctx.font = '700 10.5px system-ui, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('Kho Tân Bình (364 Cộng Hòa)', dx + 12, dy + 4);
@@ -794,27 +794,27 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     return (
       <div
         data-ui="ecomiles-b2b-signin-gate"
-        className="min-h-screen bg-[#f8fafc] text-[#0f172a] antialiased flex flex-col"
+        className="min-h-screen bg-[#F6F1E7] text-[#101418] antialiased flex flex-col"
         style={{ fontFamily: '"Be Vietnam Pro", "Inter", system-ui, -apple-system, sans-serif' }}
       >
         <header className="bg-white border-b border-[#e2e8f0] px-4 sm:px-6 py-3">
           <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
             <a href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#14532d] text-white flex items-center justify-center font-black text-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#101418] text-white flex items-center justify-center font-black text-sm">
                 EM
               </div>
               <div>
-                <div className="font-extrabold text-sm text-[#0f172a] leading-none">
-                  EcoMiles <span className="text-[#16a34a]">TMS</span>
+                <div className="font-extrabold text-sm text-[#101418] leading-none">
+                  EcoMiles <span className="text-[#0B7A3B]">TMS</span>
                 </div>
-                <div className="text-xs text-[#475569] mt-0.5">
+                <div className="text-xs text-[#5B5F66] mt-0.5">
                   Cổng Xác Thực Đa Doanh Nghiệp &amp; Phân Quyền Bảo Mật NĐ 13/2023
                 </div>
               </div>
             </a>
             <a
               href="/"
-              className="px-3 py-1.5 rounded-lg border border-[#cbd5e1] bg-white hover:bg-[#f8fafc] text-xs font-semibold text-[#0f172a]"
+              className="px-3 py-1.5 rounded-lg border border-[#cbd5e1] bg-white hover:bg-[#F6F1E7] text-xs font-semibold text-[#101418]"
             >
               Về trang chủ
             </a>
@@ -825,9 +825,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           <div
             role="region"
             aria-label="Cổng đăng nhập bảo mật đa doanh nghiệp EcoMiles"
-            className="w-full max-w-5xl bg-white text-[#0f172a] rounded-2xl border border-[#e2e8f0] shadow-[0_20px_50px_-20px_rgba(15,23,42,0.12)] overflow-hidden"
+            className="w-full max-w-5xl bg-white text-[#101418] rounded-2xl border border-[#e2e8f0] shadow-[0_20px_50px_-20px_rgba(15,23,42,0.12)] overflow-hidden"
           >
-            <div className="px-6 py-4 bg-[#14532d] text-white flex flex-wrap items-center justify-between gap-3">
+            <div className="px-6 py-4 bg-[#101418] text-white flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h1 className="text-lg sm:text-xl font-bold text-white">
                   Đăng Nhập Hệ Thống Quản Trị Vận Tải &amp; Tài Khoản Tài Xế EcoMiles
@@ -841,14 +841,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               </span>
             </div>
 
-            <div className="p-5 sm:p-6 bg-[#f8fafc] grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div className="p-5 sm:p-6 bg-[#F6F1E7] grid grid-cols-1 lg:grid-cols-12 gap-5">
               <div className="lg:col-span-6 space-y-4">
                 <div>
-                  <h2 className="text-sm font-bold text-[#0f172a] flex items-center gap-2">
-                    <KeyRound className="w-4 h-4 text-[#16a34a]" />
+                  <h2 className="text-sm font-bold text-[#101418] flex items-center gap-2">
+                    <KeyRound className="w-4 h-4 text-[#0B7A3B]" />
                     <span>Chọn Tài Khoản Điền Sẵn (1 Chạm Để Kiểm Thử)</span>
                   </h2>
-                  <p className="text-xs text-[#475569] mt-0.5">
+                  <p className="text-xs text-[#5B5F66] mt-0.5">
                     Bấm vào tài khoản mẫu bên dưới để tự động điền Email &amp; Mật khẩu tương ứng:
                   </p>
                 </div>
@@ -867,18 +867,18 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           onClick={() => handleSelectPreset(acc)}
                           className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-white border-[#14532d] shadow-sm ring-2 ring-[#14532d]/15'
+                              ? 'bg-white border-[#101418] shadow-sm ring-2 ring-[#101418]/15'
                               : 'bg-white border-[#e2e8f0] hover:border-[#cbd5e1]'
                           }`}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="font-bold text-xs text-[#0f172a]">{acc.label_vi}</span>
-                            <span className="px-2 py-0.5 rounded text-xs font-bold bg-[#f0fdf4] text-[#14532d] border border-[#bbf7d0]">
+                            <span className="font-bold text-xs text-[#101418]">{acc.label_vi}</span>
+                            <span className="px-2 py-0.5 rounded text-xs font-bold bg-[#f0fdf4] text-[#101418] border border-[#bbf7d0]">
                               {acc.badge_vi}
                             </span>
                           </div>
-                          <div className="text-xs text-[#475569] mt-1">{acc.subtitle_vi}</div>
-                          <div className="text-xs font-mono text-[#0f172a] mt-1">{acc.username}</div>
+                          <div className="text-xs text-[#5B5F66] mt-1">{acc.subtitle_vi}</div>
+                          <div className="text-xs font-mono text-[#101418] mt-1">{acc.username}</div>
                         </button>
                       );
                     })}
@@ -899,15 +899,15 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           onClick={() => handleSelectPreset(acc)}
                           className={`text-left p-2.5 rounded-xl border transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-white border-[#14532d] shadow-sm ring-2 ring-[#14532d]/15'
+                              ? 'bg-white border-[#101418] shadow-sm ring-2 ring-[#101418]/15'
                               : 'bg-white border-[#e2e8f0] hover:border-[#cbd5e1]'
                           }`}
                         >
-                          <div className="font-bold text-xs text-[#0f172a] truncate">{acc.label_vi}</div>
-                          <div className="text-xs font-mono font-semibold text-[#14532d] mt-0.5">
+                          <div className="font-bold text-xs text-[#101418] truncate">{acc.label_vi}</div>
+                          <div className="text-xs font-mono font-semibold text-[#101418] mt-0.5">
                             {acc.assigned_plate}
                           </div>
-                          <div className="text-xs font-mono text-[#475569] mt-0.5 truncate">{acc.username}</div>
+                          <div className="text-xs font-mono text-[#5B5F66] mt-0.5 truncate">{acc.username}</div>
                         </button>
                       );
                     })}
@@ -928,12 +928,12 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           onClick={() => handleSelectPreset(acc)}
                           className={`text-left p-2.5 rounded-xl border transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-white border-[#14532d] shadow-sm ring-2 ring-[#14532d]/15'
+                              ? 'bg-white border-[#101418] shadow-sm ring-2 ring-[#101418]/15'
                               : 'bg-white border-[#e2e8f0] hover:border-[#cbd5e1]'
                           }`}
                         >
-                          <div className="font-bold text-xs text-[#0f172a] truncate">{acc.label_vi}</div>
-                          <div className="text-xs font-mono text-[#475569] mt-0.5 truncate">{acc.username}</div>
+                          <div className="font-bold text-xs text-[#101418] truncate">{acc.label_vi}</div>
+                          <div className="text-xs font-mono text-[#5B5F66] mt-0.5 truncate">{acc.username}</div>
                         </button>
                       );
                     })}
@@ -944,16 +944,16 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               <div className="lg:col-span-6 bg-white border border-[#e2e8f0] rounded-xl p-5 space-y-4 flex flex-col justify-between">
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
                   <div>
-                    <h2 className="text-base font-bold text-[#0f172a]">
+                    <h2 className="text-base font-bold text-[#101418]">
                       Thông Tin Đăng Nhập Doanh Nghiệp
                     </h2>
-                    <p className="text-xs text-[#475569] mt-0.5">
+                    <p className="text-xs text-[#5B5F66] mt-0.5">
                       Xác thực qua <code className="font-mono">POST /api/auth/login</code> và khóa cứng phạm vi dữ liệu theo công ty.
                     </p>
                   </div>
 
                   {statusBanner && (
-                    <div className="p-2.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-xs font-semibold text-[#14532d]">
+                    <div className="p-2.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-xs font-semibold text-[#101418]">
                       {statusBanner}
                     </div>
                   )}
@@ -969,7 +969,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       required
                       value={loginUsername}
                       onChange={(e) => setLoginUsername(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-lg border border-[#cbd5e1] bg-white text-xs font-mono text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                      className="w-full px-3 py-2.5 rounded-lg border border-[#cbd5e1] bg-white text-xs font-mono text-[#101418] focus:outline-none focus:ring-2 focus:ring-[#101418]"
                     />
                   </div>
 
@@ -978,7 +978,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <label htmlFor="ecm-login-password" className="block text-xs font-bold text-[#334155]">
                         Mật khẩu:
                       </label>
-                      <span className="text-xs text-[#475569]">Có thể nhập sai để kiểm thử HTTP 401</span>
+                      <span className="text-xs text-[#5B5F66]">Có thể nhập sai để kiểm thử HTTP 401</span>
                     </div>
                     <div className="relative">
                       <input
@@ -988,12 +988,12 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         required
                         value={loginPassword}
                         onChange={(e) => setLoginPassword(e.target.value)}
-                        className="w-full pl-3 pr-10 py-2.5 rounded-lg border border-[#cbd5e1] bg-white text-xs font-mono text-[#0f172a] focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                        className="w-full pl-3 pr-10 py-2.5 rounded-lg border border-[#cbd5e1] bg-white text-xs font-mono text-[#101418] focus:outline-none focus:ring-2 focus:ring-[#101418]"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#475569] hover:text-[#0f172a] cursor-pointer"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#5B5F66] hover:text-[#101418] cursor-pointer"
                         title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1005,22 +1005,22 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     const targetTenant = selectedDemoPreset?.tenant_id || 'TNT-NAMVIET-002';
                     const pol = getCompanySecurityPolicy(targetTenant);
                     return (
-                      <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs space-y-1.5">
+                      <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0] text-xs space-y-1.5">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-bold text-[#0f172a]">Chính sách bảo mật áp dụng:</span>
-                          <span className="px-2 py-0.5 rounded font-mono font-bold text-xs bg-[#eef7ee] text-[#14532d] border border-[#bbf7d0]">
+                          <span className="font-bold text-[#101418]">Chính sách bảo mật áp dụng:</span>
+                          <span className="px-2 py-0.5 rounded font-mono font-bold text-xs bg-[#eef7ee] text-[#101418] border border-[#bbf7d0]">
                             {selectedDemoPreset?.role === 'admin' ? 'ZERO-KNOWLEDGE-BLIND' : pol.policy_id}
                           </span>
                         </div>
-                        <div className="text-xs text-[#475569]">
+                        <div className="text-xs text-[#5B5F66]">
                           {selectedDemoPreset?.role === 'admin'
                             ? 'Quản trị viên chỉ giám sát hạ tầng máy chủ; 0% quyền giải mã tên, SĐT và địa chỉ khách hàng.'
                             : pol.summary_vi}
                         </div>
                         {selectedDemoPreset?.role !== 'admin' && (
-                          <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-[#e2e8f0] text-xs text-[#475569]">
-                            <div>Ngân hàng đối soát: <strong className="text-[#0f172a]">{pol.invoice_bank_name}</strong></div>
-                            <div>Mã số thuế: <strong className="text-[#0f172a]">{pol.tax_code_mst}</strong></div>
+                          <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-[#e2e8f0] text-xs text-[#5B5F66]">
+                            <div>Ngân hàng đối soát: <strong className="text-[#101418]">{pol.invoice_bank_name}</strong></div>
+                            <div>Mã số thuế: <strong className="text-[#101418]">{pol.tax_code_mst}</strong></div>
                           </div>
                         )}
                       </div>
@@ -1043,14 +1043,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   <button
                     type="submit"
                     disabled={loginLoading}
-                    className="w-full py-3 px-4 rounded-xl bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                    className="w-full py-3 px-4 rounded-xl bg-[#101418] hover:bg-[#1B45D7] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
                   >
                     <Lock className="w-4 h-4" />
                     <span>{loginLoading ? 'Đang xác thực phiên...' : 'Đăng Nhập Hệ Thống'}</span>
                   </button>
                 </form>
 
-                <div className="text-xs text-[#475569] pt-2 border-t border-[#e2e8f0] leading-relaxed">
+                <div className="text-xs text-[#5B5F66] pt-2 border-t border-[#e2e8f0] leading-relaxed">
                   Phiên làm việc sau khi đăng nhập được khóa cứng với doanh nghiệp đã chọn. Muốn chuyển sang công ty khác, người dùng bắt buộc phải bấm <strong>Đăng xuất</strong> để thu hồi khóa phiên.
                 </div>
               </div>
@@ -1065,7 +1065,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
     return (
       <div className="min-h-screen bg-[#f3f4f6] text-[#111827] flex items-center justify-center p-8">
         <div className="bg-white border border-[#e5e7eb] rounded-xl p-8 text-center space-y-3 shadow-sm">
-          <div className="w-7 h-7 rounded-full border-2 border-[#14532d] border-t-transparent animate-spin mx-auto" />
+          <div className="w-7 h-7 rounded-full border-2 border-[#101418] border-t-transparent animate-spin mx-auto" />
           <p className="text-sm font-semibold text-[#111827]">
             Đang nạp dữ liệu phân vùng bảo mật của {activeCompany.short_name}...
           </p>
@@ -1179,7 +1179,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
           {/* Left: Brand Mark + Role-Isolated Workspace Context */}
           <div className="flex flex-wrap items-center gap-3.5">
             <a href="/" className="flex items-center gap-2.5 group" title="Về trang giới thiệu EcoMiles">
-              <div className="w-8 h-8 rounded-lg bg-[#14532d] text-[#d6f65a] flex items-center justify-center font-black text-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#101418] text-[#d6f65a] flex items-center justify-center font-black text-sm">
                 EM
               </div>
               <div>
@@ -1203,8 +1203,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
             {/* Role-Specific Context Control (Isolated by Role & Locked to Authenticated Company) */}
             {activeRole === 'user' && (
               <div className="flex items-center gap-2 bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg px-2.5 py-1 text-xs">
-                <ShieldCheck className="w-4 h-4 text-[#16a34a] shrink-0" />
-                <span className="font-semibold text-[#14532d]">
+                <ShieldCheck className="w-4 h-4 text-[#0B7A3B] shrink-0" />
+                <span className="font-semibold text-[#101418]">
                   Đã khóa phiên: <strong>{activeCompany.short_name}</strong> ·{' '}
                   <span className="font-mono text-[11px]">{activeCompany.key_fingerprint.slice(0, 12)}</span> ·{' '}
                   <span className="text-[11px] font-bold text-[#15803d]">{activePolicy.tier_badge}</span>
@@ -1214,12 +1214,12 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
             {activeRole === 'driver' && (
               <div className="flex items-center gap-2 bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg px-2.5 py-1 text-xs">
-                <Truck className="w-4 h-4 text-[#14532d] shrink-0" />
+                <Truck className="w-4 h-4 text-[#101418] shrink-0" />
                 <span className="font-bold text-[#111827]">
                   {authenticatedSession?.label_vi || `Xe ${activeStrategy.routes[selectedDriverRouteIdx]?.plate || '51C-000.08'}`}
                 </span>
                 <span className="text-[#5f6368]">·</span>
-                <span className="text-[#14532d] font-semibold">{activeCompany.short_name}</span>
+                <span className="text-[#101418] font-semibold">{activeCompany.short_name}</span>
               </div>
             )}
 
@@ -1259,7 +1259,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   onClick={() => setUserTab('evsim_compare')}
                   className={`px-2.5 py-1 rounded-md font-bold flex items-center gap-1.5 cursor-pointer transition-colors ${
                     userTab === 'evsim_compare'
-                      ? 'bg-[#14532d] text-[#d6f65a] shadow-2xs'
+                      ? 'bg-[#101418] text-[#d6f65a] shadow-2xs'
                       : 'text-[#5f6368] hover:text-[#111827]'
                   }`}
                 >
@@ -1272,7 +1272,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
             {activeRole === 'driver' && (
               <a
                 href={`/maps?vehicle=${authenticatedSession?.driver_route_idx ?? selectedDriverRouteIdx}&mode=navigate`}
-                className="px-3 py-1.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] font-bold flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-lg bg-[#101418] hover:bg-[#1B45D7] text-[#d6f65a] font-bold flex items-center gap-1.5"
               >
                 <Navigation className="w-3.5 h-3.5" />
                 <span>Bản đồ Dẫn đường Xe tải</span>
@@ -1299,7 +1299,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="px-3 py-1.5 rounded-lg border border-[#14532d] bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold flex items-center gap-1.5 cursor-pointer text-xs"
+                className="px-3 py-1.5 rounded-lg border border-[#101418] bg-[#101418] hover:bg-[#1B45D7] text-white font-bold flex items-center gap-1.5 cursor-pointer text-xs"
               >
                 <KeyRound className="w-3.5 h-3.5" />
                 <span>Đăng nhập Doanh nghiệp</span>
@@ -1554,7 +1554,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           setPerRouteVehicleClass({});
                           setStatusBanner('Đã khôi phục cấu hình đội xe hỗn hợp mặc định (khớp 100% số liệu Pitch Deck).');
                         }}
-                        className="px-3 py-1.5 rounded-lg border border-[#b9dfbf] bg-[#eef7ee] hover:bg-[#dcfae5] text-[12px] font-bold text-[#14532d] cursor-pointer shrink-0"
+                        className="px-3 py-1.5 rounded-lg border border-[#b9dfbf] bg-[#eef7ee] hover:bg-[#dcfae5] text-[12px] font-bold text-[#101418] cursor-pointer shrink-0"
                       >
                         Khôi phục mặc định Pitch Deck
                       </button>
@@ -1603,14 +1603,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       })}
                     </div>
 
-                    <div className="bg-[#f8fafc] border border-[#dbeafe] rounded-lg px-3.5 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2 text-[11.5px] text-[#1e3a8a]">
+                    <div className="bg-[#F6F1E7] border border-[#dbeafe] rounded-lg px-3.5 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2 text-[11.5px] text-[#1e3a8a]">
                       <div>
                         <span className="font-bold">Công thức Vật lý Tải trọng &amp; Nhiệt lạnh GLX-HDT-v1 (ISO 14083 / GLEC v3.2): </span>
                         <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-[#bfdbfe] text-[#1e40af]">
                           M_tổng(k) = M_xác_xe + M_hàng(k)  ⇒  Lít(k) = d_k × (L_chuẩn/100) × [0.76 + 0.38 × (M_hàng(k) / M_tải_max)] × (1 + %P_aux_lạnh)
                         </code>
                       </div>
-                      <div className="text-[11px] text-[#475569] shrink-0">
+                      <div className="text-[11px] text-[#5B5F66] shrink-0">
                         Diesel: <b>2.68 kg/L</b> (TTW) · <b>3.24 kg/L</b> (WTW) | Xăng: <b>2.31</b> · <b>2.82 kg/L</b>
                       </div>
                     </div>
@@ -1785,7 +1785,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                   </button>
                                   <a
                                     href={`/maps?vehicle=${idx}&mode=overview`}
-                                    className="px-2 py-1 rounded bg-[#eef7ee] hover:bg-[#dcfae5] border border-[#b9dfbf] text-xs font-bold text-[#14532d]"
+                                    className="px-2 py-1 rounded bg-[#eef7ee] hover:bg-[#dcfae5] border border-[#b9dfbf] text-xs font-bold text-[#101418]"
                                   >
                                     Bản đồ
                                   </a>
@@ -1855,7 +1855,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             </p>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-xs">
-                            <span className="px-2.5 py-1 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[#14532d] font-bold">
+                            <span className="px-2.5 py-1 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[#101418] font-bold">
                               Ước tính tiết kiệm 14 ngày: {totalFuelSaved14d.toLocaleString('vi-VN')} đ
                             </span>
                             <span className="px-2.5 py-1 rounded-lg bg-[#eff6ff] border border-[#bfdbfe] text-[#1e40af] font-bold">
@@ -1905,7 +1905,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               {
                                 name: 'Tiền dầu tiết kiệm (nghìn đ/ngày)',
                                 type: 'bar',
-                                itemStyle: { color: '#16a34a' },
+                                itemStyle: { color: '#0B7A3B' },
                                 data: telemetry14d.map((p) => Math.round(p.fuel_saved_vnd / 1000)),
                               },
                               {
@@ -1933,8 +1933,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#e5e7eb] pb-2.5">
                           <div className="flex items-center gap-2">
-                            <Leaf className="w-4 h-4 text-[#16a34a]" />
-                            <h3 className="text-sm font-bold text-[#0f172a]">
+                            <Co2AuditIcon className="w-4 h-4 text-[#0B7A3B]" />
+                            <h3 className="text-sm font-bold text-[#101418]">
                               Tách Rời Tăng Trưởng Khỏi Phát Thải (Rebound-Effect Decoupling)
                             </h3>
                           </div>
@@ -1943,22 +1943,22 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           </span>
                         </div>
 
-                        <p className="text-xs text-[#475569] leading-relaxed">
+                        <p className="text-xs text-[#5B5F66] leading-relaxed">
                           <strong>Hiệu ứng Bật nảy (Rebound Effect) trong Logistics:</strong> Khi tối ưu hóa chia tuyến giúp chi phí vận tải rẻ hơn, doanh nghiệp có xu hướng tăng số lượng đơn hàng và quy mô đội xe. EcoMiles giải quyết nghịch lý này bằng cách theo dõi song song cả <strong>Cường độ phát thải đơn vị (g CO₂e/đơn)</strong> và <strong>Tổng phát thải tuyệt đối (kg CO₂e)</strong>, đảm bảo doanh nghiệp mở rộng kinh doanh mà vẫn đạt mục tiêu cắt giảm phát thải:
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                          <div className="p-3.5 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] space-y-1">
+                          <div className="p-3.5 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0] space-y-1">
                             <div className="text-[11px] font-bold text-[#0284c7] uppercase">
                               1. Cường Độ Phát Thải Đơn Vị (g CO₂e / Đơn Hàng)
                             </div>
-                            <div className="text-xl font-extrabold text-[#0f172a]">
+                            <div className="text-xl font-extrabold text-[#101418]">
                               {activeStrategy.g_co2e_per_order.toFixed(0)}{' '}
                               <span className="text-xs font-normal text-[#64748b]">
                                 g CO₂e/đơn (TB 14 ngày: {avgIntensity14d} g)
                               </span>
                             </div>
-                            <div className="text-xs font-semibold text-[#16a34a]">
+                            <div className="text-xs font-semibold text-[#0B7A3B]">
                               {intensityDeltaPct}% trên mỗi đơn so với chia tuyến thủ công ({humanSt.g_co2e_per_order.toFixed(0)} g/đơn)
                             </div>
                             <div className="text-[11px] text-[#64748b]">
@@ -1966,14 +1966,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             </div>
                           </div>
 
-                          <div className="p-3.5 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] space-y-1">
-                            <div className="text-[11px] font-bold text-[#16a34a] uppercase">
+                          <div className="p-3.5 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0] space-y-1">
+                            <div className="text-[11px] font-bold text-[#0B7A3B] uppercase">
                               2. Tổng Phát Thải Tuyệt Đối (kg CO₂e Đội Xe)
                             </div>
-                            <div className="text-xl font-extrabold text-[#0f172a]">
+                            <div className="text-xl font-extrabold text-[#101418]">
                               {activeStrategy.kg_co2_ttw.toFixed(2)} <span className="text-xs font-normal text-[#64748b]">kg CO₂e</span>
                             </div>
-                            <div className="text-xs font-semibold text-[#16a34a]">
+                            <div className="text-xs font-semibold text-[#0B7A3B]">
                               Giảm {Math.abs(activeStrategy.delta_vs_human_co2_pct)}% CO₂e TTW so với chia thủ công ({humanSt.kg_co2_ttw.toFixed(2)} kg)
                             </div>
                             <div className="text-[11px] text-[#64748b]">
@@ -1988,8 +1988,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#e5e7eb] pb-3">
                           <div>
                             <div className="flex items-center gap-2">
-                              <DollarSign className="w-4 h-4 text-[#16a34a]" />
-                              <h3 className="text-sm font-bold text-[#0f172a]">
+                              <DollarSign className="w-4 h-4 text-[#0B7A3B]" />
+                              <h3 className="text-sm font-bold text-[#101418]">
                                 Bộ Chuyển Đổi Giá Trị Carbon 3 Kịch Bản &amp; Sẵn Sàng Báo Cáo Scope 3
                               </h3>
                             </div>
@@ -2005,8 +2005,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               onClick={() => setCarbonScenario(1)}
                               className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
                                 carbonScenario === 1
-                                  ? 'bg-white text-[#0f172a] shadow-xs'
-                                  : 'text-[#64748b] hover:text-[#0f172a]'
+                                  ? 'bg-white text-[#101418] shadow-xs'
+                                  : 'text-[#64748b] hover:text-[#101418]'
                               }`}
                             >
                               1. Sàn NĐ 119/2025
@@ -2016,8 +2016,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               onClick={() => setCarbonScenario(2)}
                               className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
                                 carbonScenario === 2
-                                  ? 'bg-white text-[#0f172a] shadow-xs'
-                                  : 'text-[#64748b] hover:text-[#0f172a]'
+                                  ? 'bg-white text-[#101418] shadow-xs'
+                                  : 'text-[#64748b] hover:text-[#101418]'
                               }`}
                             >
                               2. Tự Nguyện FDI
@@ -2027,8 +2027,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                               onClick={() => setCarbonScenario(3)}
                               className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
                                 carbonScenario === 3
-                                  ? 'bg-[#14532d] text-[#d6f65a] shadow-xs'
-                                  : 'text-[#64748b] hover:text-[#0f172a]'
+                                  ? 'bg-[#101418] text-[#d6f65a] shadow-xs'
+                                  : 'text-[#64748b] hover:text-[#101418]'
                               }`}
                             >
                               3. Chuẩn EU CBAM
@@ -2041,10 +2041,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           {/* Box 1: Hard Cash Fuel Savings */}
                           <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] space-y-2">
                             <div className="text-xs font-bold text-[#166534] uppercase flex items-center gap-1.5">
-                              <CheckCircle2 className="w-4 h-4 text-[#16a34a]" />
+                              <CheckCircle2 className="w-4 h-4 text-[#0B7A3B]" />
                               <span>1. Dòng Tiền Tiết Kiệm Nhiên Liệu Thật (Hard Cash)</span>
                             </div>
-                            <div className="text-2xl font-black text-[#14532d]">
+                            <div className="text-2xl font-black text-[#101418]">
                               {dailyFuelSaved.toLocaleString('vi-VN')} đ <span className="text-xs font-normal text-[#166534]">/ ngày</span>
                             </div>
                             <div className="text-xs font-bold text-[#15803d]">
@@ -2057,8 +2057,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
                           {/* Box 2: Potential Carbon Credit / Penalty Avoidance */}
                           <div className="p-4 rounded-xl bg-[#eff6ff] border border-[#bfdbfe] space-y-2">
-                            <div className="text-xs font-bold text-[#1e40af] uppercase flex items-center gap-1.5">
-                              <Leaf className="w-4 h-4 text-[#2563eb]" />
+                            <div className="text-xs font-bold text-[#1B45D7] uppercase flex items-center gap-1.5">
+                              <IsoLedgerIcon className="w-4 h-4 text-[#1B45D7]" />
                               <span>
                                 2. Giá Trị Tín Chỉ / Tránh Thuế Carbon (
                                 {carbonScenario === 1
@@ -2086,14 +2086,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         </div>
 
                         {/* Regulatory Citation Strip */}
-                        <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#475569] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0] text-xs text-[#5B5F66] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <Info className="w-4 h-4 text-[#0284c7] shrink-0" />
                             <span>
                               <strong>Cơ sở pháp lý:</strong> Quyết định 2626/QĐ-BTNMT (Hệ số phát thải giao thông) &amp; Quyết định 42/2026/QĐ-TTg (Đề án giảm phát thải GTVT).
                             </span>
                           </div>
-                          <span className="px-2 py-0.5 rounded font-bold text-[11px] bg-[#f1f5f9] text-[#0f172a] shrink-0">
+                          <span className="px-2 py-0.5 rounded font-bold text-[11px] bg-[#f1f5f9] text-[#101418] shrink-0">
                             Hỗ trợ 1.916 cơ sở kiểm kê Scope 3
                           </span>
                         </div>
@@ -2103,24 +2103,24 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       <div className="p-4 rounded-xl bg-white border border-[#e2e8f0] grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                         <div className="space-y-0.5">
                           <div className="text-[#64748b]">Tài khoản thụ hưởng B2B:</div>
-                          <div className="font-bold text-[#0f172a]">{activePolicy.invoice_bank_name}</div>
-                          <div className="font-mono text-[11px] text-[#475569]">{activePolicy.invoice_account_masked}</div>
+                          <div className="font-bold text-[#101418]">{activePolicy.invoice_bank_name}</div>
+                          <div className="font-mono text-[11px] text-[#5B5F66]">{activePolicy.invoice_account_masked}</div>
                         </div>
                         <div className="space-y-0.5">
                           <div className="text-[#64748b]">Mã số thuế &amp; E-Invoice:</div>
-                          <div className="font-bold text-[#0f172a]">MST {activePolicy.tax_code_mst}</div>
-                          <div className="text-[11px] text-[#16a34a] font-semibold">Hóa đơn điện tử VAT tự động</div>
+                          <div className="font-bold text-[#101418]">MST {activePolicy.tax_code_mst}</div>
+                          <div className="text-[11px] text-[#0B7A3B] font-semibold">Hóa đơn điện tử VAT tự động</div>
                         </div>
                         <div className="space-y-0.5">
                           <div className="text-[#64748b]">Tiêu chuẩn Scope 3:</div>
-                          <div className="font-bold text-[#0f172a] truncate">{activePolicy.scope3_shipper_standard}</div>
+                          <div className="font-bold text-[#101418] truncate">{activePolicy.scope3_shipper_standard}</div>
                           <div className="text-[11px] text-[#64748b]">
                             SLA Thùng lạnh: {activePolicy.cold_chain_temp_sla_c !== null ? `${activePolicy.cold_chain_temp_sla_c}°C` : 'N/A'}
                           </div>
                         </div>
                         <div className="space-y-0.5">
                           <div className="text-[#64748b]">Chính sách cách ly:</div>
-                          <div className="font-bold text-[#0f172a]">{activePolicy.tier_badge}</div>
+                          <div className="font-bold text-[#101418]">{activePolicy.tier_badge}</div>
                           <div className="font-mono text-[11px] text-[#0284c7] truncate">{activeCompany.key_fingerprint}</div>
                         </div>
                       </div>
@@ -2472,8 +2472,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <UploadCloud className="w-3.5 h-3.5" />
                         <span>Tải File .XLSX Lên</span>
                       </button>
-                      <span className="px-3 py-2 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] text-xs font-semibold text-[#14532d] flex items-center gap-1.5">
-                        <ShieldCheck className="w-3.5 h-3.5 text-[#16a34a]" />
+                      <span className="px-3 py-2 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] text-xs font-semibold text-[#101418] flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#0B7A3B]" />
                         <span>Chính sách NĐ 13: {activePolicy.tier_badge}</span>
                       </span>
                     </div>
@@ -2622,7 +2622,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                       </button>
                                     )}
                                     {activeCompany.tenant_id === 'TNT-WINMART-003' && (
-                                      <span className="px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-[#f1f5f9] text-[#475569]">
+                                      <span className="px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-[#f1f5f9] text-[#5B5F66]">
                                         RAM Ephemeral NĐ 13
                                       </span>
                                     )}
@@ -2656,13 +2656,13 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <div className="pt-3 border-t border-[#e5e7eb] space-y-2">
                       <div className="flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4 text-[#d97706]" />
-                        <h3 className="text-xs font-bold text-[#0f172a]">
+                        <h3 className="text-xs font-bold text-[#101418]">
                           Nhật Ký Mở Khóa DPO (Audit Trail theo NĐ 13/2023 Điều 17)
                         </h3>
                       </div>
                       <div className="overflow-x-auto border border-[#e2e8f0] rounded-lg">
                         <table className="w-full border-collapse text-[11px] font-mono">
-                          <thead className="bg-[#f8fafc] text-[#64748b]">
+                          <thead className="bg-[#F6F1E7] text-[#64748b]">
                             <tr>
                               <th className="py-1.5 px-2.5 text-left">Thời gian</th>
                               <th className="py-1.5 px-2.5 text-left">Người thao tác</th>
@@ -2674,10 +2674,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           <tbody className="divide-y divide-[#f1f5f9]">
                             {dpoAuditLogs.slice(0, 5).map((log, lIdx) => (
                               <tr key={lIdx}>
-                                <td className="py-1.5 px-2.5 text-[#0f172a]">{log.timestamp}</td>
+                                <td className="py-1.5 px-2.5 text-[#101418]">{log.timestamp}</td>
                                 <td className="py-1.5 px-2.5 text-[#0284c7] font-semibold">{log.operator}</td>
                                 <td className="py-1.5 px-2.5 font-bold text-[#15803d]">{log.external_id}</td>
-                                <td className="py-1.5 px-2.5 text-[#475569]">{log.reason}</td>
+                                <td className="py-1.5 px-2.5 text-[#5B5F66]">{log.reason}</td>
                                 <td className="py-1.5 px-2.5 text-[#b45309]">Tự động che lại sau 60 giây</td>
                               </tr>
                             ))}
@@ -2857,8 +2857,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#e5e7eb] pb-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5 text-[#16a34a]" />
-                        <h2 className="text-base font-bold text-[#0f172a]">
+                        <ShieldCheck className="w-5 h-5 text-[#0B7A3B]" />
+                        <h2 className="text-base font-bold text-[#101418]">
                           Hồ Sơ Chính Sách Bảo Mật Doanh Nghiệp ({activeCompany.short_name})
                         </h2>
                       </div>
@@ -2870,9 +2870,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-1">
-                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                    <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0]">
                       <div className="text-[#64748b]">Cơ chế che SĐT:</div>
-                      <div className="font-bold text-[#0f172a] mt-0.5">
+                      <div className="font-bold text-[#101418] mt-0.5">
                         {activePolicy.mask_phone_by_default ? 'Che 090****327 mặc định' : 'Mở hotline nội bộ cho điều phối'}
                       </div>
                       <div className="text-[10.5px] text-[#64748b] mt-1">
@@ -2880,9 +2880,9 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                    <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0]">
                       <div className="text-[#64748b]">Mã hóa RAM &amp; Dữ liệu:</div>
-                      <div className="font-bold text-[#0f172a] mt-0.5">
+                      <div className="font-bold text-[#101418] mt-0.5">
                         {activePolicy.ephemeral_ram_only ? 'RAM Ephemeral (Tự hủy khi đăng xuất)' : 'BYOK AES-256-GCM Persistent'}
                       </div>
                       <div className="text-[10.5px] text-[#64748b] mt-1">
@@ -2890,17 +2890,17 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                    <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0]">
                       <div className="text-[#64748b]">Tiêu chuẩn Báo cáo Scope 3:</div>
-                      <div className="font-bold text-[#0f172a] mt-0.5 truncate">{activePolicy.scope3_shipper_standard}</div>
+                      <div className="font-bold text-[#101418] mt-0.5 truncate">{activePolicy.scope3_shipper_standard}</div>
                       <div className="text-[10.5px] text-[#64748b] mt-1">
                         {activePolicy.strip_address_on_export ? 'Lọc số nhà/tên đường khi xuất file' : 'Giữ nguyên tọa độ địa chỉ'}
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+                    <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0]">
                       <div className="text-[#64748b]">Tài khoản ngân hàng &amp; MST:</div>
-                      <div className="font-bold text-[#0f172a] mt-0.5">{activePolicy.invoice_bank_name}</div>
+                      <div className="font-bold text-[#101418] mt-0.5">{activePolicy.invoice_bank_name}</div>
                       <div className="text-[10.5px] font-mono text-[#0284c7] mt-1">
                         {activePolicy.invoice_account_masked} · MST {activePolicy.tax_code_mst}
                       </div>
@@ -2961,7 +2961,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     </div>
                     <div className="overflow-x-auto border border-[#e2e8f0] rounded-lg">
                       <table className="w-full border-collapse text-xs font-mono">
-                        <thead className="bg-[#f8fafc] text-[#64748b]">
+                        <thead className="bg-[#F6F1E7] text-[#64748b]">
                           <tr>
                             <th className="py-2 px-3 text-left">Thời gian</th>
                             <th className="py-2 px-3 text-left">Tài khoản thao tác</th>
@@ -2973,10 +2973,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <tbody className="divide-y divide-[#f1f5f9]">
                           {dpoAuditLogs.map((log, lIdx) => (
                             <tr key={lIdx}>
-                              <td className="py-2 px-3 text-[#0f172a]">{log.timestamp}</td>
+                              <td className="py-2 px-3 text-[#101418]">{log.timestamp}</td>
                               <td className="py-2 px-3 text-[#0284c7] font-semibold">{log.operator}</td>
                               <td className="py-2 px-3 font-bold text-[#15803d]">{log.external_id}</td>
-                              <td className="py-2 px-3 text-[#475569]">{log.reason}</td>
+                              <td className="py-2 px-3 text-[#5B5F66]">{log.reason}</td>
                               <td className="py-2 px-3 text-[#b45309]">Tự động che sau 60s</td>
                             </tr>
                           ))}
@@ -3178,7 +3178,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 sm:p-5 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#14532d] text-[#d6f65a] flex items-center justify-center font-bold">
+                      <div className="w-10 h-10 rounded-xl bg-[#101418] text-[#d6f65a] flex items-center justify-center font-bold">
                         <Truck className="w-5 h-5" />
                       </div>
                       <div>
@@ -3192,8 +3192,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2.5 text-xs">
-                      <span className="px-2.5 py-1.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[#14532d] font-bold flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a]" />
+                      <span className="px-2.5 py-1.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] text-[#101418] font-bold flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#0B7A3B]" />
                         <span>Khóa cứng 1 xe duy nhất ({assignedPlate})</span>
                       </span>
                       <span className="px-2.5 py-1.5 rounded-lg bg-[#f3f4f6] border border-[#e5e7eb] font-mono font-bold text-[#111827] flex items-center gap-1">
@@ -3204,10 +3204,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   </div>
 
                   {/* Personal Driver Preferences (FB-04: Thiết lập lộ trình cá nhân) */}
-                  <div className="p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] space-y-2 text-xs">
+                  <div className="p-3.5 rounded-xl bg-[#F6F1E7] border border-[#e2e8f0] space-y-2 text-xs">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#0f172a] flex items-center gap-1.5">
-                        <Sliders className="w-3.5 h-3.5 text-[#16a34a]" />
+                      <span className="font-bold text-[#101418] flex items-center gap-1.5">
+                        <Sliders className="w-3.5 h-3.5 text-[#0B7A3B]" />
                         <span>Thiết Lập Lộ Trình Cá Nhân (Tài Xế {driverName})</span>
                       </span>
                       <span className="text-[11px] text-[#64748b]">Tùy chọn ghi nhớ theo xe</span>
@@ -3218,27 +3218,27 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                           type="checkbox"
                           checked={avoidNarrowAlleys}
                           onChange={(e) => setAvoidNarrowAlleys(e.target.checked)}
-                          className="w-4 h-4 accent-[#14532d]"
+                          className="w-4 h-4 accent-[#101418]"
                         />
-                        <span className="font-medium text-[#0f172a]">Ưu tiên né hẻm nhỏ &lt; 3.5m</span>
+                        <span className="font-medium text-[#101418]">Ưu tiên né hẻm nhỏ &lt; 3.5m</span>
                       </label>
                       <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#e2e8f0] cursor-pointer hover:bg-slate-50">
                         <input
                           type="checkbox"
                           checked={autoRestAlert}
                           onChange={(e) => setAutoRestAlert(e.target.checked)}
-                          className="w-4 h-4 accent-[#14532d]"
+                          className="w-4 h-4 accent-[#101418]"
                         />
-                        <span className="font-medium text-[#0f172a]">Nhắc nghỉ sau 3h45 lái xe</span>
+                        <span className="font-medium text-[#101418]">Nhắc nghỉ sau 3h45 lái xe</span>
                       </label>
                       <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#e2e8f0] cursor-pointer hover:bg-slate-50">
                         <input
                           type="checkbox"
                           checked={vietnameseVoiceNav}
                           onChange={(e) => setVietnameseVoiceNav(e.target.checked)}
-                          className="w-4 h-4 accent-[#14532d]"
+                          className="w-4 h-4 accent-[#101418]"
                         />
-                        <span className="font-medium text-[#0f172a]">Giọng nói Tiếng Việt</span>
+                        <span className="font-medium text-[#101418]">Giọng nói Tiếng Việt</span>
                       </label>
                     </div>
                   </div>
@@ -3250,7 +3250,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       onClick={() => setDriverMileTier('middle_mile_truck')}
                       className={`text-left p-2.5 sm:p-3.5 rounded-xl border transition-all cursor-pointer ${
                         driverMileTier === 'middle_mile_truck'
-                          ? 'bg-[#14532d] text-white border-[#14532d] shadow-sm'
+                          ? 'bg-[#101418] text-white border-[#101418] shadow-sm'
                           : 'bg-[#f9fafb] text-[#111827] border-[#d1d5db] hover:bg-white'
                       }`}
                     >
@@ -3262,7 +3262,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             driverMileTier === 'middle_mile_truck'
-                              ? 'bg-[#d6f65a] text-[#14532d]'
+                              ? 'bg-[#d6f65a] text-[#101418]'
                               : 'bg-[#e5e7eb] text-[#374151]'
                           }`}
                         >
@@ -3318,8 +3318,8 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                   <div className="bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3">
                     <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-2.5">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-[#16a34a]" />
-                        <h2 className="text-sm font-bold text-[#0f172a]">
+                        <Clock className="w-4 h-4 text-[#0B7A3B]" />
+                        <h2 className="text-sm font-bold text-[#101418]">
                           1. Đồng Hồ Tuân Thủ Giờ Lái Xe (Luật TTATGT 2024)
                         </h2>
                       </div>
@@ -3338,11 +3338,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       const drvPct = Number(((drvMins / 240) * 100).toFixed(1));
                       const remainMins = Math.max(0, 240 - drvMins);
                       return (
-                        <div className="p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] space-y-2">
+                        <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#e2e8f0] space-y-2">
                           <div className="flex items-baseline justify-between">
                             <span className="text-xs text-[#64748b]">Thời gian lái &amp; giao hàng tuyến này:</span>
                             <div className="text-right">
-                              <span className="text-xl font-black text-[#0f172a]">{drvMins}</span>
+                              <span className="text-xl font-black text-[#101418]">{drvMins}</span>
                               <span className="text-xs text-[#64748b]">
                                 {' '}
                                 / 240 phút ({drvH}h{String(drvRemM).padStart(2, '0')} / 4h00)
@@ -3352,24 +3352,24 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
 
                           <div className="w-full h-3 rounded-full bg-[#e2e8f0] overflow-hidden">
                             <div
-                              className="h-full bg-[#16a34a] transition-all"
+                              className="h-full bg-[#0B7A3B] transition-all"
                               style={{ width: `${drvPct}%` }}
                             />
                           </div>
 
                           <div className="flex items-center justify-between text-[11px] font-semibold">
-                            <span className="text-[#16a34a]">Đã sử dụng {drvPct}% hạn mức lái liên tục</span>
+                            <span className="text-[#0B7A3B]">Đã sử dụng {drvPct}% hạn mức lái liên tục</span>
                             <span className="text-[#d97706]">Còn {remainMins} phút trước mốc nghỉ 20p bắt buộc</span>
                           </div>
                         </div>
                       );
                     })()}
 
-                    <div className="text-[11px] text-[#475569] leading-relaxed space-y-1">
+                    <div className="text-[11px] text-[#5B5F66] leading-relaxed space-y-1">
                       <p>
                         <strong>Luật TTATGT 2024 (Điều 56 khoản 1):</strong> Người lái ô tô kinh doanh vận tải không được lái xe liên tục quá 4 giờ. Bắt buộc nghỉ tối thiểu 15-20 phút trước khi tiếp tục.
                       </p>
-                      <div className="p-2 rounded bg-[#f0fdf4] border border-[#bbf7d0] text-[#14532d] font-semibold text-[10.5px]">
+                      <div className="p-2 rounded bg-[#f0fdf4] border border-[#bbf7d0] text-[#101418] font-semibold text-[10.5px]">
                         Trạm dừng nghỉ đề xuất: Trạm xăng Petrolimex Q.10 hoặc Bãi đỗ Tân Bình (Cách điểm dừng kế tiếp 1.8 km).
                       </div>
                     </div>
@@ -3380,11 +3380,11 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-2.5">
                       <div className="flex items-center gap-2">
                         <Gauge className="w-4 h-4 text-[#0284c7]" />
-                        <h2 className="text-sm font-bold text-[#0f172a]">
+                        <h2 className="text-sm font-bold text-[#101418]">
                           2. Biến Động Khối Lượng Hàng Trên Xe (kg Step Chart)
                         </h2>
                       </div>
-                      <span className="text-xs font-mono font-bold text-[#0f172a]">
+                      <span className="text-xs font-mono font-bold text-[#101418]">
                         Tải xuất bến: {driverRoute?.kg_delivered} kg
                       </span>
                     </div>
@@ -3436,7 +3436,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 type: 'line',
                                 step: 'end',
                                 data: cargoVals,
-                                itemStyle: { color: '#14532d' },
+                                itemStyle: { color: '#101418' },
                                 lineStyle: { width: 3 },
                                 areaStyle: { color: 'rgba(20, 83, 45, 0.1)' },
                               },
@@ -3458,7 +3458,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                         <div
                           className={`p-3.5 rounded-xl border text-white space-y-2 ${
                             driverMileTier === 'middle_mile_truck'
-                              ? 'bg-[#14532d] border-[#0f3f22]'
+                              ? 'bg-[#101418] border-[#1B45D7]'
                               : 'bg-[#1f3a5f] border-[#162a45]'
                           }`}
                         >
@@ -3471,14 +3471,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                             <div className="flex flex-wrap items-center gap-1.5">
                               <a
                                 href={`/maps?vehicle=${currentDriverRouteIdx}&mode=overview`}
-                                className="px-2.5 py-1 rounded-md bg-white text-[#14532d] hover:bg-emerald-50 text-[11px] font-extrabold flex items-center gap-1"
+                                className="px-2.5 py-1 rounded-md bg-white text-[#101418] hover:bg-emerald-50 text-[11px] font-extrabold flex items-center gap-1"
                               >
                                 <MapPin className="w-3 h-3" />
                                 <span>Mở Bản Đồ Vùng Cấm</span>
                               </a>
                               <a
                                 href={`/maps?vehicle=${currentDriverRouteIdx}&mode=navigate`}
-                                className="px-2.5 py-1 rounded-md bg-[#d6f65a] hover:bg-[#c5e847] text-[#14532d] text-[11px] font-extrabold flex items-center gap-1"
+                                className="px-2.5 py-1 rounded-md bg-[#d6f65a] hover:bg-[#c5e847] text-[#101418] text-[11px] font-extrabold flex items-center gap-1"
                               >
                                 <Play className="w-3 h-3 fill-current" />
                                 <span>Bắt Đầu Dẫn Đường</span>
@@ -3526,7 +3526,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                       )}
 
                       {voiceNavNotice && (
-                        <div className="p-2.5 rounded-lg bg-[#eef7ee] border border-[#b9dfbf] text-xs text-[#14532d] font-semibold">
+                        <div className="p-2.5 rounded-lg bg-[#eef7ee] border border-[#b9dfbf] text-xs text-[#101418] font-semibold">
                           {voiceNavNotice}
                         </div>
                       )}
@@ -3606,14 +3606,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <div className="p-2.5 rounded-xl bg-[#f8f5ec] border border-[#e5dec9] space-y-1.5 text-[11px]">
                       <div className="flex items-center justify-between gap-2 font-bold text-[#111827]">
                         <span>Khung giờ lưu thông xe tải nội đô TP.HCM (QĐ 23/2018):</span>
-                        <span className="text-[#14532d]">0 vi phạm giờ cấm</span>
+                        <span className="text-[#101418]">0 vi phạm giờ cấm</span>
                       </div>
                       <div className="grid grid-cols-3 rounded-lg overflow-hidden border border-[#d8cfbd] text-[10px] font-bold text-center">
                         <div className="bg-[#ffedea] text-[#c92a2a] py-1 px-1 border-r border-[#d8cfbd]">
                           06:00 - 09:00 · Cấm sáng
                           <div className="font-normal text-[9.5px]">Giao vành đai ngoài</div>
                         </div>
-                        <div className="bg-[#dcfae5] text-[#14532d] py-1 px-1 border-r border-[#d8cfbd]">
+                        <div className="bg-[#dcfae5] text-[#101418] py-1 px-1 border-r border-[#d8cfbd]">
                           09:00 - 16:00 · Mở nội đô
                           <div className="font-normal text-[9.5px]">Giao Q.1, 3, 5, Phú Nhuận</div>
                         </div>
@@ -3675,7 +3675,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                     </span>
                                   </div>
                                   {stop.schedule_note && (
-                                    <div className="text-[10.5px] font-semibold text-[#14532d]">
+                                    <div className="text-[10.5px] font-semibold text-[#101418]">
                                       {stop.schedule_note}
                                     </div>
                                   )}
@@ -3707,14 +3707,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                 <>
                                   <a
                                     href={`/maps?vehicle=${currentDriverRouteIdx}&mode=navigate`}
-                                    className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#14532d] hover:bg-[#0f3f22] text-white font-bold text-center flex items-center justify-center gap-1.5"
+                                    className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#101418] hover:bg-[#1B45D7] text-white font-bold text-center flex items-center justify-center gap-1.5"
                                   >
                                     <Play className="w-3.5 h-3.5 text-[#d6f65a] fill-current" />
                                     <span>Bắt đầu Lái Xe Tải</span>
                                   </a>
                                   <a
                                     href={`/maps?vehicle=${currentDriverRouteIdx}&mode=overview`}
-                                    className="py-1.5 px-2.5 rounded-lg border border-[#14532d] bg-[#eef7ee] hover:bg-[#dcfae5] text-[#14532d] font-bold flex items-center gap-1"
+                                    className="py-1.5 px-2.5 rounded-lg border border-[#101418] bg-[#eef7ee] hover:bg-[#dcfae5] text-[#101418] font-bold flex items-center gap-1"
                                   >
                                     <MapPin className="w-3.5 h-3.5" />
                                     <span>Vùng cấm QĐ 23</span>
@@ -3946,7 +3946,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                 disabled={cryptoTestState.running}
                 className="p-3.5 rounded-lg border border-[#bbf7d0] bg-[#f0fdf4] hover:bg-[#dcfce7] text-left cursor-pointer transition-colors"
               >
-                <div className="font-bold text-xs text-[#14532d] flex items-center gap-1.5 mb-1">
+                <div className="font-bold text-xs text-[#101418] flex items-center gap-1.5 mb-1">
                   <span>Bước 1. Mã Hóa Bằng Khóa Nam Việt</span>
                 </div>
                 <p className="text-[11px] text-[#166534]">

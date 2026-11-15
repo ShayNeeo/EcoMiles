@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" fill="none" role="img" aria-label="Waybill to ISO 14083 carbon ledger pipeline">
+  <rect width="920" height="220" fill="#FBF8F1" stroke="#D8D2C4" stroke-width="1"/>
+  <!-- Step 1: Paper waybill (chamfered) -->
+  <path d="M32 36H226L250 60V184H32V36Z" fill="#FFFFFF" stroke="#BDB5A3" stroke-width="1.5"/>
+  <path d="M226 36V60H250" stroke="#BDB5A3" stroke-width="1.5"/>
+  <text x="50" y="64" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#5B5F66">01 · PHIẾU XUẤT / EXCEL</text>
+  <path d="M50 86H210M50 106H190M50 126H170" stroke="#D8D2C4" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="50" y="160" font-family="'JetBrains Mono', monospace" font-size="11" fill="#5B5F66">51C-123.45 · 120 ĐƠN</text>
+
+  <!-- Connector 1 -> 2 -->
+  <path d="M262 110H314" stroke="#101418" stroke-width="2.5"/>
+  <circle cx="314" cy="110" r="4" fill="#1B45D7"/>
+
+  <!-- Step 2: Solver + Backhaul -->
+  <rect x="326" y="36" width="240" height="148" fill="#101418"/>
+  <text x="346" y="64" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#C9C3B6">02 · SOLVER + GHÉP CHIỀU VỀ</text>
+  <path d="M346 106H426" stroke="#5B5F66" stroke-width="3" stroke-dasharray="6 5"/>
+  <path d="M426 106H542" stroke="#1B45D7" stroke-width="4"/>
+  <circle cx="426" cy="106" r="5" fill="#0B7A3B"/>
+  <rect x="536" y="100" width="12" height="12" fill="#0B7A3B"/>
+  <text x="346" y="156" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#F6F1E7">−34,9% KM · 0 VI PHẠM QĐ23</text>
+
+  <!-- Connector 2 -> 3 -->
+  <path d="M578 110H630" stroke="#0B7A3B" stroke-width="2.5"/>
+  <circle cx="630" cy="110" r="4" fill="#0B7A3B"/>
+
+  <!-- Step 3: ISO 14083 / GLEC v3.2 Ledger -->
+  <path d="M642 36H864L888 60V184H642V36Z" fill="#EAF5EE" stroke="#0B7A3B" stroke-width="2"/>
+  <path d="M864 36V60H888" stroke="#0B7A3B" stroke-width="1.5"/>
+  <text x="662" y="64" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#0B7A3B">03 · SỔ PHÁT THẢI KIỂM TOÁN</text>
+  <text x="662" y="108" font-family="'Archivo', 'IBM Plex Sans', 'DejaVu Sans', sans-serif" font-size="26" font-weight="800" fill="#101418">56,66 kg CO₂e</text>
+  <text x="662" y="134" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#2A2F36">ISO 14083 · GLEC v3.2 · TTW/WTW</text>
+  <rect x="662" y="150" width="14" height="14" fill="#0B7A3B"/>
+  <text x="684" y="161" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#0B7A3B">ECM-SHA256 VERIFIED</text>
+</svg>

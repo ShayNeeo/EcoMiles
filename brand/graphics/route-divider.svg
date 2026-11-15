@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 28" fill="none" role="img" aria-label="EcoMiles route divider">
+  <path d="M0 14 H440" stroke="#BDB5A3" stroke-width="2" stroke-dasharray="8 8"/>
+  <path d="M440 14 H948" stroke="#101418" stroke-width="2"/>
+  <circle cx="440" cy="14" r="4.5" fill="#1B45D7"/>
+  <rect x="948" y="9" width="10" height="10" fill="#101418"/>
+</svg>
