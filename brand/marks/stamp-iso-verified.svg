@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 72" fill="none" role="img" aria-label="EcoMiles ISO 14083 verified stamp">
+  <rect x="1.5" y="1.5" width="277" height="69" fill="#EAF5EE" stroke="#0B7A3B" stroke-width="3"/>
+  <rect x="14" y="14" width="44" height="44" fill="#0B7A3B"/>
+  <path d="M22 49 V23 L36 39 L50 23 V49 H22" stroke="#F6F1E7" stroke-width="4.5" stroke-linecap="square" stroke-linejoin="miter"/>
+  <text x="72" y="31" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="700" letter-spacing="1.6" fill="#0B7A3B">VERIFIED · ISO 14083</text>
+  <text x="72" y="51" font-family="'Archivo', sans-serif" font-size="18" font-weight="800" letter-spacing="-0.4" fill="#101418">GLEC v3.2 AUDITED</text>
+</svg>

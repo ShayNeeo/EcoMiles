@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import {
   ArrowRight,
   ArrowUpRight,
-  CheckCircle2,
   FileSpreadsheet,
   SplitSquareVertical,
 } from 'lucide-react';
+import { BackhaulMatchIcon, IsoLedgerIcon, Qd23WindowIcon } from './EcoMilesMark';
 
 interface HeroProps {
   onOpenPilotModal: () => void;
@@ -43,24 +43,40 @@ export const Hero: React.FC<HeroProps> = () => {
   const currentTab = HERO_TABS.find((t) => t.id === activeTab) || HERO_TABS[0];
 
   return (
-    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4F8F5] via-[#F8FAFC] to-white border-b border-slate-200/80 overflow-hidden">
+    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-[#F6F1E7] border-b border-[#D8D2C4] overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Column: Concise Editorial Headline + 1-sentence summary + 2 CTAs */}
+          {/* Left Column: Return-Line Thesis + Verified Proof + CTAs */}
           <div className="lg:col-span-5 space-y-6 text-left">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-[1.12]">
-              Điều phối lộ trình xe tải thông minh, giảm{' '}
-              <span className="text-[#14532D]">34,9% quãng đường</span>
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-[#101418] tracking-[-0.04em] leading-[1.02]">
+              Đường về không trống<span className="text-[#1B45D7]">.</span>{' '}
+              <span className="block mt-2 text-2xl sm:text-3xl font-extrabold text-[#2A2F36] tracking-[-0.025em] leading-[1.14]">
+                Giảm <span className="text-[#0B7A3B]">34,9%</span> quãng đường chạy rỗng TP.HCM
+              </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-[#475569] leading-relaxed max-w-xl">
-              Tải lên bảng tính Excel đơn hàng để tự động chia tuyến né giờ cấm tải TP.HCM, ghép hàng chiều về và xuất báo cáo CO₂.
+            <p className="text-base sm:text-[17px] text-[#2A2F36] leading-relaxed max-w-xl">
+              Nạp bảng Excel đơn hàng để ghép tuyến chiều về, né khung giờ cấm tải QĐ 23/2018 và xuất sổ kiểm toán phát thải CO₂e chuẩn ISO 14083.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            {/* Return-line visual signature */}
+            <div className="border border-[#D8D2C4] bg-[#FBF8F1] p-3">
+              <svg viewBox="0 0 460 44" fill="none" className="w-full h-11" role="img" aria-label="Tuyến đứt rỗng chuyển thành tuyến liền ghép hàng về">
+                <path d="M10 28 H196" stroke="#5B5F66" strokeWidth="2.5" strokeDasharray="7 6" />
+                <path d="M196 28 H442" stroke="#1B45D7" strokeWidth="3.5" />
+                <circle cx="10" cy="28" r="4.5" fill="#101418" />
+                <circle cx="196" cy="28" r="5" fill="#0B7A3B" />
+                <rect x="436" y="22" width="12" height="12" fill="#0B7A3B" />
+                <text x="10" y="13" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#5B5F66">RỖNG 32,8%</text>
+                <text x="196" y="13" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#0B7A3B">GHÉP CHIỀU VỀ</text>
+                <text x="448" y="13" textAnchor="end" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#101418">CÒN 2,7%</text>
+              </svg>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
               <a
                 href="/dashboard/"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#14532D] hover:bg-[#0F3F22] text-white font-bold text-sm shadow-md shadow-emerald-950/20 transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-[4px] bg-[#101418] hover:bg-[#1B45D7] text-[#F6F1E7] font-bold text-sm shadow-sm transition-colors cursor-pointer"
               >
                 <FileSpreadsheet className="w-4 h-4" />
                 <span>Vào Hệ Thống Điều Phối</span>
@@ -69,53 +85,51 @@ export const Hero: React.FC<HeroProps> = () => {
 
               <a
                 href="/benchmark/"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-[#0F172A] border border-slate-300 font-bold text-sm shadow-sm transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-[4px] bg-[#FFFFFF] hover:bg-[#ECE5D7] text-[#101418] border border-[#BDB5A3] font-bold text-sm transition-colors cursor-pointer"
               >
-                <SplitSquareVertical className="w-4 h-4 text-[#14532D]" />
+                <SplitSquareVertical className="w-4 h-4 text-[#1B45D7]" />
                 <span>Xem Đối Chứng 2 Bản Đồ</span>
               </a>
             </div>
 
             {/* Quick Proof Badges */}
-            <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center gap-4 text-xs text-[#475569]">
+            <div className="pt-4 border-t border-[#D8D2C4] flex flex-wrap items-center gap-4 text-xs text-[#2A2F36]">
               <span className="flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
-                Nghị định 13/2023 bảo mật
+                <Qd23WindowIcon className="w-4 h-4 text-[#A64B08]" />
+                28 → 0 vi phạm QĐ 23/2018
               </span>
               <span className="flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                <IsoLedgerIcon className="w-4 h-4 text-[#0B7A3B]" />
                 ISO 14083 / GLEC v3.2
               </span>
               <span className="flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                <BackhaulMatchIcon className="w-4 h-4 text-[#1B45D7]" />
                 $0 phí bản đồ dẫn đường
               </span>
             </div>
           </div>
 
-          {/* Right Column: Visual Browser Mockup with Interactive Tabs */}
+          {/* Right Column: Visual Browser Frame with Interactive Tabs */}
           <div className="lg:col-span-7">
-            <div className="rounded-2xl border border-slate-200/90 bg-white shadow-[0_20px_50px_-15px_rgba(15,23,42,0.12)] overflow-hidden">
-              {/* Browser Chrome Header */}
-              <div className="flex items-center justify-between px-4 py-2.5 bg-slate-100/90 border-b border-slate-200">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+            <div className="rounded-[4px] border border-[#BDB5A3] bg-[#FBF8F1] shadow-[0_18px_40px_-15px_rgba(16,20,24,0.16)] overflow-hidden">
+              {/* Ledger Frame Header */}
+              <div className="flex items-center justify-between px-4 py-2.5 bg-[#101418] border-b border-[#101418] text-[#F6F1E7]">
+                <div className="flex items-center gap-2 font-mono text-[11px] tracking-wider uppercase text-[#C9C3B6]">
+                  <span className="inline-block w-2.5 h-2.5 bg-[#0B7A3B]" />
+                  <span>51C · TP.HCM</span>
                 </div>
 
-                <div className="px-3 py-1 rounded-md bg-white border border-slate-200/80 text-xs font-mono text-slate-600 flex items-center gap-1.5 max-w-[240px] truncate">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                <div className="px-3 py-1 bg-[#1B2128] border border-[#2A323D] text-xs font-mono text-[#F6F1E7] flex items-center gap-1.5 max-w-[240px] truncate">
                   <span className="truncate">ecomiles.vn{currentTab.href}</span>
                 </div>
 
-                <div className="text-xs font-semibold text-[#14532D]">
+                <div className="font-mono text-xs font-bold text-[#F6F1E7]">
                   {currentTab.tag}
                 </div>
               </div>
 
               {/* View Selector Tabs */}
-              <div className="flex items-center border-b border-slate-200 bg-slate-50 px-2 pt-2 gap-1 overflow-x-auto">
+              <div className="flex items-center border-b border-[#D8D2C4] bg-[#ECE5D7] px-2 pt-2 gap-1 overflow-x-auto">
                 {HERO_TABS.map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
@@ -123,10 +137,10 @@ export const Hero: React.FC<HeroProps> = () => {
                       key={tab.id}
                       type="button"
                       onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                      className={`px-3.5 py-1.5 rounded-t-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer border-t border-x ${
+                      className={`px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer border-t border-x ${
                         isActive
-                          ? 'bg-white text-[#0F172A] border-slate-200 -mb-px font-bold shadow-sm'
-                          : 'bg-transparent text-slate-500 border-transparent hover:text-slate-800'
+                          ? 'bg-[#FFFFFF] text-[#101418] border-[#BDB5A3] -mb-px font-bold'
+                          : 'bg-transparent text-[#5B5F66] border-transparent hover:text-[#101418]'
                       }`}
                     >
                       {tab.label}
@@ -147,10 +161,10 @@ export const Hero: React.FC<HeroProps> = () => {
                 />
                 <a
                   href={currentTab.href}
-                  className="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-white/95 hover:bg-white text-[#0F172A] text-xs font-bold shadow-md border border-slate-200 flex items-center gap-1.5 backdrop-blur-sm transition-all"
+                  className="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-white/95 hover:bg-white text-[#101418] text-xs font-bold shadow-md border border-slate-200 flex items-center gap-1.5 backdrop-blur-sm transition-all"
                 >
                   <span>Mở không gian làm việc</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#14532D]" />
+                  <ArrowUpRight className="w-3.5 h-3.5 text-[#101418]" />
                 </a>
               </div>
             </div>
@@ -160,35 +174,35 @@ export const Hero: React.FC<HeroProps> = () => {
         {/* Bottom 4 Locked Metric Facts Strip */}
         <div className="mt-14 pt-8 border-t border-slate-200 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-            <div className="text-xs font-semibold text-[#475569]">Quãng đường tối ưu</div>
-            <div className="text-xl sm:text-2xl font-black text-[#0F172A] mt-1 tabular-nums">
+            <div className="text-xs font-semibold text-[#5B5F66]">Quãng đường tối ưu</div>
+            <div className="text-xl sm:text-2xl font-black text-[#101418] mt-1 tabular-nums">
               374,4 <span className="text-xs text-slate-400">km</span> → 243,7 <span className="text-xs text-slate-400">km</span>
             </div>
-            <div className="text-xs text-[#16A34A] font-bold mt-0.5">Giảm 34,9% tổng km chạy</div>
+            <div className="text-xs text-[#0B7A3B] font-bold mt-0.5">Giảm 34,9% tổng km chạy</div>
           </div>
 
           <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-            <div className="text-xs font-semibold text-[#475569]">Ghép đơn chiều về (Backhaul)</div>
-            <div className="text-xl sm:text-2xl font-black text-[#0F172A] mt-1 tabular-nums">
+            <div className="text-xs font-semibold text-[#5B5F66]">Ghép đơn chiều về (Backhaul)</div>
+            <div className="text-xl sm:text-2xl font-black text-[#101418] mt-1 tabular-nums">
               32,8% → 2,7%
             </div>
-            <div className="text-xs text-[#16A34A] font-bold mt-0.5">Thu hồi 2.074,7 kg hàng (21 đơn về)</div>
+            <div className="text-xs text-[#0B7A3B] font-bold mt-0.5">Thu hồi 2.074,7 kg hàng (21 đơn về)</div>
           </div>
 
           <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-            <div className="text-xs font-semibold text-[#475569]">Vi phạm giờ cấm QĐ 23</div>
-            <div className="text-xl sm:text-2xl font-black text-[#0F172A] mt-1 tabular-nums">
+            <div className="text-xs font-semibold text-[#5B5F66]">Vi phạm giờ cấm QĐ 23</div>
+            <div className="text-xl sm:text-2xl font-black text-[#101418] mt-1 tabular-nums">
               28 → 0 vi phạm
             </div>
-            <div className="text-xs text-[#16A34A] font-bold mt-0.5">Tuân thủ khung cấm 06-09h &amp; 16-20h</div>
+            <div className="text-xs text-[#0B7A3B] font-bold mt-0.5">Tuân thủ khung cấm 06-09h &amp; 16-20h</div>
           </div>
 
           <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-            <div className="text-xs font-semibold text-[#475569]">Ước tính CO₂e (GLEC v3.2)</div>
-            <div className="text-xl sm:text-2xl font-black text-[#0F172A] mt-1 tabular-nums">
+            <div className="text-xs font-semibold text-[#5B5F66]">Ước tính CO₂e (GLEC v3.2)</div>
+            <div className="text-xl sm:text-2xl font-black text-[#101418] mt-1 tabular-nums">
               -32,2% CO₂e
             </div>
-            <div className="text-xs text-[#14532D] font-bold mt-0.5">83,57 → 56,66 kg CO₂e · Xuất Excel 3 Sheet</div>
+            <div className="text-xs text-[#101418] font-bold mt-0.5">83,57 → 56,66 kg CO₂e · Xuất Excel 3 Sheet</div>
           </div>
         </div>
       </div>

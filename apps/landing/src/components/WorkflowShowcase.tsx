@@ -67,7 +67,7 @@ export const WorkflowShowcase: React.FC = () => {
     {
       num: '01',
       title: 'Nhập bảng tính đơn hàng (.XLSX)',
-      icon: <FileSpreadsheet className="w-5 h-5 text-[#14532D]" />,
+      icon: <FileSpreadsheet className="w-5 h-5 text-[#101418]" />,
       badge: 'Đầu vào ERP / Excel',
       summary:
         'Tải lên file .XLSX / .CSV đơn hàng: hệ thống tự động nhận diện mã đơn, địa chỉ, tải trọng và cảnh báo sớm các đơn vướng giờ cấm tải QĐ 23/2018.',
@@ -85,7 +85,7 @@ export const WorkflowShowcase: React.FC = () => {
     {
       num: '02',
       title: 'Tối ưu lộ trình & Ghép đơn chiều về (< 1s)',
-      icon: <Route className="w-5 h-5 text-[#14532D]" />,
+      icon: <Route className="w-5 h-5 text-[#101418]" />,
       badge: 'Né giờ cấm & Backhaul',
       summary:
         'Thuật toán gom cụm theo quận, tự động dời lịch né vùng cấm tải QĐ 23/2018 & cầu 13T, đồng thời ghép 21 đơn thu hồi hàng chiều về kho.',
@@ -103,7 +103,7 @@ export const WorkflowShowcase: React.FC = () => {
     {
       num: '03',
       title: 'Đồng bộ App tài xế & Dẫn đường ($0 API)',
-      icon: <Navigation className="w-5 h-5 text-[#14532D]" />,
+      icon: <Navigation className="w-5 h-5 text-[#101418]" />,
       badge: 'Thực địa 2 chặng ($0 API)',
       summary:
         'Phát hành lộ trình xuống điện thoại tài xế và bản đồ dẫn đường xe tải giọng nói tiếng Việt: né đường cấm nội đô, không tốn phí Google API.',
@@ -121,7 +121,7 @@ export const WorkflowShowcase: React.FC = () => {
     {
       num: '04',
       title: 'Xuất báo cáo kiểm toán ESG 3 Sheet',
-      icon: <FileCheck2 className="w-5 h-5 text-[#14532D]" />,
+      icon: <FileCheck2 className="w-5 h-5 text-[#101418]" />,
       badge: 'Chuẩn ISO 14083 / GLEC v3.2',
       summary:
         'Ước tính phát thải CO₂e theo tải trọng thực sau từng điểm dỡ hàng (mô hình GLX-HDT-v1) và kết xuất tự động sổ cái Excel 3 Sheet hỗ trợ đối soát Scope 3.',
@@ -148,18 +148,18 @@ export const WorkflowShowcase: React.FC = () => {
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-slate-200" aria-hidden="true">
         <motion.div
-          className="h-full origin-left bg-[#14532D] will-change-transform"
+          className="h-full origin-left bg-[#101418] will-change-transform"
           style={{ scaleX: shouldReduceMotion ? 1 : smoothProgress }}
         />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight">
             4 bước vận hành từ bảng tính đến báo cáo ESG
           </h2>
 
-          <p className="mt-4 text-base text-[#475569] leading-relaxed">
+          <p className="mt-4 text-base text-[#5B5F66] leading-relaxed">
             Quy trình khép kín giúp doanh nghiệp tự động hóa từ khâu tiếp nhận đơn hàng đến phân bổ xe và nghiệm thu báo cáo phát thải.
           </p>
 
@@ -167,7 +167,7 @@ export const WorkflowShowcase: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsPlaying(!isPlaying)}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#0F172A] bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#101418] bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition-colors cursor-pointer"
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
               <span>{isPlaying ? 'Tạm dừng tự động chạy' : 'Xem tự động 4 bước'}</span>
@@ -175,7 +175,7 @@ export const WorkflowShowcase: React.FC = () => {
             {isPlaying && (
               <div className="w-32 h-1.5 rounded-full bg-slate-200 overflow-hidden">
                 <div
-                  className="h-full bg-[#14532D] transition-all duration-75"
+                  className="h-full bg-[#101418] transition-all duration-75"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -198,21 +198,21 @@ export const WorkflowShowcase: React.FC = () => {
                 aria-pressed={isSelected}
                 className={`relative overflow-hidden p-4 rounded-xl text-left transition-all duration-200 border flex flex-col justify-between cursor-pointer ${
                   isSelected
-                    ? 'bg-emerald-50/70 border-2 border-[#14532D] text-[#0F172A] shadow-sm'
-                    : 'bg-[#F8FAFC] border-slate-200 text-[#475569] hover:bg-slate-50 hover:text-[#0F172A]'
+                    ? 'bg-emerald-50/70 border-2 border-[#101418] text-[#101418] shadow-sm'
+                    : 'bg-[#F6F1E7] border-slate-200 text-[#5B5F66] hover:bg-slate-50 hover:text-[#101418]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span
                     className={`font-barlow font-extrabold text-lg ${
-                      isSelected ? 'text-[#14532D]' : 'text-slate-400'
+                      isSelected ? 'text-[#101418]' : 'text-slate-400'
                     }`}
                   >
                     Bước {item.num}
                   </span>
                   {item.icon}
                 </div>
-                <div className="text-sm font-bold leading-snug text-[#0F172A]">
+                <div className="text-sm font-bold leading-snug text-[#101418]">
                   {item.title}
                 </div>
               </button>
@@ -221,7 +221,7 @@ export const WorkflowShowcase: React.FC = () => {
         </div>
 
         {/* Active Step Proof Panel */}
-        <div className="bg-[#F8FAFC] rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-12">
+        <div className="bg-[#F6F1E7] rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-12">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activeStep}
@@ -234,33 +234,33 @@ export const WorkflowShowcase: React.FC = () => {
               {/* Left 6 Cols: Step Details & Outcomes */}
               <div className="lg:col-span-6 space-y-4">
                 <div className="pb-3 border-b border-slate-200">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#14532D] bg-emerald-100/60 px-2.5 py-1 rounded-full border border-emerald-200">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#101418] bg-emerald-100/60 px-2.5 py-1 rounded-full border border-emerald-200">
                     Bước {current.num} / 04 · {current.badge}
                   </span>
-                  <h3 className="text-2xl font-bold text-[#0F172A] mt-2.5">
+                  <h3 className="text-2xl font-bold text-[#101418] mt-2.5">
                     {current.title}
                   </h3>
                 </div>
 
-                <p className="text-sm sm:text-base text-[#475569] leading-relaxed">
+                <p className="text-sm sm:text-base text-[#5B5F66] leading-relaxed">
                   {current.summary}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-3 border-y border-slate-200 text-xs sm:text-sm">
                   <div>
                     <div className="text-xs font-bold uppercase text-slate-500">Đầu vào (Input)</div>
-                    <div className="font-semibold text-[#0F172A] mt-1">{current.inputSpec}</div>
+                    <div className="font-semibold text-[#101418] mt-1">{current.inputSpec}</div>
                   </div>
                   <div>
-                    <div className="text-xs font-bold uppercase text-[#14532D]">Đầu ra (Output)</div>
-                    <div className="font-bold text-[#14532D] mt-1">{current.outputSpec}</div>
+                    <div className="text-xs font-bold uppercase text-[#101418]">Đầu ra (Output)</div>
+                    <div className="font-bold text-[#101418] mt-1">{current.outputSpec}</div>
                   </div>
                 </div>
 
                 <div className="space-y-2 text-xs sm:text-sm">
                   {current.outcomes.map((out, i) => (
                     <div key={i} className="flex items-start gap-2 text-[#334155]">
-                      <Check className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-[#0B7A3B] shrink-0 mt-0.5" />
                       <span>{out}</span>
                     </div>
                   ))}
@@ -269,7 +269,7 @@ export const WorkflowShowcase: React.FC = () => {
                 <div className="pt-2">
                   <a
                     href={current.liveUrl}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#14532D] hover:bg-[#0F3F22] text-white font-bold text-xs sm:text-sm shadow-sm transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#101418] hover:bg-[#1B45D7] text-white font-bold text-xs sm:text-sm shadow-sm transition-colors"
                   >
                     <span>{current.liveLabel}</span>
                     <ArrowUpRight className="w-4 h-4" />
@@ -300,7 +300,7 @@ export const WorkflowShowcase: React.FC = () => {
                   className="max-h-[360px] w-auto max-w-full object-contain rounded-lg group-hover:scale-[1.01] transition-transform duration-300"
                 />
                 <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/95 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm">
-                  <Maximize2 className="w-3.5 h-3.5 text-[#14532D]" />
+                  <Maximize2 className="w-3.5 h-3.5 text-[#101418]" />
                   <span>Phóng to</span>
                 </div>
               </div>
@@ -310,40 +310,40 @@ export const WorkflowShowcase: React.FC = () => {
 
         {/* Verified Benchmark Comparison Table */}
         <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-          <h3 className="text-lg sm:text-xl font-bold text-[#0F172A] text-center mb-6">
+          <h3 className="text-lg sm:text-xl font-bold text-[#101418] text-center mb-6">
             Đối chứng thực nghiệm (120 đơn Chuỗi Lạnh TP.HCM): <span className="text-slate-500 font-normal">Thủ công</span> vs{' '}
-            <span className="text-[#14532D]">EcoMiles</span>
+            <span className="text-[#101418]">EcoMiles</span>
           </h3>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm tabular-nums">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-[#0F172A]">
+                <tr className="border-b border-slate-200 bg-slate-50 text-[#101418]">
                   <th className="py-3 px-4 rounded-l-lg">Chỉ số kiểm định</th>
                   <th className="py-3 px-4">Chia quận thủ công</th>
-                  <th className="py-3 px-4 text-[#14532D] font-bold rounded-r-lg">Thuật toán EcoMiles</th>
+                  <th className="py-3 px-4 text-[#101418] font-bold rounded-r-lg">Thuật toán EcoMiles</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[#334155]">
                 <tr>
-                  <td className="py-3 px-4 font-bold text-[#0F172A]">Tổng quãng đường đội xe</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">Tổng quãng đường đội xe</td>
                   <td className="py-3 px-4">374,4 km (12 chuyến xe)</td>
-                  <td className="py-3 px-4 font-bold text-[#14532D]">243,7 km (7 chuyến · Giảm 34,9%)</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">243,7 km (7 chuyến · Giảm 34,9%)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-[#0F172A]">Quãng đường &amp; Tỷ lệ chạy rỗng</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">Quãng đường &amp; Tỷ lệ chạy rỗng</td>
                   <td className="py-3 px-4">122,9 km chạy rỗng (32,8%)</td>
-                  <td className="py-3 px-4 font-bold text-[#14532D]">6,5 km chạy rỗng (2,7% · Ghép 21 đơn chiều về)</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">6,5 km chạy rỗng (2,7% · Ghép 21 đơn chiều về)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-[#0F172A]">Vi phạm giờ cấm tải QĐ 23/2018</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">Vi phạm giờ cấm tải QĐ 23/2018</td>
                   <td className="py-3 px-4 text-rose-600 font-medium">28 đơn vi phạm giờ cao điểm</td>
-                  <td className="py-3 px-4 font-bold text-[#14532D]">0 vi phạm (Tự động né 100% giờ cấm)</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">0 vi phạm (Tự động né 100% giờ cấm)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-[#0F172A]">Ước tính CO₂e TTW (GLX-HDT-v1 / GLEC v3.2)</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">Ước tính CO₂e TTW (GLX-HDT-v1 / GLEC v3.2)</td>
                   <td className="py-3 px-4">83,57 kg CO₂e</td>
-                  <td className="py-3 px-4 font-bold text-[#14532D]">56,66 kg CO₂e (Giảm 32,2%)</td>
+                  <td className="py-3 px-4 font-bold text-[#101418]">56,66 kg CO₂e (Giảm 32,2%)</td>
                 </tr>
               </tbody>
             </table>
@@ -371,10 +371,10 @@ export const WorkflowShowcase: React.FC = () => {
             >
               <div className="w-full flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#14532D] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                  <span className="text-xs font-bold text-[#101418] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
                     Bước {current.num} / 04 · {current.badge}
                   </span>
-                  <h4 className="text-sm sm:text-base font-bold text-[#0F172A] truncate">{current.title}</h4>
+                  <h4 className="text-sm sm:text-base font-bold text-[#101418] truncate">{current.title}</h4>
                 </div>
                 <button
                   type="button"

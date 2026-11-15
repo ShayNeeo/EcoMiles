@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img" aria-label="Route loop — closed Return M">
+  <!-- Closed Return M: outbound drop, midpoint pivot, solid return leg -->
+  <path d="M4 18V5L12 13.5L20 5V18H7" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect x="2.5" y="16.5" width="3.5" height="3.5" fill="currentColor"/>
+</svg>

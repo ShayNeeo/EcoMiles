@@ -739,12 +739,12 @@ export function EcoMilesTruckMapNavigator({
 
     // 6. Draw Numbered Customer Stop Pins (Snapped directly onto `fullRoutePath` so zero off-road tails exist!)
     const [depX, depY] = toXY(106.6385, 10.8018);
-    ctx.fillStyle = '#14532d';
+    ctx.fillStyle = '#101418';
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2.5;
     ctx.fillRect(depX - 10, depY - 10, 20, 20);
     ctx.strokeRect(depX - 10, depY - 10, 20, 20);
-    ctx.fillStyle = '#14532d';
+    ctx.fillStyle = '#101418';
     ctx.font = '800 11px system-ui, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('Kho Tân Bình (364 Cộng Hòa)', depX + 14, depY + 4);
@@ -882,7 +882,7 @@ export function EcoMilesTruckMapNavigator({
             </a>
 
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#14532d] text-[#d6f65a] flex items-center justify-center font-extrabold">
+              <div className="w-8 h-8 rounded-lg bg-[#101418] text-[#d6f65a] flex items-center justify-center font-extrabold">
                 <Truck className="w-4 h-4" />
               </div>
               <div>
@@ -935,7 +935,7 @@ export function EcoMilesTruckMapNavigator({
                 }}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-extrabold flex items-center gap-1.5 cursor-pointer transition-all ${
                   navMode === 'navigate'
-                    ? 'bg-[#14532d] text-[#d6f65a] shadow-xs'
+                    ? 'bg-[#101418] text-[#d6f65a] shadow-xs'
                     : 'text-[#4b5563] hover:text-[#111827]'
                 }`}
               >
@@ -956,7 +956,7 @@ export function EcoMilesTruckMapNavigator({
             <div
               className={`rounded-2xl p-3 sm:p-4 text-white shadow-md border transition-all ${
                 navMode === 'navigate'
-                  ? 'bg-[#14532d] border-[#0f3f22]'
+                  ? 'bg-[#101418] border-[#1B45D7]'
                   : 'bg-[#1f3a5f] border-[#162a45]'
               }`}
             >
@@ -970,7 +970,7 @@ export function EcoMilesTruckMapNavigator({
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-2 py-0.5 rounded bg-[#d6f65a] text-[#14532d] text-[10.5px] font-extrabold uppercase">
+                      <span className="px-2 py-0.5 rounded bg-[#d6f65a] text-[#101418] text-[10.5px] font-extrabold uppercase">
                         {navMode === 'navigate'
                           ? 'ĐANG DẪN ĐƯỜNG TRỰC TIẾP (CAMERA BÁM THEO XE)'
                           : `CHẶNG #${currentLiveStep.stepIdx}/${turnSteps.length} · XEM TỔNG QUAN`}
@@ -1002,7 +1002,7 @@ export function EcoMilesTruckMapNavigator({
                         setPlaying(true);
                         speakCurrentTurn(currentLiveStep);
                       }}
-                      className="px-4 py-2.5 rounded-xl bg-[#d6f65a] hover:bg-[#c5e847] text-[#14532d] font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm cursor-pointer"
+                      className="px-4 py-2.5 rounded-xl bg-[#d6f65a] hover:bg-[#c5e847] text-[#101418] font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm cursor-pointer"
                     >
                       <Play className="w-4 h-4 fill-current" />
                       <span>BẮT ĐẦU DẪN ĐƯỜNG (START LIVE)</span>
@@ -1032,8 +1032,8 @@ export function EcoMilesTruckMapNavigator({
           )}
 
           {voiceBanner && (
-            <div className="px-3.5 py-2 rounded-xl bg-[#eef7ee] border border-[#b9dfbf] text-xs font-bold text-[#14532d] flex items-center gap-2">
-              <Volume2 className="w-4 h-4 text-[#14532d] shrink-0" />
+            <div className="px-3.5 py-2 rounded-xl bg-[#eef7ee] border border-[#b9dfbf] text-xs font-bold text-[#101418] flex items-center gap-2">
+              <Volume2 className="w-4 h-4 text-[#101418] shrink-0" />
               <span>{voiceBanner}</span>
             </div>
           )}
@@ -1054,13 +1054,13 @@ export function EcoMilesTruckMapNavigator({
                 <Ban className="w-3.5 h-3.5 text-[#991b1b]" />
                 <span>Cấm tải QĐ 23/2018 (Đỏ)</span>
               </label>
-              <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#14532d]">
+              <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#101418]">
                 <input
                   type="checkbox"
                   checked={showBridges}
                   onChange={(e) => setShowBridges(e.target.checked)}
                 />
-                <Landmark className="w-3.5 h-3.5 text-[#14532d]" />
+                <Landmark className="w-3.5 h-3.5 text-[#101418]" />
                 <span>Cầu (13T / 4.5m)</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-[#4b5563]">
@@ -1078,7 +1078,7 @@ export function EcoMilesTruckMapNavigator({
               onClick={downloadGpxFile}
               className="px-2.5 py-1 rounded-lg bg-[#f3f4f6] hover:bg-[#e5e7eb] border border-[#d1d5db] font-bold text-[#111827] flex items-center gap-1 cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5 text-[#14532d]" />
+              <Download className="w-3.5 h-3.5 text-[#101418]" />
               <span>Tải GPX (OsmAnd)</span>
             </button>
           </div>
@@ -1164,7 +1164,7 @@ export function EcoMilesTruckMapNavigator({
               <button
                 type="button"
                 onClick={() => setPlaying(!playing)}
-                className="px-3.5 py-2 rounded-xl bg-[#14532d] hover:bg-[#0f3f22] text-[#d6f65a] font-extrabold text-xs flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 py-2 rounded-xl bg-[#101418] hover:bg-[#1B45D7] text-[#d6f65a] font-extrabold text-xs flex items-center gap-1.5 cursor-pointer"
               >
                 {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 <span>{playing ? 'Tạm dừng xe' : 'Tiếp tục chạy'}</span>
@@ -1191,7 +1191,7 @@ export function EcoMilesTruckMapNavigator({
                 max={100}
                 value={Math.round(progressFrac * 100)}
                 onChange={(e) => setProgressFrac(Number(e.target.value) / 100)}
-                className="flex-1 accent-[#14532d] cursor-pointer"
+                className="flex-1 accent-[#101418] cursor-pointer"
               />
               <select
                 value={simSpeed}
@@ -1216,7 +1216,7 @@ export function EcoMilesTruckMapNavigator({
                 <AlertTriangle className="w-4 h-4" />
                 <span>Khu Vực &amp; Khung Giờ Cấm Tải (QĐ 23/2018)</span>
               </h2>
-              <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#14532d] text-[10.5px] font-extrabold">
+              <span className="px-2 py-0.5 rounded bg-[#dcfae5] text-[#101418] text-[10.5px] font-extrabold">
                 Mở nội đô: 09:00 - 16:00
               </span>
             </div>
@@ -1225,7 +1225,7 @@ export function EcoMilesTruckMapNavigator({
                 06:00 - 09:00
                 <div className="font-normal text-[9.5px]">Cấm tải sáng</div>
               </div>
-              <div className="bg-[#dcfae5] text-[#14532d] py-1 px-1 border-r border-[#d8cfbd]">
+              <div className="bg-[#dcfae5] text-[#101418] py-1 px-1 border-r border-[#d8cfbd]">
                 09:00 - 16:00
                 <div className="font-normal text-[9.5px]">Thông hành nội đô</div>
               </div>
@@ -1256,7 +1256,7 @@ export function EcoMilesTruckMapNavigator({
             <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-2">
               <div>
                 <h2 className="text-sm font-extrabold text-[#111827] flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-[#14532d]" />
+                  <MapPin className="w-4 h-4 text-[#101418]" />
                   <span>Chi Tiết Dẫn Đường Từng Chặng ({turnSteps.length} chặng)</span>
                 </h2>
                 <p className="text-[11px] text-[#5f6368]">
@@ -1293,7 +1293,7 @@ export function EcoMilesTruckMapNavigator({
                           className={`w-6 h-6 rounded-lg font-black text-xs flex items-center justify-center shrink-0 ${
                             st.isBackhaul
                               ? 'bg-[#1971c2] text-white'
-                              : 'bg-[#14532d] text-[#d6f65a]'
+                              : 'bg-[#101418] text-[#d6f65a]'
                           }`}
                         >
                           {st.stepIdx}
@@ -1309,7 +1309,7 @@ export function EcoMilesTruckMapNavigator({
                             <span className="px-1.5 py-0.5 rounded bg-white border border-[#d1d5db] text-[#374151] font-semibold">
                               Khung hẹn: {st.timeWindow}
                             </span>
-                            <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#14532d] font-bold">
+                            <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#101418] font-bold">
                               Giao ngoài giờ cấm 06-09h / 16-20h
                             </span>
                           </div>

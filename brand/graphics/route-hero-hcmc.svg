@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 220" fill="none" role="img" aria-label="EcoMiles HCMC backhaul route diagram">
+  <rect width="960" height="220" fill="#FBF8F1" stroke="#D8D2C4" stroke-width="1"/>
+  <!-- QĐ 23/2018 subtle time-window header band -->
+  <rect x="40" y="24" width="880" height="28" fill="#ECE5D7"/>
+  <rect x="40" y="24" width="165" height="28" fill="#FDF3E7"/>
+  <rect x="40" y="24" width="165" height="3" fill="#A64B08"/>
+  <text x="52" y="42" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#A64B08">06:00–09:00 CẤM TẢI</text>
+  <text x="220" y="42" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="600" letter-spacing="1.2" fill="#5B5F66">09:00–16:00 MỞ TUYẾN NỘI ĐÔ · QĐ 23/2018</text>
+  <rect x="740" y="24" width="180" height="28" fill="#FDF3E7"/>
+  <rect x="740" y="24" width="180" height="3" fill="#A64B08"/>
+  <text x="752" y="42" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="#A64B08">16:00–20:00 CẤM TẢI</text>
+
+  <!-- Main return-line mechanism: dashed empty baseline vs solid matched backhaul -->
+  <path d="M56 126 H430" stroke="#5B5F66" stroke-width="3.5" stroke-dasharray="10 8"/>
+  <path d="M430 126 H892" stroke="#1B45D7" stroke-width="4.5"/>
+
+  <!-- Nodes -->
+  <circle cx="56" cy="126" r="8" fill="#101418"/>
+  <circle cx="430" cy="126" r="9" fill="#0B7A3B"/>
+  <rect x="884" y="118" width="16" height="16" fill="#0B7A3B"/>
+
+  <!-- Top telemetry callouts -->
+  <text x="56" y="96" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="700" letter-spacing="1.4" fill="#5B5F66">51C-123.45 · CÁT LÁI · CHẠY RỖNG 32,8%</text>
+  <text x="430" y="96" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="700" letter-spacing="1.4" fill="#0B7A3B">GHÉP HÀNG CHIỀU VỀ · SÓNG THẦN</text>
+  <text x="900" y="96" text-anchor="end" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="700" letter-spacing="1.4" fill="#101418">KCN TÂN BÌNH · RỖNG 2,7%</text>
+
+  <!-- Bottom verified proof bar -->
+  <line x1="40" y1="168" x2="920" y2="168" stroke="#D8D2C4" stroke-width="1"/>
+  <text x="56" y="194" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" font-weight="700" fill="#101418">374,4 → 243,7 km (−34,9%)</text>
+  <text x="360" y="194" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" font-weight="700" fill="#0B7A3B">28 → 0 VI PHẠM QĐ 23</text>
+  <text x="640" y="194" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" font-weight="700" fill="#0B7A3B">56,66 kg CO₂e · ISO 14083</text>
+</svg>

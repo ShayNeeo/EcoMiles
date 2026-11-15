@@ -110,22 +110,22 @@ export const Team: React.FC = () => {
       ref={sectionRef}
       id="team"
       aria-labelledby="team-heading"
-      className="relative isolate overflow-hidden bg-[#F8FAFC] px-4 py-20 sm:px-6 sm:py-28 lg:px-8 scroll-mt-24 border-t border-slate-200/80"
+      className="relative isolate overflow-hidden bg-[#F6F1E7] px-4 py-20 sm:px-6 sm:py-28 lg:px-8 scroll-mt-24 border-t border-slate-200/80"
     >
       <div className="relative z-10 mx-auto max-w-7xl">
         <div className="grid items-end gap-8 border-b border-slate-200 pb-10 lg:grid-cols-[1.35fr_0.65fr] lg:pb-12">
           <div>
             <h2
               id="team-heading"
-              className="max-w-4xl text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight"
+              className="max-w-4xl text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight"
             >
               Đội ngũ sáng lập liên ngành{' '}
-              <span className="text-[#14532D]">từ nghiên cứu đến khởi nghiệp 2026</span>
+              <span className="text-[#101418]">từ nghiên cứu đến khởi nghiệp 2026</span>
             </h2>
           </div>
 
           <div>
-            <p className="max-w-xl text-base text-[#475569] leading-relaxed">
+            <p className="max-w-xl text-base text-[#5B5F66] leading-relaxed">
               Dự án hội tụ năng lực chuyên sâu về kinh tế vận tải, công nghệ phần mềm, phát triển bền vững và vận hành giao nhận hàng hóa đô thị.
             </p>
           </div>
@@ -138,7 +138,7 @@ export const Team: React.FC = () => {
               className="gsap-team-card group min-w-0 w-[calc(50%-0.75rem)] max-w-[220px] text-center max-[359px]:w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.34rem)] lg:w-[calc(20%-1.6rem)]"
             >
               <div className="relative mx-auto aspect-square w-full max-w-[190px]">
-                <div className="relative h-full overflow-hidden rounded-full border-2 border-slate-200 bg-[#e8f0e4] shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:border-[#14532D]">
+                <div className="relative h-full overflow-hidden rounded-full border-2 border-slate-200 bg-[#e8f0e4] shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:border-[#101418]">
                   <img
                     src={member.image}
                     alt={`Chân dung ${member.name}`}
@@ -151,16 +151,16 @@ export const Team: React.FC = () => {
                   />
                 </div>
 
-                <span className="absolute bottom-1 right-1 flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#14532D] font-mono text-xs font-bold text-white shadow-sm sm:h-8 sm:w-8">
+                <span className="absolute bottom-1 right-1 flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#101418] font-mono text-xs font-bold text-white shadow-sm sm:h-8 sm:w-8">
                   {String(index + 1).padStart(2, '0')}
                 </span>
               </div>
 
               <div className="mx-auto mt-4 space-y-1">
-                <h3 className="text-base font-bold text-[#0F172A] leading-snug">
+                <h3 className="text-base font-bold text-[#101418] leading-snug">
                   {member.name}
                 </h3>
-                <p className="text-xs font-semibold leading-5 text-[#14532D]">
+                <p className="text-xs font-semibold leading-5 text-[#101418]">
                   {member.role}
                 </p>
               </div>

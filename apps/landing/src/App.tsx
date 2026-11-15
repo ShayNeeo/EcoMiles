@@ -42,22 +42,22 @@ export function App() {
   };
 
   return (
-    <div className="site-shell min-h-screen bg-[#F8FAFC] text-[#0F172A] antialiased selection:bg-[#14532D] selection:text-white">
+    <div className="site-shell min-h-screen bg-[#F6F1E7] text-[#101418] antialiased selection:bg-[#101418] selection:text-[#F6F1E7]">
       <a
         href="#main-content"
-        className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-full bg-[#14532D] px-4 py-2 text-sm font-bold text-white shadow-xl transition-transform focus:translate-y-0"
+        className="fixed left-4 top-3 z-[100] -translate-y-20 rounded bg-[#101418] px-4 py-2 text-sm font-bold text-[#F6F1E7] shadow-xl transition-transform focus:translate-y-0"
       >
         Bỏ qua điều hướng
       </a>
 
-      {/* Floating Glass Pill Top Bar */}
+      {/* Asphalt & Paper Navigation Bar */}
       <Navbar
         onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')}
         onOpenPortalModal={() => setRolePortalOpen(true)}
       />
 
       <main id="main-content" tabIndex={-1}>
-        {/* 1. Hero Section (Full Viewport Video with Barlow Condensed Headline & Route Map) */}
+        {/* 1. Hero Section (Archivo Display + Return-Line Proof) */}
         <Hero onOpenPilotModal={() => handleOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')} />
 
         {/* 2. Solutions Section (4 Core VRPTW & Carbon Accounting Pillars) */}

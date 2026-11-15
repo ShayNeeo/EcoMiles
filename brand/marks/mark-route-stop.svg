@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="EcoMiles route loop mark">
+  <path d="M10 40 H26 V20 H44 V40 H54" stroke="currentColor" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M54 40 C54 52 44 57 32 57 C20 57 10 52 10 40" stroke="currentColor" stroke-width="4" stroke-dasharray="2 5" stroke-linecap="round"/>
+  <circle cx="10" cy="40" r="4" fill="currentColor"/>
+  <circle cx="54" cy="40" r="4" fill="currentColor"/>
+</svg>

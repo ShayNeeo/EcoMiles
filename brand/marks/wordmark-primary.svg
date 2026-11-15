@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" fill="none" role="img" aria-label="ECOMILES vector wordmark">
+  <!-- Pure geometric stencil-sans vector wordmark: zero font dependency -->
+  <g stroke="#101418" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter">
+    <!-- E -->
+    <path d="M18 15 H4 V41 H18 M4 28 H15"/>
+    <!-- C -->
+    <path d="M44 15 H29 V41 H44"/>
+    <!-- O -->
+    <path d="M55 15 H71 V41 H55 Z"/>
+    <!-- M (mirrors Return M apex) -->
+    <path d="M82 41 V15 L93 30 L104 15 V41"/>
+    <!-- I -->
+    <path d="M116 15 V41"/>
+    <!-- L -->
+    <path d="M128 15 V41 H142"/>
+    <!-- E -->
+    <path d="M167 15 H153 V41 H167 M153 28 H164"/>
+    <!-- S -->
+    <path d="M193 15 H179 V28 H193 V41 H179"/>
+  </g>
+  <rect x="204" y="36" width="8" height="8" fill="#1B45D7"/>
+</svg>

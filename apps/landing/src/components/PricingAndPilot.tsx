@@ -136,16 +136,16 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight">
             Bảng giá dịch vụ phần mềm B2B SaaS
           </h2>
 
-          <p className="mt-4 text-base text-[#475569] leading-relaxed">
+          <p className="mt-4 text-base text-[#5B5F66] leading-relaxed">
             Chọn gói cước theo số lượng tài xế hoạt động hàng tháng. Chạy trực tiếp trên thiết bị sẵn có, không phụ thuộc phần cứng riêng hay phí bản đồ API.
           </p>
 
           {/* Interactive Fleet Size Selector */}
-          <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-[#F8FAFC] border border-slate-200 shadow-sm">
+          <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-[#F6F1E7] border border-slate-200 shadow-sm">
             <span className="text-xs font-semibold text-slate-600 px-2.5">Quy mô đội xe:</span>
             {[
               { label: '8 xe (Khởi đầu)', count: 8 },
@@ -160,14 +160,14 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                   type="button"
                   onClick={() => setActiveDrivers(preset.count)}
                   className={`relative px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                    isSelected ? 'text-white' : 'text-slate-600 hover:text-[#0F172A]'
+                    isSelected ? 'text-white' : 'text-slate-600 hover:text-[#101418]'
                   }`}
                 >
                   {isSelected && (
                     <motion.span
                       layoutId="pricingFleetPresetPill"
                       transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-                      className="absolute inset-0 rounded-xl bg-[#14532D] shadow-sm"
+                      className="absolute inset-0 rounded-xl bg-[#101418] shadow-sm"
                     />
                   )}
                   <span className="relative z-10">{preset.label}</span>
@@ -184,32 +184,32 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
               key={tier.name}
               className={`relative rounded-2xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-200 border ${
                 tier.highlight
-                  ? 'bg-emerald-50/40 border-2 border-[#14532D] shadow-md'
-                  : 'bg-[#F8FAFC] border-slate-200 hover:border-slate-300 shadow-sm'
+                  ? 'bg-emerald-50/40 border-2 border-[#101418] shadow-md'
+                  : 'bg-[#F6F1E7] border-slate-200 hover:border-slate-300 shadow-sm'
               }`}
             >
               {tier.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 bg-[#14532D] text-white font-bold text-xs rounded-full shadow-sm">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 bg-[#101418] text-white font-bold text-xs rounded-full shadow-sm">
                   {tier.badge}
                 </div>
               )}
 
               <div>
-                <h3 className="text-xl font-bold text-[#0F172A] mb-1">{tier.name}</h3>
-                <p className="mb-5 text-xs text-[#475569] leading-relaxed">{tier.desc}</p>
+                <h3 className="text-xl font-bold text-[#101418] mb-1">{tier.name}</h3>
+                <p className="mb-5 text-xs text-[#5B5F66] leading-relaxed">{tier.desc}</p>
 
                 <div className="pb-4 mb-5 border-b border-slate-200">
                   <div className="flex flex-wrap items-baseline gap-x-1.5">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tabular-nums">{tier.price}</span>
+                    <span className="text-2xl sm:text-3xl font-extrabold text-[#101418] tabular-nums">{tier.price}</span>
                     <span className="text-xs text-slate-500 font-medium">{tier.unit}</span>
                   </div>
-                  <div className="text-xs font-bold text-[#14532D] mt-1">{tier.vehicles}</div>
+                  <div className="text-xs font-bold text-[#101418] mt-1">{tier.vehicles}</div>
                 </div>
 
                 <div className="space-y-2.5 mb-6">
                   {tier.features.map((feature, fIdx) => (
                     <div key={fIdx} className="flex items-start gap-2 text-xs text-[#334155]">
-                      <Check className="w-3.5 h-3.5 text-[#16A34A] shrink-0 mt-0.5" />
+                      <Check className="w-3.5 h-3.5 text-[#0B7A3B] shrink-0 mt-0.5" />
                       <span>{feature}</span>
                     </div>
                   ))}
@@ -221,8 +221,8 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 onClick={() => onOpenPilotModal(`Đăng ký gói thuê bao - ${tier.name}`)}
                 className={`w-full py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   tier.highlight
-                    ? 'bg-[#14532D] hover:bg-[#0F3F22] text-white shadow-sm'
-                    : 'bg-white hover:bg-slate-50 text-[#0F172A] border border-slate-300'
+                    ? 'bg-[#101418] hover:bg-[#1B45D7] text-white shadow-sm'
+                    : 'bg-white hover:bg-slate-50 text-[#101418] border border-slate-300'
                 }`}
               >
                 <span>Đăng ký gói này</span>
@@ -234,28 +234,28 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
 
         {/* Structured Feature Comparison Matrix Table */}
         <div className="mb-14 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
-          <h3 className="text-xl font-bold text-[#0F172A] mb-6 text-center">
+          <h3 className="text-xl font-bold text-[#101418] mb-6 text-center">
             Bảng so sánh chi tiết tính năng theo từng gói
           </h3>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-[#0F172A]">
+                <tr className="border-b border-slate-200 bg-slate-50 text-[#101418]">
                   <th className="py-3 px-4 rounded-l-lg font-bold">Tính năng / Tiêu chuẩn</th>
                   <th className="py-3 px-4 font-bold">Starter</th>
                   <th className="py-3 px-4 font-bold">Gói Nhỏ</th>
-                  <th className="py-3 px-4 font-bold text-[#14532D]">Gói Vừa</th>
+                  <th className="py-3 px-4 font-bold text-[#101418]">Gói Vừa</th>
                   <th className="py-3 px-4 rounded-r-lg font-bold">Gói Lớn</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[#334155]">
                 {comparisonRows.map((row, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="py-3 px-4 font-semibold text-[#0F172A]">{row.feature}</td>
+                    <td className="py-3 px-4 font-semibold text-[#101418]">{row.feature}</td>
                     <td className="py-3 px-4 text-slate-600">{row.starter}</td>
                     <td className="py-3 px-4 text-slate-600">{row.small}</td>
-                    <td className="py-3 px-4 font-bold text-[#14532D]">{row.medium}</td>
+                    <td className="py-3 px-4 font-bold text-[#101418]">{row.medium}</td>
                     <td className="py-3 px-4 text-slate-900 font-medium">{row.large}</td>
                   </tr>
                 ))}
@@ -265,44 +265,44 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         </div>
 
         {/* Corporate Billing & Settlement Workflow Strip */}
-        <div className="mb-14 rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 sm:p-8 shadow-sm">
+        <div className="mb-14 rounded-2xl border border-slate-200 bg-[#F6F1E7] p-6 sm:p-8 shadow-sm">
           <div className="text-center max-w-2xl mx-auto mb-6">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-[#14532D] uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-[#101418] uppercase tracking-wider mb-1">
               <Receipt className="w-4 h-4" />
               <span>Quy trình thanh toán B2B minh bạch</span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-[#0F172A]">
+            <h3 className="text-xl sm:text-2xl font-bold text-[#101418]">
               Hợp đồng, Hóa đơn điện tử VAT &amp; Tài khoản ngân hàng doanh nghiệp
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-5 rounded-xl bg-white border border-slate-200 space-y-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#14532D] font-bold flex items-center justify-center text-sm border border-emerald-200">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#101418] font-bold flex items-center justify-center text-sm border border-emerald-200">
                 1
               </div>
-              <h4 className="font-bold text-sm text-[#0F172A]">Thí điểm miễn phí 4-6 tuần</h4>
-              <p className="text-xs text-[#475569] leading-relaxed">
+              <h4 className="font-bold text-sm text-[#101418]">Thí điểm miễn phí 4-6 tuần</h4>
+              <p className="text-xs text-[#5B5F66] leading-relaxed">
                 Đối chứng mức tiết kiệm nhiên liệu thực tế trên bảng tính Excel đơn hàng hiện có của doanh nghiệp trước khi ký kết.
               </p>
             </div>
 
             <div className="p-5 rounded-xl bg-white border border-slate-200 space-y-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#14532D] font-bold flex items-center justify-center text-sm border border-emerald-200">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#101418] font-bold flex items-center justify-center text-sm border border-emerald-200">
                 2
               </div>
-              <h4 className="font-bold text-sm text-[#0F172A]">Hợp đồng B2B &amp; Bảo mật NĐ 13</h4>
-              <p className="text-xs text-[#475569] leading-relaxed">
+              <h4 className="font-bold text-sm text-[#101418]">Hợp đồng B2B &amp; Bảo mật NĐ 13</h4>
+              <p className="text-xs text-[#5B5F66] leading-relaxed">
                 Ký hợp đồng pháp nhân doanh nghiệp, cam kết bảo vệ dữ liệu khách hàng và cấp khóa mã hóa riêng biệt.
               </p>
             </div>
 
             <div className="p-5 rounded-xl bg-white border border-slate-200 space-y-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#14532D] font-bold flex items-center justify-center text-sm border border-emerald-200">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#101418] font-bold flex items-center justify-center text-sm border border-emerald-200">
                 3
               </div>
-              <h4 className="font-bold text-sm text-[#0F172A]">Chuyển khoản &amp; Hóa đơn VAT</h4>
-              <p className="text-xs text-[#475569] leading-relaxed">
+              <h4 className="font-bold text-sm text-[#101418]">Chuyển khoản &amp; Hóa đơn VAT</h4>
+              <p className="text-xs text-[#5B5F66] leading-relaxed">
                 Thanh toán chuyển khoản định kỳ qua tài khoản ngân hàng công ty và nhận hóa đơn điện tử VAT hợp lệ.
               </p>
             </div>
@@ -310,7 +310,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
         </div>
 
         {/* Free Pilot CTA Banner */}
-        <div className="rounded-2xl bg-[#14532D] p-8 sm:p-10 text-white shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="rounded-2xl bg-[#101418] p-8 sm:p-10 text-white shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               Dùng thử miễn phí 4-6 tuần trên đội xe thực tế
@@ -338,10 +338,10 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
             <button
               type="button"
               onClick={() => onOpenPilotModal('Dùng thử miễn phí 4 - 6 tuần')}
-              className="px-6 py-3.5 rounded-xl bg-white hover:bg-emerald-50 text-[#14532D] font-extrabold text-sm shadow-md transition-colors flex items-center gap-2 cursor-pointer"
+              className="px-6 py-3.5 rounded-xl bg-white hover:bg-emerald-50 text-[#101418] font-extrabold text-sm shadow-md transition-colors flex items-center gap-2 cursor-pointer"
             >
               <span>Đăng ký dùng thử ngay</span>
-              <ArrowRight className="w-4 h-4 text-[#14532D]" />
+              <ArrowRight className="w-4 h-4 text-[#101418]" />
             </button>
           </div>
         </div>

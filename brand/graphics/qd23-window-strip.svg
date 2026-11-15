@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 64" fill="none" role="img" aria-label="QD 23/2018 HCMC time window strip">
+  <rect x="0" y="12" width="720" height="18" fill="#ECE5D7" stroke="#D8D2C4" stroke-width="1"/>
+  <!-- 00-06 Open -->
+  <rect x="0" y="12" width="180" height="18" fill="#EEF2FC"/>
+  <!-- 06-09 Ban -->
+  <rect x="180" y="12" width="90" height="18" fill="#A64B08"/>
+  <!-- 09-16 Open -->
+  <rect x="270" y="12" width="210" height="18" fill="#0B7A3B"/>
+  <!-- 16-20 Ban -->
+  <rect x="480" y="12" width="120" height="18" fill="#A64B08"/>
+  <!-- 20-24 Open -->
+  <rect x="600" y="12" width="120" height="18" fill="#EEF2FC"/>
+  <text x="4" y="48" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600" fill="#5B5F66">00:00</text>
+  <text x="180" y="48" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="700" fill="#A64B08">06:00 CẤM</text>
+  <text x="270" y="48" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="700" fill="#0B7A3B">09:00 MỞ</text>
+  <text x="480" y="48" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="700" fill="#A64B08">16:00 CẤM</text>
+  <text x="600" y="48" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" font-weight="600" fill="#5B5F66">20:00 MỞ</text>
+</svg>

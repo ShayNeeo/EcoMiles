@@ -3,7 +3,8 @@ import { motion } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { TrendingDown, Leaf, ArrowRight, DollarSign } from 'lucide-react';
+import { TrendingDown, ArrowRight, DollarSign } from 'lucide-react';
+import { Co2AuditIcon } from './EcoMilesMark';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -106,14 +107,14 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
     <section
       ref={sectionRef}
       id="calculator"
-      className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#F8FAFC] border-t border-slate-200/80 scroll-mt-24"
+      className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#F6F1E7] border-t border-slate-200/80 scroll-mt-24"
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight">
             Ước tính mức tiết kiệm chi phí &amp; cắt giảm CO₂
           </h2>
-          <p className="mt-4 text-base text-[#475569] leading-relaxed">
+          <p className="mt-4 text-base text-[#5B5F66] leading-relaxed">
             Kéo các thanh trượt theo quy mô đội xe thực tế để xem ngay số tiền nhiên liệu, số lít dầu và lượng CO₂ tiết kiệm mỗi tháng.
           </p>
         </div>
@@ -122,9 +123,9 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
           {/* Left 7 Cols: Sliders Control Panel */}
           <div className="gsap-calc-panel lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between">
             <div className="mb-6 space-y-3">
-              <h3 className="text-lg font-bold text-[#0F172A]">Thông số đội xe &amp; vận hành</h3>
+              <h3 className="text-lg font-bold text-[#101418]">Thông số đội xe &amp; vận hành</h3>
               <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="text-[#475569] font-medium">Mẫu tham khảo:</span>
+                <span className="text-[#5B5F66] font-medium">Mẫu tham khảo:</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -133,7 +134,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     setFuelConsumption(11.5);
                     setSavingsRate(35);
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#14532D] font-semibold cursor-pointer transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#101418] font-semibold cursor-pointer transition-colors"
                 >
                   10 xe · Chuỗi lạnh (-35%)
                 </button>
@@ -169,7 +170,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               <div>
                 <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
                   <span className="text-[#334155]">Quy mô đội xe giao hàng:</span>
-                  <span className="text-base font-extrabold text-[#14532D] tabular-nums">
+                  <span className="text-base font-extrabold text-[#101418] tabular-nums">
                     {fleetSize} xe
                   </span>
                 </div>
@@ -181,7 +182,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   step="1"
                   value={fleetSize}
                   onChange={(e) => setFleetSize(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#14532D]"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#101418]"
                 />
                 <div className="flex justify-between text-xs text-slate-400 mt-1">
                   <span>3 xe</span>
@@ -194,7 +195,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               <div>
                 <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
                   <span className="text-[#334155]">Quãng đường bình quân/xe/ngày:</span>
-                  <span className="text-base font-extrabold text-[#14532D] tabular-nums">
+                  <span className="text-base font-extrabold text-[#101418] tabular-nums">
                     {dailyKm} km
                   </span>
                 </div>
@@ -206,7 +207,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   step="5"
                   value={dailyKm}
                   onChange={(e) => setDailyKm(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#14532D]"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#101418]"
                 />
                 <div className="flex justify-between text-xs text-slate-400 mt-1">
                   <span>30 km</span>
@@ -219,7 +220,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               <div>
                 <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
                   <span className="text-[#334155]">Định mức tiêu hao nhiên liệu:</span>
-                  <span className="text-base font-extrabold text-[#14532D] tabular-nums">
+                  <span className="text-base font-extrabold text-[#101418] tabular-nums">
                     {fuelConsumption} L / 100km
                   </span>
                 </div>
@@ -231,7 +232,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   step="0.5"
                   value={fuelConsumption}
                   onChange={(e) => setFuelConsumption(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#14532D]"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#101418]"
                 />
                 <div className="flex justify-between text-xs text-slate-400 mt-1">
                   <span>6L (Xe van nhỏ)</span>
@@ -244,7 +245,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               <div>
                 <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
                   <span className="text-[#334155]">Tỷ lệ quãng đường cắt giảm:</span>
-                  <span className="text-base font-extrabold text-[#16A34A] tabular-nums">
+                  <span className="text-base font-extrabold text-[#0B7A3B] tabular-nums">
                     {savingsRate}%
                   </span>
                 </div>
@@ -256,7 +257,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                   step="1"
                   value={savingsRate}
                   onChange={(e) => setSavingsRate(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#16A34A]"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0B7A3B]"
                 />
                 <div className="flex justify-between text-xs text-slate-400 mt-1">
                   <span>15% (Cơ sở)</span>
@@ -272,28 +273,28 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
           </div>
 
           {/* Right 5 Cols: Financial & Environmental Results Panel */}
-          <div className="gsap-calc-panel lg:col-span-5 bg-[#14532D] text-white rounded-2xl p-6 sm:p-8 shadow-xl flex flex-col justify-between">
+          <div className="gsap-calc-panel lg:col-span-5 bg-[#101418] text-[#F6F1E7] rounded-[4px] border border-[#101418] p-6 sm:p-8 shadow-xl flex flex-col justify-between">
             <div className="space-y-6">
               <div className="flex items-center justify-between gap-3 border-b border-white/15 pb-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-200">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#C9C3B6]">
                   Dự toán tiết kiệm mỗi tháng
                 </span>
-                <span className="text-xs font-medium text-emerald-200">
+                <span className="font-mono text-xs font-medium text-[#C9C3B6]">
                   26 ngày vận hành
                 </span>
               </div>
 
               {/* Primary Financial Outcome */}
               <div className="pb-5 border-b border-white/15">
-                <div className="text-xs font-medium text-emerald-200 mb-1 flex items-center gap-1.5">
-                  <DollarSign className="w-4 h-4 text-emerald-300" />
+                <div className="text-xs font-medium text-[#C9C3B6] mb-1 flex items-center gap-1.5">
+                  <DollarSign className="w-4 h-4 text-[#0B7A3B]" />
                   <span>Chi phí nhiên liệu tiết kiệm ròng:</span>
                 </div>
-                <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight tabular-nums">
+                <div className="text-3xl sm:text-4xl font-extrabold text-[#F6F1E7] tracking-tight tabular-nums">
                   <span ref={moneyNumRef}>{Math.round(moneySavedVND).toLocaleString('vi-VN')}</span>{' '}
-                  <span className="text-sm font-normal text-emerald-200">VNĐ/tháng</span>
+                  <span className="text-sm font-normal text-[#C9C3B6]">VNĐ/tháng</span>
                 </div>
-                <div className="text-xs sm:text-sm text-emerald-200 mt-1 tabular-nums">
+                <div className="text-xs sm:text-sm text-[#C9C3B6] mt-1 tabular-nums">
                   Tiết giảm ~ <span ref={litersNumRef}>{Math.round(litersSaved).toLocaleString('vi-VN')}</span> Lít dầu diesel / tháng
                 </div>
               </div>
@@ -301,15 +302,15 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
               {/* Secondary Outcomes: CO2 + Distance */}
               <div className="grid grid-cols-2 gap-4 pb-5 border-b border-white/15">
                 <div>
-                  <div className="flex items-center gap-1.5 text-xs text-emerald-200 mb-1">
-                    <Leaf className="w-3.5 h-3.5 text-emerald-300" />
+                  <div className="flex items-center gap-1.5 text-xs text-[#C9C3B6] mb-1">
+                    <Co2AuditIcon className="w-3.5 h-3.5 text-[#0B7A3B]" />
                     <span>CO₂ Tiết Giảm</span>
                   </div>
-                  <div className="text-xl sm:text-2xl font-bold text-white tabular-nums">
+                  <div className="text-xl sm:text-2xl font-bold text-[#F6F1E7] tabular-nums">
                     <span ref={co2NumRef}>{Math.round(co2SavedKg).toLocaleString('vi-VN')}</span>{' '}
-                    <span className="text-xs font-normal text-emerald-200">kg</span>
+                    <span className="text-xs font-normal text-[#C9C3B6]">kg</span>
                   </div>
-                  <div className="text-xs text-emerald-300 mt-0.5 tabular-nums">
+                  <div className="text-xs text-[#0B7A3B] font-semibold mt-0.5 tabular-nums">
                     ~ <span ref={co2TonsNumRef}>{(co2SavedKg / 1000).toFixed(2)}</span> tấn/tháng
                   </div>
                 </div>
@@ -358,10 +359,10 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
             <button
               type="button"
               onClick={onOpenPilotModal}
-              className="mt-6 w-full py-3.5 px-5 rounded-xl bg-white hover:bg-emerald-50 text-[#14532D] font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="mt-6 w-full py-3.5 px-5 rounded-xl bg-white hover:bg-emerald-50 text-[#101418] font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Đăng Ký Dùng Thử 4-6 Tuần</span>
-              <ArrowRight className="w-4 h-4 text-[#14532D]" />
+              <ArrowRight className="w-4 h-4 text-[#101418]" />
             </button>
           </div>
         </div>

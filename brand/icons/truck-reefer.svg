@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img" aria-label="Reefer cold-chain truck (-18C)">
+  <!-- Insulated box + overhead nose evaporator unit + internal thermal wave bar -->
+  <rect x="2" y="6" width="12.5" height="9.5" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/>
+  <!-- Nose-mounted chiller unit -->
+  <rect x="14.5" y="5" width="3" height="3.5" fill="currentColor"/>
+  <path d="M14.5 9.5H19L21.5 12V15.5H19.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+  <!-- Thermal baffle chevron inside box (not generic snowflake) -->
+  <path d="M5 9.5L7.5 11L10 9.5M5 12.5L7.5 14L10 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/>
+  <circle cx="6" cy="16.2" r="2.1" stroke="currentColor" stroke-width="1.8"/>
+  <circle cx="17.2" cy="16.2" r="2.1" stroke="currentColor" stroke-width="1.8"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 296 64" fill="none" role="img" aria-label="EcoMiles horizontal lockup (light)">
+  <path d="M12 50 V14 L31 36 L50 14 V50 H12" stroke="#101418" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+  <g transform="translate(70,4)" stroke="#101418" stroke-width="5.6" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M18 15 H4 V41 H18 M4 28 H15"/>
+    <path d="M44 15 H29 V41 H44"/>
+    <path d="M55 15 H71 V41 H55 Z"/>
+    <path d="M82 41 V15 L93 30 L104 15 V41"/>
+    <path d="M116 15 V41"/>
+    <path d="M128 15 V41 H142"/>
+    <path d="M167 15 H153 V41 H167 M153 28 H164"/>
+    <path d="M193 15 H179 V28 H193 V41 H179"/>
+  </g>
+  <rect x="274" y="40" width="8" height="8" fill="#1B45D7"/>
+</svg>
