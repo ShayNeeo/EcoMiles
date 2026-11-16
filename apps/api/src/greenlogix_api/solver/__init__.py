@@ -380,13 +380,14 @@ def run_vrp(
         for v in ready_for_filter:
             if v.capacity_kg < order.kg:
                 continue
-            v_cls = vehicle_profiles.get(v.id or v.plate, primary_profile or DEFAULT_TRUCK_PROFILE).vehicle_class
+            v_prof = vehicle_profiles.get(v.id or v.plate, primary_profile or DEFAULT_TRUCK_PROFILE)
             win = feasible_service_window(
                 order.window_start,
                 order.window_end,
-                v_cls,
+                v_prof.vehicle_class,
                 lat=order.lat,
                 lng=order.lng,
+                gvw_t=v_prof.gross_vehicle_weight_t,
             )
             if win is not None:
                 is_ban = False
@@ -473,7 +474,9 @@ def run_vrp(
             if not tour.stops:
                 continue
             vehicle = v_by_id.get(tour.vehicle_id) or v_by_plate.get(tour.plate) or ready_vehicles[0]
-            r_vclass = getattr(tour.profile, "vehicle_class", primary_class)
+            r_prof = getattr(tour, "profile", None) or primary_profile or DEFAULT_TRUCK_PROFILE
+            r_vclass = getattr(r_prof, "vehicle_class", primary_class)
+            r_gvw_t = getattr(r_prof, "gross_vehicle_weight_t", None)
             tour_orders = [orders_by_id[s.order_id] for s in tour.stops if s.order_id in orders_by_id]
             if not tour_orders:
                 continue
@@ -483,7 +486,9 @@ def run_vrp(
                 curr_time = 480.0
                 for o in tour_orders:
                     win = (
-                        feasible_service_window(o.window_start, o.window_end, r_vclass, lat=o.lat, lng=o.lng)
+                        feasible_service_window(
+                            o.window_start, o.window_end, r_vclass, lat=o.lat, lng=o.lng, gvw_t=r_gvw_t
+                        )
                         if enforce_truck_ban
                         else None
                     )
@@ -595,14 +600,16 @@ def run_vrp(
     time_window_conflicts = 0
     for r in routes:
         r_key = r.vehicle.id if r.vehicle.id is not None else r.vehicle.plate
-        r_vclass = vehicle_profiles.get(r_key, primary_profile or DEFAULT_TRUCK_PROFILE).vehicle_class
+        r_prof = vehicle_profiles.get(r_key, primary_profile or DEFAULT_TRUCK_PROFILE)
+        r_vclass = r_prof.vehicle_class
+        r_gvw_t = r_prof.gross_vehicle_weight_t
         curr_loc = depot
         curr_time = 480.0
         for s in r.stops:
             if s.kind == "depot":
                 continue
             win = (
-                feasible_service_window(s.window_start, s.window_end, r_vclass, lat=s.lat, lng=s.lng)
+                feasible_service_window(s.window_start, s.window_end, r_vclass, lat=s.lat, lng=s.lng, gvw_t=r_gvw_t)
                 if enforce_truck_ban
                 else None
             )
@@ -610,7 +617,9 @@ def run_vrp(
                 if win is None:
                     ban_conflicts += 1
             else:
-                if check_truck_ban(s.window_start, s.window_end, r_vclass, lat=s.lat, lng=s.lng).is_restricted:
+                if check_truck_ban(
+                    s.window_start, s.window_end, r_vclass, lat=s.lat, lng=s.lng, gvw_t=r_gvw_t
+                ).is_restricted:
                     ban_conflicts += 1
             t_min = pair_km(curr_loc[0], curr_loc[1], s.lat, s.lng) / 30.0 * 60.0
             arr_min = curr_time + t_min

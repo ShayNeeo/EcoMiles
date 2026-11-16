@@ -96,7 +96,7 @@ export const WorkflowShowcase: React.FC = () => {
       liveLabel: 'Mở phòng đối chứng EVSIM',
       outcomes: [
         'Tiết giảm 130,7 km mỗi ca vận hành (-34,9% tổng quãng đường)',
-        'Khử 28/28 lỗi vi phạm giờ cấm QĐ 23/2018 (tránh phạt 5.000.000đ/lỗi)',
+        'Khử 28/28 lỗi vi phạm giờ cấm QĐ 23/2018, QĐ 01/2026 & biển P.106a QCVN 41:2024 (tránh phạt NĐ 168/2024: 4-6 triệu đ + trừ 2 điểm GPLX)',
         'Hạ tỷ lệ xe chạy rỗng từ 32,8% xuống chỉ còn 2,7%',
       ],
     },

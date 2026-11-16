@@ -44,7 +44,7 @@ const WORKSPACE_VIEWS: WorkspaceSpec[] = [
     liveRouteUrl: '/dashboard/',
     liveRouteLabel: 'Mở Bảng Điều Khiển Đội Xe',
     description:
-      'Khi nhập file Excel đơn hàng, hệ thống tự động đối chiếu địa chỉ từng quận với khung giờ cấm tải theo QĐ 23/2018/QĐ-UBND. Các đơn nội đô giờ hẹn sáng sớm được dời hợp pháp sang sau 09:00.',
+      'Khi nhập file Excel đơn hàng, hệ thống tự động đối chiếu địa chỉ với khung giờ cấm tải theo QĐ 23/2018 (TP.HCM), QĐ 01/2026 (Hà Nội) và quy chuẩn QCVN 41:2024 / TT 53/2024 (xe tải Van <950kg vẫn phải tuân thủ biển P.106a/b). Các đơn nội đô sáng sớm được dời hợp pháp sang sau 09:00.',
     samplePackages: [
       {
         orderCode: 'COLD-2026-0105',

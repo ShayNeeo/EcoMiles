@@ -304,12 +304,15 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
       safeCreateIcons();
     }
 
-    // HCMC Truck Ban Rules (Quy định 23/2018/QĐ-UBND)
-    function isHcmcTruckBan(windowStart, windowEnd) {
+    // QCVN 41:2024 (eff. 01/01/2025) + QD 23/2018 HCM + QD 01/2026 Hanoi
+    function isHcmcTruckBan(windowStart, windowEnd, lat) {
       if (!windowStart || !windowEnd) return false;
-      const s = parseInt(windowStart.split(":")[0], 10);
-      const e = parseInt(windowEnd.split(":")[0], 10);
-      return (s < 9 && e > 6) || (s < 20 && e > 16);
+      const parseM = (t) => { const p = t.split(":"); return (parseInt(p[0], 10) || 0) * 60 + (parseInt(p[1], 10) || 0); };
+      const s = parseM(windowStart);
+      const e = parseM(windowEnd);
+      if (e <= s) return false;
+      if (lat !== undefined && lat >= 20.4) return s < 1260 && e > 360;
+      return (s < 540 && e > 360) || (s < 1200 && e > 960);
     }
 
     async function api(path, opts) {
@@ -397,8 +400,8 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
         stops.forEach((stop, idx) => {
           const isDepot = stop.kind === "depot";
           const icon = createMarkerIcon(idx, route.color || "#36d9a5", isDepot, stop.status);
-          const banNotice = isHcmcTruckBan(stop.window_start, stop.window_end)
-            ? '<span style="color:#f59e0b;font-weight:700">⚠️ Giờ cấm tải TP.HCM (06-09h / 16-20h)</span><br/>'
+          const banNotice = isHcmcTruckBan(stop.window_start, stop.window_end, stop.lat)
+            ? '<span style="color:#f59e0b;font-weight:700">⚠️ Giờ cấm tải (QĐ 23 HCM / QĐ 01/2026 HN · QCVN 41:2024)</span><br/>'
             : '';
           const m = L.marker([stop.lat, stop.lng], { icon })
             .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + esc(stop.address)) + '</b><br/>' +
@@ -513,7 +516,7 @@ export const DISPATCHER_HTML = `<!DOCTYPE html>
           if (s.kind === 'depot') continue;
           const li = document.createElement("li");
           li.className = "stop-item";
-          const hasBan = isHcmcTruckBan(s.window_start, s.window_end);
+          const hasBan = isHcmcTruckBan(s.window_start, s.window_end, s.lat);
           li.innerHTML =
             '<div class="stop-left">' +
               '<span class="stop-seq" style="background:' + r.color + ';color:#000">' + s.seq + '</span>' +

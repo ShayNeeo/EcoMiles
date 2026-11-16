@@ -101,6 +101,7 @@ def test_get_profile_for_vehicle_measured_envelope_derives_aero():
 
 def test_qd23_2500kg_and_van_950kg_thresholds():
     assert get_profile_for_vehicle("xe_van", capacity_kg=945).vehicle_class == "xe_van"
+    assert get_profile_for_vehicle("Transit 16 cho hoan cai", capacity_kg=945).vehicle_class == "xe_van"
     assert get_profile_for_vehicle("xe_van 16 cho", capacity_kg=1100).vehicle_class == "xe_tai_nho"
     assert get_profile_for_vehicle("Xe tai 2.5T", capacity_kg=2500).vehicle_class == "xe_tai_nho"
     assert get_profile_for_vehicle("Xe tai 3.5T", capacity_kg=3500).vehicle_class == "xe_tai_trung"

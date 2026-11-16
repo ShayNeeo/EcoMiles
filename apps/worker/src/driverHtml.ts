@@ -208,11 +208,21 @@ export const DRIVER_HTML = `<!DOCTYPE html>
       }
     }
 
-    function isHcmcTruckBan(start, end) {
-      if (!start || !end) return false;
-      const s = parseInt(start.split(":")[0], 10);
-      const e = parseInt(end.split(":")[0], 10);
-      return (s < 9 && e > 6) || (s < 20 && e > 16);
+    function toMinVN(t) {
+      if (!t || typeof t !== "string") return -1;
+      const parts = t.split(":");
+      return (parseInt(parts[0], 10) || 0) * 60 + (parseInt(parts[1], 10) || 0);
+    }
+
+    // QCVN 41:2024 / TT 53/2024 (eff. 01/01/2025) + QD 23/2018 (HCM) / QD 01/2026 (HN)
+    function isHcmcTruckBan(start, end, lat) {
+      const s = toMinVN(start);
+      const e = toMinVN(end);
+      if (s < 0 || e <= s) return false;
+      if (lat !== undefined && lat >= 20.4) {
+        return s < 1260 && e > 360; // Hanoi QD 01/2026 (>=2T GVW 06:00-21:00)
+      }
+      return (s < 540 && e > 360) || (s < 1200 && e > 960);
     }
 
     async function updateStop(stopId, status, reason = null) {
@@ -272,9 +282,9 @@ export const DRIVER_HTML = `<!DOCTYPE html>
           const card = document.createElement("div");
           card.className = "stop-card " + (s.status || "pending");
           
-          const hasBan = isHcmcTruckBan(s.window_start, s.window_end);
+          const hasBan = isHcmcTruckBan(s.window_start, s.window_end, s.lat);
           const banHtml = hasBan
-            ? '<div class="ban-alert"><i data-lucide="shield-alert" style="width:14px;height:14px"></i><span>Giờ cấm tải TP.HCM (Quyết định 23/2018/QĐ-UBND)</span></div>'
+            ? '<div class="ban-alert"><i data-lucide="shield-alert" style="width:14px;height:14px"></i><span>Giờ cấm tải (QĐ 23 HCM / QĐ 01/2026 HN) · Chú ý P.106a/b QCVN 41:2024 (NĐ 168: phạt 4–6tr, -2đ)</span></div>'
             : '';
 
           const statusText = {

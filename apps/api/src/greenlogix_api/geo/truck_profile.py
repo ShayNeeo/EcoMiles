@@ -145,13 +145,16 @@ def get_profile_for_vehicle(
     # Decision 23/2019/QD-UBND: cargo vans strictly < 950 kg payload are 24/24h exempt.
     # Decision 23/2018/QD-UBND Art. 2: <= 2,500 kg payload is light truck (xe_tai_nho);
     # > 2,500 kg is heavy-tier (xe_tai_trung / xe_tai_nang).
-    if ("van" in v_norm or "xe_van" in v_norm) and cap < 950:
+    is_van_hint = any(
+        tok in v_norm for tok in ("van", "xe_van", "16 cho", "16 chỗ", "16-seat", "transit", "solati")
+    )
+    if is_van_hint and cap < 950:
         base = XE_VAN_945KG
     elif "nang" in v_norm or "nặng" in v_norm or "heavy" in v_norm or cap > 5000:
         base = XE_TAI_NANG_8T
     elif "trung" in v_norm or "medium" in v_norm or cap > 2500:
         base = XE_TAI_TRUNG_3T5
-    elif "nho" in v_norm or "nhỏ" in v_norm or "light" in v_norm or "small" in v_norm or "van" in v_norm or known:
+    elif "nho" in v_norm or "nhỏ" in v_norm or "light" in v_norm or "small" in v_norm or is_van_hint or known:
         base = XE_TAI_NHO_1T5
     else:
         log.warning(

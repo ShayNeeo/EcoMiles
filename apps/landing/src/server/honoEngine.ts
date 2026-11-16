@@ -109,7 +109,20 @@ function jitter(i: number, axis: number): number {
   return (raw - 8.0) / 1000.0;
 }
 
-export function isHcmcTruckBan(wStart?: string, wEnd?: string): boolean {
+export interface TruckBanOptions {
+  lat?: number;
+  lng?: number;
+  city?: 'hcmc' | 'hanoi';
+  vehicleClass?: string;
+  gvwTonnes?: number;
+  strictQcvn41Van?: boolean;
+}
+
+export function isHcmcTruckBan(
+  wStart?: string,
+  wEnd?: string,
+  opts?: TruckBanOptions,
+): boolean {
   if (!wStart || !wEnd) return false;
   const parseMin = (t: string) => {
     const [h, m] = t.split(':').map(Number);
@@ -117,11 +130,30 @@ export function isHcmcTruckBan(wStart?: string, wEnd?: string): boolean {
   };
   const s = parseMin(wStart);
   const e = parseMin(wEnd);
-  // Morning peak: 06:00 - 09:00 (360 - 540)
-  const morning = s < 540 && e > 360;
-  // Afternoon peak: 16:00 - 20:00 (960 - 1200)
-  const afternoon = s < 1200 && e > 960;
-  return morning || afternoon;
+  if (e <= s) return false;
+
+  const city =
+    opts?.city ?? (opts?.lat !== undefined && opts.lat >= 20.4 ? 'hanoi' : 'hcmc');
+  const vc = (opts?.vehicleClass ?? 'xe_tai_nho').toLowerCase().trim();
+
+  if (city === 'hanoi') {
+    // QD 01/2026/QD-UBND Hanoi (eff. 2026-01-15) + TT 53/2024:
+    // GVW < 2.0T: 06:00-09:00 (360-540) & 16:00-19:30 (960-1170)
+    // GVW >= 2.0T (incl. 16-seat stripped vans ~3.3T GVW): 06:00-21:00 (360-1260)
+    const gvw = opts?.gvwTonnes ?? (vc === 'xe_tai_nang' ? 14.0 : vc === 'xe_tai_trung' ? 6.5 : 3.3);
+    if (gvw >= 2.0) return s < 1260 && e > 360;
+    return (s < 540 && e > 360) || (s < 1170 && e > 960);
+  }
+
+  // HCMC (QD 23/2018 & QD 23/2019 + QCVN 41:2024 P.106a/b advisory)
+  if (vc === 'xe_van' && !opts?.strictQcvn41Van) {
+    return false;
+  }
+  if (vc.includes('nang') || vc.includes('heavy') || vc.includes('trung')) {
+    return s < 1320 && e > 360; // 06:00-22:00
+  }
+  // Light trucks <= 2.5T & >= 950kg vans: 06:00-09:00 (360-540) & 16:00-20:00 (960-1200)
+  return (s < 540 && e > 360) || (s < 1200 && e > 960);
 }
 
 export function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {

@@ -411,15 +411,14 @@
       return String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
     }
 
-    // HCMC Truck Ban Rules (Quy định 23/2018/QĐ-UBND)
-    // Minute-level interval overlap: max(start, ban_start) < min(end, ban_end)
-    function isHcmcTruckBan(windowStart, windowEnd) {
+    // QCVN 41:2024 / TT 53/2024 (eff. 01/01/2025) + QD 23/2018 HCM + QD 01/2026 Hanoi
+    function isHcmcTruckBan(windowStart, windowEnd, lat) {
       const s = toMinutes(windowStart);
       const e = toMinutes(windowEnd);
       if (s < 0 || e < 0 || e <= s) return false;
-      // Light truck ban windows under HCMC QĐ 23/2018:
-      // Morning: 06:00 (360m) - 09:00 (540m)
-      // Afternoon: 16:00 (960m) - 20:00 (1200m)
+      if (lat !== undefined && lat >= 20.4) {
+        return s < 1260 && e > 360; // Hanoi QD 01/2026 (>=2T GVW 06:00-21:00)
+      }
       const morningBan = Math.max(s, 360) < Math.min(e, 540);
       const eveningBan = Math.max(s, 960) < Math.min(e, 1200);
       return morningBan || eveningBan;
@@ -726,8 +725,8 @@
         stops.forEach((stop, idx) => {
           const isDepot = stop.kind === "depot";
           const icon = createMarkerIcon(idx, route.color || "#36d9a5", isDepot, stop.status);
-          const banNotice = isHcmcTruckBan(stop.window_start, stop.window_end)
-            ? '<span style="color:#f59e0b;font-weight:700">⚠️ Giờ cấm tải TP.HCM (06-09h / 16-20h)</span><br/>'
+          const banNotice = isHcmcTruckBan(stop.window_start, stop.window_end, stop.lat)
+            ? '<span style="color:#f59e0b;font-weight:700">⚠️ Giờ cấm tải (QĐ 23 HCM / QĐ 01/2026 HN · QCVN 41:2024 P.106a/b)</span><br/>'
             : '';
           const m = L.marker([stop.lat, stop.lng], { icon })
             .bindPopup('<b>' + (isDepot ? 'Kho Tân Bình DC' : 'Điểm #' + idx + ': ' + esc(stop.address)) + '</b><br/>' +
@@ -838,7 +837,7 @@
           const plate = (r.plate || "").toLowerCase();
           if (qVal && !addr.includes(qVal) && !plate.includes(qVal)) continue;
 
-          const hasBan = isHcmcTruckBan(s.window_start, s.window_end);
+          const hasBan = isHcmcTruckBan(s.window_start, s.window_end, s.lat);
           if (lateOnly && !s.late_risk && !hasBan) continue;
 
           const li = document.createElement("li");

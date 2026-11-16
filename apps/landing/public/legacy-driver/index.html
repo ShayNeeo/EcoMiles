@@ -301,15 +301,14 @@
       }
     }
 
-    // HCMC Truck Ban Rules (Quy định 23/2018/QĐ-UBND)
-    // Minute-level interval overlap: max(start, ban_start) < min(end, ban_end)
-    function isHcmcTruckBan(start, end) {
+    // QCVN 41:2024 / TT 53/2024 (eff. 01/01/2025) + QD 23/2018 HCM + QD 01/2026 Hanoi
+    function isHcmcTruckBan(start, end, lat) {
       const s = toMinutes(start);
       const e = toMinutes(end);
       if (s < 0 || e < 0 || e <= s) return false;
-      // Light truck ban windows under HCMC QĐ 23/2018:
-      // Morning: 06:00 (360m) - 09:00 (540m)
-      // Afternoon: 16:00 (960m) - 20:00 (1200m)
+      if (lat !== undefined && lat >= 20.4) {
+        return s < 1260 && e > 360; // Hanoi QD 01/2026 (>=2T GVW 06:00-21:00)
+      }
       const morningBan = Math.max(s, 360) < Math.min(e, 540);
       const eveningBan = Math.max(s, 960) < Math.min(e, 1200);
       return morningBan || eveningBan;
@@ -447,9 +446,9 @@
           const card = document.createElement("div");
           card.className = "stop-card " + (s.status || "pending");
           
-          const hasBan = isHcmcTruckBan(s.window_start, s.window_end);
+          const hasBan = isHcmcTruckBan(s.window_start, s.window_end, s.lat);
           const banHtml = hasBan
-            ? '<div class="ban-alert"><i data-lucide="shield-alert" style="width:14px;height:14px"></i><span>Giờ cấm tải TP.HCM (Quyết định 23/2018/QĐ-UBND)</span></div>'
+            ? '<div class="ban-alert"><i data-lucide="shield-alert" style="width:14px;height:14px"></i><span>Giờ cấm tải (QĐ 23 HCM / QĐ 01/2026 HN) · Biển P.106a/b QCVN 41:2024 (NĐ 168: 4-6tr, -2đ GPLX)</span></div>'
             : '';
 
           const statusText = {

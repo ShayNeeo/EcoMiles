@@ -140,12 +140,13 @@ def _effective_stop_window(
     v_class: str,
     *,
     enforce_truck_ban: bool,
+    gvw_t: float | None = None,
 ) -> tuple[int, int] | None:
     if not enforce_truck_ban:
         return (int(stop.window_start_min), int(stop.window_end_min))
     w_start = f"{int(stop.window_start_min) // 60:02d}:{int(stop.window_start_min) % 60:02d}"
     w_end = f"{int(stop.window_end_min) // 60:02d}:{int(stop.window_end_min) % 60:02d}"
-    return feasible_service_window(w_start, w_end, v_class, lat=stop.lat, lng=stop.lng)
+    return feasible_service_window(w_start, w_end, v_class, lat=stop.lat, lng=stop.lng, gvw_t=gvw_t)
 
 
 def _tour_schedule_feasible(
@@ -154,6 +155,7 @@ def _tour_schedule_feasible(
     depot_lng: float,
     v_class: str,
     *,
+    gvw_t: float | None = None,
     pair_km: DistanceFn | None = None,
     enforce_time_windows: bool = False,
     enforce_truck_ban: bool = False,
@@ -163,7 +165,7 @@ def _tour_schedule_feasible(
     cur_lat, cur_lng = depot_lat, depot_lng
     cur_time = 480.0  # 08:00 shift start
     for s in stops:
-        win = _effective_stop_window(s, v_class, enforce_truck_ban=enforce_truck_ban)
+        win = _effective_stop_window(s, v_class, enforce_truck_ban=enforce_truck_ban, gvw_t=gvw_t)
         if win is None:
             return False
         eff_start, eff_end = win
@@ -192,7 +194,9 @@ def _insertion_fuel_delta(
     if sum(s.kg for s in tour.stops) + customer.kg > tour.capacity_kg:
         return float("inf")
 
-    v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+    profile = getattr(tour, "profile", None)
+    v_class = getattr(profile, "vehicle_class", "xe_tai_nho")
+    gvw_t = getattr(profile, "gross_vehicle_weight_t", None)
     if enforce_truck_ban or enforce_time_windows:
         candidate_stops = [*tour.stops[:pos], customer, *tour.stops[pos:]]
         if not _tour_schedule_feasible(
@@ -200,6 +204,7 @@ def _insertion_fuel_delta(
             depot_lat,
             depot_lng,
             v_class,
+            gvw_t=gvw_t,
             pair_km=pair_km,
             enforce_time_windows=enforce_time_windows,
             enforce_truck_ban=enforce_truck_ban,
@@ -378,12 +383,13 @@ def ban_window_removal_destroy(
         if not tour.stops:
             continue
         v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+        gvw_t = getattr(getattr(tour, "profile", None), "gross_vehicle_weight_t", None)
         for si, stop in enumerate(tour.stops):
             try:
                 w_start = f"{int(stop.window_start_min) // 60:02d}:{int(stop.window_start_min) % 60:02d}"
                 w_end = f"{int(stop.window_end_min) // 60:02d}:{int(stop.window_end_min) % 60:02d}"
                 restricted = bool(
-                    check_truck_ban(w_start, w_end, v_class, lat=stop.lat, lng=stop.lng).is_restricted
+                    check_truck_ban(w_start, w_end, v_class, lat=stop.lat, lng=stop.lng, gvw_t=gvw_t).is_restricted
                 )
             except Exception:
                 restricted = False
@@ -565,7 +571,9 @@ def _polish_tour_2opt(
     n = len(tour.stops)
     if n < 3:
         return
-    v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+    profile = getattr(tour, "profile", None)
+    v_class = getattr(profile, "vehicle_class", "xe_tai_nho")
+    gvw_t = getattr(profile, "gross_vehicle_weight_t", None)
     _, best_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng, pair_km=pair_km)
     improved = True
     while improved:
@@ -578,6 +586,7 @@ def _polish_tour_2opt(
                     depot_lat,
                     depot_lng,
                     v_class,
+                    gvw_t=gvw_t,
                     pair_km=pair_km,
                     enforce_time_windows=enforce_time_windows,
                     enforce_truck_ban=enforce_truck_ban,
@@ -649,12 +658,15 @@ def solve_eco_alns(
         for tour in solution.tours:
             current_kg = sum(s.kg for s in tour.stops)
             if current_kg + c.kg <= tour.capacity_kg:
-                v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+                profile = getattr(tour, "profile", None)
+                v_class = getattr(profile, "vehicle_class", "xe_tai_nho")
+                gvw_t = getattr(profile, "gross_vehicle_weight_t", None)
                 if (enforce_truck_ban or enforce_time_windows) and not _tour_schedule_feasible(
                     [*tour.stops, c],
                     depot_lat,
                     depot_lng,
                     v_class,
+                    gvw_t=gvw_t,
                     pair_km=pair_km,
                     enforce_time_windows=enforce_time_windows,
                     enforce_truck_ban=enforce_truck_ban,

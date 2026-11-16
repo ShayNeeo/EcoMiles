@@ -1,13 +1,20 @@
-"""Vietnam urban truck restriction overlay.
+"""Vietnam urban truck & cargo-van restriction overlay (2025-2026 statutes).
 
-Implements legal truck restriction rules based on HCMC Decision 23/2018/QD-UBND
-(amended by Decision 23/2019/QD-UBND):
-- Exempt vans (< 950 kg payload / xe_van, plus pickup trucks): Permitted 24/24h.
-- Light trucks (<= 2.5T / xe_tai_nho, and converted vans >= 950 kg): Prohibited
-  from 06:00-09:00 and 16:00-20:00 within the inner-city ring corridor (Art. 4).
-- Heavy trucks (> 2.5T / xe_tai_trung, xe_tai_nang): Prohibited from 06:00-22:00
-  within the inner-city ring corridor (permitted 22:00-06:00).
-- Bounding ring highways and all outer-ring areas are 24/24h exempt (Art. 4.2).
+Implements legal routing rules across HCMC and Hanoi:
+1. National classification (QCVN 41:2024/BGTVT & Circular 53/2024/TT-BGTVT,
+   effective 2025-01-01): Abolished < 950 kg van passenger-car equivalence.
+   Cargo vans (including 16-seat stripped Transit/Solati) are trucks (ô tô tải)
+   and must obey street-level P.106a / P.106b signs (Decree 168/2024/ND-CP:
+   4-6M VND fine + 2 driver license points).
+2. HCMC (Decision 23/2018/QD-UBND & 23/2019/QD-UBND):
+   - Exempt vans (< 950 kg / xe_van): 24/24h inner-ring curfew exemption
+     (advisory on P.106a/b local street signs; optional strict peak toggle).
+   - Light trucks (<= 2.5T / xe_tai_nho, vans >= 950 kg): 06:00-09:00 & 16:00-20:00.
+   - Heavy trucks (> 2.5T / xe_tai_trung, xe_tai_nang): 06:00-22:00.
+3. Hanoi (Decision 01/2026/QD-UBND, effective 2026-01-15 inside Vanh Dai 3):
+   - Classified by gross vehicle weight (GVW / khoi luong toan bo):
+   - GVW < 2.0T: 06:00-09:00 & 16:00-19:30 (no <950kg van exemption).
+   - GVW >= 2.0T (including ~3.3T 16-seat Transit/Solati vans): 06:00-21:00.
 """
 
 from __future__ import annotations
@@ -32,10 +39,10 @@ class RestrictionRule:
     legal_reference: str = "Quyet dinh 23/2018/QD-UBND TP.HCM"
 
 
-# Standard HCMC Decision 23 restriction rules
+# Standard HCMC Decision 23 + Hanoi Decision 01/2026 restriction rules
 HCMC_LIGHT_TRUCK_MORNING_BAN = RestrictionRule(
     rule_id="HCMC_BAN_LIGHT_AM",
-    name="Giờ cấm tải sáng (Xe tải nhỏ < 2.5T)",
+    name="Giờ cấm tải sáng (Xe tải nhỏ <= 2.5T)",
     vehicle_class="xe_tai_nho",
     start_time=time(6, 0),
     end_time=time(9, 0),
@@ -43,7 +50,7 @@ HCMC_LIGHT_TRUCK_MORNING_BAN = RestrictionRule(
 
 HCMC_LIGHT_TRUCK_EVENING_BAN = RestrictionRule(
     rule_id="HCMC_BAN_LIGHT_PM",
-    name="Giờ cấm tải chiều (Xe tải nhỏ < 2.5T)",
+    name="Giờ cấm tải chiều (Xe tải nhỏ <= 2.5T)",
     vehicle_class="xe_tai_nho",
     start_time=time(16, 0),
     end_time=time(20, 0),
@@ -51,17 +58,52 @@ HCMC_LIGHT_TRUCK_EVENING_BAN = RestrictionRule(
 
 HCMC_HEAVY_TRUCK_DAY_BAN = RestrictionRule(
     rule_id="HCMC_BAN_HEAVY_DAY",
-    name="Giờ cấm tải ban ngày (Xe tải nặng >= 2.5T)",
+    name="Giờ cấm tải ban ngày (Xe tải nặng > 2.5T)",
     vehicle_class="xe_tai_nang",
     start_time=time(6, 0),
     end_time=time(22, 0),
+)
+
+HANOI_LT_2T_MORNING_BAN = RestrictionRule(
+    rule_id="HN_BAN_LT2T_AM",
+    name="Giờ cấm tải sáng Hà Nội (Tổng tải < 2T)",
+    vehicle_class="hanoi_lt_2t",
+    start_time=time(6, 0),
+    end_time=time(9, 0),
+    legal_reference="Quyet dinh 01/2026/QD-UBND Ha Noi & QCVN 41:2024",
+)
+
+HANOI_LT_2T_EVENING_BAN = RestrictionRule(
+    rule_id="HN_BAN_LT2T_PM",
+    name="Giờ cấm tải chiều Hà Nội (Tổng tải < 2T)",
+    vehicle_class="hanoi_lt_2t",
+    start_time=time(16, 0),
+    end_time=time(19, 30),
+    legal_reference="Quyet dinh 01/2026/QD-UBND Ha Noi & QCVN 41:2024",
+)
+
+HANOI_GE_2T_DAY_BAN = RestrictionRule(
+    rule_id="HN_BAN_GE2T_DAY",
+    name="Cấm ban ngày Hà Nội (Tổng tải >= 2T gồm xe Van 16 chỗ)",
+    vehicle_class="hanoi_ge_2t",
+    start_time=time(6, 0),
+    end_time=time(21, 0),
+    legal_reference="Quyet dinh 01/2026/QD-UBND Ha Noi & QCVN 41:2024",
 )
 
 ACTIVE_RULES: list[RestrictionRule] = [
     HCMC_LIGHT_TRUCK_MORNING_BAN,
     HCMC_LIGHT_TRUCK_EVENING_BAN,
     HCMC_HEAVY_TRUCK_DAY_BAN,
+    HANOI_LT_2T_MORNING_BAN,
+    HANOI_LT_2T_EVENING_BAN,
+    HANOI_GE_2T_DAY_BAN,
 ]
+
+QCVN41_VAN_ADVISORY = (
+    "QCVN 41:2024 & TT 53/2024 (từ 01/01/2025): Xe tải van <950kg là xe tải, "
+    "phải tuân thủ biển P.106a/P.106b cục bộ (NĐ 168/2024: phạt 4-6tr + trừ 2 điểm GPLX)."
+)
 
 
 @dataclass(frozen=True)
@@ -70,6 +112,8 @@ class RestrictionCheckResult:
     matched_rule: RestrictionRule | None = None
     reason: str = ""
     penalty_cost: float = 0.0
+    street_sign_advisory: str = ""
+    city_regime: str = "hcmc"
 
 
 def parse_time_str(val: str) -> time | None:
@@ -111,23 +155,72 @@ HCMC_INNER_CITY_RING_POLYGON: tuple[tuple[float, float], ...] = (
 )
 
 
-def is_in_hcmc_inner_city(lat: float, lng: float) -> bool:
-    """Return True iff (lat, lng) lies strictly inside the QĐ 23/2018 inner-city ring."""
+# Clockwise Hanoi Decision 01/2026/QD-UBND Vanh Dai 3 polygon (eff. 2026-01-15)
+HANOI_VD3_RING_POLYGON: tuple[tuple[float, float], ...] = (
+    (21.0973, 105.7865),  # Cau Thang Long / Pham Van Dong
+    (21.1120, 105.8240),  # Dong Hoi / Truong Sa
+    (21.0699, 105.8630),  # Cau Dong Tru / Long Bien
+    (21.0269, 105.8971),  # Co Linh / Thach Ban
+    (21.0128, 105.9186),  # Co Linh / VD3 east
+    (20.9724, 105.8871),  # Cau Thanh Tri
+    (20.9626, 105.8527),  # Phap Van Interchange
+    (20.9723, 105.8268),  # Nguyen Xien / Linh Dam
+    (20.9924, 105.8049),  # Khuat Duy Tien x Nguyen Trai
+    (21.0080, 105.7869),  # Tran Duy Hung x Pham Hung
+    (21.0368, 105.7803),  # Mai Dich
+)
+
+
+def _point_in_polygon(lat: float, lng: float, polygon: tuple[tuple[float, float], ...]) -> bool:
     inside = False
-    n = len(HCMC_INNER_CITY_RING_POLYGON)
+    n = len(polygon)
     for i in range(n):
-        y1, x1 = HCMC_INNER_CITY_RING_POLYGON[i]
-        y2, x2 = HCMC_INNER_CITY_RING_POLYGON[(i + 1) % n]
+        y1, x1 = polygon[i]
+        y2, x2 = polygon[(i + 1) % n]
         if ((y1 > lat) != (y2 > lat)) and (lng < (x2 - x1) * (lat - y1) / (y2 - y1 + 1e-12) + x1):
             inside = not inside
     return inside
 
 
-def _normalize_restriction_class(vehicle_class: str) -> str | None:
-    """Map TruckClass to curfew tier, or None when legally 24/24h exempt."""
+def is_in_hcmc_inner_city(lat: float, lng: float) -> bool:
+    """Return True iff (lat, lng) lies strictly inside the QD 23/2018 inner-city ring."""
+    return _point_in_polygon(lat, lng, HCMC_INNER_CITY_RING_POLYGON)
+
+
+def is_in_hanoi_inner_city(lat: float, lng: float) -> bool:
+    """Return True iff (lat, lng) lies strictly inside Hanoi Vanh Dai 3 (QD 01/2026)."""
+    return _point_in_polygon(lat, lng, HANOI_VD3_RING_POLYGON)
+
+
+def detect_city_regime(lat: float | None = None, lng: float | None = None) -> str:
+    """Infer 'hanoi' vs 'hcmc' statutory regime from latitude."""
+    if lat is not None and float(lat) >= 20.4:
+        return "hanoi"
+    return "hcmc"
+
+
+def _normalize_restriction_class(
+    vehicle_class: str,
+    *,
+    city_regime: str = "hcmc",
+    gvw_t: float | None = None,
+    strict_qcvn41_van: bool = False,
+) -> str | None:
+    """Map TruckClass + GVW + city statute to rule key, or None when hours are exempt."""
     vc = (vehicle_class or "").lower().strip()
+    if city_regime == "hanoi":
+        # QD 01/2026/QD-UBND (eff. 2026-01-15) classifies ALL cargo vans & trucks by GVW:
+        # < 2.0T GVW -> peak hours 06-09 & 16-19:30; >= 2.0T GVW (incl. 16-seat vans) -> 06-21.
+        eff_gvw = gvw_t if gvw_t is not None else (
+            14.0 if ("nang" in vc or "nặng" in vc or "heavy" in vc) else (
+                6.5 if ("trung" in vc or "medium" in vc) else 3.3
+            )
+        )
+        return "hanoi_ge_2t" if eff_gvw >= 2.0 else "hanoi_lt_2t"
+
+    # HCMC regime (QD 23/2018 + QD 23/2019 + QCVN 41:2024 awareness)
     if vc == "xe_van":
-        return None
+        return "xe_tai_nho" if strict_qcvn41_van else None
     if "nang" in vc or "nặng" in vc or "heavy" in vc or "trung" in vc or "medium" in vc:
         return "xe_tai_nang"
     return "xe_tai_nho"
@@ -137,10 +230,13 @@ def _resolve_inner_city(
     in_inner_city: bool | None,
     lat: float | None,
     lng: float | None,
+    city_regime: str = "hcmc",
 ) -> bool:
     if in_inner_city is not None:
         return in_inner_city
     if lat is not None and lng is not None:
+        if city_regime == "hanoi":
+            return is_in_hanoi_inner_city(float(lat), float(lng))
         return is_in_hcmc_inner_city(float(lat), float(lng))
     return True
 
@@ -153,19 +249,30 @@ def check_truck_ban(
     in_inner_city: bool | None = None,
     lat: float | None = None,
     lng: float | None = None,
+    city: str | None = None,
+    gvw_t: float | None = None,
+    strict_qcvn41_van: bool = False,
 ) -> RestrictionCheckResult:
-    """Evaluate whether delivery time window overlaps urban truck restrictions."""
-    if not _resolve_inner_city(in_inner_city, lat, lng):
-        return RestrictionCheckResult(is_restricted=False)
+    """Evaluate delivery time window under HCMC QD 23/2018, Hanoi QD 01/2026 & QCVN 41:2024."""
+    regime = (city or detect_city_regime(lat, lng)).lower()
+    advisory = QCVN41_VAN_ADVISORY if (vehicle_class or "").lower().strip() == "xe_van" else ""
 
-    v_class = _normalize_restriction_class(vehicle_class)
+    if not _resolve_inner_city(in_inner_city, lat, lng, regime):
+        return RestrictionCheckResult(is_restricted=False, street_sign_advisory=advisory, city_regime=regime)
+
+    v_class = _normalize_restriction_class(
+        vehicle_class,
+        city_regime=regime,
+        gvw_t=gvw_t,
+        strict_qcvn41_van=strict_qcvn41_van,
+    )
     if v_class is None:
-        return RestrictionCheckResult(is_restricted=False)
+        return RestrictionCheckResult(is_restricted=False, street_sign_advisory=advisory, city_regime=regime)
 
     w_start = parse_time_str(window_start)
     w_end = parse_time_str(window_end)
     if w_start is None or w_end is None:
-        return RestrictionCheckResult(is_restricted=False)
+        return RestrictionCheckResult(is_restricted=False, street_sign_advisory=advisory, city_regime=regime)
 
     for rule in ACTIVE_RULES:
         if rule.vehicle_class != v_class:
@@ -176,9 +283,11 @@ def check_truck_ban(
                 matched_rule=rule,
                 reason=f"Vi phạm {rule.name} [{rule.start_time.strftime('%H:%M')} - {rule.end_time.strftime('%H:%M')}] theo {rule.legal_reference}",
                 penalty_cost=50.0,
+                street_sign_advisory=advisory,
+                city_regime=regime,
             )
 
-    return RestrictionCheckResult(is_restricted=False)
+    return RestrictionCheckResult(is_restricted=False, street_sign_advisory=advisory, city_regime=regime)
 
 
 def feasible_service_window(
@@ -189,6 +298,9 @@ def feasible_service_window(
     in_inner_city: bool | None = None,
     lat: float | None = None,
     lng: float | None = None,
+    city: str | None = None,
+    gvw_t: float | None = None,
+    strict_qcvn41_van: bool = False,
 ) -> tuple[int, int] | None:
     """Return legal non-curfew (start_min, end_min) sub-window, or None if 100% banned."""
     w_start = parse_time_str(window_start)
@@ -200,10 +312,16 @@ def feasible_service_window(
     if e_min <= s_min:
         return None
 
-    if not _resolve_inner_city(in_inner_city, lat, lng):
+    regime = (city or detect_city_regime(lat, lng)).lower()
+    if not _resolve_inner_city(in_inner_city, lat, lng, regime):
         return (s_min, e_min)
 
-    v_class = _normalize_restriction_class(vehicle_class)
+    v_class = _normalize_restriction_class(
+        vehicle_class,
+        city_regime=regime,
+        gvw_t=gvw_t,
+        strict_qcvn41_van=strict_qcvn41_van,
+    )
     if v_class is None:
         return (s_min, e_min)
 
