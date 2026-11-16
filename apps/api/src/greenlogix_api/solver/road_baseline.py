@@ -529,7 +529,7 @@ def evaluate_restriction_coverage(
     orders: Sequence[Any],
     vehicle_class: str = "xe_tai_nho",
     *,
-    in_inner_city: bool = True,
+    in_inner_city: bool | None = None,
     overlay_version: str | None = None,
 ) -> str:
     """Call ``geo.restrictions.check_truck_ban`` per order window.
@@ -548,11 +548,15 @@ def evaluate_restriction_coverage(
         return restriction_coverage_label(False, overlay_version=overlay)
     try:
         for order in items:
+            lat = getattr(order, "lat", None)
+            lng = getattr(order, "lng", None)
             result = check_truck_ban(
                 getattr(order, "window_start", "") or "",
                 getattr(order, "window_end", "") or "",
                 vehicle_class,
                 in_inner_city=in_inner_city,
+                lat=lat,
+                lng=lng,
             )
             if result.is_restricted:
                 return restriction_coverage_label(True, True, overlay)

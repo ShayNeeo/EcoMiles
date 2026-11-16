@@ -97,3 +97,10 @@ def test_get_profile_for_vehicle_measured_envelope_derives_aero():
     # Axle unset -> Valhalla fallback gvw/2, never silent wrong value.
     assert p.axle_load_t is None
     assert p.to_valhalla_truck_options()["axle_load"] == round(4.5 / 2.0, 2)
+
+
+def test_qd23_2500kg_and_van_950kg_thresholds():
+    assert get_profile_for_vehicle("xe_van", capacity_kg=945).vehicle_class == "xe_van"
+    assert get_profile_for_vehicle("xe_van 16 cho", capacity_kg=1100).vehicle_class == "xe_tai_nho"
+    assert get_profile_for_vehicle("Xe tai 2.5T", capacity_kg=2500).vehicle_class == "xe_tai_nho"
+    assert get_profile_for_vehicle("Xe tai 3.5T", capacity_kg=3500).vehicle_class == "xe_tai_trung"

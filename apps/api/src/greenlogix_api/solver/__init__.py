@@ -7,7 +7,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 
 from greenlogix_api.carbon import kg_co2, litres_used
-from greenlogix_api.geo.restrictions import check_truck_ban
+from greenlogix_api.geo.restrictions import check_truck_ban, feasible_service_window
 from greenlogix_api.geo.restrictions import parse_time_str as parse_hhmm
 from greenlogix_api.geo.truck_profile import (
     DEFAULT_TRUCK_PROFILE,
@@ -373,18 +373,36 @@ def run_vrp(
     unassigned_ids: list[int] = []
     candidate_orders: list[Order] = []
 
+    ready_for_filter = [v for v in vehicles if v.status == "ready"] or list(vehicles)
     for order in orders:
-        is_ban = False
-        ban_res = check_truck_ban(order.window_start, order.window_end, primary_class)
-        if ban_res.is_restricted:
-            is_ban = True
+        is_ban = True
+        eff_win: tuple[int, int] | None = None
+        for v in ready_for_filter:
+            if v.capacity_kg < order.kg:
+                continue
+            v_cls = vehicle_profiles.get(v.id or v.plate, primary_profile or DEFAULT_TRUCK_PROFILE).vehicle_class
+            win = feasible_service_window(
+                order.window_start,
+                order.window_end,
+                v_cls,
+                lat=order.lat,
+                lng=order.lng,
+            )
+            if win is not None:
+                is_ban = False
+                eff_win = win
+                break
+        if not ready_for_filter:
+            is_ban = False
 
         is_tw_impossible = False
         end_t = parse_hhmm(order.window_end)
-        if end_t is not None:
+        end_min = eff_win[1] if (enforce_truck_ban and eff_win is not None) else (
+            (end_t.hour * 60 + end_t.minute) if end_t is not None else None
+        )
+        if end_min is not None:
             travel_min = pair_km(depot[0], depot[1], order.lat, order.lng) / 30.0 * 60.0
             earliest_arr = 480.0 + travel_min
-            end_min = end_t.hour * 60 + end_t.minute
             if earliest_arr > end_min:
                 is_tw_impossible = True
 
@@ -443,6 +461,7 @@ def run_vrp(
             depot[1],
             enforce_time_windows=enforce_time_windows,
             enforce_truck_ban=enforce_truck_ban,
+            pair_km=pair_km,
         )
         for un in eco_sol.unassigned:
             if un.order_id and un.order_id not in unassigned_ids:
@@ -454,6 +473,7 @@ def run_vrp(
             if not tour.stops:
                 continue
             vehicle = v_by_id.get(tour.vehicle_id) or v_by_plate.get(tour.plate) or ready_vehicles[0]
+            r_vclass = getattr(tour.profile, "vehicle_class", primary_class)
             tour_orders = [orders_by_id[s.order_id] for s in tour.stops if s.order_id in orders_by_id]
             if not tour_orders:
                 continue
@@ -462,18 +482,28 @@ def run_vrp(
                 curr_loc = depot
                 curr_time = 480.0
                 for o in tour_orders:
+                    win = (
+                        feasible_service_window(o.window_start, o.window_end, r_vclass, lat=o.lat, lng=o.lng)
+                        if enforce_truck_ban
+                        else None
+                    )
+                    if enforce_truck_ban and win is None:
+                        if o.id is not None and o.id not in unassigned_ids:
+                            unassigned_ids.append(o.id)
+                        continue
                     t_min = pair_km(curr_loc[0], curr_loc[1], o.lat, o.lng) / 30.0 * 60.0
                     arr_min = curr_time + t_min
                     et = parse_hhmm(o.window_end)
-                    if et is not None and arr_min > (et.hour * 60 + et.minute):
+                    eff_end = win[1] if win is not None else ((et.hour * 60 + et.minute) if et is not None else None)
+                    if eff_end is not None and arr_min > eff_end:
                         if o.id is not None and o.id not in unassigned_ids:
                             unassigned_ids.append(o.id)
                     else:
                         valid_orders.append(o)
                         curr_loc = (o.lat, o.lng)
                         st = parse_hhmm(o.window_start)
-                        s_min = (st.hour * 60 + st.minute) if st else 480
-                        curr_time = max(arr_min, float(s_min))
+                        eff_start = win[0] if win is not None else ((st.hour * 60 + st.minute) if st else 480)
+                        curr_time = max(arr_min, float(eff_start))
                 tour_orders = valid_orders
 
             if not tour_orders:
@@ -564,22 +594,34 @@ def run_vrp(
     ban_conflicts = 0
     time_window_conflicts = 0
     for r in routes:
+        r_key = r.vehicle.id if r.vehicle.id is not None else r.vehicle.plate
+        r_vclass = vehicle_profiles.get(r_key, primary_profile or DEFAULT_TRUCK_PROFILE).vehicle_class
         curr_loc = depot
         curr_time = 480.0
         for s in r.stops:
             if s.kind == "depot":
                 continue
-            if check_truck_ban(s.window_start, s.window_end, primary_class).is_restricted:
-                ban_conflicts += 1
+            win = (
+                feasible_service_window(s.window_start, s.window_end, r_vclass, lat=s.lat, lng=s.lng)
+                if enforce_truck_ban
+                else None
+            )
+            if enforce_truck_ban:
+                if win is None:
+                    ban_conflicts += 1
+            else:
+                if check_truck_ban(s.window_start, s.window_end, r_vclass, lat=s.lat, lng=s.lng).is_restricted:
+                    ban_conflicts += 1
             t_min = pair_km(curr_loc[0], curr_loc[1], s.lat, s.lng) / 30.0 * 60.0
             arr_min = curr_time + t_min
             et = parse_hhmm(s.window_end)
-            if et is not None and arr_min > (et.hour * 60 + et.minute):
+            eff_end = win[1] if win is not None else ((et.hour * 60 + et.minute) if et is not None else None)
+            if eff_end is not None and arr_min > eff_end:
                 time_window_conflicts += 1
             curr_loc = (s.lat, s.lng)
             st = parse_hhmm(s.window_start)
-            s_min = (st.hour * 60 + st.minute) if st else 480
-            curr_time = max(arr_min, float(s_min))
+            eff_start = win[0] if win is not None else ((st.hour * 60 + st.minute) if st else 480)
+            curr_time = max(arr_min, float(eff_start))
 
     all_routed_stops = [s for r in routes for s in r.stops if s.kind != "depot"]
     restriction_coverage = evaluate_restriction_coverage(all_routed_stops, primary_class)

@@ -1,4 +1,4 @@
-from greenlogix_api.geo.truck_profile import XE_TAI_NHO_1T5
+from greenlogix_api.geo.truck_profile import XE_TAI_NHO_1T5, XE_VAN_945KG
 from greenlogix_api.optimizer.eco_alns import (
     CustomerNode,
     VehicleTour,
@@ -57,3 +57,43 @@ def test_solve_eco_alns_enforce_constraints():
     assigned_ids = [s.order_id for t in sol.tours for s in t.stops]
     assert 1 not in assigned_ids
     assert 2 in assigned_ids
+
+
+def test_solve_eco_alns_outer_ring_trimmed_window_and_van_exempt():
+    depot_lat, depot_lng = 10.8753, 106.6476  # District 12 outer ring depot
+    customers = [
+        # Outer ring 07:30-08:30 (legal for xe_tai_nho outside ring)
+        CustomerNode(order_id=1, lat=10.8700, lng=106.6400, kg=100, window_start_min=450, window_end_min=510),
+        # Inner city 08:00-10:30 (trimmed legally to 09:00-10:30 for xe_tai_nho)
+        CustomerNode(order_id=2, lat=10.7765, lng=106.7008, kg=100, window_start_min=480, window_end_min=630),
+        # Inner city 07:30-08:30 (only legal for <950kg xe_van)
+        CustomerNode(order_id=3, lat=10.7780, lng=106.7010, kg=50, window_start_min=450, window_end_min=510),
+    ]
+    truck = [VehicleTour(vehicle_id=1, plate="51C-2T5", capacity_kg=2500, profile=XE_TAI_NHO_1T5)]
+    sol_truck = solve_eco_alns(
+        customers,
+        truck,
+        depot_lat,
+        depot_lng,
+        iterations=10,
+        seed=42,
+        enforce_truck_ban=True,
+        pair_km=lambda a, b, c, d: 2.0,
+    )
+    truck_assigned = {s.order_id for t in sol_truck.tours for s in t.stops}
+    assert truck_assigned == {1, 2}
+    assert [u.order_id for u in sol_truck.unassigned] == [3]
+
+    van = [VehicleTour(vehicle_id=2, plate="51B-VAN", capacity_kg=945, profile=XE_VAN_945KG)]
+    sol_van = solve_eco_alns(
+        customers,
+        van,
+        depot_lat,
+        depot_lng,
+        iterations=10,
+        seed=42,
+        enforce_truck_ban=True,
+        pair_km=lambda a, b, c, d: 2.0,
+    )
+    assert sol_van.unassigned == []
+    assert sol_van.total_km > 0

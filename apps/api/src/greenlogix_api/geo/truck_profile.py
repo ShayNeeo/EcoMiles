@@ -97,6 +97,21 @@ XE_TAI_NANG_8T = TruckProfile(
     cd=0.75,
 )
 
+XE_VAN_945KG = TruckProfile(
+    name="Xe tải van < 950 kg (Transit/Solati hoán cải nội đô 24/24)",
+    vehicle_class="xe_van",
+    height_m=2.3,
+    width_m=2.0,
+    length_m=5.7,
+    gross_vehicle_weight_t=3.3,
+    empty_weight_kg=2350.0,
+    max_payload_kg=945.0,
+    fuel_type="diesel",
+    rated_l_per_100km=10.8,
+    frontal_area_m2=4.6,
+    cd=0.58,
+)
+
 DEFAULT_TRUCK_PROFILE = XE_TAI_NHO_1T5
 
 
@@ -125,12 +140,18 @@ def get_profile_for_vehicle(
     otherwise derived (axle gvw/2, area w*h, cd class preset).
     """
     v_norm = (vehicle_type or "").lower().strip()
-    known = bool(v_norm) or (capacity_kg or 0) > 0
-    if "nang" in v_norm or "heavy" in v_norm or (capacity_kg or 0) > 5000:
+    cap = capacity_kg or 0
+    known = bool(v_norm) or cap > 0
+    # Decision 23/2019/QD-UBND: cargo vans strictly < 950 kg payload are 24/24h exempt.
+    # Decision 23/2018/QD-UBND Art. 2: <= 2,500 kg payload is light truck (xe_tai_nho);
+    # > 2,500 kg is heavy-tier (xe_tai_trung / xe_tai_nang).
+    if ("van" in v_norm or "xe_van" in v_norm) and cap < 950:
+        base = XE_VAN_945KG
+    elif "nang" in v_norm or "nặng" in v_norm or "heavy" in v_norm or cap > 5000:
         base = XE_TAI_NANG_8T
-    elif "trung" in v_norm or "medium" in v_norm or (capacity_kg or 0) > 2000:
+    elif "trung" in v_norm or "medium" in v_norm or cap > 2500:
         base = XE_TAI_TRUNG_3T5
-    elif "van" in v_norm or "nho" in v_norm or "light" in v_norm or "small" in v_norm or known:
+    elif "nho" in v_norm or "nhỏ" in v_norm or "light" in v_norm or "small" in v_norm or "van" in v_norm or known:
         base = XE_TAI_NHO_1T5
     else:
         log.warning(

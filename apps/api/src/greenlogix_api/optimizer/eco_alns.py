@@ -15,9 +15,23 @@ from dataclasses import dataclass, field
 
 from greenlogix_api.energy.base import EnergyModel
 from greenlogix_api.energy.hdt_v1 import HdtEnergyModelV1
-from greenlogix_api.geo.restrictions import check_truck_ban
+from greenlogix_api.geo.restrictions import check_truck_ban, feasible_service_window
 from greenlogix_api.geo.truck_profile import DEFAULT_TRUCK_PROFILE, TruckProfile
 from greenlogix_api.solver.distance import haversine_km
+
+DistanceFn = Callable[[float, float, float, float], float]
+
+
+def _seg_km(
+    lat1: float,
+    lng1: float,
+    lat2: float,
+    lng2: float,
+    pair_km: DistanceFn | None = None,
+) -> float:
+    if pair_km is not None:
+        return pair_km(lat1, lng1, lat2, lng2)
+    return haversine_km(lat1, lng1, lat2, lng2) * 1.35
 
 
 @dataclass
@@ -62,6 +76,7 @@ def evaluate_tour_metrics(
     depot_lat: float,
     depot_lng: float,
     energy_model: EnergyModel | None = None,
+    pair_km: DistanceFn | None = None,
 ) -> tuple[float, float, float]:
     """Compute total distance (km), fuel (litres), and CO2 (kg) for a tour."""
     model = energy_model or HdtEnergyModelV1()
@@ -78,7 +93,7 @@ def evaluate_tour_metrics(
     # Leg 1: Depot to Stop 1
     prev_lat, prev_lng = depot_lat, depot_lng
     for stop in tour.stops:
-        leg_km = haversine_km(prev_lat, prev_lng, stop.lat, stop.lng) * 1.35
+        leg_km = _seg_km(prev_lat, prev_lng, stop.lat, stop.lng, pair_km)
         est = model.estimate_segment_energy(
             length_km=leg_km,
             profile=tour.profile,
@@ -94,7 +109,7 @@ def evaluate_tour_metrics(
         prev_lat, prev_lng = stop.lat, stop.lng
 
     # Return leg: Last stop back to Depot
-    return_km = haversine_km(prev_lat, prev_lng, depot_lat, depot_lng) * 1.35
+    return_km = _seg_km(prev_lat, prev_lng, depot_lat, depot_lng, pair_km)
     est_return = model.estimate_segment_energy(
         length_km=return_km,
         profile=tour.profile,
@@ -120,6 +135,48 @@ def _roulette_choice(rng: random.Random, weights: dict[str, float]) -> str:
     return next(reversed(weights))
 
 
+def _effective_stop_window(
+    stop: CustomerNode,
+    v_class: str,
+    *,
+    enforce_truck_ban: bool,
+) -> tuple[int, int] | None:
+    if not enforce_truck_ban:
+        return (int(stop.window_start_min), int(stop.window_end_min))
+    w_start = f"{int(stop.window_start_min) // 60:02d}:{int(stop.window_start_min) % 60:02d}"
+    w_end = f"{int(stop.window_end_min) // 60:02d}:{int(stop.window_end_min) % 60:02d}"
+    return feasible_service_window(w_start, w_end, v_class, lat=stop.lat, lng=stop.lng)
+
+
+def _tour_schedule_feasible(
+    stops: list[CustomerNode],
+    depot_lat: float,
+    depot_lng: float,
+    v_class: str,
+    *,
+    pair_km: DistanceFn | None = None,
+    enforce_time_windows: bool = False,
+    enforce_truck_ban: bool = False,
+) -> bool:
+    if not stops:
+        return True
+    cur_lat, cur_lng = depot_lat, depot_lng
+    cur_time = 480.0  # 08:00 shift start
+    for s in stops:
+        win = _effective_stop_window(s, v_class, enforce_truck_ban=enforce_truck_ban)
+        if win is None:
+            return False
+        eff_start, eff_end = win
+        if enforce_time_windows:
+            leg_km = _seg_km(cur_lat, cur_lng, s.lat, s.lng, pair_km)
+            arr_time = cur_time + (leg_km / 30.0 * 60.0)
+            if arr_time > eff_end:
+                return False
+            cur_time = max(arr_time, float(eff_start))
+            cur_lat, cur_lng = s.lat, s.lng
+    return True
+
+
 def _insertion_fuel_delta(
     tour: VehicleTour,
     customer: CustomerNode,
@@ -129,33 +186,29 @@ def _insertion_fuel_delta(
     *,
     enforce_time_windows: bool = False,
     enforce_truck_ban: bool = False,
+    pair_km: DistanceFn | None = None,
 ) -> float:
     """Fuel delta of inserting customer at pos. Inf if constraints violated."""
     if sum(s.kg for s in tour.stops) + customer.kg > tour.capacity_kg:
         return float("inf")
 
-    if enforce_truck_ban:
-        v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
-        w_start = f"{int(customer.window_start_min) // 60:02d}:{int(customer.window_start_min) % 60:02d}"
-        w_end = f"{int(customer.window_end_min) // 60:02d}:{int(customer.window_end_min) % 60:02d}"
-        if check_truck_ban(w_start, w_end, v_class).is_restricted:
+    v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+    if enforce_truck_ban or enforce_time_windows:
+        candidate_stops = [*tour.stops[:pos], customer, *tour.stops[pos:]]
+        if not _tour_schedule_feasible(
+            candidate_stops,
+            depot_lat,
+            depot_lng,
+            v_class,
+            pair_km=pair_km,
+            enforce_time_windows=enforce_time_windows,
+            enforce_truck_ban=enforce_truck_ban,
+        ):
             return float("inf")
 
-    if enforce_time_windows:
-        candidate_stops = [*tour.stops[:pos], customer, *tour.stops[pos:]]
-        cur_lat, cur_lng = depot_lat, depot_lng
-        cur_time = 480.0  # 08:00
-        for s in candidate_stops:
-            leg_km = haversine_km(cur_lat, cur_lng, s.lat, s.lng) * 1.35
-            arr_time = cur_time + (leg_km / 30.0 * 60.0)
-            if arr_time > s.window_end_min:
-                return float("inf")
-            cur_time = max(arr_time, float(s.window_start_min))
-            cur_lat, cur_lng = s.lat, s.lng
-
-    _, old_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
+    _, old_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng, pair_km=pair_km)
     tour.stops.insert(pos, customer)
-    _, new_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
+    _, new_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng, pair_km=pair_km)
     tour.stops.pop(pos)
     return new_fuel - old_fuel
 
@@ -205,6 +258,7 @@ def worst_fuel_removal_destroy(
     rng: random.Random,
     depot_lat: float = 10.8123,
     depot_lng: float = 106.6543,
+    pair_km: DistanceFn | None = None,
 ) -> list[CustomerNode]:
     """Destroy op 3 (CR-13 GreenLogix): worst marginal-fuel removal.
 
@@ -218,10 +272,10 @@ def worst_fuel_removal_destroy(
     for ti, tour in enumerate(tours):
         if not tour.stops:
             continue
-        _, base_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
+        _, base_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng, pair_km=pair_km)
         for si, _stop in enumerate(tour.stops):
             removed_stop = tour.stops.pop(si)
-            _, rest_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng)
+            _, rest_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng, pair_km=pair_km)
             tour.stops.insert(si, removed_stop)
             scored.append((base_fuel - rest_fuel, ti, si))
     # Highest saving first; exact-tie shuffle via rng keeps determinism.
@@ -256,6 +310,7 @@ def uphill_payload_removal_destroy(
     rng: random.Random,
     depot_lat: float = 10.8123,
     depot_lng: float = 106.6543,
+    pair_km: DistanceFn | None = None,
 ) -> list[CustomerNode]:
     """Destroy op 4 (CR-13 GreenLogix): uphill-payload removal.
 
@@ -274,7 +329,7 @@ def uphill_payload_removal_destroy(
         carried = total_payload
         prev_lat, prev_lng = depot_lat, depot_lng
         for si, stop in enumerate(tour.stops):
-            leg_km = haversine_km(prev_lat, prev_lng, stop.lat, stop.lng) * 1.35
+            leg_km = _seg_km(prev_lat, prev_lng, stop.lat, stop.lng, pair_km)
             scored.append((carried * leg_km, ti, si))
             carried = max(0.0, carried - stop.kg)
             prev_lat, prev_lng = stop.lat, stop.lng
@@ -327,7 +382,9 @@ def ban_window_removal_destroy(
             try:
                 w_start = f"{int(stop.window_start_min) // 60:02d}:{int(stop.window_start_min) % 60:02d}"
                 w_end = f"{int(stop.window_end_min) // 60:02d}:{int(stop.window_end_min) % 60:02d}"
-                restricted = bool(check_truck_ban(w_start, w_end, v_class).is_restricted)
+                restricted = bool(
+                    check_truck_ban(w_start, w_end, v_class, lat=stop.lat, lng=stop.lng).is_restricted
+                )
             except Exception:
                 restricted = False
             scored.append((1 if restricted else 0, ti, si))
@@ -364,6 +421,7 @@ def eco_greedy_repair(
     *,
     enforce_time_windows: bool = False,
     enforce_truck_ban: bool = False,
+    pair_km: DistanceFn | None = None,
 ) -> list[CustomerNode]:
     """Repair op 1 (legacy): eco-marginal cheapest-fuel insertion per customer."""
     still_out: list[CustomerNode] = []
@@ -381,6 +439,7 @@ def eco_greedy_repair(
                     depot_lng,
                     enforce_time_windows=enforce_time_windows,
                     enforce_truck_ban=enforce_truck_ban,
+                    pair_km=pair_km,
                 )
                 if delta < best_delta:
                     best_delta = delta
@@ -400,6 +459,7 @@ def eco_regret_repair(
     *,
     enforce_time_windows: bool = False,
     enforce_truck_ban: bool = False,
+    pair_km: DistanceFn | None = None,
 ) -> list[CustomerNode]:
     """Repair op 2: regret-2 insertion with time-window-aware tie-break.
 
@@ -430,6 +490,7 @@ def eco_regret_repair(
                         depot_lng,
                         enforce_time_windows=enforce_time_windows,
                         enforce_truck_ban=enforce_truck_ban,
+                        pair_km=pair_km,
                     )
                     if delta < first:
                         second = first
@@ -491,6 +552,49 @@ REPAIR_OPS: dict[str, Callable] = {
 }
 
 
+def _polish_tour_2opt(
+    tour: VehicleTour,
+    depot_lat: float,
+    depot_lng: float,
+    *,
+    pair_km: DistanceFn | None = None,
+    enforce_time_windows: bool = False,
+    enforce_truck_ban: bool = False,
+) -> None:
+    """Apply intra-tour 2-opt swaps that strictly reduce load-dependent fuel."""
+    n = len(tour.stops)
+    if n < 3:
+        return
+    v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+    _, best_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng, pair_km=pair_km)
+    improved = True
+    while improved:
+        improved = False
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                cand_stops = [*tour.stops[:i], *reversed(tour.stops[i : j + 1]), *tour.stops[j + 1 :]]
+                if (enforce_time_windows or enforce_truck_ban) and not _tour_schedule_feasible(
+                    cand_stops,
+                    depot_lat,
+                    depot_lng,
+                    v_class,
+                    pair_km=pair_km,
+                    enforce_time_windows=enforce_time_windows,
+                    enforce_truck_ban=enforce_truck_ban,
+                ):
+                    continue
+                saved = tour.stops
+                tour.stops = cand_stops
+                _, cand_fuel, _ = evaluate_tour_metrics(tour, depot_lat, depot_lng, pair_km=pair_km)
+                if cand_fuel + 1e-6 < best_fuel:
+                    best_fuel = cand_fuel
+                    improved = True
+                    break
+                tour.stops = saved
+            if improved:
+                break
+
+
 def solve_eco_alns(
     customers: list[CustomerNode],
     vehicles: list[VehicleTour],
@@ -507,6 +611,7 @@ def solve_eco_alns(
     time_budget_s: float | None = None,
     enforce_time_windows: bool = False,
     enforce_truck_ban: bool = False,
+    pair_km: DistanceFn | None = None,
 ) -> EcoSolution:
     """Solve green VRP using Adaptive Large Neighborhood Search.
 
@@ -537,34 +642,24 @@ def solve_eco_alns(
     use_sa = acceptance.strip().lower() in {"sa", "annealing", "simulated_annealing"}
     solution = EcoSolution(tours=copy.deepcopy(vehicles), depot_lat=depot_lat, depot_lng=depot_lng)
 
-    # Initial construction: capacity-aware greedy assignment
+    # Initial construction: capacity-, curfew-, and window-aware greedy assignment
     pool = list(customers)
     for c in pool:
         assigned = False
         for tour in solution.tours:
             current_kg = sum(s.kg for s in tour.stops)
             if current_kg + c.kg <= tour.capacity_kg:
-                if enforce_truck_ban:
-                    v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
-                    w_start = f"{int(c.window_start_min) // 60:02d}:{int(c.window_start_min) % 60:02d}"
-                    w_end = f"{int(c.window_end_min) // 60:02d}:{int(c.window_end_min) % 60:02d}"
-                    if check_truck_ban(w_start, w_end, v_class).is_restricted:
-                        continue
-                if enforce_time_windows:
-                    candidate = [*tour.stops, c]
-                    cur_lat, cur_lng = depot_lat, depot_lng
-                    cur_time = 480.0
-                    violates = False
-                    for s in candidate:
-                        leg_km = haversine_km(cur_lat, cur_lng, s.lat, s.lng) * 1.35
-                        arr_time = cur_time + (leg_km / 30.0 * 60.0)
-                        if arr_time > s.window_end_min:
-                            violates = True
-                            break
-                        cur_time = max(arr_time, float(s.window_start_min))
-                        cur_lat, cur_lng = s.lat, s.lng
-                    if violates:
-                        continue
+                v_class = getattr(getattr(tour, "profile", None), "vehicle_class", "xe_tai_nho")
+                if (enforce_truck_ban or enforce_time_windows) and not _tour_schedule_feasible(
+                    [*tour.stops, c],
+                    depot_lat,
+                    depot_lng,
+                    v_class,
+                    pair_km=pair_km,
+                    enforce_time_windows=enforce_time_windows,
+                    enforce_truck_ban=enforce_truck_ban,
+                ):
+                    continue
                 tour.stops.append(c)
                 assigned = True
                 break
@@ -573,7 +668,7 @@ def solve_eco_alns(
     # Evaluate baseline
     tot_km, tot_fuel, tot_co2 = 0.0, 0.0, 0.0
     for t in solution.tours:
-        k, f, c = evaluate_tour_metrics(t, depot_lat, depot_lng)
+        k, f, c = evaluate_tour_metrics(t, depot_lat, depot_lng, pair_km=pair_km)
         tot_km += k
         tot_fuel += f
         tot_co2 += c
@@ -616,12 +711,15 @@ def solve_eco_alns(
         if d_name != "none":
             destroy_fn = DESTROY_OPS[d_name]
             try:
-                removed = destroy_fn(current.tours, destroy_count, rng, depot_lat, depot_lng)
+                removed = destroy_fn(current.tours, destroy_count, rng, depot_lat, depot_lng, pair_km=pair_km)
             except TypeError:
-                # Legacy 3-arg destroy ops (single_random, random_removal).
-                removed = destroy_fn(current.tours, destroy_count, rng)
+                try:
+                    removed = destroy_fn(current.tours, destroy_count, rng, depot_lat, depot_lng)
+                except TypeError:
+                    # Legacy 3-arg destroy ops (single_random, random_removal).
+                    removed = destroy_fn(current.tours, destroy_count, rng)
 
-        # 2. Repair step
+        # 2. Repair step + intra-tour 2-opt fuel polish
         if removed:
             repair_fn = REPAIR_OPS[r_name]
             try:
@@ -632,14 +730,35 @@ def solve_eco_alns(
                     depot_lng,
                     enforce_time_windows=enforce_time_windows,
                     enforce_truck_ban=enforce_truck_ban,
+                    pair_km=pair_km,
                 )
             except TypeError:
-                failed = repair_fn(removed, current.tours, depot_lat, depot_lng)
+                try:
+                    failed = repair_fn(
+                        removed,
+                        current.tours,
+                        depot_lat,
+                        depot_lng,
+                        enforce_time_windows=enforce_time_windows,
+                        enforce_truck_ban=enforce_truck_ban,
+                    )
+                except TypeError:
+                    failed = repair_fn(removed, current.tours, depot_lat, depot_lng)
             current.unassigned.extend(failed)
-        # 3. Acceptance evaluation (hill-climb)
+            if d_name != "none":
+                for t in current.tours:
+                    _polish_tour_2opt(
+                        t,
+                        depot_lat,
+                        depot_lng,
+                        pair_km=pair_km,
+                        enforce_time_windows=enforce_time_windows,
+                        enforce_truck_ban=enforce_truck_ban,
+                    )
+        # 3. Acceptance evaluation (hill-climb or SA)
         cur_km, cur_fuel, cur_co2 = 0.0, 0.0, 0.0
         for t in current.tours:
-            k, f, c = evaluate_tour_metrics(t, depot_lat, depot_lng)
+            k, f, c = evaluate_tour_metrics(t, depot_lat, depot_lng, pair_km=pair_km)
             cur_km += k
             cur_fuel += f
             cur_co2 += c
