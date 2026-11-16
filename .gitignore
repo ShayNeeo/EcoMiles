@@ -58,3 +58,6 @@ docs/video/*.mp4
 docs/video/*.wav
 docs/contests/KNQG_2026/*.zip
 docs/contests/KNQG_2026/*.pptx
+
+# Private pilot customer data (strictly local, never commit)
+PRIVATE_pilot_data/
