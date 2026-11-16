@@ -702,7 +702,7 @@ export function EvsimDualSimulator({
         ctx.lineJoin = 'round';
         ctx.stroke();
 
-        ctx.strokeStyle = rg.color || (isRightEcoSide ? '#1971c2' : '#e03131');
+        ctx.strokeStyle = rg.color || (isRightEcoSide ? '#003049' : '#C1121F');
         ctx.lineWidth = 2.2;
         ctx.stroke();
       });
@@ -729,7 +729,7 @@ export function EvsimDualSimulator({
             );
           }
           ctx.closePath();
-          ctx.fillStyle = isRightEcoSide ? '#12b886' : '#e03131';
+          ctx.fillStyle = isRightEcoSide ? '#669BBC' : '#C1121F';
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1.1;
@@ -739,29 +739,29 @@ export function EvsimDualSimulator({
           ctx.save();
           ctx.translate(sx, sy);
           ctx.rotate(Math.PI / 4);
-          ctx.fillStyle = delivered ? '#1971c2' : '#ffffff';
-          ctx.strokeStyle = '#1971c2';
+          ctx.fillStyle = delivered ? '#003049' : '#ffffff';
+          ctx.strokeStyle = '#003049';
           ctx.lineWidth = 1.6;
           ctx.fillRect(-3.2, -3.2, 6.4, 6.4);
           ctx.strokeRect(-3.2, -3.2, 6.4, 6.4);
           ctx.restore();
         } else {
-          ctx.fillStyle = delivered ? '#2f9e44' : '#ffffff';
-          ctx.strokeStyle = delivered ? '#ffffff' : '#64748b';
+          ctx.fillStyle = delivered ? '#669BBC' : '#ffffff';
+          ctx.strokeStyle = delivered ? '#ffffff' : '#004366';
           ctx.lineWidth = 1.3;
           ctx.fillRect(sx - 2.8, sy - 2.8, 5.6, 5.6);
           ctx.strokeRect(sx - 2.8, sy - 2.8, 5.6, 5.6);
         }
       }
 
-      // 4. Central Depot Station Square (#22a06b on 364 Cộng Hòa)
+      // 4. Central Depot Station Square (#669BBC on 364 Cộng Hòa)
       const [depX, depY] = toXY(DEPOT_COORD.lng, DEPOT_COORD.lat);
-      ctx.fillStyle = '#22a06b';
+      ctx.fillStyle = '#669BBC';
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
       ctx.fillRect(depX - 9, depY - 9, 18, 18);
       ctx.strokeRect(depX - 9, depY - 9, 18, 18);
-      ctx.fillStyle = '#101418';
+      ctx.fillStyle = '#003049';
       ctx.font = '700 10px system-ui, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(`Kho Tân Bình (${side.strategy.vehicles_used} xe)`, depX + 12, depY + 4);
@@ -776,7 +776,7 @@ export function EvsimDualSimulator({
         let curLat = DEPOT_COORD.lat;
         let dx = 1;
         let dy = 0;
-        let fillCol = '#2f9e44';
+        let fillCol = '#669BBC';
         let statusTag = `Xe ${rIdx + 1}`;
         let activeLegPath: LngLat[] | null = null;
         let activeLegFrac = 0;
@@ -789,7 +789,7 @@ export function EvsimDualSimulator({
           const angle = (rIdx / Math.max(1, side.routeGeometries.length)) * Math.PI * 2;
           curLng = DEPOT_COORD.lng + Math.cos(angle) * 0.0022;
           curLat = DEPOT_COORD.lat + Math.sin(angle) * 0.0022;
-          fillCol = '#f08c00';
+          fillCol = '#C1121F';
           const depH = String(Math.floor(firstLeg.tDepartSec / 3600)).padStart(2, '0');
           const depM = String(Math.floor((firstLeg.tDepartSec % 3600) / 60)).padStart(2, '0');
           statusTag = `Xe ${rIdx + 1} · Chờ ${depH}:${depM}`;
@@ -798,7 +798,7 @@ export function EvsimDualSimulator({
           const angle = (rIdx / Math.max(1, side.routeGeometries.length)) * Math.PI * 2;
           curLng = DEPOT_COORD.lng + Math.cos(angle) * 0.0018;
           curLat = DEPOT_COORD.lat + Math.sin(angle) * 0.0018;
-          fillCol = '#101418';
+          fillCol = '#003049';
           statusTag = `Xe ${rIdx + 1} · Về kho`;
         } else {
           const waitingGateLeg = truckLegs.find(
@@ -815,7 +815,7 @@ export function EvsimDualSimulator({
             curLat = pt.lat;
             dx = pt.dx;
             dy = pt.dy;
-            fillCol = '#f08c00';
+            fillCol = '#C1121F';
             statusTag = `Xe ${rIdx + 1} · Đợi 09:00`;
           } else {
             let activeIdx = truckLegs.findIndex(
@@ -843,19 +843,19 @@ export function EvsimDualSimulator({
               const isViolatingNow =
                 !isRightEcoSide && banActiveNow && leg.capacityKg > 500 && leg.isInnerCityQd23;
               if (isViolatingNow) {
-                fillCol = '#e03131';
+                fillCol = '#C1121F';
                 statusTag = `Xe ${rIdx + 1} · CẤM QĐ23 (${leg.district})`;
               } else if (leg.isBackhaulPickup) {
-                fillCol = '#1971c2';
+                fillCol = '#003049';
                 statusTag = `Xe ${rIdx + 1} → Ghép về`;
               } else if (leg.isEmptyReturn) {
-                fillCol = '#e03131';
+                fillCol = '#C1121F';
                 statusTag = `Xe ${rIdx + 1} → Về rỗng`;
               } else if (leg.capacityKg <= 500 && leg.isInnerCityQd23 && banActiveNow) {
-                fillCol = '#0ca678';
+                fillCol = '#669BBC';
                 statusTag = `Xe ${rIdx + 1} (<=500kg)`;
               } else {
-                fillCol = '#2f9e44';
+                fillCol = '#669BBC';
                 statusTag = `Xe ${rIdx + 1} → ${leg.district}`;
               }
             } else if (leg.waitQd23Min > 0 && timeSec < 9 * 3600) {
@@ -865,7 +865,7 @@ export function EvsimDualSimulator({
               curLat = pt.lat;
               dx = pt.dx;
               dy = pt.dy;
-              fillCol = '#f08c00';
+              fillCol = '#C1121F';
               statusTag = `Xe ${rIdx + 1} · Đợi 09:00`;
             } else if (leg.restBreakMin > 0 && timeSec < leg.tArriveSec + leg.restBreakMin * 60) {
               activeLegFrac = 1.0;
@@ -874,7 +874,7 @@ export function EvsimDualSimulator({
               curLat = pt.lat;
               dx = pt.dx;
               dy = pt.dy;
-              fillCol = '#f08c00';
+              fillCol = '#C1121F';
               statusTag = `Xe ${rIdx + 1} · Nghỉ 20p`;
             } else {
               activeLegFrac = 1.0;
@@ -886,13 +886,13 @@ export function EvsimDualSimulator({
               const isViolatingNow =
                 !isRightEcoSide && banActiveNow && leg.capacityKg > 500 && leg.isInnerCityQd23;
               if (isViolatingNow) {
-                fillCol = '#e03131';
+                fillCol = '#C1121F';
                 statusTag = `Xe ${rIdx + 1} · CẤM QĐ23 (${leg.district})`;
               } else if (leg.isBackhaulPickup) {
-                fillCol = '#1971c2';
+                fillCol = '#003049';
                 statusTag = `Xe ${rIdx + 1} · Nhận hàng về`;
               } else {
-                fillCol = '#101418';
+                fillCol = '#003049';
                 statusTag = `Xe ${rIdx + 1} · Giao ${leg.district}`;
               }
             }
@@ -949,7 +949,7 @@ export function EvsimDualSimulator({
         ctx.font = '700 9px system-ui, sans-serif';
         const tw = ctx.measureText(statusTag).width;
         ctx.fillStyle =
-          fillCol === '#e03131' ? 'rgba(185, 28, 28, 0.92)' : 'rgba(17, 24, 39, 0.86)';
+          fillCol === '#C1121F' ? 'rgba(185, 28, 28, 0.92)' : 'rgba(17, 24, 39, 0.86)';
         ctx.fillRect(tx + 9, ty - 6, tw + 6, 12);
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'left';
@@ -976,7 +976,7 @@ export function EvsimDualSimulator({
 
       ctx.save();
       ctx.scale(dpr, dpr);
-      ctx.fillStyle = '#fffdf8';
+      ctx.fillStyle = '#FDF0D5';
       ctx.fillRect(0, 0, cw, ch);
 
       const T0 = 6 * 3600;
@@ -1007,23 +1007,23 @@ export function EvsimDualSimulator({
         ctx.stroke();
       };
 
-      drawSeries(side.kpiSeries.kmDriven, maxKm, '#1971c2');
-      drawSeries(side.kpiSeries.emptyKmDriven, maxKm, '#e03131');
-      drawSeries(side.kpiSeries.co2TtwKg, maxCo2, '#2f9e44');
+      drawSeries(side.kpiSeries.kmDriven, maxKm, '#003049');
+      drawSeries(side.kpiSeries.emptyKmDriven, maxKm, '#C1121F');
+      drawSeries(side.kpiSeries.co2TtwKg, maxCo2, '#669BBC');
 
       // Current clock vertical playhead line
       const playX = Math.max(0, Math.min(cw, ((timeSec - T0) / span) * cw));
-      ctx.fillStyle = '#2f3440';
+      ctx.fillStyle = '#003049';
       ctx.fillRect(playX - 1, 0, 2, ch);
 
       ctx.font = '600 10.5px system-ui, sans-serif';
-      ctx.fillStyle = '#1971c2';
+      ctx.fillStyle = '#003049';
       ctx.fillText('tổng km đã chạy', 8, 13);
-      ctx.fillStyle = '#e03131';
+      ctx.fillStyle = '#C1121F';
       ctx.fillText('km chạy rỗng', 110, 13);
-      ctx.fillStyle = '#2f9e44';
+      ctx.fillStyle = '#669BBC';
       ctx.fillText('kg CO₂e', 200, 13);
-      ctx.fillStyle = '#b5591a';
+      ctx.fillStyle = '#780000';
       ctx.fillText('giờ cấm QĐ 23 (06-09h & 16-20h)', cw - 190, 13);
 
       ctx.restore();
@@ -1040,7 +1040,7 @@ export function EvsimDualSimulator({
 
   if (!result || !leftSide || !rightSide) {
     return (
-      <div className="p-10 text-center bg-[#fffdf8] border border-[#d8cfbd] rounded-xl text-[#2f3440]">
+      <div className="p-10 text-center bg-[#FDF0D5] border border-[#D4BF94] rounded-xl text-[#003049]">
         Đang khởi tạo mô phỏng song song TP.HCM (EVSIM Dual Engine)...
       </div>
     );
@@ -1154,7 +1154,7 @@ export function EvsimDualSimulator({
   return (
     <div
       data-ui="evsim-dual-simulator"
-      className="rounded-xl border border-[#d8cfbd] bg-[#e6dcc6] text-[#2f3440] shadow-sm overflow-hidden select-none"
+      className="rounded-xl border border-[#D4BF94] bg-[#EED9AF] text-[#003049] shadow-sm overflow-hidden select-none"
       style={{ fontFamily: 'system-ui, "Segoe UI", Roboto, sans-serif' }}
     >
       <input
@@ -1171,18 +1171,18 @@ export function EvsimDualSimulator({
       {/* =====================================================================
           EVSIM HEADER BAR (#bar)
           ===================================================================== */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-3.5 py-2.5 bg-[#fffdf8] border-b border-[#d8cfbd]">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-3.5 py-2.5 bg-[#FDF0D5] border-b border-[#D4BF94]">
         <div className="flex flex-col">
-          <strong className="text-[15px] text-[#2f3440]">
+          <strong className="text-[15px] text-[#003049]">
             Mô Phỏng Đối Chứng Đội Xe Tải Đô Thị TP.HCM ({result.file_name})
           </strong>
-          <span className="text-[12px] text-[#6b6f78]">
+          <span className="text-[12px] text-[#004366]">
             10 xe tải · {result.rows_valid} điểm giao · cùng nhu cầu đơn hàng, cùng đội xe (đối chứng trực tiếp)
           </span>
         </div>
 
         {/* Scenario & Baseline Pickers */}
-        <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-[#6b6f78]">
+        <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-[#004366]">
           <label className="flex flex-col">
             <span>Tập dữ liệu (.xlsx)</span>
             <select
@@ -1194,7 +1194,7 @@ export function EvsimDualSimulator({
               onChange={(e) => {
                 if (e.target.value !== 'custom') loadScenarioFile(e.target.value);
               }}
-              className="mt-0.5 text-[12.5px] text-[#2f3440] font-semibold px-2 py-1 border border-[#d8cfbd] rounded-md bg-white"
+              className="mt-0.5 text-[12.5px] text-[#003049] font-semibold px-2 py-1 border border-[#D4BF94] rounded-md bg-white"
             >
               {SCENARIO_PRESETS.map((sc) => (
                 <option key={sc.id} value={sc.file}>
@@ -1212,7 +1212,7 @@ export function EvsimDualSimulator({
             <select
               value={baselineKey}
               onChange={(e) => setBaselineKey(e.target.value as 'human_google_proxy' | 'raw_excel')}
-              className="mt-0.5 text-[12.5px] text-[#2f3440] font-semibold px-2 py-1 border border-[#d8cfbd] rounded-md bg-white"
+              className="mt-0.5 text-[12.5px] text-[#003049] font-semibold px-2 py-1 border border-[#D4BF94] rounded-md bg-white"
             >
               <option value="human_google_proxy">B1: Chia Quận thủ công + Google Maps</option>
               <option value="raw_excel">B0: Thứ tự dòng Excel gốc (ERP)</option>
@@ -1234,7 +1234,7 @@ export function EvsimDualSimulator({
                   );
                 }
               }}
-              className="mt-0.5 text-[12.5px] text-[#2f3440] font-semibold px-2 py-1 border border-[#d8cfbd] rounded-md bg-white"
+              className="mt-0.5 text-[12.5px] text-[#003049] font-semibold px-2 py-1 border border-[#D4BF94] rounded-md bg-white"
             >
               {FLEET_PRESET_CATALOG.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -1247,15 +1247,15 @@ export function EvsimDualSimulator({
 
         {/* EVSIM #gain Box */}
         <div
-          className="text-center min-w-[175px] px-3 py-1 rounded-lg bg-[#eef7ee] border border-[#b9dfbf]"
+          className="text-center min-w-[175px] px-3 py-1 rounded-lg bg-[#D7E6F0] border border-[#669BBC]"
           title="Mức tiết kiệm ròng của EcoMiles (Bên phải) so với Baseline (Bên trái)"
         >
-          <div className="font-mono font-extrabold text-[19px] leading-tight text-[#2f9e44]">
+          <div className="font-mono font-extrabold text-[19px] leading-tight text-[#669BBC]">
             −{(baseSt.km_total - ecoSt.km_total).toFixed(1)} km ({ecoSt.delta_vs_human_km_pct}%)
           </div>
-          <div className="text-[11px] text-[#6b6f78]">
-            giảm rỗng <b className="text-[#2f9e44]">{netEmptyKmSavedTotal} km</b> · cứu giờ cấm{' '}
-            <b className="text-[#2f9e44]">{rescuedBanCount} đơn</b>
+          <div className="text-[11px] text-[#004366]">
+            giảm rỗng <b className="text-[#669BBC]">{netEmptyKmSavedTotal} km</b> · cứu giờ cấm{' '}
+            <b className="text-[#669BBC]">{rescuedBanCount} đơn</b>
           </div>
         </div>
 
@@ -1263,13 +1263,13 @@ export function EvsimDualSimulator({
         <div className="flex flex-wrap items-center gap-1.5 text-[12.5px]">
           <button
             onClick={() => setPlaying(!playing)}
-            className="min-w-[38px] px-2.5 py-1 border border-[#d8cfbd] rounded-md bg-white font-bold text-[#2f3440] hover:bg-slate-50 cursor-pointer flex items-center justify-center"
+            className="min-w-[38px] px-2.5 py-1 border border-[#D4BF94] rounded-md bg-white font-bold text-[#003049] hover:bg-[#F8E7C4] cursor-pointer flex items-center justify-center"
             title="Chạy / Tạm dừng mô phỏng"
           >
             {playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
           </button>
 
-          <span className="font-mono font-bold text-[18px] min-w-[62px] text-center text-[#2f3440]">
+          <span className="font-mono font-bold text-[18px] min-w-[62px] text-center text-[#003049]">
             {clockStr}
           </span>
 
@@ -1280,13 +1280,13 @@ export function EvsimDualSimulator({
             step={60}
             value={Math.round(timeSec)}
             onChange={(e) => setTimeSec(Number(e.target.value))}
-            className="w-28 sm:w-40 accent-[#1971c2] cursor-pointer"
+            className="w-28 sm:w-40 accent-[#003049] cursor-pointer"
           />
 
           <select
             value={speed}
             onChange={(e) => setSpeed(Number(e.target.value))}
-            className="px-1.5 py-1 border border-[#d8cfbd] rounded-md bg-white text-[#2f3440] font-semibold"
+            className="px-1.5 py-1 border border-[#D4BF94] rounded-md bg-white text-[#003049] font-semibold"
             title="Tốc độ mô phỏng"
           >
             <option value={30}>×30</option>
@@ -1308,7 +1308,7 @@ export function EvsimDualSimulator({
               key={jmp.label}
               onClick={() => setTimeSec(jmp.h * 3600)}
               title={jmp.tip}
-              className="px-2 py-1 border border-[#d8cfbd] rounded-md bg-white hover:bg-slate-100 text-[#2f3440] text-[11.5px] font-semibold cursor-pointer"
+              className="px-2 py-1 border border-[#D4BF94] rounded-md bg-white hover:bg-[#EED9AF] text-[#003049] text-[11.5px] font-semibold cursor-pointer"
             >
               {jmp.label}
             </button>
@@ -1316,7 +1316,7 @@ export function EvsimDualSimulator({
 
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="px-2.5 py-1 border border-[#2f9e44] rounded-md bg-[#2f9e44] hover:bg-[#258237] text-white font-bold flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1 border border-[#669BBC] rounded-md bg-[#669BBC] hover:bg-[#003049] text-[#003049] hover:text-[#FDF0D5] font-bold flex items-center gap-1 cursor-pointer"
             title="Tải file Excel (.xlsx) hoặc CSV của doanh nghiệp bạn lên để mô phỏng trực tiếp"
           >
             <UploadCloud className="w-3.5 h-3.5" />
@@ -1325,16 +1325,16 @@ export function EvsimDualSimulator({
 
           <button
             onClick={() => setShowColumnModal(true)}
-            className="px-2.5 py-1 border border-[#d8cfbd] rounded-md bg-white hover:bg-slate-100 text-[#2f3440] font-semibold flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1 border border-[#D4BF94] rounded-md bg-white hover:bg-[#EED9AF] text-[#003049] font-semibold flex items-center gap-1 cursor-pointer"
             title="Xem từ điển ánh xạ cột Excel (Column Dictionary)"
           >
-            <Table2 className="w-3.5 h-3.5 text-[#1971c2]" />
+            <Table2 className="w-3.5 h-3.5 text-[#003049]" />
             <span>Cấu trúc cột</span>
           </button>
 
           <button
             onClick={() => setShowResultsModal(true)}
-            className="px-3 py-1 border border-[#1971c2] rounded-md bg-[#1971c2] hover:bg-[#155ca0] text-white font-bold cursor-pointer"
+            className="px-3 py-1 border border-[#003049] rounded-md bg-[#003049] hover:bg-[#780000] text-white font-bold cursor-pointer"
             title="Mở bảng đối chứng thống kê chi tiết (EVSIM Results Panel)"
           >
             Kết quả đối chứng
@@ -1349,14 +1349,14 @@ export function EvsimDualSimulator({
         const isBanActive = isMorningBan || isAfternoonBan;
         const progressPct = Math.max(0, Math.min(100, ((timeSec - 6 * 3600) / (14 * 3600)) * 100));
         return (
-          <div className="px-3.5 py-2.5 bg-[#f8f5ec] border-b border-[#d8cfbd] space-y-2 text-[12px]">
+          <div className="px-3.5 py-2.5 bg-[#FDF0D5] border-b border-[#D4BF94] space-y-2 text-[12px]">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className={`px-2 py-0.5 rounded font-bold text-[11px] ${
                     isBanActive
-                      ? 'bg-[#ffedea] text-[#c92a2a] border border-[#ffc9c9]'
-                      : 'bg-[#dcfae5] text-[#101418] border border-[#b9dfbf]'
+                      ? 'bg-[#F8E7C4] text-[#C1121F] border border-[#C1121F]'
+                      : 'bg-[#D7E6F0] text-[#003049] border border-[#669BBC]'
                   }`}
                 >
                   {isMorningBan
@@ -1365,13 +1365,13 @@ export function EvsimDualSimulator({
                     ? `ĐANG CẤM TẢI CHIỀU (16:00 - 20:00) · Đồng hồ ${clockStr}`
                     : `GIỜ MỞ LUỒNG NỘI ĐÔ (09:00 - 16:00) · Đồng hồ ${clockStr}`}
                 </span>
-                <span className="text-[#2f3440] font-semibold">
+                <span className="text-[#003049] font-semibold">
                   {isBanActive
                     ? 'Khu vực cấm xe tải nhẹ: Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh (Hành lang nội đô QĐ 23/2018)'
                     : 'Toàn bộ xe tải nhẹ <= 2.5T được phép giao hàng hợp pháp trong khu vực nội đô TP.HCM'}
                 </span>
               </div>
-              <div className="text-[11.5px] font-semibold text-[#101418]">
+              <div className="text-[11.5px] font-semibold text-[#003049]">
                 Cách xử lý của EcoMiles:{' '}
                 {isMorningBan
                   ? 'Giao vành đai ngoài (Tân Bình, Gò Vấp, Thủ Đức) lúc 06-09h, đợi 09:02 mới vào nội đô'
@@ -1382,12 +1382,12 @@ export function EvsimDualSimulator({
             </div>
 
             {/* 06:00 -> 20:00 Visual Time-Window Bar */}
-            <div className="relative h-6 rounded-md overflow-hidden border border-[#d8cfbd] flex text-[10.5px] font-bold select-none">
+            <div className="relative h-6 rounded-md overflow-hidden border border-[#D4BF94] flex text-[10.5px] font-bold select-none">
               <button
                 type="button"
                 onClick={() => setTimeSec(7.5 * 3600)}
                 style={{ width: '21.43%' }}
-                className="bg-[#ffedea] hover:bg-[#ffe3e3] text-[#c92a2a] flex items-center justify-center border-r border-[#d8cfbd] cursor-pointer truncate px-1"
+                className="bg-[#F8E7C4] hover:bg-[#F8E7C4] text-[#C1121F] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 07:30 (Cao điểm cấm tải sáng 06:00 - 09:00)"
               >
                 06:00 - 09:00 · Cấm tải sáng (Giao vành đai)
@@ -1396,7 +1396,7 @@ export function EvsimDualSimulator({
                 type="button"
                 onClick={() => setTimeSec(10.5 * 3600)}
                 style={{ width: '50%' }}
-                className="bg-[#dcfae5] hover:bg-[#c3fae8] text-[#101418] flex items-center justify-center border-r border-[#d8cfbd] cursor-pointer truncate px-1"
+                className="bg-[#D7E6F0] hover:bg-[#D7E6F0] text-[#003049] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 10:30 (Khung giờ mở nội đô 09:00 - 16:00)"
               >
                 09:00 - 16:00 · Khung mở nội đô (Giao Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh)
@@ -1405,7 +1405,7 @@ export function EvsimDualSimulator({
                 type="button"
                 onClick={() => setTimeSec(17 * 3600)}
                 style={{ width: '28.57%' }}
-                className="bg-[#ffedea] hover:bg-[#ffe3e3] text-[#c92a2a] flex items-center justify-center cursor-pointer truncate px-1"
+                className="bg-[#F8E7C4] hover:bg-[#F8E7C4] text-[#C1121F] flex items-center justify-center cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 17:00 (Cao điểm cấm tải chiều 16:00 - 20:00)"
               >
                 16:00 - 20:00 · Cấm tải chiều (Ghép đơn về kho)
@@ -1413,16 +1413,16 @@ export function EvsimDualSimulator({
               {/* Live Clock Pointer */}
               <div
                 style={{ left: `${progressPct}%` }}
-                className="pointer-events-none absolute top-0 bottom-0 w-0.5 bg-[#111827] shadow-[0_0_4px_rgba(0,0,0,0.8)]"
+                className="pointer-events-none absolute top-0 bottom-0 w-0.5 bg-[#003049] shadow-[0_0_4px_rgba(0,0,0,0.8)]"
               />
             </div>
           </div>
         );
       })()}
       {uploadNotice && (
-        <div className="px-4 py-2 bg-[#eef7ee] border-b border-[#b9dfbf] text-[12px] text-[#101418] flex items-center justify-between">
+        <div className="px-4 py-2 bg-[#D7E6F0] border-b border-[#669BBC] text-[12px] text-[#003049] flex items-center justify-between">
           <div className="flex items-center gap-2 font-semibold">
-            <CheckCircle2 className="w-4 h-4 text-[#2f9e44]" />
+            <CheckCircle2 className="w-4 h-4 text-[#669BBC]" />
             <span>{uploadNotice}</span>
           </div>
           <button onClick={() => setUploadNotice('')} className="text-[11px] font-bold underline cursor-pointer">
@@ -1434,7 +1434,7 @@ export function EvsimDualSimulator({
       {/* =====================================================================
           EVSIM SIDE-BY-SIDE SPLIT (#split: Left = Baseline, Right = EcoMiles)
           ===================================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-2 bg-[#e6dcc6]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-2 bg-[#EED9AF]">
         {[
           {
             id: 'side-base',
@@ -1457,23 +1457,23 @@ export function EvsimDualSimulator({
         ].map((panel) => (
           <section
             key={panel.id}
-            className="flex flex-col bg-[#fffdf8] border border-[#d8cfbd] rounded-[10px] overflow-hidden"
+            className="flex flex-col bg-[#FDF0D5] border border-[#D4BF94] rounded-[10px] overflow-hidden"
           >
             {/* Side Header */}
-            <div className="px-3 py-2 border-b border-[#d8cfbd] flex items-center justify-between">
+            <div className="px-3 py-2 border-b border-[#D4BF94] flex items-center justify-between">
               <div>
                 <h2
                   className={`text-[14px] font-bold m-0 ${
-                    panel.isEco ? 'text-[#1971c2]' : 'text-[#2f3440]'
+                    panel.isEco ? 'text-[#003049]' : 'text-[#003049]'
                   }`}
                 >
                   {panel.title}
                 </h2>
-                <small className="block text-[11.5px] text-[#6b6f78]">{panel.subtitle}</small>
+                <small className="block text-[11.5px] text-[#004366]">{panel.subtitle}</small>
               </div>
               <button
                 onClick={resetView}
-                className="px-2 py-0.5 text-[11px] border border-[#d8cfbd] rounded bg-white text-[#6b6f78] hover:text-[#2f3440] flex items-center gap-1 cursor-pointer"
+                className="px-2 py-0.5 text-[11px] border border-[#D4BF94] rounded bg-white text-[#004366] hover:text-[#003049] flex items-center gap-1 cursor-pointer"
                 title="Khôi phục góc nhìn bản đồ"
               >
                 <RotateCcw className="w-3 h-3" />
@@ -1482,7 +1482,7 @@ export function EvsimDualSimulator({
             </div>
 
             {/* Interactive Synchronized HCMC Map Canvas */}
-            <div className="relative h-[310px] w-full bg-[#e6dcc6] overflow-hidden">
+            <div className="relative h-[310px] w-full bg-[#EED9AF] overflow-hidden">
               <canvas
                 ref={panel.mapRef}
                 onPointerDown={handlePointerDown}
@@ -1494,52 +1494,52 @@ export function EvsimDualSimulator({
             </div>
 
             {/* 6 Live Time-Synchronized KPI Cells (.kpis) */}
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 px-2.5 py-2 border-t border-[#d8cfbd] bg-[#fffdf8]">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 px-2.5 py-2 border-t border-[#D4BF94] bg-[#FDF0D5]">
               {KPI_CELLS.map((cell) => {
                 const myVal = panel.isEco ? cell.rightVal : cell.leftVal;
                 const otherVal = panel.isEco ? cell.leftVal : cell.rightVal;
                 const diff = (myVal - otherVal) * cell.betterSign;
                 const colorClass =
                   Math.abs(myVal - otherVal) < 0.05
-                    ? 'text-[#2f3440]'
+                    ? 'text-[#003049]'
                     : diff > 0
-                    ? 'text-[#2f9e44]'
-                    : 'text-[#e03131]';
+                    ? 'text-[#669BBC]'
+                    : 'text-[#C1121F]';
                 return (
                   <div key={cell.label} className="text-center">
                     <div className={`font-mono font-bold text-[16px] leading-tight ${colorClass}`}>
                       {cell.fmt(myVal)}
                     </div>
-                    <div className="text-[11px] text-[#6b6f78]">{cell.label}</div>
+                    <div className="text-[11px] text-[#004366]">{cell.label}</div>
                   </div>
                 );
               })}
 
               {/* Full Shift Summary Footer (.final) */}
-              <div className="col-span-3 sm:col-span-6 pt-1 border-t border-[#eee6d6] text-[11.5px] text-[#6b6f78] text-center">
-                Tổng kết cả ca: cự ly <b className="text-[#2f3440]">{panel.st.km_total.toFixed(1)} km</b> · chạy rỗng{' '}
-                <b className="text-[#2f3440]">
+              <div className="col-span-3 sm:col-span-6 pt-1 border-t border-[#EED9AF] text-[11.5px] text-[#004366] text-center">
+                Tổng kết cả ca: cự ly <b className="text-[#003049]">{panel.st.km_total.toFixed(1)} km</b> · chạy rỗng{' '}
+                <b className="text-[#003049]">
                   {panel.st.km_empty_return.toFixed(1)} km ({panel.st.empty_running_pct}%)
                 </b>{' '}
                 · chi phí nhiên liệu{' '}
-                <b className="text-[#2f3440]">{panel.st.fuel_cost_vnd.toLocaleString('vi-VN')} đ</b> · phát thải{' '}
-                <b className="text-[#2f3440]">{panel.st.kg_co2_ttw.toFixed(2)} kg CO₂e</b> · vi phạm QĐ 23:{' '}
-                <b className={panel.st.ban_violations === 0 ? 'text-[#2f9e44]' : 'text-[#e03131]'}>
+                <b className="text-[#003049]">{panel.st.fuel_cost_vnd.toLocaleString('vi-VN')} đ</b> · phát thải{' '}
+                <b className="text-[#003049]">{panel.st.kg_co2_ttw.toFixed(2)} kg CO₂e</b> · vi phạm QĐ 23:{' '}
+                <b className={panel.st.ban_violations === 0 ? 'text-[#669BBC]' : 'text-[#C1121F]'}>
                   {panel.st.ban_violations} đơn
                 </b>
               </div>
             </div>
 
             {/* Bottom 72px Timeline Sparkline Canvas (canvas.chart) */}
-            <canvas ref={panel.sparkRef} className="w-full h-[72px] block border-t border-[#d8cfbd]" />
+            <canvas ref={panel.sparkRef} className="w-full h-[72px] block border-t border-[#D4BF94]" />
 
             {/* Per-Truck Route Breakdown */}
-            <div className="border-t border-[#d8cfbd] bg-[#fffdf8] p-2.5">
+            <div className="border-t border-[#D4BF94] bg-[#FDF0D5] p-2.5">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-bold text-[#6b6f78] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-[#004366] uppercase tracking-wider">
                   Chi Tiết {panel.st.routes.length} Chuyến Xe Trong Ca
                 </span>
-                <span className="text-[10.5px] font-semibold text-[#1971c2]">
+                <span className="text-[10.5px] font-semibold text-[#003049]">
                   {panel.isEco ? 'EcoALNS v2.1' : baseSt.name}
                 </span>
               </div>
@@ -1555,17 +1555,17 @@ export function EvsimDualSimulator({
                   const firstLeg = truckLegs[0];
                   const lastLeg = truckLegs[truckLegs.length - 1];
                   let liveStateText = 'Sẵn sàng tại kho';
-                  let liveStateClass = 'bg-slate-100 text-slate-700';
+                  let liveStateClass = 'bg-[#EED9AF] text-[#003049]';
 
                   if (firstLeg && lastLeg) {
                     if (timeSec < firstLeg.tDepartSec) {
                       const dH = String(Math.floor(firstLeg.tDepartSec / 3600)).padStart(2, '0');
                       const dM = String(Math.floor((firstLeg.tDepartSec % 3600) / 60)).padStart(2, '0');
                       liveStateText = `Chờ xuất kho ${dH}:${dM} (Né cấm 06-09h)`;
-                      liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                      liveStateClass = 'bg-[#F8E7C4] text-[#780000]';
                     } else if (timeSec >= lastLeg.tServiceEndSec) {
                       liveStateText = `Đã về kho (${route.km.toFixed(1)} km)`;
-                      liveStateClass = 'bg-[#dcfae5] text-[#101418]';
+                      liveStateClass = 'bg-[#D7E6F0] text-[#003049]';
                     } else {
                       const waitingGateLeg = truckLegs.find(
                         (l, idx) =>
@@ -1575,7 +1575,7 @@ export function EvsimDualSimulator({
                       );
                       if (waitingGateLeg) {
                         liveStateText = `Đang chờ mở luồng 09:00 ngoài vành đai trước khi vào ${waitingGateLeg.district}`;
-                        liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                        liveStateClass = 'bg-[#F8E7C4] text-[#780000]';
                       } else {
                         let aIdx = truckLegs.findIndex(
                           (l) => timeSec >= l.tDepartSec && timeSec <= l.tServiceEndSec
@@ -1590,29 +1590,29 @@ export function EvsimDualSimulator({
                         if (timeSec < leg.tArriveSec) {
                           if (isViolatingNow) {
                             liveStateText = `VI PHẠM QĐ23 (Giờ cấm) → ${leg.district}`;
-                            liveStateClass = 'bg-[#ffedea] text-[#c92a2a]';
+                            liveStateClass = 'bg-[#F8E7C4] text-[#C1121F]';
                           } else if (leg.isBackhaulPickup) {
                             liveStateText = `Đang đi nhận hàng về → ${leg.district}`;
-                            liveStateClass = 'bg-[#e8f0fb] text-[#1971c2]';
+                            liveStateClass = 'bg-[#D7E6F0] text-[#003049]';
                           } else {
                             liveStateText = `Đang chạy → ${leg.district} (Khung ${leg.windowStr})`;
-                            liveStateClass = 'bg-[#eef7ee] text-[#2f9e44]';
+                            liveStateClass = 'bg-[#D7E6F0] text-[#669BBC]';
                           }
                         } else if (leg.waitQd23Min > 0 && timeSec < 9 * 3600) {
                           liveStateText = `Chờ mở luồng cấm tải 09:00 ngoài vành đai ${leg.district}`;
-                          liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                          liveStateClass = 'bg-[#F8E7C4] text-[#780000]';
                         } else if (leg.restBreakMin > 0 && timeSec < leg.tArriveSec + leg.restBreakMin * 60) {
                           liveStateText = `Nghỉ 20p giữa ca (Luật TTATGT 2024 <=4h lái liên tục)`;
-                          liveStateClass = 'bg-[#fff3bf] text-[#8f4e00]';
+                          liveStateClass = 'bg-[#F8E7C4] text-[#780000]';
                         } else if (isViolatingNow) {
                           liveStateText = `VI PHẠM GIỜ CẤM QĐ23 tại ${leg.district}`;
-                          liveStateClass = 'bg-[#ffedea] text-[#c92a2a]';
+                          liveStateClass = 'bg-[#F8E7C4] text-[#C1121F]';
                         } else if (leg.isBackhaulPickup) {
                           liveStateText = `Đang nhận hàng ghép chiều về tại ${leg.district}`;
-                          liveStateClass = 'bg-[#e8f0fb] text-[#1971c2]';
+                          liveStateClass = 'bg-[#D7E6F0] text-[#003049]';
                         } else {
                           liveStateText = `Đang giao ${leg.stopOrderId} tại ${leg.district} (Khung ${leg.windowStr})`;
-                          liveStateClass = 'bg-[#dcfae5] text-[#101418]';
+                          liveStateClass = 'bg-[#D7E6F0] text-[#003049]';
                         }
                       }
                     }
@@ -1621,7 +1621,7 @@ export function EvsimDualSimulator({
                   return (
                     <div
                       key={`${route.plate}-${rIdx}`}
-                      className="flex flex-col gap-1 p-2 rounded-lg bg-white border border-[#e3dcd0] text-[11px]"
+                      className="flex flex-col gap-1 p-2 rounded-lg bg-white border border-[#EED9AF] text-[11px]"
                     >
                       <div className="flex items-center justify-between gap-2 min-w-0">
                         <div className="flex items-center gap-1.5 min-w-0">
@@ -1629,42 +1629,42 @@ export function EvsimDualSimulator({
                             className="w-2.5 h-2.5 rounded-full shrink-0"
                             style={{ backgroundColor: route.color }}
                           />
-                          <span className="font-bold text-[#2f3440]">Xe {rIdx + 1}</span>
-                          <span className="font-mono text-[10px] px-1 rounded bg-slate-100 text-slate-700 font-semibold">
+                          <span className="font-bold text-[#003049]">Xe {rIdx + 1}</span>
+                          <span className="font-mono text-[10px] px-1 rounded bg-[#EED9AF] text-[#003049] font-semibold">
                             {route.plate} · {route.short_badge || `${route.capacity_kg}kg`}
                           </span>
                         </div>
-                        <span className="font-mono font-bold text-[#2f3440]">
+                        <span className="font-mono font-bold text-[#003049]">
                           {route.km.toFixed(1)} km · {route.kg_co2_ttw}kg CO₂
                         </span>
                       </div>
-                      <div className="flex items-center justify-between gap-1.5 text-[10px] text-[#4b5563]">
+                      <div className="flex items-center justify-between gap-1.5 text-[10px] text-[#004366]">
                         <span>
-                          Xác: <b className="text-[#2f3440]">{(route.empty_weight_kg ?? 1750).toLocaleString('en-US')}kg</b> · Hàng: <b className="text-[#2f3440]">{route.kg_delivered}/{route.capacity_kg}kg</b>
+                          Xác: <b className="text-[#003049]">{(route.empty_weight_kg ?? 1750).toLocaleString('en-US')}kg</b> · Hàng: <b className="text-[#003049]">{route.kg_delivered}/{route.capacity_kg}kg</b>
                         </span>
                         <span>
                           {route.l_per_100km_empty ?? Number((route.l_per_100km * 0.76).toFixed(1))}→{route.l_per_100km_full ?? Number((route.l_per_100km * 1.14).toFixed(1))} L/100km
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-1.5 text-[10px]">
-                        <span className="text-[#4b5563] truncate" title={districts}>
-                          Khu vực: <b className="text-[#2f3440]">{districts || 'Nội đô TP.HCM'}</b>
+                        <span className="text-[#004366] truncate" title={districts}>
+                          Khu vực: <b className="text-[#003049]">{districts || 'Nội đô TP.HCM'}</b>
                         </span>
                         <span className="shrink-0 font-semibold">
                           {route.ban_conflicts > 0 ? (
-                            <span className="px-1.5 py-0.5 rounded bg-[#ffedea] text-[#c92a2a]">
+                            <span className="px-1.5 py-0.5 rounded bg-[#F8E7C4] text-[#C1121F]">
                               {route.ban_conflicts} lỗi QĐ23
                             </span>
                           ) : route.capacity_kg <= 500 ? (
-                            <span className="px-1.5 py-0.5 rounded bg-[#e8f0fb] text-[#1971c2]">
+                            <span className="px-1.5 py-0.5 rounded bg-[#D7E6F0] text-[#003049]">
                               Xe &lt;=500kg miễn trừ QĐ23
                             </span>
                           ) : innerStopsCount > 0 ? (
-                            <span className="px-1.5 py-0.5 rounded bg-[#dcfae5] text-[#101418]">
+                            <span className="px-1.5 py-0.5 rounded bg-[#D7E6F0] text-[#003049]">
                               Vào nội đô 09-16h · 0 lỗi
                             </span>
                           ) : (
-                            <span className="px-1.5 py-0.5 rounded bg-[#eef7ee] text-[#2f9e44]">
+                            <span className="px-1.5 py-0.5 rounded bg-[#D7E6F0] text-[#669BBC]">
                               Vành đai mở · 0 lỗi
                             </span>
                           )}
@@ -1687,43 +1687,43 @@ export function EvsimDualSimulator({
       {/* =====================================================================
           EVSIM FOOTER LEGEND (#legend)
           ===================================================================== */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-3.5 py-2 bg-[#fffdf8] border-t border-[#d8cfbd] text-[12px] text-[#2f3440]">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-3.5 py-2 bg-[#FDF0D5] border-t border-[#D4BF94] text-[12px] text-[#003049]">
         <span className="flex items-center gap-1.5">
-          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#2f9e44]" />
+          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#669BBC]" />
           Xe tải đủ tải (≥55%)
         </span>
         <span className="flex items-center gap-1.5">
-          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#f2c94c]" />
+          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#669BBC]" />
           Tải trung bình (25 - 55%)
         </span>
         <span className="flex items-center gap-1.5">
-          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#1971c2]" />
+          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#003049]" />
           Xe đang chở đơn ghép chiều về (Backhaul)
         </span>
         <span className="flex items-center gap-1.5">
-          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#e03131]" />
+          <i className="inline-block w-2.5 h-2.5 rounded-full bg-[#C1121F]" />
           Xe chạy rỗng hoặc dính giờ cấm QĐ 23
         </span>
         <span className="flex items-center gap-1.5">
-          <i className="inline-block w-2.5 h-2.5 bg-[#22a06b] border border-white outline outline-1 outline-[#22a06b]" />
+          <i className="inline-block w-2.5 h-2.5 bg-[#669BBC] border border-white outline outline-1 outline-[#669BBC]" />
           Kho Trung tâm Tân Bình DC
         </span>
         <span className="flex items-center gap-1.5">
-          <Star className="w-3.5 h-3.5 text-[#12b886] fill-current" />
+          <Star className="w-3.5 h-3.5 text-[#669BBC] fill-current" />
           Điểm giao EcoMiles cứu khỏi giờ cấm QĐ 23
         </span>
         <span className="flex items-center gap-1.5">
-          <Star className="w-3.5 h-3.5 text-[#e03131] fill-current" />
+          <Star className="w-3.5 h-3.5 text-[#C1121F] fill-current" />
           Điểm giao bị phạt giờ cấm ở Baseline
         </span>
-        <span className="ml-auto font-semibold text-[#1971c2]">
+        <span className="ml-auto font-semibold text-[#003049]">
           Mẹo: Lăn chuột hoặc kéo trên bản đồ để phóng to / di chuyển đồng bộ cả 2 bên
         </span>
       </div>
 
       {/* =====================================================================
           EVSIM "KẾT QUẢ" STATISTICAL COMPARISON MODAL (#results)
-          White panel, #1f3a5f navy header, #fff4cc highlighted ROI row
+          White panel, #003049 navy header, #F8E7C4 highlighted ROI row
           ===================================================================== */}
       {showResultsModal && (
         <div
@@ -1735,9 +1735,9 @@ export function EvsimDualSimulator({
           <div
             role="dialog"
             aria-label="Bảng kết quả đối chứng"
-            className="w-full max-w-4xl bg-white text-[#2f3440] rounded-xl shadow-2xl border border-[#c9d6e8] overflow-hidden"
+            className="w-full max-w-4xl bg-white text-[#003049] rounded-xl shadow-2xl border border-[#669BBC] overflow-hidden"
           >
-            <div className="px-5 py-3.5 bg-[#1f3a5f] text-white flex items-center justify-between">
+            <div className="px-5 py-3.5 bg-[#003049] text-white flex items-center justify-between">
               <strong className="text-[16px]">
                 Kết quả đối chứng: Thuật toán EcoMiles v2.1 so với {baseSt.name}
               </strong>
@@ -1753,12 +1753,12 @@ export function EvsimDualSimulator({
               <div className="flex flex-wrap items-center justify-between gap-3 text-[13px]">
                 <div>
                   Tập dữ liệu đang kiểm định: <strong>{result.file_name}</strong> ({result.rows_valid} đơn hàng · Mã băm{' '}
-                  <code className="text-[#1971c2]">{result.dataset_fingerprint}</code>)
+                  <code className="text-[#003049]">{result.dataset_fingerprint}</code>)
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={exportMultiSheetReport}
-                    className="px-3 py-1.5 rounded-md bg-[#2f9e44] hover:bg-[#258237] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1.5 rounded-md bg-[#669BBC] hover:bg-[#003049] text-[#003049] hover:text-[#FDF0D5] font-bold text-xs flex items-center gap-1.5 cursor-pointer"
                   >
                     <FileSpreadsheet className="w-3.5 h-3.5" />
                     <span>Tải Báo Cáo Excel 3 Sheet (.XLS)</span>
@@ -1770,7 +1770,7 @@ export function EvsimDualSimulator({
                         : 'EcoMiles_Mau_Chuoi_Lanh_120_Don_Cam_Tai_QD23.xlsx'
                     }`}
                     download
-                    className="px-3 py-1.5 rounded-md border border-[#c9d6e8] bg-white hover:bg-slate-50 text-[#1f3a5f] font-bold text-xs flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-md border border-[#669BBC] bg-white hover:bg-[#F8E7C4] text-[#003049] font-bold text-xs flex items-center gap-1.5"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Tải file .xlsx mẫu</span>
@@ -1780,11 +1780,11 @@ export function EvsimDualSimulator({
 
               <table className="w-full border-collapse text-[13.5px]">
                 <thead>
-                  <tr className="bg-[#e8f0fb] text-[#1f3a5f] font-bold">
-                    <th className="py-2.5 px-3 text-left border-b border-[#e3e9f2]">Chỉ số đo lường</th>
-                    <th className="py-2.5 px-3 text-right border-b border-[#e3e9f2]">Có lớp tối ưu EcoMiles v2.1</th>
-                    <th className="py-2.5 px-3 text-right border-b border-[#e3e9f2]">{baseSt.name}</th>
-                    <th className="py-2.5 px-3 text-right border-b border-[#e3e9f2]">Chênh lệch ròng</th>
+                  <tr className="bg-[#D7E6F0] text-[#003049] font-bold">
+                    <th className="py-2.5 px-3 text-left border-b border-[#D7E6F0]">Chỉ số đo lường</th>
+                    <th className="py-2.5 px-3 text-right border-b border-[#D7E6F0]">Có lớp tối ưu EcoMiles v2.1</th>
+                    <th className="py-2.5 px-3 text-right border-b border-[#D7E6F0]">{baseSt.name}</th>
+                    <th className="py-2.5 px-3 text-right border-b border-[#D7E6F0]">Chênh lệch ròng</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1863,23 +1863,23 @@ export function EvsimDualSimulator({
                       key={r.label}
                       className={
                         r.highlight
-                          ? 'bg-[#fff4cc] font-bold text-[14.5px]'
+                          ? 'bg-[#F8E7C4] font-bold text-[14.5px]'
                           : idx % 2 === 1
-                          ? 'bg-[#f7f9fc]'
+                          ? 'bg-[#FDF0D5]'
                           : 'bg-white'
                       }
                     >
                       <td
-                        className="py-2 px-3 border-b border-[#e3e9f2]"
-                        style={r.highlight ? { boxShadow: 'inset 4px 0 0 #f0b400' } : undefined}
+                        className="py-2 px-3 border-b border-[#D7E6F0]"
+                        style={r.highlight ? { boxShadow: 'inset 4px 0 0 #669BBC' } : undefined}
                       >
                         {r.label}
                       </td>
-                      <td className="py-2 px-3 text-right font-mono border-b border-[#e3e9f2]">{r.eco}</td>
-                      <td className="py-2 px-3 text-right font-mono border-b border-[#e3e9f2]">{r.base}</td>
+                      <td className="py-2 px-3 text-right font-mono border-b border-[#D7E6F0]">{r.eco}</td>
+                      <td className="py-2 px-3 text-right font-mono border-b border-[#D7E6F0]">{r.base}</td>
                       <td
-                        className={`py-2 px-3 text-right font-mono font-bold border-b border-[#e3e9f2] ${
-                          r.good ? 'text-[#2f9e44]' : 'text-[#e03131]'
+                        className={`py-2 px-3 text-right font-mono font-bold border-b border-[#D7E6F0] ${
+                          r.good ? 'text-[#669BBC]' : 'text-[#C1121F]'
                         }`}
                       >
                         {r.diff}
@@ -1889,7 +1889,7 @@ export function EvsimDualSimulator({
                 </tbody>
               </table>
 
-              <p className="text-[12px] text-[#6b6f78] m-0">
+              <p className="text-[12px] text-[#004366] m-0">
                 Ghi chú phương pháp luận: Cả hai bên cùng chạy trên một ma trận khoảng cách đường bộ TP.HCM (Haversine × 1.35 / OSM) và cùng hệ số phát thải GLEC Framework v3.2 / ISO 14083:2023 (Diesel: 2,68 kg/L TTW, 3,24 kg/L WTW; Xăng: 2,31 kg/L TTW, 2,82 kg/L WTW).
               </p>
             </div>
@@ -1910,9 +1910,9 @@ export function EvsimDualSimulator({
           <div
             role="dialog"
             aria-label="Từ điển ánh xạ cột Excel"
-            className="w-full max-w-3xl bg-white text-[#2f3440] rounded-xl shadow-2xl border border-[#c9d6e8] overflow-hidden"
+            className="w-full max-w-3xl bg-white text-[#003049] rounded-xl shadow-2xl border border-[#669BBC] overflow-hidden"
           >
-            <div className="px-5 py-3.5 bg-[#1f3a5f] text-white flex items-center justify-between">
+            <div className="px-5 py-3.5 bg-[#003049] text-white flex items-center justify-between">
               <strong className="text-[15px]">
                 Từ Điển Ánh Xạ Cột Dữ Liệu Excel (.xlsx) &amp; Tự Động Làm Sạch Địa Chỉ
               </strong>
@@ -1925,37 +1925,37 @@ export function EvsimDualSimulator({
             </div>
 
             <div className="p-5 space-y-3 max-h-[80vh] overflow-y-auto text-[13px]">
-              <p className="text-[#6b6f78] m-0">
+              <p className="text-[#004366] m-0">
                 Khi doanh nghiệp tải file <code>.xlsx</code> xuất từ phần mềm ERP/Kế toán (SAP, KiotViet, Haravan, Odoo), bộ từ điển cột của EcoMiles tự động khớp tên cột tiếng Việt/tiếng Anh và nội suy tọa độ GPS nếu file thiếu cột Vĩ độ / Kinh độ:
               </p>
 
               <table className="w-full border-collapse text-[12.5px]">
                 <thead>
-                  <tr className="bg-[#e8f0fb] text-[#1f3a5f] font-bold">
-                    <th className="py-2 px-3 text-left border-b border-[#e3e9f2]">Trường chuẩn EcoMiles</th>
-                    <th className="py-2 px-3 text-left border-b border-[#e3e9f2]">Ý nghĩa nghiệp vụ</th>
-                    <th className="py-2 px-3 text-left border-b border-[#e3e9f2]">Cột khớp trong file hiện tại</th>
-                    <th className="py-2 px-3 text-left border-b border-[#e3e9f2]">Trạng thái</th>
+                  <tr className="bg-[#D7E6F0] text-[#003049] font-bold">
+                    <th className="py-2 px-3 text-left border-b border-[#D7E6F0]">Trường chuẩn EcoMiles</th>
+                    <th className="py-2 px-3 text-left border-b border-[#D7E6F0]">Ý nghĩa nghiệp vụ</th>
+                    <th className="py-2 px-3 text-left border-b border-[#D7E6F0]">Cột khớp trong file hiện tại</th>
+                    <th className="py-2 px-3 text-left border-b border-[#D7E6F0]">Trạng thái</th>
                   </tr>
                 </thead>
                 <tbody>
                   {columnInspection.map((col, idx) => (
-                    <tr key={col.canonical_field} className={idx % 2 === 1 ? 'bg-[#f7f9fc]' : 'bg-white'}>
-                      <td className="py-2 px-3 font-mono font-bold border-b border-[#e3e9f2]">
+                    <tr key={col.canonical_field} className={idx % 2 === 1 ? 'bg-[#FDF0D5]' : 'bg-white'}>
+                      <td className="py-2 px-3 font-mono font-bold border-b border-[#D7E6F0]">
                         {col.canonical_field}
                       </td>
-                      <td className="py-2 px-3 border-b border-[#e3e9f2]">{col.label_vi}</td>
-                      <td className="py-2 px-3 font-mono border-b border-[#e3e9f2]">
+                      <td className="py-2 px-3 border-b border-[#D7E6F0]">{col.label_vi}</td>
+                      <td className="py-2 px-3 font-mono border-b border-[#D7E6F0]">
                         {col.matched_header ? `"${col.matched_header}" (Cột #${(col.column_index ?? 0) + 1})` : 'Tự động nội suy'}
                       </td>
-                      <td className="py-2 px-3 border-b border-[#e3e9f2] font-bold">
+                      <td className="py-2 px-3 border-b border-[#D7E6F0] font-bold">
                         {col.status === 'matched' ? (
-                          <span className="text-[#2f9e44] inline-flex items-center gap-1">
+                          <span className="text-[#669BBC] inline-flex items-center gap-1">
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             <span>Đã khớp tự động</span>
                           </span>
                         ) : (
-                          <span className="text-[#1971c2] inline-flex items-center gap-1">
+                          <span className="text-[#003049] inline-flex items-center gap-1">
                             <Zap className="w-3.5 h-3.5" />
                             <span>Nội suy thông minh</span>
                           </span>

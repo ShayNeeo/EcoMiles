@@ -7,7 +7,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface TeamMember {
   name: string;
-  role: React.ReactNode;
+  tag: string;
   image: string;
   imagePosition: string;
 }
@@ -15,61 +15,31 @@ interface TeamMember {
 const members: TeamMember[] = [
   {
     name: 'Nguyễn Thu Thuỷ',
-    role: (
-      <>
-        Nghiên cứu &amp; Cung cấp kiến thức
-        <br />
-        Logistics &amp; Chuỗi cung ứng
-      </>
-    ),
+    tag: 'Logistics & Chuỗi cung ứng',
     image: '/team/thuy.jpg',
     imagePosition: 'center 24%',
   },
   {
     name: 'Phạm Quốc Thanh',
-    role: (
-      <>
-        Phụ trách công nghệ
-        <br />
-        &amp; Kiến trúc hệ thống
-      </>
-    ),
+    tag: 'Công nghệ & Kiến trúc hệ thống',
     image: '/team/thanh.jpg',
     imagePosition: 'center 32%',
   },
   {
     name: 'Nguyễn Ngọc Khánh Phương',
-    role: (
-      <>
-        Nghiên cứu thị trường
-        <br />
-        &amp; Phát triển bền vững
-      </>
-    ),
+    tag: 'Thị trường & Phát triển bền vững',
     image: '/team/phuong.jpg',
     imagePosition: 'center 18%',
   },
   {
     name: 'Nguyễn Hồng Phúc',
-    role: (
-      <>
-        Mô hình tài chính
-        <br />
-        &amp; Kế hoạch vốn
-      </>
-    ),
+    tag: 'Tài chính & Kế hoạch vốn',
     image: '/team/phuc.jpg',
     imagePosition: 'center 24%',
   },
   {
     name: 'Lê Thị Hoàng Ngân',
-    role: (
-      <>
-        Nghiên cứu thị trường
-        <br />
-        &amp; Thương mại điện tử
-      </>
-    ),
+    tag: 'Thị trường & TMĐT',
     image: '/team/ngan.jpg',
     imagePosition: 'center 25%',
   },
@@ -87,16 +57,16 @@ export const Team: React.FC = () => {
 
       gsap.fromTo(
         '.gsap-team-card',
-        { y: 24, opacity: 0 },
+        { y: 20, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.1,
+          duration: 0.45,
+          stagger: 0.08,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 78%',
+            start: 'top 80%',
             toggleActions: 'play none none none',
           },
         }
@@ -110,35 +80,26 @@ export const Team: React.FC = () => {
       ref={sectionRef}
       id="team"
       aria-labelledby="team-heading"
-      className="relative isolate overflow-hidden bg-[#F6F1E7] px-4 py-20 sm:px-6 sm:py-28 lg:px-8 scroll-mt-24 border-t border-slate-200/80"
+      className="relative isolate overflow-hidden em-grid-varden text-[#003049] px-4 py-20 sm:px-6 sm:py-24 lg:px-8 scroll-mt-20 border-b-4 border-[#003049]"
     >
       <div className="relative z-10 mx-auto max-w-7xl">
-        <div className="grid items-end gap-8 border-b border-slate-200 pb-10 lg:grid-cols-[1.35fr_0.65fr] lg:pb-12">
-          <div>
-            <h2
-              id="team-heading"
-              className="max-w-4xl text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight"
-            >
-              Đội ngũ sáng lập liên ngành{' '}
-              <span className="text-[#101418]">từ nghiên cứu đến khởi nghiệp 2026</span>
-            </h2>
-          </div>
-
-          <div>
-            <p className="max-w-xl text-base text-[#5B5F66] leading-relaxed">
-              Dự án hội tụ năng lực chuyên sâu về kinh tế vận tải, công nghệ phần mềm, phát triển bền vững và vận hành giao nhận hàng hóa đô thị.
-            </p>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b-2 border-[#003049] pb-6">
+          <h2
+            id="team-heading"
+            className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-[#003049] tracking-tight leading-tight"
+          >
+            Đội ngũ liên ngành EcoMiles
+          </h2>
+          <span className="inline-flex items-center px-3 py-1.5 rounded-md bg-[#003049] text-[#FDF0D5] font-mono text-xs font-bold uppercase shrink-0">
+            5 THÀNH VIÊN · ĐẠI SỨ GEN G 2026
+          </span>
         </div>
 
-        <div className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-10 sm:gap-x-8 md:gap-y-12 lg:gap-x-10">
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
           {members.map((member, index) => (
-            <article
-              key={member.name}
-              className="gsap-team-card group min-w-0 w-[calc(50%-0.75rem)] max-w-[220px] text-center max-[359px]:w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.34rem)] lg:w-[calc(20%-1.6rem)]"
-            >
-              <div className="relative mx-auto aspect-square w-full max-w-[190px]">
-                <div className="relative h-full overflow-hidden rounded-full border-2 border-slate-200 bg-[#e8f0e4] shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:border-[#101418]">
+            <article key={member.name} className="gsap-team-card group text-center">
+              <div className="relative mx-auto aspect-square w-full max-w-[180px]">
+                <div className="relative h-full overflow-hidden rounded-2xl border-2 border-[#003049] bg-[#003049] shadow-md transition duration-300 group-hover:-translate-y-1 group-hover:border-[#C1121F]">
                   <img
                     src={member.image}
                     alt={`Chân dung ${member.name}`}
@@ -146,23 +107,23 @@ export const Team: React.FC = () => {
                     height="400"
                     loading="lazy"
                     decoding="async"
-                    className="h-full w-full object-cover saturate-[0.9] transition duration-300 group-hover:scale-[1.03] group-hover:saturate-100"
+                    className="h-full w-full object-cover saturate-[0.95] transition duration-300 group-hover:scale-[1.03] group-hover:saturate-100"
                     style={{ objectPosition: member.imagePosition }}
                   />
                 </div>
 
-                <span className="absolute bottom-1 right-1 flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#101418] font-mono text-xs font-bold text-white shadow-sm sm:h-8 sm:w-8">
+                <span className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-lg border-2 border-[#FDF0D5] bg-[#C1121F] font-mono text-xs font-black text-[#FDF0D5] shadow">
                   {String(index + 1).padStart(2, '0')}
                 </span>
               </div>
 
-              <div className="mx-auto mt-4 space-y-1">
-                <h3 className="text-base font-bold text-[#101418] leading-snug">
+              <div className="mx-auto mt-4 space-y-1.5">
+                <h3 className="font-display text-base font-extrabold text-[#003049] leading-snug">
                   {member.name}
                 </h3>
-                <p className="text-xs font-semibold leading-5 text-[#101418]">
-                  {member.role}
-                </p>
+                <span className="inline-block rounded bg-[#003049] px-2.5 py-1 text-[11px] font-bold text-[#FDF0D5]">
+                  {member.tag}
+                </span>
               </div>
             </article>
           ))}

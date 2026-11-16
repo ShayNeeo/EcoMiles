@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowUpRight,
-  Check,
   FileCheck2,
   FileSpreadsheet,
   Maximize2,
@@ -20,13 +19,12 @@ interface WorkflowStepSpec {
   title: string;
   icon: React.ReactNode;
   badge: string;
-  summary: string;
   inputSpec: string;
   outputSpec: string;
   proofImage: string;
   liveUrl: string;
   liveLabel: string;
-  outcomes: string[];
+  chips: string[];
 }
 
 export const WorkflowShowcase: React.FC = () => {
@@ -66,75 +64,51 @@ export const WorkflowShowcase: React.FC = () => {
   const steps: WorkflowStepSpec[] = [
     {
       num: '01',
-      title: 'Nhập bảng tính đơn hàng (.XLSX)',
-      icon: <FileSpreadsheet className="w-5 h-5 text-[#101418]" />,
-      badge: 'Đầu vào ERP / Excel',
-      summary:
-        'Tải lên file .XLSX / .CSV đơn hàng: hệ thống tự động nhận diện mã đơn, địa chỉ, tải trọng và cảnh báo sớm các đơn vướng giờ cấm tải QĐ 23/2018.',
-      inputSpec: 'File .XLSX / .CSV (120 đơn Chuỗi Lạnh hoặc 80 đơn FMCG)',
-      outputSpec: '120 bản ghi chuẩn hóa + Gắn nhãn vùng cấm QĐ 23/2018',
+      title: 'Nạp Excel đơn hàng',
+      icon: <FileSpreadsheet className="w-5 h-5" />,
+      badge: 'Input ERP / CSV',
+      inputSpec: '500 đơn 2,5T + 2.395 đơn tạp hóa',
+      outputSpec: 'Tách đơn >2,5T · Gắn nhãn P.106 & QĐ 23',
       proofImage: '/pitch-deck-screenshots/01_desktop_b2b_tms_fleet_overview.png',
       liveUrl: '/dashboard/',
-      liveLabel: 'Thử tải file trên bảng điều khiển',
-      outcomes: [
-        'Tự động nhận diện cột tiếng Việt / tiếng Anh không cần chỉnh sửa tay',
-        'Phát hiện tức thì 28 đơn rơi vào khung giờ cấm 06:00-09:00 & 16:00-20:00',
-        'Huy động 7/10 xe tải để phục vụ 100% 120 đơn hàng',
-      ],
+      liveLabel: 'Thử tải Excel',
+      chips: ['Tự đọc cột Việt/Anh', 'Bắt 235 ca giờ cấm', 'Nhận diện Van <950kg'],
     },
     {
       num: '02',
-      title: 'Tối ưu lộ trình & Ghép đơn chiều về (< 1s)',
-      icon: <Route className="w-5 h-5 text-[#101418]" />,
-      badge: 'Né giờ cấm & Backhaul',
-      summary:
-        'Thuật toán gom cụm theo quận, tự động dời lịch né vùng cấm tải QĐ 23/2018 & cầu 13T, đồng thời ghép 21 đơn thu hồi hàng chiều về kho.',
-      inputSpec: '120 đơn hàng + Đồ thị đường phố thật TP.HCM',
-      outputSpec: 'Lộ trình 243,7 km (-34,9% km · 0 vi phạm · 2,7% chạy rỗng)',
+      title: 'EcoALNS + Né giờ cấm',
+      icon: <Route className="w-5 h-5" />,
+      badge: '642 ma trận OSRM',
+      inputSpec: 'Mạng lưới đường thật TP.HCM & Hà Nội',
+      outputSpec: '−30,5% đến −50,8% km · 0 lỗi QĐ 23',
       proofImage: '/pitch-deck-screenshots/02_desktop_b2b_tms_evsim_dual_simulator.png',
       liveUrl: '/benchmark/',
-      liveLabel: 'Mở phòng đối chứng EVSIM',
-      outcomes: [
-        'Tiết giảm 130,7 km mỗi ca vận hành (-34,9% tổng quãng đường)',
-        'Khử 28/28 lỗi vi phạm giờ cấm QĐ 23/2018, QĐ 01/2026 & biển P.106a QCVN 41:2024 (tránh phạt NĐ 168/2024: 4-6 triệu đ + trừ 2 điểm GPLX)',
-        'Hạ tỷ lệ xe chạy rỗng từ 32,8% xuống chỉ còn 2,7%',
-      ],
+      liveLabel: 'Mở đối chứng EVSIM',
+      chips: ['543 → 328 chuyến 2,5T', 'Ghép 91 điểm bán (−36,4%)', 'Tránh phạt NĐ 168 4-6M'],
     },
     {
       num: '03',
-      title: 'Đồng bộ App tài xế & Dẫn đường ($0 API)',
-      icon: <Navigation className="w-5 h-5 text-[#101418]" />,
-      badge: 'Thực địa 2 chặng ($0 API)',
-      summary:
-        'Phát hành lộ trình xuống điện thoại tài xế và bản đồ dẫn đường xe tải giọng nói tiếng Việt: né đường cấm nội đô, không tốn phí Google API.',
-      inputSpec: 'Lộ trình 7 xe tải đã duyệt từ trung tâm điều phối',
-      outputSpec: 'Bản đồ dẫn đường trực tiếp & Google Maps Waypoints ($0 API)',
+      title: 'Đẩy lệnh xuống App tài xế',
+      icon: <Navigation className="w-5 h-5" />,
+      badge: '$0 phí Map API',
+      inputSpec: 'Lộ trình từng biển số đã kiểm tải',
+      outputSpec: 'Dẫn đường giọng nói + Ghép chiều về',
       proofImage: '/pitch-deck-screenshots/04_desktop_maps_overview_qd23_banned_zones.png',
       liveUrl: '/driver/',
-      liveLabel: 'Mở ứng dụng tài xế',
-      outcomes: [
-        'Tiết kiệm 7.500.000đ/tháng chi phí bản đồ API',
-        'Thuyết minh giọng nói tiếng Việt đọc tên đường rẽ và cảnh báo cầu 13T',
-        'Cập nhật trạng thái giao hàng tức thì về trung tâm điều phối',
-      ],
+      liveLabel: 'Mở App Tài Xế',
+      chips: ['Xe tải: Bản đồ né cầu 13T', 'Van: Google Waypoints', 'Giới hạn ≤ 4h lái'],
     },
     {
       num: '04',
-      title: 'Xuất báo cáo kiểm toán ESG 3 Sheet',
-      icon: <FileCheck2 className="w-5 h-5 text-[#101418]" />,
-      badge: 'Chuẩn ISO 14083 / GLEC v3.2',
-      summary:
-        'Ước tính phát thải CO₂e theo tải trọng thực sau từng điểm dỡ hàng (mô hình GLX-HDT-v1) và kết xuất tự động sổ cái Excel 3 Sheet hỗ trợ đối soát Scope 3.',
-      inputSpec: 'Toàn bộ chuyến xe hoàn thành + Hệ số tham chiếu GLEC v3.2',
-      outputSpec: 'Sổ cái Excel 3 Sheet (-32,2% CO₂e · Bảo mật NĐ 13/2023)',
+      title: 'Xuất sổ ESG 3 Sheet',
+      icon: <FileCheck2 className="w-5 h-5" />,
+      badge: 'GLEC v3.2 · NĐ 13',
+      inputSpec: 'Dữ liệu km thực & tải trọng từng chặng',
+      outputSpec: '−1.822 L dầu · −4,88 tấn CO₂e TTW',
       proofImage: '/pitch-deck-screenshots/20_slide_composite_4role_enterprise_architecture.png',
       liveUrl: '/portal/audit/',
-      liveLabel: 'Mở cổng kiểm toán ESG',
-      outcomes: [
-        'Cắt giảm 32,2% CO₂e TTW (từ 83,57 kg xuống 56,66 kg CO₂e mỗi ca)',
-        'Xuất sổ cái dữ liệu đầu vào hỗ trợ thẩm định khí nhà kính & Scope 3',
-        'Cách ly dữ liệu khách hàng độc lập cho từng doanh nghiệp B2B',
-      ],
+      liveLabel: 'Mở Cổng Kiểm Toán',
+      chips: ['Excel 3 Sheet + CSV', 'Mã hóa Multi-Tenant', 'Sẵn sàng kiểm kê 31/3/2027'],
     },
   ];
 
@@ -144,47 +118,40 @@ export const WorkflowShowcase: React.FC = () => {
     <section
       ref={sectionRef}
       id="workflow"
-      className="relative overflow-hidden border-t border-slate-200/80 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8 scroll-mt-24"
+      className="relative overflow-hidden border-b-4 border-[#003049] em-grid-varden text-[#003049] px-4 py-20 sm:px-6 sm:py-24 lg:px-8 scroll-mt-20"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-slate-200" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-1 bg-[#D4BF94]" aria-hidden="true">
         <motion.div
-          className="h-full origin-left bg-[#101418] will-change-transform"
+          className="h-full origin-left bg-[#C1121F] will-change-transform"
           style={{ scaleX: shouldReduceMotion ? 1 : smoothProgress }}
         />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight">
-            4 bước vận hành từ bảng tính đến báo cáo ESG
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-5 border-b-2 border-[#003049]">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-[#003049] tracking-tight leading-tight">
+            4 bước vận hành trên trình duyệt
           </h2>
 
-          <p className="mt-4 text-base text-[#5B5F66] leading-relaxed">
-            Quy trình khép kín giúp doanh nghiệp tự động hóa từ khâu tiếp nhận đơn hàng đến phân bổ xe và nghiệm thu báo cáo phát thải.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
+          <div className="flex items-center gap-3 shrink-0">
             <button
               type="button"
               onClick={() => setIsPlaying(!isPlaying)}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#101418] bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-extrabold text-[#FDF0D5] bg-[#003049] hover:bg-[#C1121F] transition-colors cursor-pointer"
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-              <span>{isPlaying ? 'Tạm dừng tự động chạy' : 'Xem tự động 4 bước'}</span>
+              <span>{isPlaying ? 'Tạm dừng' : 'Chạy tự động'}</span>
             </button>
             {isPlaying && (
-              <div className="w-32 h-1.5 rounded-full bg-slate-200 overflow-hidden">
-                <div
-                  className="h-full bg-[#101418] transition-all duration-75"
-                  style={{ width: `${progress}%` }}
-                />
+              <div className="w-24 h-2 rounded bg-[#D4BF94] overflow-hidden">
+                <div className="h-full bg-[#C1121F] transition-all duration-75" style={{ width: `${progress}%` }} />
               </div>
             )}
           </div>
         </div>
 
-        {/* 4 Step Selector Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-8">
+        {/* 4 Step Graphic Tab Buttons */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-7">
           {steps.map((item, idx) => {
             const isSelected = activeStep === idx;
             return (
@@ -196,23 +163,19 @@ export const WorkflowShowcase: React.FC = () => {
                   setProgress(0);
                 }}
                 aria-pressed={isSelected}
-                className={`relative overflow-hidden p-4 rounded-xl text-left transition-all duration-200 border flex flex-col justify-between cursor-pointer ${
+                className={`p-4 rounded-xl text-left transition-all border-2 flex flex-col justify-between cursor-pointer ${
                   isSelected
-                    ? 'bg-emerald-50/70 border-2 border-[#101418] text-[#101418] shadow-sm'
-                    : 'bg-[#F6F1E7] border-slate-200 text-[#5B5F66] hover:bg-slate-50 hover:text-[#101418]'
+                    ? 'bg-[#003049] border-[#C1121F] text-[#FDF0D5] shadow-lg'
+                    : 'bg-[#F8E7C4] border-[#003049]/30 text-[#003049] hover:border-[#003049]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span
-                    className={`font-barlow font-extrabold text-lg ${
-                      isSelected ? 'text-[#101418]' : 'text-slate-400'
-                    }`}
-                  >
-                    Bước {item.num}
+                  <span className={`font-mono text-base font-black ${isSelected ? 'text-[#669BBC]' : 'text-[#AE1F23]'}`}>
+                    {item.num}
                   </span>
                   {item.icon}
                 </div>
-                <div className="text-sm font-bold leading-snug text-[#101418]">
+                <div className="font-display text-sm sm:text-base font-extrabold leading-tight">
                   {item.title}
                 </div>
               </button>
@@ -220,64 +183,60 @@ export const WorkflowShowcase: React.FC = () => {
           })}
         </div>
 
-        {/* Active Step Proof Panel */}
-        <div className="bg-[#F6F1E7] rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-12">
+        {/* Visual Step Proof Panel */}
+        <div className="bg-[#003049] text-[#FDF0D5] rounded-2xl p-6 sm:p-8 border-2 border-[#003049] shadow-xl mb-10">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activeStep}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={shouldReduceMotion ? undefined : { opacity: 0, y: -6 }}
-              transition={{ duration: shouldReduceMotion ? 0 : 0.22, ease: REVEAL_EASE }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: REVEAL_EASE }}
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
             >
-              {/* Left 6 Cols: Step Details & Outcomes */}
-              <div className="lg:col-span-6 space-y-4">
-                <div className="pb-3 border-b border-slate-200">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#101418] bg-emerald-100/60 px-2.5 py-1 rounded-full border border-emerald-200">
-                    Bước {current.num} / 04 · {current.badge}
+              <div className="lg:col-span-6 space-y-5">
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 rounded bg-[#C1121F] font-mono text-xs font-extrabold uppercase text-[#FDF0D5]">
+                    Bước {current.num} · {current.badge}
                   </span>
-                  <h3 className="text-2xl font-bold text-[#101418] mt-2.5">
-                    {current.title}
-                  </h3>
                 </div>
 
-                <p className="text-sm sm:text-base text-[#5B5F66] leading-relaxed">
-                  {current.summary}
-                </p>
+                <h3 className="font-display text-2xl sm:text-3xl font-black text-[#FDF0D5]">
+                  {current.title}
+                </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-3 border-y border-slate-200 text-xs sm:text-sm">
-                  <div>
-                    <div className="text-xs font-bold uppercase text-slate-500">Đầu vào (Input)</div>
-                    <div className="font-semibold text-[#101418] mt-1">{current.inputSpec}</div>
+                {/* Graphic Flow Banner: Input -> Engine -> Output */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="rounded-lg bg-[#002033] border border-[#669BBC]/40 p-3.5">
+                    <div className="font-mono text-[10px] font-bold uppercase text-[#669BBC]">ĐẦU VÀO</div>
+                    <div className="font-bold text-[#FDF0D5] mt-1">{current.inputSpec}</div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold uppercase text-[#101418]">Đầu ra (Output)</div>
-                    <div className="font-bold text-[#101418] mt-1">{current.outputSpec}</div>
+                  <div className="rounded-lg bg-[#FDF0D5] p-3.5 text-[#003049]">
+                    <div className="font-mono text-[10px] font-bold uppercase text-[#AE1F23]">KẾT QUẢ THẬT</div>
+                    <div className="font-extrabold mt-1">{current.outputSpec}</div>
                   </div>
                 </div>
 
-                <div className="space-y-2 text-xs sm:text-sm">
-                  {current.outcomes.map((out, i) => (
-                    <div key={i} className="flex items-start gap-2 text-[#334155]">
-                      <Check className="w-4 h-4 text-[#0B7A3B] shrink-0 mt-0.5" />
-                      <span>{out}</span>
-                    </div>
+                <div className="flex flex-wrap gap-2">
+                  {current.chips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="px-3 py-1.5 rounded-md bg-[#669BBC] text-[#003049] font-bold text-xs"
+                    >
+                      {chip}
+                    </span>
                   ))}
                 </div>
 
-                <div className="pt-2">
-                  <a
-                    href={current.liveUrl}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#101418] hover:bg-[#1B45D7] text-white font-bold text-xs sm:text-sm shadow-sm transition-colors"
-                  >
-                    <span>{current.liveLabel}</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </a>
-                </div>
+                <a
+                  href={current.liveUrl}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#C1121F] hover:bg-[#780000] text-[#FDF0D5] font-extrabold text-xs sm:text-sm transition-colors"
+                >
+                  <span>{current.liveLabel}</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
               </div>
 
-              {/* Right 6 Cols: In-App Screenshot Proof */}
               <div
                 role="button"
                 tabIndex={0}
@@ -292,58 +251,55 @@ export const WorkflowShowcase: React.FC = () => {
                     setIsZoomed(true);
                   }
                 }}
-                className="group relative lg:col-span-6 flex flex-col items-center justify-center bg-white rounded-xl p-3 sm:p-4 border border-slate-200 hover:border-emerald-600/40 cursor-zoom-in transition-all shadow-sm"
+                className="group relative lg:col-span-6 flex items-center justify-center bg-[#002033] rounded-xl p-3 border-2 border-[#669BBC]/60 hover:border-[#C1121F] cursor-zoom-in transition-all"
               >
                 <img
                   src={current.proofImage}
-                  alt={`Giao diện thực tế Bước ${current.num}: ${current.title}`}
-                  className="max-h-[360px] w-auto max-w-full object-contain rounded-lg group-hover:scale-[1.01] transition-transform duration-300"
+                  alt={`Giao diện Bước ${current.num}: ${current.title}`}
+                  className="max-h-[340px] w-auto max-w-full object-contain rounded-lg group-hover:scale-[1.01] transition-transform duration-300"
                 />
-                <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/95 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm">
-                  <Maximize2 className="w-3.5 h-3.5 text-[#101418]" />
-                  <span>Phóng to</span>
-                </div>
+                <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#FDF0D5] text-[#003049] font-mono text-[11px] font-bold shadow">
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>ZOOM</span>
+                </span>
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Verified Benchmark Comparison Table */}
-        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-          <h3 className="text-lg sm:text-xl font-bold text-[#101418] text-center mb-6">
-            Đối chứng thực nghiệm (120 đơn Chuỗi Lạnh TP.HCM): <span className="text-slate-500 font-normal">Thủ công</span> vs{' '}
-            <span className="text-[#101418]">EcoMiles</span>
+        {/* Real Pilot Empirical Comparison Matrix (2.895 orders) */}
+        <div className="bg-[#F8E7C4] rounded-2xl p-6 sm:p-8 border-2 border-[#003049] shadow-sm">
+          <h3 className="font-display text-lg sm:text-xl font-black text-[#003049] mb-4 flex flex-wrap items-center justify-between gap-2">
+            <span>Đối chứng thực nghiệm trên 2.895 đơn hàng thật tại TP.HCM (642 ma trận OSRM)</span>
+            <span className="font-mono text-xs px-2.5 py-1 rounded bg-[#780000] text-[#FDF0D5]">
+              0 VI PHẠM QĐ 23/2018
+            </span>
           </h3>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm tabular-nums">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-[#101418]">
-                  <th className="py-3 px-4 rounded-l-lg">Chỉ số kiểm định</th>
-                  <th className="py-3 px-4">Chia quận thủ công</th>
-                  <th className="py-3 px-4 text-[#101418] font-bold rounded-r-lg">Thuật toán EcoMiles</th>
+                <tr className="border-b-2 border-[#003049] text-[#003049] font-mono text-xs uppercase">
+                  <th className="py-2.5 px-3">Bộ dữ liệu thật</th>
+                  <th className="py-2.5 px-3">Google Maps / Cũ</th>
+                  <th className="py-2.5 px-3">EcoALNS + Luật 2025-2026</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-[#334155]">
+              <tbody className="divide-y divide-[#D4BF94] text-[#003049]">
                 <tr>
-                  <td className="py-3 px-4 font-bold text-[#101418]">Tổng quãng đường đội xe</td>
-                  <td className="py-3 px-4">374,4 km (12 chuyến xe)</td>
-                  <td className="py-3 px-4 font-bold text-[#101418]">243,7 km (7 chuyến · Giảm 34,9%)</td>
+                  <td className="py-3 px-3 font-bold">Đồ uống 2,5T (500 đơn / 88 ngày)</td>
+                  <td className="py-3 px-3">14.178 km · 543 chuyến · 235 lỗi QĐ 23</td>
+                  <td className="py-3 px-3 font-black text-[#AE1F23]">9.857 km (−30,5% · −22,3% vs CSV) · 328 chuyến · 0 lỗi</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-[#101418]">Quãng đường &amp; Tỷ lệ chạy rỗng</td>
-                  <td className="py-3 px-4">122,9 km chạy rỗng (32,8%)</td>
-                  <td className="py-3 px-4 font-bold text-[#101418]">6,5 km chạy rỗng (2,7% · Ghép 21 đơn chiều về)</td>
+                  <td className="py-3 px-3 font-bold">Tạp hóa #01 · Van &lt;950kg (798 đơn / 161 ngày)</td>
+                  <td className="py-3 px-3">13.441 km (Maps) · 8.940 km (Gom theo giờ)</td>
+                  <td className="py-3 px-3 font-black text-[#AE1F23]">6.611 km (−50,8% vs Maps · −26,0% vs giờ)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-4 font-bold text-[#101418]">Vi phạm giờ cấm tải QĐ 23/2018</td>
-                  <td className="py-3 px-4 text-rose-600 font-medium">28 đơn vi phạm giờ cao điểm</td>
-                  <td className="py-3 px-4 font-bold text-[#101418]">0 vi phạm (Tự động né 100% giờ cấm)</td>
-                </tr>
-                <tr>
-                  <td className="py-3 px-4 font-bold text-[#101418]">Ước tính CO₂e TTW (GLX-HDT-v1 / GLEC v3.2)</td>
-                  <td className="py-3 px-4">83,57 kg CO₂e</td>
-                  <td className="py-3 px-4 font-bold text-[#101418]">56,66 kg CO₂e (Giảm 32,2%)</td>
+                  <td className="py-3 px-3 font-bold">91 Cửa hàng toàn mạng (2.395 đơn / 393 ngày)</td>
+                  <td className="py-3 px-3">46.376 km đơn lẻ · 47.232 km nối giờ (+1,8%)</td>
+                  <td className="py-3 px-3 font-black text-[#AE1F23]">29.508 km (−36,4%) · Tiết kiệm 1.822 L dầu &amp; 4,88 tấn CO₂e</td>
                 </tr>
               </tbody>
             </table>
@@ -359,7 +315,7 @@ export const WorkflowShowcase: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setIsZoomed(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 sm:p-8 cursor-zoom-out"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#002033]/85 backdrop-blur-md p-4 sm:p-8 cursor-zoom-out"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -367,19 +323,19 @@ export const WorkflowShowcase: React.FC = () => {
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ type: 'spring', damping: 26, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-5xl max-h-[92vh] w-full bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col items-center cursor-default"
+              className="relative max-w-5xl max-h-[92vh] w-full bg-[#FDF0D5] border-2 border-[#003049] rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col items-center cursor-default"
             >
-              <div className="w-full flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+              <div className="w-full flex items-center justify-between pb-3 border-b border-[#D4BF94] mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#101418] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                    Bước {current.num} / 04 · {current.badge}
+                  <span className="font-mono text-xs font-bold text-[#FDF0D5] bg-[#C1121F] px-2.5 py-1 rounded">
+                    Bước {current.num} · {current.badge}
                   </span>
-                  <h4 className="text-sm sm:text-base font-bold text-[#101418] truncate">{current.title}</h4>
+                  <h4 className="font-display text-sm sm:text-base font-extrabold text-[#003049] truncate">{current.title}</h4>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsZoomed(false)}
-                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#003049] hover:bg-[#C1121F] text-[#FDF0D5] transition-colors cursor-pointer"
                   aria-label="Đóng ảnh"
                 >
                   <X className="w-5 h-5" />
@@ -389,7 +345,7 @@ export const WorkflowShowcase: React.FC = () => {
                 <img
                   src={current.proofImage}
                   alt={current.title}
-                  className="max-h-[76vh] w-auto max-w-full object-contain rounded-lg border border-slate-200 shadow-md"
+                  className="max-h-[76vh] w-auto max-w-full object-contain rounded-lg border-2 border-[#003049]"
                 />
               </div>
             </motion.div>

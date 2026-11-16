@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EcoMiles - High-Contrast Brand Identity System, 30 Plaques &amp; Raster Studio v3.0</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --em-cosmos:#003049;
+    --em-cosmos-deep:#002033;
+    --em-cosmos-soft:#004366;
+    --em-gochujang:#780000;
+    --em-crimson:#C1121F;
+    --em-crimson-ink:#AE1F23;
+    --em-varden:#FDF0D5;
+    --em-varden-card:#F8E7C4;
+    --em-varden-deep:#EED9AF;
+    --em-line:#D4BF94;
+    --em-marble:#669BBC;
+
+    --em-font-display:'Bricolage Grotesque','Be Vietnam Pro',system-ui,sans-serif;
+    --em-font-body:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;
+    --em-font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
+    --em-draw:600ms;
+    --em-ease:cubic-bezier(0.22,1,0.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--em-cosmos);color:var(--em-varden);scroll-behavior:smooth}
+  body{
+    background:var(--em-cosmos);color:var(--em-varden);
+    font-family:var(--em-font-body);font-size:15px;line-height:1.5;
+    font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  ::selection{background:var(--em-crimson);color:var(--em-varden)}
+  .mono{font-family:var(--em-font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+
+  /* Alternating Full-Bleed Architectural Bands */
+  .band-cosmos{
+    background-color:#003049;color:#FDF0D5;
+    background-image:linear-gradient(to right,rgba(102,155,188,.08) 1px,transparent 1px),linear-gradient(to bottom,rgba(102,155,188,.08) 1px,transparent 1px);
+    background-size:40px 40px;border-bottom:4px solid #C1121F;
+  }
+  .band-varden{
+    background-color:#FDF0D5;color:#003049;
+    background-image:linear-gradient(to right,rgba(0,48,73,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,48,73,.055) 1px,transparent 1px);
+    background-size:40px 40px;border-bottom:4px solid #003049;
+  }
+  .band-gochujang{
+    background-color:#780000;color:#FDF0D5;
+    background-image:linear-gradient(to right,rgba(253,240,213,.06) 1px,transparent 1px),linear-gradient(to bottom,rgba(253,240,213,.06) 1px,transparent 1px);
+    background-size:36px 36px;border-bottom:4px solid #003049;
+  }
+  .wrap{max-width:1280px;margin:0 auto;padding:42px 32px 52px}
+
+  /* Top Navigation Bar */
+  .topbar-wrap{position:sticky;top:0;z-index:50;background:#002033;backdrop-filter:blur(8px);border-bottom:2px solid #669BBC}
+  .topbar{max-width:1280px;margin:0 auto;padding:12px 32px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .topbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--em-varden)}
+  .topbar-nav{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .topbar-nav a{background:#002033;color:var(--em-marble);text-decoration:none;font-size:12px;font-weight:700;padding-bottom:2px;border-bottom:2px solid transparent}
+  .topbar-nav a:hover{color:var(--em-varden);border-bottom-color:var(--em-crimson)}
+  .btn-ui{
+    background:var(--em-crimson);color:var(--em-varden);border:1px solid var(--em-crimson);
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:7px 12px;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn-ui:hover{background:var(--em-gochujang);border-color:var(--em-varden)}
+  .btn-ghost{
+    background:var(--em-varden);color:var(--em-cosmos);border:2px solid var(--em-cosmos);
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:6px 12px;border-radius:6px;cursor:pointer;text-decoration:none;
+  }
+  .btn-ghost:hover{background:#003049;color:#FDF0D5;border-color:#FDF0D5}
+
+  /* Hero */
+  .hero h1{
+    font-family:var(--em-font-display);font-weight:800;font-size:clamp(46px,7vw,92px);
+    line-height:.94;letter-spacing:-.045em;color:var(--em-varden);
+  }
+  .hero h1 .stop{color:var(--em-crimson)}
+  .hero-pills{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;
+  }
+  .pill-crimson{background:var(--em-crimson);color:var(--em-varden)}
+  .pill-marble{background:var(--em-marble);color:var(--em-cosmos)}
+  .pill-varden{background:var(--em-varden);color:var(--em-cosmos)}
+  .pill-gochujang{background:var(--em-gochujang);color:var(--em-varden);border:1px solid var(--em-crimson)}
+
+  .hero-route-box{
+    margin-top:24px;border:2px solid var(--em-marble);background:var(--em-varden);color:var(--em-cosmos);
+    padding:18px 20px;border-radius:12px;
+  }
+  .hero-route-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .draw-line{stroke-dasharray:520;stroke-dashoffset:520;animation:drawRoute var(--em-draw) var(--em-ease) forwards}
+  .draw-dot{opacity:0;animation:dotLand 180ms ease-out 520ms forwards}
+  @keyframes drawRoute{to{stroke-dashoffset:0}}
+  @keyframes dotLand{to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.draw-line{animation:none;stroke-dashoffset:0}.draw-dot{animation:none;opacity:1}}
+
+  /* Headings & Grid */
+  .shead{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;padding-bottom:12px;border-bottom:2px solid currentColor;flex-wrap:wrap}
+  .shead-left{display:flex;align-items:baseline;gap:14px}
+  .shead .num{font-family:var(--em-font-mono);font-size:14px;font-weight:800;padding:3px 9px;border-radius:4px;background:var(--em-crimson);color:var(--em-varden)}
+  .shead h2{font-family:var(--em-font-display);font-size:clamp(24px,3.2vw,38px);font-weight:800;letter-spacing:-.025em}
+
+  .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .kpi{padding:18px 20px;border-radius:10px;border:2px solid var(--em-cosmos)}
+  .kpi .val{font-family:var(--em-font-display);font-size:30px;font-weight:800;letter-spacing:-.03em}
+  .kpi .lbl{font-family:var(--em-font-mono);font-size:12px;font-weight:700;text-transform:uppercase;margin-top:4px}
+  .kpi .delta{font-family:var(--em-font-mono);font-size:12px;font-weight:700;margin-top:8px}
+
+  /* 01 Anatomy */
+  .process-spread{
+    display:grid;grid-template-columns:1.1fr 1fr;border:2px solid var(--em-cosmos);border-radius:12px;overflow:hidden;margin-bottom:20px;
+  }
+  .process-visual{background:var(--em-varden-card);color:var(--em-cosmos);padding:24px;border-right:2px solid var(--em-cosmos);display:flex;flex-direction:column;justify-content:space-between;gap:14px}
+  .process-copy{background:var(--em-cosmos);color:var(--em-varden);padding:26px 28px;display:flex;flex-direction:column;justify-content:center;gap:14px}
+  .anatomy-pills{display:flex;flex-wrap:wrap;gap:6px}
+  .anatomy-btn{
+    border:1.5px solid var(--em-cosmos);background:var(--em-varden);color:var(--em-cosmos);
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;padding:5px 10px;border-radius:4px;cursor:pointer;
+  }
+  .anatomy-btn.active{background:var(--em-crimson);border-color:var(--em-crimson);color:var(--em-varden)}
+  .anatomy-note{font-size:13px;font-weight:600;color:var(--em-cosmos);background:var(--em-varden);border:1.5px solid var(--em-cosmos);padding:10px 12px;border-radius:6px}
+
+  /* 02 Marks */
+  .mark-stage{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:stretch}
+  .mark-grid-box{
+    border:2px solid var(--em-marble);background:var(--em-cosmos-deep);border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;
+    background-image:linear-gradient(to right,rgba(102,155,188,.14) 1px,transparent 1px),linear-gradient(to bottom,rgba(102,155,188,.14) 1px,transparent 1px);
+    background-size:16px 16px;
+  }
+  .optical-row{
+    display:flex;flex-wrap:wrap;align-items:flex-end;gap:20px;padding:18px 22px;
+    border:2px solid var(--em-marble);background:var(--em-varden);color:var(--em-cosmos);border-radius:12px;
+  }
+  .optical-item{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:52px}
+  .optical-item figcaption{font-family:var(--em-font-mono);font-size:12px;font-weight:700;color:var(--em-cosmos)}
+  .lockup-box{border:2px solid var(--em-marble);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:14px}
+
+  /* 03 Color Studio */
+  .color-studio{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:stretch}
+  .prop-bars{display:flex;height:340px;border:2px solid var(--em-cosmos);border-radius:12px;overflow:hidden}
+  .prop-col{
+    position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:16px 12px;
+    cursor:pointer;transition:flex-grow .22s ease;border-right:1px solid rgba(0,0,0,.15);min-width:60px;
+  }
+  .prop-col:last-child{border-right:none}
+  .prop-col.selected{outline:4px solid var(--em-varden);outline-offset:-4px;z-index:2}
+  .prop-title{font-family:var(--em-font-display);font-weight:800;font-size:14px;letter-spacing:.01em}
+  .prop-pct{font-family:var(--em-font-mono);font-size:12px;font-weight:800;margin-top:2px}
+  .prop-specs{font-family:var(--em-font-mono);font-size:12px;line-height:1.45;font-weight:700}
+  .color-detail-bar{
+    margin-top:12px;border:2px solid var(--em-cosmos);background:var(--em-varden-card);color:var(--em-cosmos);
+    padding:14px 16px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .ui-visualizer{
+    border:2px solid var(--em-cosmos);background:var(--em-cosmos);color:var(--em-varden);
+    padding:18px;border-radius:12px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;
+  }
+  .ui-tabs{display:flex;flex-wrap:wrap;gap:6px}
+  .ui-tab{
+    border:1px solid var(--em-marble);background:var(--em-cosmos-deep);color:var(--em-marble);
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;padding:5px 9px;border-radius:4px;cursor:pointer;
+  }
+  .ui-tab.active{background:var(--em-crimson);border-color:var(--em-crimson);color:var(--em-varden)}
+  .ui-stage{
+    border:2px solid var(--em-marble);background:var(--em-varden);color:var(--em-cosmos);border-radius:8px;
+    padding:18px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .ui-stage.dark-mode{background:var(--em-cosmos-deep);color:var(--em-varden);border-color:var(--em-crimson)}
+
+  /* 04 Type */
+  .type-playground{border:2px solid var(--em-marble);background:var(--em-varden);color:var(--em-cosmos);padding:16px 18px;border-radius:10px;margin-bottom:14px}
+  .type-playground input{
+    width:100%;margin-top:8px;padding:10px 12px;border:2px solid var(--em-cosmos);border-radius:6px;
+    background:var(--em-varden-card);color:var(--em-cosmos);font-family:var(--em-font-body);font-size:15px;font-weight:600;
+  }
+  .type-specimen{border:2px solid var(--em-marble);background:var(--em-cosmos-deep);color:var(--em-varden);padding:20px;border-radius:10px}
+
+  /* 05 30 Notched Plaques */
+  .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .filter-btn{
+    border:2px solid var(--em-cosmos);background:var(--em-varden-card);color:var(--em-cosmos);
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;padding:6px 12px;border-radius:6px;cursor:pointer;
+  }
+  .filter-btn.active{background:var(--em-crimson);border-color:var(--em-crimson);color:var(--em-varden)}
+  .chapter-plaques{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .chapter-tile{
+    border:2px solid var(--em-cosmos);background:var(--em-varden-card);color:var(--em-cosmos);
+    display:flex;flex-direction:column;justify-content:space-between;min-height:150px;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 7px),68% calc(100% - 7px),64% 100%,36% 100%,32% calc(100% - 7px),0 calc(100% - 7px));
+    padding-bottom:12px;
+  }
+  .chapter-top{padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+  .chapter-num{font-family:var(--em-font-display);font-size:30px;font-weight:800;line-height:.9}
+  .chapter-cadence{padding:8px 14px 4px}
+  .chapter-title{padding:4px 14px;font-family:var(--em-font-display);font-weight:800;font-size:14px}
+
+  .plaque-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .plaque-card{
+    background:var(--em-varden-card);border:2px solid var(--em-cosmos);border-radius:10px;padding:12px;
+    display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;
+  }
+  .plaque-card:hover{border-color:var(--em-crimson)}
+  .plaque-card.hidden{display:none}
+  .plaque-tile{
+    width:78px;height:78px;display:flex;align-items:center;justify-content:center;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 6px),66% calc(100% - 6px),62% 100%,38% 100%,34% calc(100% - 6px),0 calc(100% - 6px));
+    background:var(--em-varden);color:var(--em-cosmos);border:2px solid var(--em-cosmos);
+  }
+  .plaque-tile.cosmos{background:var(--em-cosmos);color:var(--em-varden)}
+  .plaque-tile.gochujang{background:var(--em-gochujang);color:var(--em-varden);border-color:var(--em-crimson)}
+  .plaque-tile.crimson{background:var(--em-crimson);color:var(--em-varden);border-color:var(--em-gochujang)}
+  .plaque-tile.marble{background:var(--em-marble);color:var(--em-cosmos)}
+  .plaque-meta .vi{font-weight:800;font-size:12px;line-height:1.2;color:var(--em-cosmos)}
+  .plaque-meta .en{font-family:var(--em-font-mono);font-size:12px;font-weight:700;color:var(--em-crimson-ink);margin-top:2px}
+  .btn-copy-svg{
+    border:1.5px solid var(--em-cosmos);background:var(--em-varden);color:var(--em-cosmos);
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;padding:3px 8px;border-radius:4px;cursor:pointer;
+  }
+  .btn-copy-svg:hover{background:var(--em-cosmos);color:var(--em-varden)}
+
+  /* 06 Raster Studio */
+  .studio-shell{display:grid;grid-template-columns:330px 1fr;border:2px solid var(--em-varden);border-radius:12px;overflow:hidden;background:var(--em-cosmos-deep)}
+  .studio-controls{padding:18px 20px;border-right:2px solid var(--em-marble);background:var(--em-varden);color:var(--em-cosmos);display:flex;flex-direction:column;gap:11px}
+  .ctrl-group label{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;margin-bottom:4px}
+  .ctrl-group label span.num{font-family:var(--em-font-mono);font-size:12px;color:var(--em-crimson-ink)}
+  .ctrl-group input[type="range"]{width:100%;accent-color:var(--em-crimson)}
+  .ctrl-group select,.ctrl-group input[type="file"]{width:100%;padding:6px 8px;border:1.5px solid var(--em-cosmos);background:var(--em-varden-card);color:var(--em-cosmos);font-size:12px;font-weight:600;border-radius:4px}
+  .preset-row{display:flex;flex-wrap:wrap;gap:6px}
+  .preset-chip{
+    border:1.5px solid var(--em-cosmos);background:var(--em-varden-card);color:var(--em-cosmos);
+    font-family:var(--em-font-mono);font-size:12px;font-weight:700;padding:4px 8px;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;
+  }
+  .preset-chip.active{border-color:var(--em-crimson);background:var(--em-cosmos);color:var(--em-varden)}
+  .swatch-dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+  .studio-canvas-wrap{padding:22px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:14px}
+  .studio-preview-box{width:100%;max-width:620px;aspect-ratio:4/3;border:2px solid var(--em-marble);border-radius:8px;overflow:hidden}
+  .studio-preview-box svg{width:100%;height:100%;display:block}
+
+  /* 07 Tokens */
+  .tab-bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+  .tab-group{display:flex;flex-wrap:wrap;gap:6px}
+  .code-tab{border:1.5px solid var(--em-cosmos);background:var(--em-varden-card);color:var(--em-cosmos);font-family:var(--em-font-mono);font-size:12px;font-weight:700;padding:6px 12px;border-radius:4px;cursor:pointer}
+  .code-tab.active{background:var(--em-crimson);border-color:var(--em-crimson);color:var(--em-varden)}
+  .code-block{background:var(--em-cosmos);color:var(--em-varden);padding:18px 20px;font-family:var(--em-font-mono);font-size:12px;line-height:1.55;overflow-x:auto;border-radius:8px;border:2px solid var(--em-cosmos);white-space:pre}
+  .code-panel{display:none}.code-panel.active{display:block}
+
+  .toast{
+    position:fixed;right:24px;bottom:24px;z-index:60;background:var(--em-crimson);color:var(--em-varden);
+    padding:10px 14px;border-radius:6px;border:2px solid var(--em-varden);font-family:var(--em-font-mono);font-size:12px;font-weight:700;
+    opacity:0;transform:translateY(8px);pointer-events:none;transition:all .18s ease;
+  }
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  @media (max-width:1060px){
+    .plaque-grid{grid-template-columns:repeat(3,1fr)}
+    .chapter-plaques,.color-studio,.process-spread,.studio-shell{grid-template-columns:1fr}
+    .studio-controls{border-right:none;border-bottom:2px solid var(--em-marble)}
+    .process-visual{border-right:none;border-bottom:2px solid var(--em-cosmos)}
+  }
+  @media (max-width:780px){
+    .wrap,.topbar{padding-left:16px;padding-right:16px}
+    .grid-2,.grid-3,.grid-4,.mark-stage{grid-template-columns:1fr}
+    .color-studio > div,.studio-shell > div,.process-spread > div,.mark-stage > div{min-width:0}
+    .plaque-grid{grid-template-columns:repeat(2,1fr)}
+    .prop-bars{flex-direction:column;height:auto}
+    .prop-col{min-width:0;border-right:none;border-bottom:1px solid rgba(0,0,0,.18);padding:12px 14px;flex-direction:row;align-items:center;gap:12px}
+    .prop-col:last-child{border-bottom:none}
+  }
+  @page{size:A4;margin:10mm}
+  @media print{
+    .topbar-wrap,.btn-ui,.btn-ghost,.filter-bar,.btn-copy-svg,.tab-bar,.type-playground,.studio-controls,.ui-tabs,.anatomy-pills,.toast{display:none !important}
+    .wrap{padding:14px 10px}
+    .band-cosmos,.band-varden,.band-gochujang{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .code-panel{display:block;margin-bottom:10px}
+    .studio-shell{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar-wrap">
+    <header class="topbar">
+      <a href="/" class="topbar-brand">
+        <svg width="136" height="25" viewBox="0 0 236 42" fill="none" role="img" aria-label="EcoMiles">
+          <g stroke="#FDF0D5" stroke-width="4.2" stroke-linecap="square" stroke-linejoin="miter">
+            <path d="M21 9.5H6V30.5H21M6 20H18"/><path d="M47 9.5H31V30.5H47"/><path d="M58 9.5H75V30.5H58Z"/>
+            <path d="M88 30.5V12.6L103 26.2L118 12.6V30.5"/><path d="M132 9.5V30.5"/><path d="M145 9.5V30.5H160"/>
+            <path d="M186 9.5H171V30.5H186M171 20H183"/><path d="M213 9.5H197V20H213V30.5H197"/>
+          </g>
+          <path d="M118 30.5H88" stroke="#669BBC" stroke-width="4.2" stroke-linecap="square"/>
+          <rect x="85.8" y="28.3" width="4.4" height="4.4" fill="#FDF0D5"/>
+          <rect x="222" y="24.5" width="8" height="8" fill="#C1121F"/>
+        </svg>
+        <span class="mono" style="color:#669BBC;font-weight:700">· BRAND SYSTEM v3.0</span>
+      </a>
+      <nav class="topbar-nav mono" aria-label="Brand Book Navigation">
+        <a href="#thesis">01 Soul</a>
+        <a href="#marks">02 Marks</a>
+        <a href="#colour">03 5-Color System</a>
+        <a href="#type">04 Type</a>
+        <a href="#graphics">05 30 Plaques</a>
+        <a href="#studio">06 Halftone</a>
+        <a href="#tokens">07 Tokens</a>
+        <a class="btn-ghost" href="/">← Landing</a>
+        <button class="btn-ui" type="button" onclick="window.print()">Print PDF</button>
+      </nav>
+    </header>
+  </div>
+
+  <!-- HERO BAND: COSMOS BLUE -->
+  <section class="band-cosmos hero">
+    <div class="wrap">
+      <div class="mono" style="color:#669BBC;margin-bottom:10px">High-Contrast Brand System · Cosmos · Gochujang · Crimson · Varden · Marble</div>
+      <h1>Đường về<br>không trống<span class="stop">.</span></h1>
+
+      <div class="hero-pills">
+        <span class="pill pill-crimson">−30,5% đến −50,8% KM VS GOOGLE MAPS</span>
+        <span class="pill pill-marble">−22,3% đến −37,5% VS LỊCH CŨ</span>
+        <span class="pill pill-varden">2.895 ĐƠN THẬT · 642 MA TRẬN OSRM</span>
+        <span class="pill pill-gochujang">235 → 0 LỖI QĐ 23/2018 &amp; QCVN 41:2024</span>
+      </div>
+
+      <div class="hero-route-box">
+        <div class="hero-route-head">
+          <span class="mono" style="font-weight:800;color:#003049">RETURN-M MECHANISM · QĐ 23/2018 + BACKHAUL + GLEC v3.2 SEAL</span>
+          <button class="btn-ui" type="button" id="replayRoute">Replay 600ms Loop</button>
+        </div>
+        <svg id="heroRouteSvg" width="100%" viewBox="0 0 960 250" fill="none" role="img" aria-label="Return-M 5-Color Route Loop Diagram">
+          <rect width="960" height="250" fill="#FDF0D5"/>
+          <rect x="32" y="16" width="224" height="24" fill="#669BBC"/>
+          <rect x="256" y="16" width="112" height="24" fill="#780000"/>
+          <rect x="368" y="16" width="262" height="24" fill="#003049"/>
+          <rect x="630" y="16" width="150" height="24" fill="#780000"/>
+          <rect x="780" y="16" width="148" height="24" fill="#669BBC"/>
+          <text x="144" y="32" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#003049">00-06 MỞ</text>
+          <text x="312" y="32" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#FDF0D5">06-09 CẤM 2,5T</text>
+          <text x="499" y="32" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#FDF0D5">09-16 LÕI QĐ 23 · VAN &lt;950KG 24/24</text>
+          <text x="705" y="32" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#FDF0D5">16-20 CẤM 2,5T</text>
+          <text x="854" y="32" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#003049">20-24 ĐÊM</text>
+
+          <path class="draw-dot" d="M256 176 V72 L499 134 L742 72 V176 H256 Z" fill="#669BBC" fill-opacity="0.22"/>
+          <path d="M256 180 C360 212 638 212 742 180" stroke="#C1121F" stroke-width="3" stroke-dasharray="7 5"/>
+          <text x="499" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10.5" font-weight="800" fill="#780000">THỦ CÔNG: 14.178 KM (2,5T) · 46.376 KM (91 SHOP) · 235 LỖI QĐ 23</text>
+
+          <path d="M120 176 H256 V72 L499 134 L742 72 V176" stroke="#003049" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/>
+          <path id="matchedLeg" class="draw-line" d="M742 176 H256" stroke="#669BBC" stroke-width="5.5" stroke-linecap="square"/>
+          <path class="draw-dot" d="M742 176 H852" stroke="#C1121F" stroke-width="4" stroke-linecap="square"/>
+          <circle cx="120" cy="176" r="6" fill="#003049"/><circle cx="256" cy="72" r="6" fill="#003049"/>
+          <circle cx="499" cy="134" r="7" fill="#C1121F"/><circle cx="742" cy="72" r="6" fill="#003049"/>
+          <rect class="draw-dot" x="249" y="169" width="14" height="14" fill="#669BBC"/>
+          <rect class="draw-dot" x="846" y="169" width="14" height="14" fill="#C1121F"/>
+          <text x="120" y="158" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#003049">KHO Q12</text>
+          <text x="499" y="118" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="800" fill="#AE1F23">GHÉP VỀ</text>
+          <text x="499" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="800" fill="#003049">9.857 KM (−30,5%) · 29.508 KM (−36,4%) · 0 VI PHẠM</text>
+          <text x="853" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="800" fill="#AE1F23">−4,88T CO₂e</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 CORE DESIGN MEANING: VARDEN -->
+  <section id="thesis" class="band-varden">
+    <div class="wrap">
+      <div class="shead"><div class="shead-left"><span class="num">01</span><h2>Anatomy &amp; Real Pilot Proof</h2></div><span class="mono">NO LEAVES · GRAPHIC CLOSURE ONLY</span></div>
+
+      <div class="process-spread">
+        <div class="process-visual">
+          <div class="mono" style="font-weight:800;color:#AE1F23">CLICK TO INSPECT MECHANISM</div>
+          <div style="display:flex;align-items:center;justify-content:center;padding:12px 0">
+            <svg id="anatomySvg" width="240" height="170" viewBox="0 0 240 170" fill="none" role="img" aria-label="EcoMiles Return M anatomical meaning">
+              <path id="partBay" d="M48 36 L120 100 L192 36 V136 H48 V36 Z" fill="#669BBC" fill-opacity="0.35"/>
+              <path id="partOutbound" d="M48 136 V36 L120 100 L192 36 V136" stroke="#003049" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter"/>
+              <path id="partReturn" d="M192 136 H48" stroke="#669BBC" stroke-width="12" stroke-linecap="square"/>
+              <rect id="partLock" x="38" y="126" width="20" height="20" fill="#C1121F"/>
+            </svg>
+          </div>
+          <div class="anatomy-pills" role="group" aria-label="Anatomy Inspector">
+            <button class="anatomy-btn active" type="button" data-part="all">Full Loop</button>
+            <button class="anatomy-btn" type="button" data-part="outbound">01 Outbound</button>
+            <button class="anatomy-btn" type="button" data-part="return">02 Return Bridge</button>
+            <button class="anatomy-btn" type="button" data-part="bay">03 Cargo Hold</button>
+            <button class="anatomy-btn" type="button" data-part="lock">04 Crimson Seal</button>
+          </div>
+          <div class="anatomy-note" id="anatomyNote">
+            <strong>Complete Loop:</strong> Closed bottom bridge turns wasted return km into verified backhaul load.
+          </div>
+        </div>
+
+        <div class="process-copy">
+          <div class="mono" style="color:#669BBC">DESIGN INTENTION</div>
+          <p style="font-size:20px;font-weight:800;font-family:var(--em-font-display);line-height:1.35">
+            Four graphic parts. Zero decoration. Every angle encodes physical urban freight.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">
+            <div style="background:#002033;padding:12px;border-radius:6px;border:1.5px solid #669BBC">
+              <div class="mono" style="color:#669BBC">OUTBOUND + RETURN</div>
+              <div style="font-size:13px;font-weight:700;margin-top:4px">14.178 → 9.857 km (2,5T)</div>
+            </div>
+            <div style="background:#780000;padding:12px;border-radius:6px;border:1.5px solid #FDF0D5">
+              <div class="mono" style="color:#FDF0D5">CURFEW ENFORCED</div>
+              <div style="font-size:13px;font-weight:700;margin-top:4px">235 → 0 lỗi QĐ 23/2018</div>
+            </div>
+            <div style="background:#669BBC;color:#003049;padding:12px;border-radius:6px">
+              <div class="mono" style="color:#003049;font-weight:800">91 SHOPS VAN &lt;950KG</div>
+              <div style="font-size:13px;font-weight:800;margin-top:4px">46.376 → 29.508 km (−36,4%)</div>
+            </div>
+            <div style="background:#FDF0D5;color:#003049;padding:12px;border-radius:6px">
+              <div class="mono" style="color:#AE1F23;font-weight:800">GLEC v3.2 CARBON</div>
+              <div style="font-size:13px;font-weight:800;margin-top:4px">−1.822 L · −4,88T CO₂e</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div class="kpi" style="background:#003049;color:#FDF0D5"><div class="val">−30,5%</div><div class="lbl" style="color:#669BBC">Beverage 2.5T (500 orders)</div><div class="delta" style="color:#FDF0D5">543 → 328 trips · 0 overloads</div></div>
+        <div class="kpi" style="background:#780000;color:#FDF0D5;border-color:#C1121F"><div class="val">−50,8%</div><div class="lbl" style="color:#FDF0D5">Grocery #01 Van &lt;950kg</div><div class="delta" style="color:#FDF0D5">13.441 → 6.611 km (798 orders)</div></div>
+        <div class="kpi" style="background:#669BBC;color:#003049"><div class="val">−36,4%</div><div class="lbl">All 91 Shops (2.395 orders)</div><div class="delta">−37,5% vs chronological chaining</div></div>
+        <div class="kpi" style="background:#F8E7C4;color:#003049"><div class="val">22-37%</div><div class="lbl" style="color:#AE1F23">Cut vs Historical Schedules</div><div class="delta">4,88 t TTW / 5,90 t WTW CO₂e</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 MARKS & LOCKUPS: COSMOS BLUE -->
+  <section id="marks" class="band-cosmos">
+    <div class="wrap">
+      <div class="shead"><div class="shead-left"><span class="num">02</span><h2>Marks, Optical Ladder &amp; Seals</h2></div><span class="mono" style="color:#669BBC">VECTOR GEOMETRY</span></div>
+
+      <div class="mark-stage" style="margin-bottom:18px">
+        <div class="mark-grid-box">
+          <svg width="152" height="152" viewBox="0 0 64 64" fill="none">
+            <rect x="11" y="14" width="42" height="36" stroke="#669BBC" stroke-width="0.8" stroke-dasharray="2 2"/>
+            <path d="M11 50 V14 L32 37 L53 14 V50" stroke="#FDF0D5" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter"/>
+            <path d="M53 50 H11" stroke="#669BBC" stroke-width="6" stroke-linecap="square"/>
+            <rect x="47" y="44" width="9" height="9" fill="#C1121F"/>
+          </svg>
+          <div class="mono" style="margin-top:12px;color:#669BBC">64×64 GRID · PURE 5-COLOR</div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;justify-content:space-between">
+          <div class="optical-row">
+            <figure class="optical-item"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M11 50 V14 L32 37 L53 14 V50" stroke="#003049" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter"/><path d="M53 50 H11" stroke="#669BBC" stroke-width="6" stroke-linecap="square"/><rect x="47" y="44" width="9" height="9" fill="#C1121F"/></svg><figcaption>64px</figcaption></figure>
+            <figure class="optical-item"><svg width="32" height="32" viewBox="0 0 64 64" fill="none"><path d="M11 50 V14 L32 37 L53 14 V50" stroke="#003049" stroke-width="7.5" stroke-linecap="square"/><path d="M53 50 H11" stroke="#669BBC" stroke-width="7" stroke-linecap="square"/><rect x="47" y="44" width="9" height="9" fill="#C1121F"/></svg><figcaption>32px</figcaption></figure>
+            <figure class="optical-item"><svg width="24" height="24" viewBox="0 0 64 64" fill="none"><path d="M11 50 V14 L32 37 L53 14 V50" stroke="#003049" stroke-width="8" stroke-linecap="square"/><path d="M53 50 H11" stroke="#669BBC" stroke-width="7.5" stroke-linecap="square"/><rect x="47" y="44" width="9" height="9" fill="#C1121F"/></svg><figcaption>24px</figcaption></figure>
+            <figure class="optical-item"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#003049"/><path d="M6.5 24.5 V7.5 L16 18 L25.5 7.5 V24.5" stroke="#FDF0D5" stroke-width="3.6" stroke-linecap="square"/><path d="M25.5 24.5 H6.5" stroke="#669BBC" stroke-width="3.2" stroke-linecap="square"/><rect x="22.5" y="21.5" width="4.5" height="4.5" fill="#C1121F"/></svg><figcaption>FAVICON</figcaption></figure>
+            <figure class="optical-item"><svg width="48" height="48" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="14" fill="#780000"/><path d="M14 48 V18 L32 38 L50 18 V48" stroke="#FDF0D5" stroke-width="6" stroke-linecap="square"/><path d="M50 48 H14" stroke="#669BBC" stroke-width="5.5" stroke-linecap="square"/><rect x="45" y="43" width="8" height="8" fill="#C1121F"/></svg><figcaption>BADGE APP</figcaption></figure>
+          </div>
+
+          <div style="background:#FDF0D5;color:#003049;border-radius:12px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+            <div>
+              <div class="mono" style="color:#AE1F23;font-weight:800">ISO 14083 / GLEC v3.2 CERTIFICATION STAMP</div>
+              <div style="font-size:12.5px;font-weight:700;margin-top:2px">Rendered on verified PDF / 3-Sheet Excel carbon reports only.</div>
+            </div>
+            <svg width="240" height="62" viewBox="0 0 280 72" fill="none" aria-label="Verified ISO 14083 GLEC v3.2 seal">
+              <rect x="2" y="2" width="276" height="68" fill="#003049" stroke="#C1121F" stroke-width="3"/>
+              <rect x="14" y="14" width="44" height="44" fill="#C1121F"/>
+              <path d="M22 49 V23 L36 39 L50 23 V49 H22" stroke="#FDF0D5" stroke-width="4.5" stroke-linecap="square"/>
+              <text x="72" y="31" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#669BBC">VERIFIED · ISO 14083</text>
+              <text x="72" y="51" font-family="Bricolage Grotesque,sans-serif" font-size="18" font-weight="800" fill="#FDF0D5">GLEC v3.2 AUDITED</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="lockup-box" style="background:#FDF0D5;color:#003049">
+          <div class="mono" style="color:#AE1F23;font-weight:800">WORDMARK · ON VARDEN (#FDF0D5)</div>
+          <svg width="260" height="46" viewBox="0 0 236 42" fill="none">
+            <g stroke="#003049" stroke-width="4.2" stroke-linecap="square" stroke-linejoin="miter">
+              <path d="M21 9.5H6V30.5H21M6 20H18"/><path d="M47 9.5H31V30.5H47"/><path d="M58 9.5H75V30.5H58Z"/><path d="M88 30.5V12.6L103 26.2L118 12.6V30.5"/><path d="M132 9.5V30.5"/><path d="M145 9.5V30.5H160"/><path d="M186 9.5H171V30.5H186M171 20H183"/><path d="M213 9.5H197V20H213V30.5H197"/>
+            </g>
+            <path d="M118 30.5H88" stroke="#669BBC" stroke-width="4.2" stroke-linecap="square"/>
+            <rect x="85.8" y="28.3" width="4.4" height="4.4" fill="#003049"/>
+            <rect x="222" y="24.5" width="8" height="8" fill="#AE1F23"/>
+          </svg>
+        </div>
+        <div class="lockup-box" style="background:#002033;color:#FDF0D5">
+          <div class="mono" style="color:#669BBC;font-weight:800">WORDMARK · ON COSMOS (#003049)</div>
+          <svg width="260" height="46" viewBox="0 0 236 42" fill="none">
+            <g stroke="#FDF0D5" stroke-width="4.2" stroke-linecap="square" stroke-linejoin="miter">
+              <path d="M21 9.5H6V30.5H21M6 20H18"/><path d="M47 9.5H31V30.5H47"/><path d="M58 9.5H75V30.5H58Z"/><path d="M88 30.5V12.6L103 26.2L118 12.6V30.5"/><path d="M132 9.5V30.5"/><path d="M145 9.5V30.5H160"/><path d="M186 9.5H171V30.5H186M171 20H183"/><path d="M213 9.5H197V20H213V30.5H197"/>
+            </g>
+            <path d="M118 30.5H88" stroke="#669BBC" stroke-width="4.2" stroke-linecap="square"/>
+            <rect x="85.8" y="28.3" width="4.4" height="4.4" fill="#FDF0D5"/>
+            <rect x="222" y="24.5" width="8" height="8" fill="#C1121F"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 PROPORTIONAL 5-COLOR ARCHITECTURE: VARDEN -->
+  <section id="colour" class="band-varden">
+    <div class="wrap">
+      <div class="shead"><div class="shead-left"><span class="num">03</span><h2>5-Color System &amp; Live Context Switcher</h2></div><span class="mono">WCAG AA CONTRAST LOCKED</span></div>
+
+      <div class="color-studio">
+        <div>
+          <div class="prop-bars" id="propBars">
+            <div class="prop-col selected" style="flex-grow:34;background:#003049;color:#FDF0D5"
+                 data-name="Cosmos Blue" data-hex="#003049" data-rgb="0 / 48 / 73" data-ratio="34%"
+                 data-why="Primary deep navy ground and AAA light-surface ink (12.25:1 on Varden).">
+              <div><div class="prop-title">COSMOS</div><div class="prop-pct">34%</div></div>
+              <div class="prop-specs">#003049<br>AAA INK</div>
+            </div>
+
+            <div class="prop-col" style="flex-grow:32;background:#FDF0D5;color:#003049"
+                 data-name="Varden" data-hex="#FDF0D5" data-rgb="253 / 240 / 213" data-ratio="32%"
+                 data-why="Editorial warm daylight cream canvas + inverse hero display text. Ink accent: #AE1F23 (6.16:1).">
+              <div><div class="prop-title" style="color:#AE1F23">VARDEN</div><div class="prop-pct" style="color:#AE1F23">32%</div></div>
+              <div class="prop-specs" style="color:#AE1F23">#FDF0D5<br>ACCENT #AE1F23</div>
+            </div>
+
+            <div class="prop-col" style="flex-grow:14;background:#C1121F;color:#FDF0D5"
+                 data-name="Crimson Blaze" data-hex="#C1121F" data-rgb="193 / 18 / 31" data-ratio="14%"
+                 data-why="Primary CTA, peak KPI deltas, and active QĐ 23 ban highlights (5.51:1 with Varden ink).">
+              <div><div class="prop-title">CRIMSON</div><div class="prop-pct">14%</div></div>
+              <div class="prop-specs">#C1121F<br>CTA &amp; BAN</div>
+            </div>
+
+            <div class="prop-col" style="flex-grow:12;background:#669BBC;color:#003049"
+                 data-name="Blue Marble" data-hex="#669BBC" data-rgb="102 / 155 / 188" data-ratio="12%"
+                 data-why="Compliant route corridors, backhaul bridges, and Cosmos telemetry borders (4.59:1 with Cosmos).">
+              <div><div class="prop-title">MARBLE</div><div class="prop-pct">12%</div></div>
+              <div class="prop-specs">#669BBC<br>OPEN ROUTE</div>
+            </div>
+
+            <div class="prop-col" style="flex-grow:8;background:#780000;color:#FDF0D5"
+                 data-name="Gochujang Red" data-hex="#780000" data-rgb="120 / 0 / 0" data-ratio="8%"
+                 data-why="Curfew banners, ROI output card ground, and hover depth (10.34:1 with Varden).">
+              <div><div class="prop-title">GOCHUJANG</div><div class="prop-pct">8%</div></div>
+              <div class="prop-specs">#780000<br>BAN BAND</div>
+            </div>
+          </div>
+
+          <div class="color-detail-bar">
+            <div>
+              <strong id="cdName" style="font-size:15px">Cosmos Blue</strong>
+              <div id="cdSpecs" class="mono" style="color:#AE1F23;margin-top:2px">HEX #003049 · RGB 0 / 48 / 73 · RATIO 34%</div>
+              <p id="cdWhy" style="font-size:12.5px;margin-top:4px;font-weight:600">Primary deep navy ground and AAA light-surface ink (12.25:1 on Varden).</p>
+            </div>
+            <button class="btn-ghost" type="button" id="copyHexBtn">Copy #003049</button>
+          </div>
+        </div>
+
+        <div class="ui-visualizer">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="mono" style="color:#669BBC">LIVE COMPONENT PREVIEW</span>
+            <div class="ui-tabs" role="tablist">
+              <button class="ui-tab active" type="button" data-surface="landing">Hero</button>
+              <button class="ui-tab" type="button" data-surface="dispatch">Curfew</button>
+              <button class="ui-tab" type="button" data-surface="driver">Driver</button>
+              <button class="ui-tab" type="button" data-surface="iso">Ledger</button>
+            </div>
+          </div>
+
+          <div class="ui-stage dark-mode" id="uiStage">
+            <div>
+              <div class="mono" style="color:#669BBC">HERO CANVAS · COSMOS #003049</div>
+              <div style="font-family:var(--em-font-display);font-weight:800;font-size:28px;line-height:1.05;margin-top:8px;color:#FDF0D5">Đường về không trống<span style="color:#C1121F">.</span></div>
+              <div style="margin-top:10px;display:inline-block;background:#C1121F;color:#FDF0D5;padding:4px 10px;border-radius:4px;font-family:var(--em-font-mono);font-size:12px;font-weight:800">−30,5% ĐẾN −50,8% KM OSRM</div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+              <span style="background:#C1121F;color:#FDF0D5;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:800">Mở Điều Phối →</span>
+              <span style="background:#FDF0D5;color:#003049;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:800">Đối Chứng 2 Bản Đồ</span>
+            </div>
+          </div>
+          <div class="mono" style="font-size:12px;color:#669BBC" id="uiPaletteSummary">Contrast: 12.25:1 Varden/Cosmos · 5.51:1 Varden/Crimson</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 TYPOGRAPHY: COSMOS -->
+  <section id="type" class="band-cosmos">
+    <div class="wrap">
+      <div class="shead"><div class="shead-left"><span class="num">04</span><h2>Typography · Bricolage + Be Vietnam Pro</h2></div><span class="mono" style="color:#669BBC">VIETNAMESE DIACRITICS TESTED</span></div>
+
+      <div class="type-playground">
+        <div class="mono" style="color:#AE1F23;font-weight:800">TYPE TESTER (ALL 3 SPECIMENS LIVE UPDATE)</div>
+        <input id="typeInput" type="text" value="51C-25T.01 · Đường về không trống · 9.857 km (−30,5%) · 0 lỗi QĐ 23">
+      </div>
+
+      <div class="grid-3">
+        <div class="type-specimen">
+          <div class="mono" style="color:#669BBC">DISPLAY · BRICOLAGE GROTESQUE 800</div>
+          <div id="previewDisplay" style="font-family:var(--em-font-display);font-weight:800;font-size:26px;line-height:1.1;margin:8px 0">Đường về không trống.</div>
+        </div>
+        <div class="type-specimen">
+          <div class="mono" style="color:#669BBC">BODY · BE VIETNAM PRO 600</div>
+          <div id="previewBody" style="font-size:14px;font-weight:600;margin-top:8px">51C-25T.01 · Đường về không trống · 9.857 km (−30,5%) · 0 lỗi QĐ 23</div>
+        </div>
+        <div class="type-specimen">
+          <div class="mono" style="color:#669BBC">DATA · JETBRAINS MONO 700</div>
+          <div id="previewMono" style="font-family:var(--em-font-mono);font-size:12.5px;font-weight:700;margin-top:8px;color:#FDF0D5">51C-25T.01 · 9.857 KM · −30,5% · 0 QĐ 23</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 30 NOTCHED PLAQUES: VARDEN -->
+  <section id="graphics" class="band-varden">
+    <div class="wrap">
+      <div class="shead"><div class="shead-left"><span class="num">05</span><h2>30 Twist-Lock Vector Signage Plaques</h2></div><span class="mono">COPY RAW SVG DIRECTLY</span></div>
+
+      <div class="chapter-plaques">
+        <div class="chapter-tile">
+          <div class="chapter-top" style="background:#003049;color:#FDF0D5"><span class="mono">CHƯƠNG 01</span><span class="chapter-num">01</span></div>
+          <div class="chapter-cadence"><svg width="100%" height="24" viewBox="0 0 180 24" fill="none"><path d="M0 12H80" stroke="#AE1F23" stroke-width="2.5" stroke-dasharray="6 4"/><path d="M80 12H174" stroke="#003049" stroke-width="3"/></svg></div>
+          <div class="chapter-title">Mũi tên hành lang</div>
+        </div>
+        <div class="chapter-tile">
+          <div class="chapter-top" style="background:#780000;color:#FDF0D5"><span class="mono">CHƯƠNG 02</span><span class="chapter-num">02</span></div>
+          <div class="chapter-cadence"><svg width="100%" height="24" viewBox="0 0 180 24" fill="none"><rect x="0" y="5" width="38" height="14" fill="#C1121F"/><rect x="44" y="5" width="84" height="14" fill="#669BBC"/><rect x="134" y="5" width="44" height="14" fill="#C1121F"/></svg></div>
+          <div class="chapter-title">Bến bãi &amp; Cấm tải</div>
+        </div>
+        <div class="chapter-tile">
+          <div class="chapter-top" style="background:#C1121F;color:#FDF0D5"><span class="mono">CHƯƠNG 03</span><span class="chapter-num">03</span></div>
+          <div class="chapter-cadence"><svg width="100%" height="24" viewBox="0 0 180 24" fill="none"><path d="M0 12H165" stroke="#003049" stroke-width="3"/><rect x="165" y="7" width="10" height="10" fill="#C1121F"/></svg></div>
+          <div class="chapter-title">Đội xe 2,5T &amp; Van &lt;950kg</div>
+        </div>
+        <div class="chapter-tile">
+          <div class="chapter-top" style="background:#669BBC;color:#003049"><span class="mono">CHƯƠNG 04</span><span class="chapter-num">04</span></div>
+          <div class="chapter-cadence"><svg width="100%" height="24" viewBox="0 0 180 24" fill="none"><rect x="0" y="5" width="24" height="14" stroke="#003049" stroke-width="2"/><rect x="32" y="9" width="24" height="10" fill="#AE1F23"/><path d="M68 14H176" stroke="#003049" stroke-width="2.5"/></svg></div>
+          <div class="chapter-title">Sổ kiểm toán GLEC</div>
+        </div>
+      </div>
+
+      <div class="filter-bar" role="group" aria-label="Filter 30 notched plaques">
+        <button class="filter-btn active" type="button" data-filter="all">All (30)</button>
+        <button class="filter-btn" type="button" data-filter="arrows">Arrows (8)</button>
+        <button class="filter-btn" type="button" data-filter="yard">Curfew &amp; Yard (8)</button>
+        <button class="filter-btn" type="button" data-filter="fleet">Fleet &amp; Backhaul (6)</button>
+        <button class="filter-btn" type="button" data-filter="ledger">GLEC &amp; Ops (8)</button>
+      </div>
+
+      <div class="plaque-grid" id="plaqueGrid"></div>
+    </div>
+  </section>
+
+  <!-- 06 HALFTONE STUDIO: GOCHUJANG / COSMOS -->
+  <section id="studio" class="band-cosmos">
+    <div class="wrap">
+      <div class="shead"><div class="shead-left"><span class="num">06</span><h2>5-Color Halftone Raster Artwork Studio</h2></div><span class="mono" style="color:#669BBC">EXPORT VECTOR SVG / 2X PNG</span></div>
+
+      <div class="studio-shell">
+        <div class="studio-controls">
+          <div class="ctrl-group">
+            <label>Freight Scene / Upload</label>
+            <select id="htSample">
+              <option value="truck">Built-in 01: 51C 2.5T Truck</option>
+              <option value="founder">Built-in 02: Operations Lead</option>
+              <option value="port">Built-in 03: Cat Lai Cranes</option>
+              <option value="returnm">Built-in 04: Return M Monument</option>
+            </select>
+            <input id="htUpload" type="file" accept="image/*" style="margin-top:6px">
+          </div>
+
+          <div class="ctrl-group">
+            <label>Cadence Mode</label>
+            <select id="htMode">
+              <option value="cadence" selected>Route Cadence (Dash ↔ Solid)</option>
+              <option value="scanline">Horizontal Scanline</option>
+              <option value="matrix">Square Matrix Blocks</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group"><label>Min Height <span class="num" id="vMinH">4%</span></label><input id="htMinH" type="range" min="0" max="40" value="4"></div>
+          <div class="ctrl-group"><label>Max Height <span class="num" id="vMaxH">96%</span></label><input id="htMaxH" type="range" min="40" max="100" value="96"></div>
+          <div class="ctrl-group"><label>Columns <span class="num" id="vRes">64</span></label><input id="htRes" type="range" min="20" max="96" value="64"></div>
+          <div class="ctrl-group"><label>H Gap <span class="num" id="vHGap">0%</span></label><input id="htHGap" type="range" min="0" max="45" value="0"></div>
+          <div class="ctrl-group"><label>V Gap <span class="num" id="vVGap">26%</span></label><input id="htVGap" type="range" min="4" max="60" value="26"></div>
+          <div class="ctrl-group" id="dashThresholdGroup"><label>Empty Dash <span class="num" id="vDash">28%</span></label><input id="htDash" type="range" min="0" max="60" value="28"></div>
+
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;cursor:pointer">
+            <input id="htInvert" type="checkbox"> Invert tone
+          </label>
+
+          <div class="ctrl-group">
+            <label>5-Color Duo Presets</label>
+            <div class="preset-row" id="htPresets">
+              <button class="preset-chip active" type="button" data-fg="#FDF0D5" data-bg="#003049"><span class="swatch-dot" style="background:#FDF0D5;border:1px solid #003049"></span>Varden / Cosmos</button>
+              <button class="preset-chip" type="button" data-fg="#003049" data-bg="#FDF0D5"><span class="swatch-dot" style="background:#003049"></span>Cosmos / Varden</button>
+              <button class="preset-chip" type="button" data-fg="#FDF0D5" data-bg="#780000"><span class="swatch-dot" style="background:#780000"></span>Varden / Gochujang</button>
+              <button class="preset-chip" type="button" data-fg="#AE1F23" data-bg="#FDF0D5"><span class="swatch-dot" style="background:#AE1F23"></span>Crimson / Varden</button>
+              <button class="preset-chip" type="button" data-fg="#003049" data-bg="#669BBC"><span class="swatch-dot" style="background:#669BBC"></span>Cosmos / Marble</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="studio-canvas-wrap">
+          <div class="studio-preview-box" id="htPreviewBox">
+            <svg id="htSvgOutput" viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="EcoMiles 5-Color Raster Output"></svg>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:620px;flex-wrap:wrap;gap:10px">
+            <span class="mono" style="color:#669BBC" id="htStats">COSMOS + VARDEN · 64×48</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn-ghost" type="button" id="htDownloadSvg">Download SVG</button>
+              <button class="btn-ui" type="button" id="htDownloadPng">Download PNG (2x)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 TOKENS: VARDEN -->
+  <section id="tokens" class="band-varden">
+    <div class="wrap">
+      <div class="shead"><div class="shead-left"><span class="num">07</span><h2>Design Tokens &amp; Ship Guardrails</h2></div><span class="mono">CR-20261117-002</span></div>
+
+      <div class="tab-bar">
+        <div class="tab-group">
+          <button class="code-tab active" type="button" data-tab="tab-css">tokens.css</button>
+          <button class="code-tab" type="button" data-tab="tab-tw">tailwind-palette.json</button>
+        </div>
+        <button class="btn-ui" type="button" id="copyCodeBtn">Copy Snippet</button>
+      </div>
+
+      <pre id="tab-css" class="code-block code-panel active">:root {
+  --em-cosmos: #003049;
+  --em-gochujang: #780000;
+  --em-crimson: #C1121F;
+  --em-crimson-ink: #AE1F23;
+  --em-varden: #FDF0D5;
+  --em-marble: #669BBC;
+  --em-font-display: 'Bricolage Grotesque', 'Be Vietnam Pro', system-ui, sans-serif;
+  --em-font-body: 'Be Vietnam Pro', system-ui, sans-serif;
+  --em-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}</pre>
+      <pre id="tab-tw" class="code-block code-panel">{
+  "cosmos": "#003049",
+  "gochujang": "#780000",
+  "crimson": "#C1121F",
+  "crimsonInk": "#AE1F23",
+  "varden": "#FDF0D5",
+  "blueMarble": "#669BBC"
+}</pre>
+
+      <div style="margin-top:24px;padding-top:18px;border-top:2px solid #003049;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px" class="mono">
+        <span>ECOMILES · HIGH-CONTRAST IDENTITY SYSTEM v3.0</span>
+        <span>DEV BRANCH LIVE PREVIEW</span>
+      </div>
+    </div>
+  </section>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+(() => {
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function notify(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+  async function copyText(str, label) {
+    try { await navigator.clipboard.writeText(str); notify(label + ' copied'); }
+    catch (_) { notify(label); }
+  }
+
+  document.getElementById('replayRoute')?.addEventListener('click', () => {
+    const line = document.getElementById('matchedLeg');
+    const dots = document.querySelectorAll('.draw-dot');
+    if (!line) return;
+    line.style.animation = 'none';
+    dots.forEach((d) => { d.style.animation = 'none'; d.style.opacity = '0'; });
+    void line.getBoundingClientRect();
+    line.style.animation = '';
+    dots.forEach((d) => { d.style.animation = ''; d.style.opacity = ''; });
+  });
+
+  const ANATOMY_COPY = {
+    all: '<strong>Complete Loop:</strong> Closed bottom bridge turns wasted return km into verified backhaul load.',
+    outbound: '<strong>01 Outbound:</strong> Deep Cosmos mitered tarmac path across HCMC urban districts.',
+    return: '<strong>02 Return Bridge:</strong> Blue Marble corridor turning empty return into paid freight.',
+    bay: '<strong>03 Cargo Hold:</strong> Enclosed interior bay holding empirical pilot density.',
+    lock: '<strong>04 Crimson Seal:</strong> Square depot twist-lock enforcing QĐ 23 & GLEC v3.2 closure.'
+  };
+  document.querySelectorAll('.anatomy-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.anatomy-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const p = btn.getAttribute('data-part');
+      const ob = document.getElementById('partOutbound'), ret = document.getElementById('partReturn'),
+            bay = document.getElementById('partBay'), lock = document.getElementById('partLock');
+      if (ob && ret && bay && lock) {
+        ob.style.opacity = (p === 'all' || p === 'outbound') ? '1' : '0.2';
+        ret.style.opacity = (p === 'all' || p === 'return') ? '1' : '0.2';
+        bay.style.opacity = (p === 'all' || p === 'bay') ? '1' : '0.15';
+        lock.style.opacity = (p === 'all' || p === 'lock') ? '1' : '0.2';
+      }
+      const note = document.getElementById('anatomyNote');
+      if (note) note.innerHTML = ANATOMY_COPY[p] || ANATOMY_COPY.all;
+    });
+  });
+
+  let activeHex = '#003049';
+  document.querySelectorAll('.prop-col').forEach((col) => {
+    col.addEventListener('click', () => {
+      document.querySelectorAll('.prop-col').forEach((c) => c.classList.remove('selected'));
+      col.classList.add('selected');
+      activeHex = col.getAttribute('data-hex') || '#003049';
+      document.getElementById('cdName').textContent = col.getAttribute('data-name') || '';
+      document.getElementById('cdSpecs').textContent =
+        `HEX ${activeHex} · RGB ${col.getAttribute('data-rgb')} · RATIO ${col.getAttribute('data-ratio')}`;
+      document.getElementById('cdWhy').textContent = col.getAttribute('data-why') || '';
+      document.getElementById('copyHexBtn').textContent = 'Copy ' + activeHex;
+    });
+  });
+  document.getElementById('copyHexBtn')?.addEventListener('click', () => copyText(activeHex, activeHex));
+
+  const UI_MOCKUPS = {
+    landing: {
+      dark: true,
+      summary: 'Contrast: 12.25:1 Varden/Cosmos · 5.51:1 Varden/Crimson',
+      html: `<div><div class="mono" style="color:#669BBC">HERO CANVAS · COSMOS #003049</div>
+        <div style="font-family:var(--em-font-display);font-weight:800;font-size:28px;line-height:1.05;margin-top:8px;color:#FDF0D5">Đường về không trống<span style="color:#C1121F">.</span></div>
+        <div style="margin-top:10px;display:inline-block;background:#C1121F;color:#FDF0D5;padding:4px 10px;border-radius:4px;font-family:var(--em-font-mono);font-size:12px;font-weight:800">−30,5% ĐẾN −50,8% KM OSRM</div></div>
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <span style="background:#C1121F;color:#FDF0D5;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:800">Mở Điều Phối →</span>
+          <span style="background:#FDF0D5;color:#003049;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:800">Đối Chứng 2 Bản Đồ</span></div>`
+    },
+    dispatch: {
+      dark: false,
+      summary: 'Gochujang #780000 Curfew + Marble #669BBC Corridor + Cosmos #003049 Core',
+      html: `<div><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono" style="color:#AE1F23;font-weight:800">QĐ 23/2018 + QCVN 41</span><span class="mono" style="background:#003049;color:#FDF0D5;padding:4px 8px;border-radius:4px">0 VI PHẠM</span></div>
+        <div style="display:flex;height:18px;border:2px solid #003049;margin-top:14px"><span style="width:25%;background:#669BBC"></span><span style="width:12.5%;background:#C1121F"></span><span style="width:29%;background:#003049"></span><span style="width:16.5%;background:#C1121F"></span><span style="width:17%;background:#669BBC"></span></div></div>
+        <div class="mono" style="margin-top:16px;color:#003049;font-weight:800">2,5T: 14.178 → 9.857 KM (−30,5%) · VAN &lt;950KG: −50,8%</div>`
+    },
+    driver: {
+      dark: true,
+      summary: 'High-Contrast Cosmos Cab (#002033) + Crimson Confirmation Action (#C1121F)',
+      html: `<div><div class="mono" style="color:#669BBC">51C-25T.01 · LỘ TRÌNH QĐ 23 AN TOÀN</div>
+        <div style="font-family:var(--em-font-display);font-weight:800;font-size:24px;color:#FDF0D5;margin-top:8px">Kho Q12 → Tân Bình → Q3</div></div>
+        <div style="margin-top:16px;background:#C1121F;color:#FDF0D5;padding:12px;text-align:center;border-radius:6px;font-weight:800;font-size:14px">Xác nhận giao · Không vi phạm</div>`
+    },
+    iso: {
+      dark: false,
+      summary: 'Varden Ledger Sheet (#FDF0D5) + Gochujang Audit Stamp (#780000)',
+      html: `<div><div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #003049;padding-bottom:8px">
+        <strong style="font-family:var(--em-font-display);font-size:14px;color:#003049">GLEC v3.2 LEDGER</strong>
+        <span class="mono" style="background:#780000;color:#FDF0D5;padding:3px 7px;border-radius:4px;font-size:12px">2,68 KG / L</span></div>
+        <div class="mono" style="margin-top:14px;font-size:13px;font-weight:800;color:#003049">−1.822 L DIESEL · −4,88 TẤN CO₂e</div></div>`
+    }
+  };
+  document.querySelectorAll('.ui-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ui-tab').forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      const spec = UI_MOCKUPS[tab.getAttribute('data-surface')];
+      const stage = document.getElementById('uiStage');
+      if (stage && spec) {
+        stage.classList.toggle('dark-mode', spec.dark);
+        stage.innerHTML = spec.html;
+        document.getElementById('uiPaletteSummary').textContent = spec.summary;
+      }
+    });
+  });
+
+  document.getElementById('typeInput')?.addEventListener('input', (e) => {
+    const v = e.target.value || 'Đường về không trống.';
+    ['previewDisplay', 'previewBody', 'previewMono'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = v;
+    });
+  });
+
+  const PLAQUES = [
+    { cat:'arrows', tone:'', vi:'Rẽ phải hành lang', en:'CORRIDOR RIGHT', path:'M5 12H18M12.5 6.5L18.5 12L12.5 17.5' },
+    { cat:'arrows', tone:'', vi:'Quay đầu về kho', en:'RETURN WEST', path:'M19 12H6M11.5 6.5L5.5 12L11.5 17.5' },
+    { cat:'arrows', tone:'', vi:'Đi thẳng cao tốc', en:'HIGHWAY STRAIGHT', path:'M12 19V6M6.5 11.5L12 5.5L17.5 11.5' },
+    { cat:'arrows', tone:'', vi:'Nhập làn xuống dốc', en:'DOCK RAMP DOWN', path:'M12 5V18M6.5 12.5L12 18.5L17.5 12.5' },
+    { cat:'arrows', tone:'', vi:'Rẽ nhánh Đông Bắc', en:'BRANCH NE', path:'M7 17L17 7M9 7H17V15' },
+    { cat:'arrows', tone:'', vi:'Rẽ nhánh Tây Bắc', en:'BRANCH NW', path:'M17 17L7 7M15 7H7V15' },
+    { cat:'arrows', tone:'', vi:'Hồi quy Tây Nam', en:'RETURN SW', path:'M17 7L7 17M15 17H7V9' },
+    { cat:'arrows', tone:'', vi:'Nhập kho Đông Nam', en:'DOCK SE', path:'M7 7L17 17M9 17H17V9' },
+
+    { cat:'yard', tone:'marble', vi:'Bãi đỗ xe tải', en:'TRUCK PARKING P', path:'M7 19V5H14C16.5 5 18 6.5 18 9C18 11.5 16.5 13 14 13H7M4 21H20' },
+    { cat:'yard', tone:'cosmos', vi:'Hành lang mở QĐ 23', en:'OPEN CORRIDOR', path:'M13 4H19V20H13M6 12H15M11.5 8.5L15 12L11.5 15.5M5 4V20' },
+    { cat:'yard', tone:'crimson', vi:'Cửa sổ cấm tải', en:'QD23 BAN GATE', path:'M3 4H21V20H3ZM6 7V17H8V7ZM16 7V17H18V7ZM12 7V17M10 10L12 7.5L14 10' },
+    { cat:'yard', tone:'gochujang', vi:'Cấm Vành đai 3 HN', en:'HN RING 3 BAN', path:'M12 3L20 7.5V16.5L12 21L4 16.5V7.5ZM9 9L15 15M15 9L9 15' },
+    { cat:'yard', tone:'', vi:'Biển P.106a/b', en:'SIGN P106A/B', path:'M9 7H15L16 19H8ZM12 7V4M12 4H16M9 12H15' },
+    { cat:'yard', tone:'', vi:'Khu điều hành', en:'DISPATCH ONLY', path:'M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M7 17L17 7' },
+    { cat:'yard', tone:'', vi:'Đồng bộ ngoại tuyến', en:'OFFLINE SYNC', path:'M4 13.5H9V9.5H14V5.5H19.5M4 19H20' },
+    { cat:'yard', tone:'cosmos', vi:'Nghỉ ca 4h lái', en:'4H LIMIT REST', path:'M3 12H8M16 12H21M10 7H14V17H10ZM12 4V5' },
+
+    { cat:'fleet', tone:'cosmos', vi:'Vòng lặp Return M', en:'RETURN LOOP MARK', path:'M4 18V5L12 13.5L20 5V18H5M3 16.5H6V19.5H3Z' },
+    { cat:'fleet', tone:'marble', vi:'Ghép chiều về 91 shop', en:'BACKHAUL MATCH', path:'M3 7H17.5L14 3.5M12 17H6.5L10 20.5M14 17H21M11 17a1.5 1.5 0 1 0 3 0' },
+    { cat:'fleet', tone:'marble', vi:'Van <950kg 24/24h', en:'VAN <950KG EXEMPT', path:'M3 15.5V7.5H14.5L19.5 11V15.5H17M6 16a2 2 0 1 0 0.1 0M15.5 16a2 2 0 1 0 0.1 0M3 20H21' },
+    { cat:'fleet', tone:'', vi:'Xe tải 2,5 tấn', en:'LIGHT TRUCK 2.5T', path:'M2 15.5V5.5H14V15.5M6 8V13M10 8V13M14 8.5H18.5L21 11.5V15.5H19M6 16a2 2 0 1 0 0.1 0M17 16a2 2 0 1 0 0.1 0' },
+    { cat:'fleet', tone:'', vi:'Cảnh báo cầu 13T', en:'BRIDGE 13T LIMIT', path:'M2 16H22M5 16V10H19V16M9 10L12 6L15 10' },
+    { cat:'fleet', tone:'', vi:'Đầu kéo 40ft', en:'40FT TRACTOR', path:'M1.5 4.5H15V13H1.5ZM5.5 7V10.5M9 7V10.5M12.5 7V10.5M15 7.5H19.5L22 10.5V15.5H1.5M4.5 17a1.8 1.8 0 1 0 0.1 0M9.5 17a1.8 1.8 0 1 0 0.1 0M18 17a1.8 1.8 0 1 0 0.1 0' },
+
+    { cat:'ledger', tone:'cosmos', vi:'Sổ GLEC v3.2', en:'ISO 14083 LEDGER', path:'M4 3H15.5L20 7.5V21H4ZM15 3V8H20M7.5 11H16.5M7.5 14.5H13M14 16H17.5V19H14Z' },
+    { cat:'ledger', tone:'crimson', vi:'Giảm 4,88T CO₂e', en:'CO2 DELTA SEAL', path:'M4 4H9V17H4ZM15 9H20V17H15ZM2.5 20H21.5M12 4V17' },
+    { cat:'ledger', tone:'', vi:'Định mức 2,68 kg/L', en:'DIESEL 2.68 KG/L', path:'M4 5H12L15 8V20H4ZM7 11H12M7 14H12V17H7ZM15 9.5H18.5V17' },
+    { cat:'ledger', tone:'', vi:'Biển đăng kiểm', en:'PLATE ID STAMP', path:'M2.5 6H21.5V18H2.5ZM5.5 10.5H18.5M5.5 14H13.5M16 13H18.5V15.5H16Z' },
+    { cat:'ledger', tone:'', vi:'Dữ liệu OSRM thật', en:'OSRM MATRIX', path:'M4 4H16L20 8V20H4ZM7.5 15.5H12.5L15.5 11.5M14 8H17.5V11.5H14Z' },
+    { cat:'ledger', tone:'cosmos', vi:'Lệnh xuất bến', en:'SHIFT DISPATCH', path:'M3 5H15L19 9V19H3ZM7 12H14.5M11.5 8.5L15 12L11.5 15.5' },
+    { cat:'ledger', tone:'', vi:'Bảng Excel .xlsx', en:'XLSX MANIFEST', path:'M4 3H16L20 7V21H4ZM8 10L16 17M16 10L8 17' },
+    { cat:'ledger', tone:'crimson', vi:'An toàn NĐ 13', en:'TENANT SEAL', path:'M4 4H20V20H4ZM8 12.5L11 15.5L16.5 9.5' }
+  ];
+
+  const plaqueGrid = document.getElementById('plaqueGrid');
+  if (plaqueGrid) {
+    plaqueGrid.innerHTML = PLAQUES.map((p, idx) => `
+      <div class="plaque-card" data-cat="${p.cat}">
+        <div class="plaque-tile ${p.tone}">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" role="img" aria-label="${p.en}">
+            <path d="${p.path}" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </div>
+        <div class="plaque-meta">
+          <div class="vi">${p.vi}</div>
+          <div class="en">${p.en}</div>
+        </div>
+        <button class="btn-copy-svg" type="button" data-idx="${idx}">Copy SVG</button>
+      </div>
+    `).join('');
+
+    plaqueGrid.querySelectorAll('.btn-copy-svg').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = PLAQUES[Number(btn.getAttribute('data-idx'))];
+        const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="${p.path}" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/></svg>`;
+        copyText(svgStr, p.en + '.svg');
+      });
+    });
+  }
+
+  document.querySelectorAll('.filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      document.querySelectorAll('.plaque-card').forEach((c) => {
+        c.classList.toggle('hidden', filter !== 'all' && c.getAttribute('data-cat') !== filter);
+      });
+    });
+  });
+
+  // 06 Halftone Studio
+  const htEls = {
+    sample: document.getElementById('htSample'), upload: document.getElementById('htUpload'),
+    mode: document.getElementById('htMode'), minH: document.getElementById('htMinH'),
+    maxH: document.getElementById('htMaxH'), res: document.getElementById('htRes'),
+    hGap: document.getElementById('htHGap'), vGap: document.getElementById('htVGap'),
+    dash: document.getElementById('htDash'), invert: document.getElementById('htInvert'),
+    svg: document.getElementById('htSvgOutput'), stats: document.getElementById('htStats'),
+    dashGroup: document.getElementById('dashThresholdGroup')
+  };
+  let htFg = '#FDF0D5', htBg = '#003049';
+  let uploadedImg = null;
+  const offCanvas = document.createElement('canvas');
+  const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+
+  function paintBuiltinSample(kind, w, h) {
+    offCanvas.width = w; offCanvas.height = h;
+    offCtx.fillStyle = '#FFFFFF';
+    offCtx.fillRect(0, 0, w, h);
+    if (kind === 'truck') {
+      const g = offCtx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, '#ECECEC'); g.addColorStop(0.75, '#DCDCDC'); g.addColorStop(0.76, '#666666'); g.addColorStop(1, '#333333');
+      offCtx.fillStyle = g; offCtx.fillRect(0, 0, w, h);
+      offCtx.fillStyle = '#222222'; offCtx.fillRect(w*0.12, h*0.25, w*0.50, h*0.38);
+      offCtx.fillStyle = '#181818';
+      offCtx.beginPath(); offCtx.moveTo(w*0.63, h*0.63); offCtx.lineTo(w*0.63, h*0.37);
+      offCtx.lineTo(w*0.78, h*0.37); offCtx.lineTo(w*0.86, h*0.50); offCtx.lineTo(w*0.86, h*0.63); offCtx.closePath(); offCtx.fill();
+      [0.24, 0.36, 0.74].forEach((cx) => {
+        offCtx.fillStyle = '#080808'; offCtx.beginPath(); offCtx.arc(w*cx, h*0.68, h*0.08, 0, Math.PI*2); offCtx.fill();
+      });
+    } else if (kind === 'founder') {
+      const bg = offCtx.createRadialGradient(w*0.56, h*0.44, w*0.06, w*0.5, h*0.5, w*0.62);
+      bg.addColorStop(0, '#E8E8E8'); bg.addColorStop(0.55, '#999999'); bg.addColorStop(1, '#2B2B2B');
+      offCtx.fillStyle = bg; offCtx.fillRect(0, 0, w, h);
+      offCtx.fillStyle = '#161616'; offCtx.beginPath(); offCtx.ellipse(w*0.60, h*0.88, w*0.26, h*0.30, 0, 0, Math.PI*2); offCtx.fill();
+      offCtx.fillStyle = '#202020'; offCtx.beginPath(); offCtx.ellipse(w*0.60, h*0.36, w*0.09, h*0.13, 0, 0, Math.PI*2); offCtx.fill();
+    } else if (kind === 'port') {
+      offCtx.fillStyle = '#EDEDED'; offCtx.fillRect(0, 0, w, h);
+      offCtx.fillStyle = '#1E1E1E';
+      offCtx.fillRect(w*0.25, h*0.15, w*0.04, h*0.68); offCtx.fillRect(w*0.42, h*0.15, w*0.04, h*0.68);
+      offCtx.fillRect(w*0.12, h*0.22, w*0.55, h*0.05); offCtx.fillRect(w*0.18, h*0.56, w*0.72, h*0.28);
+    } else {
+      const mg = offCtx.createLinearGradient(0, 0, w, h);
+      mg.addColorStop(0, '#EAEAEA'); mg.addColorStop(1, '#B8B8B8');
+      offCtx.fillStyle = mg; offCtx.fillRect(0, 0, w, h);
+      offCtx.strokeStyle = '#101010'; offCtx.lineWidth = w*0.10; offCtx.lineCap = 'square';
+      offCtx.beginPath(); offCtx.moveTo(w*0.22, h*0.78); offCtx.lineTo(w*0.22, h*0.22);
+      offCtx.lineTo(w*0.50, h*0.55); offCtx.lineTo(w*0.78, h*0.22); offCtx.lineTo(w*0.78, h*0.78); offCtx.lineTo(w*0.22, h*0.78); offCtx.stroke();
+    }
+  }
+
+  function renderHalftone() {
+    const W = 640, H = 480;
+    const cols = Math.max(12, Number(htEls.res.value));
+    const cellW = W / cols, rows = Math.max(10, Math.round(cols * (H / W))), cellH = H / rows;
+    const minH = Number(htEls.minH.value) / 100, maxH = Math.max(minH, Number(htEls.maxH.value) / 100);
+    const hGap = Number(htEls.hGap.value) / 100, vGap = Number(htEls.vGap.value) / 100;
+    const dashCut = Number(htEls.dash.value) / 100, invert = htEls.invert.checked, mode = htEls.mode.value;
+
+    document.getElementById('vMinH').textContent = htEls.minH.value + '%';
+    document.getElementById('vMaxH').textContent = htEls.maxH.value + '%';
+    document.getElementById('vRes').textContent = htEls.res.value;
+    document.getElementById('vHGap').textContent = htEls.hGap.value + '%';
+    document.getElementById('vVGap').textContent = htEls.vGap.value + '%';
+    document.getElementById('vDash').textContent = htEls.dash.value + '%';
+    htEls.dashGroup.style.display = mode === 'cadence' ? 'block' : 'none';
+
+    if (uploadedImg) {
+      offCanvas.width = cols; offCanvas.height = rows;
+      offCtx.drawImage(uploadedImg, 0, 0, cols, rows);
+    } else {
+      paintBuiltinSample(htEls.sample.value, cols, rows);
+    }
+    const imgData = offCtx.getImageData(0, 0, cols, rows).data;
+    let rects = [`<rect width="${W}" height="${H}" fill="${htBg}"/>`];
+    const maxBarH = cellH * (1 - vGap);
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const i = (y * cols + x) * 4;
+        const luma = (0.299 * imgData[i] + 0.587 * imgData[i+1] + 0.114 * imgData[i+2]) / 255;
+        let t = invert ? luma : (1 - luma);
+        if (t <= 0.02 && minH <= 0.01) continue;
+        const barRatio = minH + t * (maxH - minH);
+        const rh = Math.max(0.4, maxBarH * barRatio);
+        const ry = y * cellH + (cellH - rh) / 2;
+
+        if (mode === 'matrix') {
+          const sq = Math.min(cellW * (1 - hGap), rh);
+          const rx = x * cellW + (cellW - sq) / 2, my = y * cellH + (cellH - sq) / 2;
+          rects.push(`<rect x="${rx.toFixed(1)}" y="${my.toFixed(1)}" width="${sq.toFixed(1)}" height="${sq.toFixed(1)}" fill="${htFg}"/>`);
+        } else if (mode === 'cadence' && t < dashCut) {
+          const dashW = cellW * (1 - hGap) * 0.56, rx = x * cellW + (cellW - dashW) / 2;
+          rects.push(`<rect x="${rx.toFixed(1)}" y="${ry.toFixed(1)}" width="${dashW.toFixed(1)}" height="${Math.max(1, rh * 0.72).toFixed(1)}" fill="${htFg}"/>`);
+        } else {
+          const rw = cellW * (1 - hGap), rx = x * cellW + (cellW * hGap) / 2;
+          rects.push(`<rect x="${rx.toFixed(1)}" y="${ry.toFixed(1)}" width="${(rw + 0.2).toFixed(1)}" height="${rh.toFixed(1)}" fill="${htFg}"/>`);
+        }
+      }
+    }
+    htEls.svg.innerHTML = rects.join('');
+    document.getElementById('htPreviewBox').style.background = htBg;
+    htEls.stats.textContent = `${mode.toUpperCase()} · ${cols}×${rows} · ${htFg} ON ${htBg}`;
+  }
+
+  ['sample','mode','minH','maxH','res','hGap','vGap','dash','invert'].forEach((k) => {
+    htEls[k]?.addEventListener('input', renderHalftone);
+    htEls[k]?.addEventListener('change', renderHalftone);
+  });
+  htEls.upload?.addEventListener('change', (ev) => {
+    const f = ev.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => { uploadedImg = img; renderHalftone(); notify('Loaded ' + f.name); };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(f);
+  });
+  htEls.sample?.addEventListener('change', () => { uploadedImg = null; renderHalftone(); });
+  document.querySelectorAll('#htPresets .preset-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#htPresets .preset-chip').forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      htFg = chip.getAttribute('data-fg'); htBg = chip.getAttribute('data-bg');
+      renderHalftone();
+    });
+  });
+  document.getElementById('htDownloadSvg')?.addEventListener('click', () => {
+    const xml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="1280" height="960">${htEls.svg.innerHTML}</svg>`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([xml], { type: 'image/svg+xml' }));
+    a.download = 'ecomiles-raster-' + htEls.mode.value + '.svg'; a.click(); notify('SVG exported');
+  });
+  document.getElementById('htDownloadPng')?.addEventListener('click', () => {
+    const xml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="1280" height="960">${htEls.svg.innerHTML}</svg>`;
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas'); c.width = 1280; c.height = 960;
+      c.getContext('2d').drawImage(img, 0, 0, 1280, 960);
+      const a = document.createElement('a'); a.href = c.toDataURL('image/png');
+      a.download = 'ecomiles-raster-' + htEls.mode.value + '.png'; a.click(); notify('PNG (2x) exported');
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+  });
+
+  document.querySelectorAll('.code-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.code-tab').forEach((t) => t.classList.remove('active'));
+      document.querySelectorAll('.code-panel').forEach((p) => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.getAttribute('data-tab'))?.classList.add('active');
+    });
+  });
+  document.getElementById('copyCodeBtn')?.addEventListener('click', () => {
+    const active = document.querySelector('.code-panel.active');
+    if (active) copyText(active.textContent || '', 'Token snippet');
+  });
+
+  renderHalftone();
+})();
+</script>
+</body>
+</html>

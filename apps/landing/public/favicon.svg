@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="EcoMiles favicon">
-  <rect width="32" height="32" rx="6" fill="#101418"/>
-  <path d="M7 25.5 V7.5 L16 18.5 L25 7.5 V25.5 H7" stroke="#F6F1E7" stroke-width="3.8" stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect width="32" height="32" rx="6" fill="#003049"/>
+  <path d="M6.5 24.5 V7.5 L16 18 L25.5 7.5 V24.5" stroke="#FDF0D5" stroke-width="3.6" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M25.5 24.5 H6.5" stroke="#669BBC" stroke-width="3.2" stroke-linecap="square"/>
+  <rect x="22.5" y="21.5" width="4.5" height="4.5" fill="#C1121F"/>
 </svg>

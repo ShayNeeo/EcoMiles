@@ -1,8 +1,8 @@
 import React from 'react';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { ArrowRight, Compass, FileSpreadsheet, Mail, MapPin, Phone, ShieldCheck, Truck } from 'lucide-react';
-import { EcoMilesWordmark } from './EcoMilesMark';
+import { ArrowRight, Compass, FileSpreadsheet, Mail, MapPin, Phone, Truck } from 'lucide-react';
+import { EcoMilesWordmark, IsoLedgerIcon } from './EcoMilesMark';
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -24,165 +24,97 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
       target.scrollIntoView({ behavior: 'instant' });
     } else {
       gsap.to(window, {
-        duration: 0.8,
-        scrollTo: { y: target, offsetY: 64, autoKill: false },
+        duration: 0.75,
+        scrollTo: { y: target, offsetY: 72, autoKill: false },
         ease: 'power3.inOut',
       });
     }
   };
 
   return (
-    <footer className="relative bg-[#F6F1E7] border-t border-[#D8D2C4] pt-16 pb-12 px-4 sm:px-6 lg:px-8 text-[#5B5F66] text-xs overflow-hidden">
+    <footer className="relative em-grid-varden border-t-4 border-[#003049] pt-16 pb-12 px-4 sm:px-6 lg:px-8 text-[#003049] text-xs overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Top Closing CTA Banner */}
-        <div className="mb-14 p-6 sm:p-8 rounded-[4px] bg-[#FBF8F1] border border-[#BDB5A3] flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-sm">
-          <div className="space-y-2 max-w-2xl">
-            <h3 className="font-display text-xl sm:text-2xl font-bold text-[#101418]">
-              Đường về không trống. Vận hành trực tiếp trên trình duyệt
+        {/* Top Action Banner */}
+        <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-[#003049] text-[#FDF0D5] border-2 border-[#003049] flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-xl">
+          <div className="space-y-1.5">
+            <h3 className="font-display text-2xl sm:text-3xl font-black text-[#FDF0D5]">
+              Đường về không trống · Chạy ngay trên trình duyệt
             </h3>
-            <p className="text-xs sm:text-sm text-[#2A2F36] leading-relaxed">
-              Mở ngay sổ cái điều phối, bản đồ vùng cấm QĐ 23/2018 và ứng dụng tài xế mà không cần cài đặt phần mềm.
+            <p className="font-mono text-xs font-bold text-[#669BBC]">
+              Điều phối Excel · Bản đồ QĐ 23 · App Tài xế · Sổ CO₂e GLEC v3.2
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <a
               href="/dashboard/"
-              className="px-4 py-2.5 rounded-[4px] bg-[#101418] hover:bg-[#1B45D7] text-[#F6F1E7] font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
+              className="px-4 py-2.5 rounded-lg bg-[#C1121F] hover:bg-[#780000] text-[#FDF0D5] font-extrabold text-xs flex items-center gap-1.5 transition-colors"
             >
               <FileSpreadsheet className="w-4 h-4" />
-              <span>Mở Bảng Điều Khiển</span>
+              <span>Điều Phối</span>
             </a>
             <a
               href="/maps/?vehicle=0&mode=navigate"
-              className="px-4 py-2.5 rounded-[4px] bg-[#FFFFFF] hover:bg-[#ECE5D7] text-[#101418] border border-[#BDB5A3] font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2.5 rounded-lg bg-[#FDF0D5] hover:bg-[#669BBC] text-[#003049] font-extrabold text-xs flex items-center gap-1.5 transition-colors"
             >
-              <Compass className="w-4 h-4 text-[#1B45D7]" />
-              <span>Mở Bản Đồ Xe Tải</span>
+              <Compass className="w-4 h-4 text-[#AE1F23]" />
+              <span>Bản Đồ QĐ 23</span>
             </a>
             <a
               href="/driver/"
-              className="px-4 py-2.5 rounded-[4px] bg-[#FFFFFF] hover:bg-[#ECE5D7] text-[#101418] border border-[#BDB5A3] font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2.5 rounded-lg bg-[#669BBC] hover:bg-[#FDF0D5] text-[#003049] font-extrabold text-xs flex items-center gap-1.5 transition-colors"
             >
-              <Truck className="w-4 h-4 text-[#1B45D7]" />
-              <span>Mở Ứng Dụng Tài Xế</span>
+              <Truck className="w-4 h-4" />
+              <span>App Tài Xế</span>
             </a>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-[#D8D2C4]">
-          {/* Col 1: Brand Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-10 border-b-2 border-[#D4BF94]">
           <div className="lg:col-span-2 space-y-4">
-            <EcoMilesWordmark showTagline />
-
-            <p className="text-[#2A2F36] text-xs leading-relaxed max-w-sm">
-              Nền tảng B2B tối ưu lộ trình xe tải đô thị, tuân thủ vùng cấm tải QĐ 23/2018/QĐ-UBND, ghép đơn chiều về và kiểm toán phát thải CO₂e theo chuẩn ISO 14083 / GLEC v3.2.
-            </p>
-
-            <div className="flex items-center gap-2 text-[#0B7A3B] text-xs font-semibold">
-              <ShieldCheck className="w-4 h-4 shrink-0" />
-              <span>Kiểm toán phát thải chuẩn ISO 14083 / GLEC v3.2</span>
+            <EcoMilesWordmark dark={false} showTagline />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-[#003049] text-[#FDF0D5] font-mono text-[11px] font-bold">
+              <IsoLedgerIcon className="w-4 h-4 text-[#669BBC] shrink-0" />
+              <span>ISO 14083 · GLEC v3.2 · QCVN 41:2024</span>
             </div>
           </div>
 
-          {/* Col 2: Direct Live Workspaces */}
           <div className="space-y-3">
-            <h4 className="font-bold text-[#101418] uppercase tracking-wider text-xs">Ứng Dụng Trực Tuyến</h4>
-            <ul className="space-y-2 text-[#5B5F66]">
-              <li>
-                <a href="/dashboard/" className="hover:text-[#101418] transition-colors">
-                  1. Trung tâm Điều phối Đội xe B2B
-                </a>
-              </li>
-              <li>
-                <a href="/benchmark/" className="hover:text-[#101418] transition-colors">
-                  2. Phòng Đối chứng Thuật toán EVSIM
-                </a>
-              </li>
-              <li>
-                <a href="/driver/" className="hover:text-[#101418] transition-colors">
-                  3. Ứng dụng Tài xế Giao nhận
-                </a>
-              </li>
-              <li>
-                <a href="/maps/?vehicle=0&mode=navigate" className="hover:text-[#101418] transition-colors">
-                  4. Bản đồ Dẫn đường Xe tải
-                </a>
-              </li>
-              <li>
-                <a href="/portal/audit/" className="hover:text-[#101418] transition-colors">
-                  5. Cổng Kiểm toán Phát thải ESG
-                </a>
-              </li>
+            <h4 className="font-mono font-extrabold text-[#AE1F23] uppercase tracking-wider text-xs">Không Gian Làm Việc</h4>
+            <ul className="space-y-2 font-semibold">
+              <li><a href="/dashboard/" className="hover:text-[#C1121F]">1. Trung tâm Điều phối B2B</a></li>
+              <li><a href="/benchmark/" className="hover:text-[#C1121F]">2. Phòng Đối chứng EVSIM</a></li>
+              <li><a href="/driver/" className="hover:text-[#C1121F]">3. Ứng dụng Tài xế</a></li>
+              <li><a href="/maps/?vehicle=0&mode=navigate" className="hover:text-[#C1121F]">4. Bản đồ Vùng cấm QĐ 23</a></li>
+              <li><a href="/portal/audit/" className="hover:text-[#C1121F]">5. Cổng Kiểm toán ESG</a></li>
+              <li><a href="/brand/" className="hover:text-[#C1121F] font-bold">6. Brand Kit &amp; Hệ thống nhận diện</a></li>
             </ul>
           </div>
 
-          {/* Col 3: Navigation */}
           <div className="space-y-3">
-            <h4 className="font-bold text-[#101418] uppercase tracking-wider text-xs">Khám Phá</h4>
-            <ul className="space-y-2 text-[#5B5F66]">
-              <li>
-                <a
-                  href="#solutions"
-                  onClick={(e) => handleSmoothFooterScroll(e, '#solutions')}
-                  className="hover:text-[#101418] transition-colors"
-                >
-                  4 trụ cột giải pháp
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#calculator"
-                  onClick={(e) => handleSmoothFooterScroll(e, '#calculator')}
-                  className="hover:text-[#101418] transition-colors"
-                >
-                  Công cụ tính tiết kiệm ROI &amp; CO₂
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#workflow"
-                  onClick={(e) => handleSmoothFooterScroll(e, '#workflow')}
-                  className="hover:text-[#101418] transition-colors"
-                >
-                  Quy trình vận hành 4 bước
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#showcase"
-                  onClick={(e) => handleSmoothFooterScroll(e, '#showcase')}
-                  className="hover:text-[#101418] transition-colors"
-                >
-                  Kiểm soát vùng cấm &amp; khung giờ
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#pricing"
-                  onClick={(e) => handleSmoothFooterScroll(e, '#pricing')}
-                  className="hover:text-[#101418] transition-colors"
-                >
-                  Bảng giá &amp; Gói Pilot miễn phí
-                </a>
-              </li>
+            <h4 className="font-mono font-extrabold text-[#AE1F23] uppercase tracking-wider text-xs">Điều Hướng</h4>
+            <ul className="space-y-2 font-semibold">
+              <li><a href="#solutions" onClick={(e) => handleSmoothFooterScroll(e, '#solutions')} className="hover:text-[#C1121F]">4 trụ cột giải pháp</a></li>
+              <li><a href="#calculator" onClick={(e) => handleSmoothFooterScroll(e, '#calculator')} className="hover:text-[#C1121F]">Ước tính dầu &amp; CO₂</a></li>
+              <li><a href="#workflow" onClick={(e) => handleSmoothFooterScroll(e, '#workflow')} className="hover:text-[#C1121F]">Quy trình 4 bước</a></li>
+              <li><a href="#showcase" onClick={(e) => handleSmoothFooterScroll(e, '#showcase')} className="hover:text-[#C1121F]">Ma trận giờ cấm tải</a></li>
+              <li><a href="#pricing" onClick={(e) => handleSmoothFooterScroll(e, '#pricing')} className="hover:text-[#C1121F]">Bảng giá &amp; Pilot</a></li>
             </ul>
           </div>
 
-          {/* Col 4: Contact & CTA */}
           <div className="space-y-3">
-            <h4 className="font-bold text-[#101418] uppercase tracking-wider text-xs">Liên Hệ &amp; Hợp Tác</h4>
-            <div className="space-y-2 text-xs text-[#5B5F66]">
+            <h4 className="font-mono font-extrabold text-[#AE1F23] uppercase tracking-wider text-xs">Liên Hệ</h4>
+            <div className="space-y-2 font-semibold">
               <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-[#101418] shrink-0" />
+                <MapPin className="w-3.5 h-3.5 text-[#AE1F23] shrink-0" />
                 <span>TP. Hồ Chí Minh, Việt Nam</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-[#101418] shrink-0" />
+                <Mail className="w-3.5 h-3.5 text-[#AE1F23] shrink-0" />
                 <span>contact@ecomiles.vn</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-[#101418] shrink-0" />
+                <Phone className="w-3.5 h-3.5 text-[#AE1F23] shrink-0" />
                 <span>0889.917.555</span>
               </div>
             </div>
@@ -190,21 +122,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPilotModal }) => {
             <button
               type="button"
               onClick={onOpenPilotModal}
-              className="mt-3 w-full py-2.5 px-3 rounded-[4px] bg-[#101418] hover:bg-[#1B45D7] text-[#F6F1E7] font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              className="mt-3 w-full py-2.5 px-3 rounded-lg bg-[#C1121F] hover:bg-[#780000] text-[#FDF0D5] font-extrabold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <span>Đăng Ký Dùng Thử Miễn Phí</span>
+              <span>Đăng Ký Dùng Thử</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Bottom Copyright & Standards */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>© 2026 EcoMiles Platform · Urban Logistics VRPTW &amp; ISO 14083 / GLEC v3.2 Carbon Accounting.</div>
-          <div className="flex flex-wrap items-center gap-5">
-            <span>Bảo mật dữ liệu NĐ 13/2023/NĐ-CP</span>
-            <span>100% Đường phố thật TP.HCM ($0 Map API)</span>
-          </div>
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[11px] font-bold text-[#003049]/75">
+          <span>© 2026 ECOMILES · ĐẠI SỨ GEN G 2026</span>
+          <span>COSMOS #003049 · VARDEN #FDF0D5 · CRIMSON #C1121F · MARBLE #669BBC</span>
         </div>
       </div>
     </footer>

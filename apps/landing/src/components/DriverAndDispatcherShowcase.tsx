@@ -1,13 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import {
-  ArrowUpRight,
-  Check,
-  Compass,
-  LayoutDashboard,
-  SplitSquareVertical,
-  Truck,
-} from 'lucide-react';
+import { ArrowUpRight, Compass, LayoutDashboard, SplitSquareVertical } from 'lucide-react';
+import { HanoiRingIcon, Qd23WindowIcon, VanExemptIcon } from './EcoMilesMark';
 
 type WorkspaceViewId = 'dispatcher' | 'benchmark' | 'driver_map';
 
@@ -17,11 +11,9 @@ interface WorkspaceSpec {
   title: string;
   roleBadge: string;
   timeWindowRule: string;
-  areaFocus: string;
   imageSrc: string;
   liveRouteUrl: string;
   liveRouteLabel: string;
-  description: string;
   samplePackages: {
     orderCode: string;
     area: string;
@@ -29,118 +21,97 @@ interface WorkspaceSpec {
     restrictionNote: string;
     plannedArrival: string;
   }[];
-  highlights: string[];
+  chips: string[];
 }
 
 const WORKSPACE_VIEWS: WorkspaceSpec[] = [
   {
     id: 'dispatcher',
     shortLabel: '1. Điều phối viên',
-    title: 'Xếp lịch giao hàng né khung giờ cấm tải 06:00 - 09:00 & 16:00 - 20:00',
-    roleBadge: 'Dành cho điều phối viên & Quản lý đội xe',
-    timeWindowRule: 'Ưu tiên vành đai lúc 06:00 - 09:00, mở luồng nội đô từ 09:02 đến 15:50',
-    areaFocus: 'Nội đô hạn chế (Quận 1, 3, 5, 10, Phú Nhuận) & Vành đai (Tân Bình, Thủ Đức, Gò Vấp)',
+    title: 'Xếp lịch né giờ cấm QĐ 23 · QCVN 41 · QĐ 01',
+    roleBadge: 'Điều phối & Quản lý đội xe',
+    timeWindowRule: 'Vành đai 06-09h · Lõi nội đô 09:02-15:50',
     imageSrc: '/pitch-deck-screenshots/01_desktop_b2b_tms_fleet_overview.png',
     liveRouteUrl: '/dashboard/',
-    liveRouteLabel: 'Mở Bảng Điều Khiển Đội Xe',
-    description:
-      'Khi nhập file Excel đơn hàng, hệ thống tự động đối chiếu địa chỉ với khung giờ cấm tải theo QĐ 23/2018 (TP.HCM), QĐ 01/2026 (Hà Nội) và quy chuẩn QCVN 41:2024 / TT 53/2024 (xe tải Van <950kg vẫn phải tuân thủ biển P.106a/b). Các đơn nội đô sáng sớm được dời hợp pháp sang sau 09:00.',
+    liveRouteLabel: 'Mở Bảng Điều Khiển',
     samplePackages: [
       {
-        orderCode: 'COLD-2026-0105',
-        area: 'Quận 3 (Vùng cấm 06-09h)',
-        customerWindow: '07:30 - 10:00',
-        restrictionNote: 'Vướng giờ cấm sáng nếu đi lúc 07:30',
-        plannedArrival: 'Giao lúc 09:08 (Hợp lệ 100%)',
+        orderCode: 'BEV-25T-105',
+        area: 'Quận 3 (Vành đai cấm)',
+        customerWindow: '07:30-10:00',
+        restrictionNote: 'Cấm tải ≤2,5T 06-09h',
+        plannedArrival: '09:08 (Hợp lệ)',
       },
       {
-        orderCode: 'COLD-2026-0044',
-        area: 'Gò Vấp (Hành lang mở)',
-        customerWindow: '07:00 - 09:00',
-        restrictionNote: 'Tuyến ngoài vùng cấm nội đô',
-        plannedArrival: 'Giao lúc 07:35 (Tận dụng đầu ca)',
+        orderCode: 'VAN-945-044',
+        area: 'Quận 1 (<950kg)',
+        customerWindow: '07:00-09:00',
+        restrictionNote: 'Miễn cấm giờ (24/24h)',
+        plannedArrival: '07:35 (Giao ngay)',
       },
       {
-        orderCode: 'BACKHAUL-TB-19',
-        area: 'Bình Tân -> Kho Tân Bình',
-        customerWindow: '15:30 - 18:00',
-        restrictionNote: 'Rời nội đô trước giờ cấm chiều 16:00',
-        plannedArrival: 'Thu hồi hàng về kho lúc 16:20',
+        orderCode: 'BH-TB-19',
+        area: 'Bình Tân → Kho Q12',
+        customerWindow: '15:30-18:00',
+        restrictionNote: 'Rời lõi trước 16:00',
+        plannedArrival: '16:18 (Ghép về)',
       },
     ],
-    highlights: [
-      'Phát hiện tức thì 28 đơn hàng trùng khung giờ cấm tải nội đô TP.HCM',
-      'Tự động sắp xếp giao điểm vành đai trước, vào lõi nội đô từ 09:00 đến 16:00',
-      'Đồng bộ tức thì lộ trình xuống ứng dụng di động của từng tài xế',
-    ],
+    chips: ['Bắt 235 ca xung đột QĐ 23', 'Xóa 73 ca quá tải 2,5T', 'Đồng bộ app tài xế'],
   },
   {
     id: 'benchmark',
-    shortLabel: '2. Đối chứng lộ trình',
-    title: 'Kiểm nghiệm trước và sau khi tối ưu khung giờ cấm tải',
-    roleBadge: 'Đối chứng 2 bản đồ chạy song song',
-    timeWindowRule: 'Mô phỏng ca vận hành từ 06:00 sáng đến 20:00 tối',
-    areaFocus: 'So sánh trên cùng mạng lưới đường bộ thực tế tại TP.HCM',
+    shortLabel: '2. Đối chứng EVSIM',
+    title: 'So sánh trực tiếp trước và sau khi tối ưu',
+    roleBadge: '2 Bản đồ OSRM song song',
+    timeWindowRule: 'Cùng 642 ma trận đường bộ thật',
     imageSrc: '/pitch-deck-screenshots/02_desktop_b2b_tms_evsim_dual_simulator.png',
     liveRouteUrl: '/benchmark/',
-    liveRouteLabel: 'Mở Phòng Đối Chứng EVSIM',
-    description:
-      'Chạy song song 2 phương án: bên trái chia quận thủ công thường đi vào vùng cấm giờ cao điểm; bên phải thuật toán EcoMiles tự động điều tiết nhịp giao theo khung giờ mở hợp pháp.',
+    liveRouteLabel: 'Mở Phòng Đối Chứng',
     samplePackages: [
       {
-        orderCode: 'Chia thủ công (Baseline)',
-        area: '12 chuyến xe rời rạc',
-        customerWindow: '06:00 - 20:00',
-        restrictionNote: '28 đơn vi phạm giờ cao điểm',
-        plannedArrival: '374,4 km · 32,8% chạy rỗng',
+        orderCode: 'Đồ uống 2,5T',
+        area: '500 đơn / 88 ngày',
+        customerWindow: 'Google Maps tay',
+        restrictionNote: '14.178 km · 235 lỗi QĐ 23',
+        plannedArrival: '9.857 km (−30,5% · 0 lỗi)',
       },
       {
-        orderCode: 'EcoMiles v2.1',
-        area: '7 chuyến xe gom cụm',
-        customerWindow: '06:00 - 20:00',
-        restrictionNote: '0 vi phạm QĐ 23 · Ghép 21 đơn chiều về',
-        plannedArrival: '243,7 km (-34,9%) · 2,7% rỗng',
+        orderCode: 'Tạp hóa 91 shop',
+        area: '2.395 đơn / 393 ngày',
+        customerWindow: 'Van <950 kg',
+        restrictionNote: '46.376 km đơn lẻ',
+        plannedArrival: '29.508 km (−36,4%)',
       },
     ],
-    highlights: [
-      'Bấm chọn nhanh các mốc giờ 07:30 (Cấm sáng), 09:05 (Mở nội đô), 16:30 (Cấm chiều)',
-      'Tải lên file Excel đơn hàng thực tế của doanh nghiệp để kiểm chứng tức thì',
-      'Tính toán minh bạch lượng dầu tiết kiệm và lượng phát thải CO₂ cắt giảm',
-    ],
+    chips: ['Tải Excel đối chứng ngay', '0 fallback đường chim bay', 'Minh bạch lít dầu & CO₂e'],
   },
   {
     id: 'driver_map',
-    shortLabel: '3. Bản đồ xe tải & App tài xế',
-    title: 'Dẫn đường né vùng cấm đỏ và hiển thị cửa sổ giao hàng',
-    roleBadge: 'Dành cho tài xế xe tải (>500kg) & xe van',
-    timeWindowRule: 'Cảnh báo trực tiếp vùng cấm theo giờ và giới hạn tải trọng cầu 13T / 4.5m',
-    areaFocus: 'Hiển thị rõ từng khu vực quận, khung giờ khách hẹn và giờ xe đến',
+    shortLabel: '3. App Tài xế & Bản đồ',
+    title: 'Cảnh báo vùng cấm đỏ & biển P.106a/b theo xe',
+    roleBadge: 'Tài xế xe tải & Xe van ($0 API)',
+    timeWindowRule: 'Cảnh báo cầu 13T · Khung giờ cấm 4-6M NĐ 168',
     imageSrc: '/pitch-deck-screenshots/04_desktop_maps_overview_qd23_banned_zones.png',
     liveRouteUrl: '/driver/',
     liveRouteLabel: 'Mở Ứng Dụng Tài Xế',
-    description:
-      'Tài xế xem toàn bộ danh sách điểm giao trong ca, có cảnh báo trực quan đường cấm và cây cầu giới hạn tải trọng. Hướng dẫn giọng nói tiếng Việt giúp lái xe an toàn.',
     samplePackages: [
       {
-        orderCode: 'NV-TRUCK-01',
-        area: 'Vành đai Tân Bình',
-        customerWindow: '06:30 - 08:30',
-        restrictionNote: 'Hành lang thông thoáng',
-        plannedArrival: 'Đến điểm giao lúc 07:15',
+        orderCode: '51C-25T.01',
+        area: 'Tân Bình (Vành đai)',
+        customerWindow: '06:30-08:30',
+        restrictionNote: 'Hành lang mở',
+        plannedArrival: '07:15 (Đúng ca)',
       },
       {
-        orderCode: 'NV-TRUCK-02',
-        area: 'Lõi trung tâm QĐ 23',
-        customerWindow: '09:30 - 11:30',
-        restrictionNote: 'Kiểm tra cầu Kiệu (<= 13T)',
-        plannedArrival: 'Đến 09:48 · Khung mở 09:00 - 16:00',
+        orderCode: '51C-25T.02',
+        area: 'Lõi TP.HCM QĐ 23',
+        customerWindow: '09:30-11:30',
+        restrictionNote: 'Tránh cầu ≤13T',
+        plannedArrival: '09:48 (Khung 09-16h)',
       },
     ],
-    highlights: [
-      'Hiển thị trực quan vùng cấm tải màu đỏ trên bản đồ kèm giọng nói tiếng Việt',
-      'Xe tải (>500kg) dùng bản đồ chuyên dụng; xe van mở nhanh Google Maps Waypoints',
-      'Tự động thông báo các điểm lấy hàng chiều về kho giúp giảm xe chạy rỗng',
-    ],
+    chips: ['Giọng nói tiếng Việt', 'Khóa giới hạn 4h lái', 'Báo điểm ghép chiều về'],
   },
 ];
 
@@ -148,6 +119,15 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
   const [selectedId, setSelectedId] = useState<WorkspaceViewId>('dispatcher');
   const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const handler = (ev: Event) => {
+      const custom = ev as CustomEvent<{ tab?: WorkspaceViewId }>;
+      if (custom.detail?.tab) setSelectedId(custom.detail.tab);
+    };
+    window.addEventListener('ecomiles:select-device', handler as EventListener);
+    return () => window.removeEventListener('ecomiles:select-device', handler as EventListener);
+  }, []);
 
   const activeView = WORKSPACE_VIEWS.find((v) => v.id === selectedId) ?? WORKSPACE_VIEWS[0];
 
@@ -161,121 +141,117 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     <section
       id="showcase"
       ref={sectionRef}
-      className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#F6F1E7] border-t border-slate-200/80 scroll-mt-16 overflow-hidden"
+      className="relative py-20 sm:py-24 px-4 sm:px-6 lg:px-8 em-grid-gochujang text-[#FDF0D5] border-b-4 border-[#003049] scroll-mt-20 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10 space-y-8">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#101418] tracking-tight leading-tight max-w-4xl">
-            Giao đúng hẹn mà không vi phạm giờ cấm tải nội đô TP.HCM
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-[#FDF0D5]/25 pb-6">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-[#FDF0D5] tracking-tight leading-tight max-w-3xl">
+            Kiểm soát vùng cấm tải &amp; 3 màn hình tác nghiệp
           </h2>
+          <span className="inline-flex items-center gap-2 rounded-md bg-[#FDF0D5] px-3 py-1.5 font-mono text-xs font-extrabold text-[#780000] shrink-0">
+            <Qd23WindowIcon className="w-4 h-4" />
+            <span>NĐ 168/2024: TRÁNH PHẠT 4-6 TRIỆU ĐỒNG</span>
+          </span>
+        </div>
 
-          <p className="max-w-2xl text-base text-[#5B5F66] leading-relaxed">
-            Bản đồ xe tải tự động hiển thị vùng cấm tải QĐ 23/2018 màu đỏ, khung giờ khách hẹn và giờ xe đến hợp pháp.
-          </p>
-
-          {/* Visual 06:00 - 20:00 HCMC Truck Ban Schedule Strip */}
-          <div className="w-full max-w-4xl pt-2">
-            <div className="grid grid-cols-1 sm:grid-cols-3 rounded-2xl overflow-hidden border border-slate-200 text-xs shadow-sm">
-              <div className="bg-rose-50/80 border-b sm:border-b-0 sm:border-r border-slate-200 px-4 py-3 text-left">
-                <div className="font-extrabold text-rose-800 uppercase">06:00 - 09:00 · Cấm tải sáng</div>
-                <div className="text-slate-600 mt-0.5">
-                  Xe tải ưu tiên giao vành đai ngoài (Tân Bình, Gò Vấp, Thủ Đức), chờ mở luồng nội đô.
-                </div>
-              </div>
-              <div className="bg-emerald-50/80 border-b sm:border-b-0 sm:border-r border-slate-200 px-4 py-3 text-left">
-                <div className="font-extrabold text-[#101418] uppercase">09:00 - 16:00 · Khung mở nội đô</div>
-                <div className="text-slate-600 mt-0.5">
-                  Tập trung giao dứt điểm các đơn vùng lõi (Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh).
-                </div>
-              </div>
-              <div className="bg-rose-50/80 px-4 py-3 text-left">
-                <div className="font-extrabold text-rose-800 uppercase">16:00 - 20:00 · Cấm tải chiều</div>
-                <div className="text-slate-600 mt-0.5">
-                  Rời nội đô trước 15:50 và kết hợp thu hồi đơn hàng chiều về kho Tân Bình.
-                </div>
-              </div>
-            </div>
+        {/* Visual 24h Statutory Matrix Banner */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-xl overflow-hidden border-2 border-[#FDF0D5] text-xs shadow-xl">
+          <div className="bg-[#C1121F] p-4 text-[#FDF0D5] border-b lg:border-b-0 sm:border-r border-[#FDF0D5]/30">
+            <div className="font-mono font-extrabold uppercase">06:00-09:00 · CẤM SÁNG</div>
+            <div className="font-bold mt-1">Xe ≥950 kg-2,5T giao vành đai ngoài</div>
           </div>
-
-          {/* 3 Focused Role Workspace Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
-            {WORKSPACE_VIEWS.map((view) => {
-              const isActive = view.id === selectedId;
-              return (
-                <button
-                  key={view.id}
-                  type="button"
-                  onClick={() => setSelectedId(view.id)}
-                  aria-pressed={isActive}
-                  className={`relative px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center gap-2 cursor-pointer ${
-                    isActive ? 'text-white' : 'text-[#5B5F66] hover:text-[#101418]'
-                  }`}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="activeWorkspaceTabPill"
-                      transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-                      className="absolute inset-0 rounded-xl bg-[#101418] shadow-sm"
-                    />
-                  )}
-                  <span className="relative z-10 flex items-center gap-2">
-                    {renderTabIcon(view.id)}
-                    <span>{view.shortLabel}</span>
-                  </span>
-                </button>
-              );
-            })}
+          <div className="bg-[#669BBC] p-4 text-[#003049] border-b lg:border-b-0 lg:border-r border-[#003049]/25">
+            <div className="font-mono font-extrabold uppercase">09:00-16:00 · MỞ LÕI</div>
+            <div className="font-bold mt-1">Đẩy toàn bộ đơn Quận 1, 3, 5, 10</div>
+          </div>
+          <div className="bg-[#003049] p-4 text-[#FDF0D5] border-b sm:border-b-0 sm:border-r border-[#FDF0D5]/30">
+            <div className="font-mono font-extrabold uppercase flex items-center gap-1.5 text-[#669BBC]">
+              <VanExemptIcon className="w-4 h-4" />
+              <span>VAN &lt;950 KG · 24/24</span>
+            </div>
+            <div className="font-bold mt-1">Chạy nội đô TP.HCM trừ tuyến biển P.106</div>
+          </div>
+          <div className="bg-[#FDF0D5] p-4 text-[#003049]">
+            <div className="font-mono font-extrabold uppercase flex items-center gap-1.5 text-[#AE1F23]">
+              <HanoiRingIcon className="w-4 h-4" />
+              <span>HÀ NỘI · QĐ 01/2026</span>
+            </div>
+            <div className="font-bold mt-1">Kiểm tổng tải ≥2T Vành đai 3 (06-21h)</div>
           </div>
         </div>
 
-        {/* Main Workspace Preview & Time-Window Resolution Panel */}
-        <div className="rounded-2xl bg-white border border-slate-200 p-5 sm:p-8 shadow-sm">
+        {/* 3 Role Workspace Switcher Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-2 p-2 rounded-xl bg-[#002033] border border-[#669BBC]/40 w-fit mx-auto">
+          {WORKSPACE_VIEWS.map((view) => {
+            const isActive = view.id === selectedId;
+            return (
+              <button
+                key={view.id}
+                type="button"
+                onClick={() => setSelectedId(view.id)}
+                aria-pressed={isActive}
+                className={`relative px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition-colors flex items-center gap-2 cursor-pointer ${
+                  isActive ? 'text-[#003049]' : 'text-[#FDF0D5] hover:text-[#669BBC]'
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="activeWorkspaceTabPill"
+                    transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                    className="absolute inset-0 rounded-lg bg-[#FDF0D5]"
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-2">
+                  {renderTabIcon(view.id)}
+                  <span>{view.shortLabel}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active Workspace Showcase */}
+        <div className="rounded-2xl bg-[#FDF0D5] text-[#003049] border-2 border-[#003049] p-5 sm:p-8 shadow-2xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeView.id}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={shouldReduceMotion ? undefined : { opacity: 0, y: -6 }}
-              transition={{ duration: 0.22 }}
+              transition={{ duration: 0.2 }}
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
             >
-              {/* Left 7 Cols: Clean Screenshot + Sample Time-Window Conflict Table */}
               <div className="lg:col-span-7 space-y-4">
-                <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-50 p-2 sm:p-3">
+                <div className="rounded-xl overflow-hidden border-2 border-[#003049] bg-[#002033] p-2">
                   <img
                     src={activeView.imageSrc}
                     alt={activeView.title}
-                    className="w-full h-auto max-h-[340px] object-contain mx-auto rounded-lg"
+                    className="w-full h-auto max-h-[320px] object-contain mx-auto rounded-lg"
                   />
                 </div>
 
-                {/* Compact Time-Window & Restricted Area Resolution Table */}
-                <div className="rounded-xl bg-[#F6F1E7] border border-slate-200 p-4 space-y-2.5">
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <span className="font-bold text-[#101418] uppercase tracking-wider">
-                      Ví dụ xử lý khung giờ &amp; vùng cấm tải:
-                    </span>
-                    <span className="text-slate-600 font-medium">{activeView.timeWindowRule}</span>
+                <div className="rounded-xl bg-[#003049] text-[#FDF0D5] p-4 space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] font-bold">
+                    <span className="text-[#669BBC] uppercase">LỆNH ĐIỀU PHỐI MẪU</span>
+                    <span>{activeView.timeWindowRule}</span>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs tabular-nums">
                       <thead>
-                        <tr className="border-b border-slate-200 text-[#101418] font-semibold">
-                          <th className="py-2 pr-3">Đơn / Chặng</th>
-                          <th className="py-2 pr-3">Khu vực</th>
-                          <th className="py-2 pr-3">Khung giờ hẹn</th>
-                          <th className="py-2 pr-3">Ràng buộc</th>
-                          <th className="py-2 text-[#101418]">Lịch xe đến</th>
+                        <tr className="border-b border-[#669BBC]/30 text-[#669BBC] font-mono">
+                          <th className="py-1.5 pr-3">Mã / Nhóm</th>
+                          <th className="py-1.5 pr-3">Khu vực</th>
+                          <th className="py-1.5 pr-3">Ràng buộc</th>
+                          <th className="py-1.5">Kết quả</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-200/60 text-[#334155]">
+                      <tbody className="divide-y divide-[#669BBC]/20">
                         {activeView.samplePackages.map((pkg) => (
                           <tr key={pkg.orderCode}>
-                            <td className="py-2 pr-3 font-mono font-bold text-[#101418]">{pkg.orderCode}</td>
+                            <td className="py-2 pr-3 font-mono font-bold text-[#FDF0D5]">{pkg.orderCode}</td>
                             <td className="py-2 pr-3">{pkg.area}</td>
-                            <td className="py-2 pr-3 font-mono">{pkg.customerWindow}</td>
-                            <td className="py-2 pr-3 text-amber-700 font-medium">{pkg.restrictionNote}</td>
-                            <td className="py-2 font-bold text-[#101418]">{pkg.plannedArrival}</td>
+                            <td className="py-2 pr-3 text-[#669BBC] font-semibold">{pkg.restrictionNote}</td>
+                            <td className="py-2 font-extrabold text-[#FDF0D5]">{pkg.plannedArrival}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -284,41 +260,34 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                 </div>
               </div>
 
-              {/* Right 5 Cols: Role Context, Highlights & Direct Launch Button */}
               <div className="lg:col-span-5 flex flex-col justify-between space-y-5">
                 <div className="space-y-3">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#101418] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                    <Truck className="w-3.5 h-3.5 text-[#101418]" />
-                    <span>{activeView.roleBadge}</span>
+                  <span className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase text-[#FDF0D5] bg-[#C1121F] px-3 py-1 rounded">
+                    {activeView.roleBadge}
                   </span>
-
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#101418] leading-snug">
+                  <h3 className="font-display text-2xl sm:text-3xl font-black text-[#003049] leading-tight">
                     {activeView.title}
                   </h3>
-
-                  <p className="text-sm text-[#5B5F66] leading-relaxed">
-                    {activeView.description}
-                  </p>
                 </div>
 
-                <div className="space-y-2 border-y border-slate-200 py-4">
-                  {activeView.highlights.map((hl, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#334155]">
-                      <Check className="w-4 h-4 text-[#0B7A3B] shrink-0 mt-0.5" />
-                      <span>{hl}</span>
-                    </div>
+                <div className="flex flex-wrap gap-2">
+                  {activeView.chips.map((hl) => (
+                    <span
+                      key={hl}
+                      className="px-3 py-1.5 rounded-md bg-[#F8E7C4] border border-[#003049] text-xs font-bold text-[#003049]"
+                    >
+                      {hl}
+                    </span>
                   ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  <a
-                    href={activeView.liveRouteUrl}
-                    className="flex-1 py-3 px-4 rounded-xl bg-[#101418] hover:bg-[#1B45D7] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-colors"
-                  >
-                    <span>{activeView.liveRouteLabel}</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </a>
-                </div>
+                <a
+                  href={activeView.liveRouteUrl}
+                  className="w-full py-3.5 px-5 rounded-lg bg-[#003049] hover:bg-[#C1121F] text-[#FDF0D5] font-extrabold text-sm flex items-center justify-center gap-2 transition-colors"
+                >
+                  <span>{activeView.liveRouteLabel}</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
               </div>
             </motion.div>
           </AnimatePresence>

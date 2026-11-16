@@ -8,8 +8,8 @@ interface Props {
 }
 
 const {
-  title = 'EcoMiles · Đường về không trống — Điều phối đội xe & kiểm toán carbon ISO 14083',
-  description = 'EcoMiles tối ưu tuyến giao hàng đô thị TP.HCM, ghép đơn chiều về giảm 34,9% quãng đường, tuân thủ khung giờ cấm tải QĐ 23/2018 và xuất sổ phát thải chuẩn ISO 14083 / GLEC v3.2.',
+  title = 'EcoMiles · Đường về không trống · Điều phối xe tải & kiểm toán CO₂',
+  description = 'EcoMiles tối ưu tuyến giao hàng TP.HCM & Hà Nội trên 2.895 đơn hàng thật: giảm 30,5-50,8% km so với tra Google Maps từng điểm, 0 lỗi giờ cấm QĐ 23/2018 & QCVN 41:2024.',
 } = Astro.props;
 ---
 
@@ -20,15 +20,14 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Google Fonts: Archivo (Display), IBM Plex Sans (Body), JetBrains Mono (Data) -->
+    <!-- Fonts: Bricolage Grotesque (Display), Be Vietnam Pro (UI Body), JetBrains Mono (Telemetry Data) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
 
-    <!-- SEO Meta Tags in Vietnamese -->
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
@@ -43,11 +42,10 @@ const {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="https://ecomiles.pages.dev/pitch-deck-screenshots/00_ecomiles_flagship_cover_banner.png" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#101418" />
-    <!-- Vendored Apache ECharts 5.5.1 (offline-ready, Apache-2.0) -->
+    <meta name="theme-color" content="#003049" />
     <script is:inline src="/vendor/echarts.min.js"></script>
   </head>
-  <body class="bg-[#F6F1E7] text-[#101418] antialiased selection:bg-[#101418] selection:text-[#F6F1E7] overflow-x-hidden min-h-screen">
+  <body class="bg-[#003049] text-[#FDF0D5] antialiased selection:bg-[#C1121F] selection:text-[#FDF0D5] overflow-x-hidden min-h-screen">
     <slot />
   </body>
 </html>
