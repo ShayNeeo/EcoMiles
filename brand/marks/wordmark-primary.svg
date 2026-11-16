@@ -1,22 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" fill="none" role="img" aria-label="ECOMILES vector wordmark">
-  <!-- Pure geometric stencil-sans vector wordmark: zero font dependency -->
-  <g stroke="#101418" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter">
-    <!-- E -->
-    <path d="M18 15 H4 V41 H18 M4 28 H15"/>
-    <!-- C -->
-    <path d="M44 15 H29 V41 H44"/>
-    <!-- O -->
-    <path d="M55 15 H71 V41 H55 Z"/>
-    <!-- M (mirrors Return M apex) -->
-    <path d="M82 41 V15 L93 30 L104 15 V41"/>
-    <!-- I -->
-    <path d="M116 15 V41"/>
-    <!-- L -->
-    <path d="M128 15 V41 H142"/>
-    <!-- E -->
-    <path d="M167 15 H153 V41 H167 M153 28 H164"/>
-    <!-- S -->
-    <path d="M193 15 H179 V28 H193 V41 H179"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 42" fill="none" role="img" aria-label="EcoMiles integrated Return-M wordmark">
+  <g stroke="#101418" stroke-width="4.2" stroke-linecap="square" stroke-linejoin="miter">
+    <!-- E C O (top edge = 7.4, bottom edge = 32.6) -->
+    <path d="M21 9.5H6V30.5H21M6 20H18"/>
+    <path d="M47 9.5H31V30.5H47"/>
+    <path d="M58 9.5H75V30.5H58Z"/>
+    <!-- Styled Return M aligned optically to cap height -->
+    <path d="M88 30.5V12.6L103 26.2L118 12.6V30.5"/>
+    <!-- I L E S -->
+    <path d="M132 9.5V30.5"/>
+    <path d="M145 9.5V30.5H160"/>
+    <path d="M186 9.5H171V30.5H186M171 20H183"/>
+    <path d="M213 9.5H197V20H213V30.5H197"/>
   </g>
-  <rect x="204" y="36" width="8" height="8" fill="#1B45D7"/>
+  <!-- Closed Return Bridge under M + Verified Depot Corner + Terminal Stop Square -->
+  <path d="M118 30.5H88" stroke="#1B45D7" stroke-width="4.2" stroke-linecap="square"/>
+  <rect x="85.8" y="28.3" width="4.4" height="4.4" fill="#0B7A3B"/>
+  <rect x="221" y="25.6" width="7" height="7" fill="#1B45D7"/>
 </svg>

@@ -16,43 +16,45 @@ export const ReturnMMark: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
   </svg>
 );
 
-export const EcoMilesWordmark: React.FC<{ dark?: boolean; showTagline?: boolean }> = ({
+export const EcoMilesWordmark: React.FC<{ dark?: boolean; showTagline?: boolean; className?: string }> = ({
   dark = false,
   showTagline = false,
-}) => (
-  <span className="inline-flex items-center gap-2.5">
-    <span
-      className={`flex h-8 w-8 items-center justify-center border ${
-        dark
-          ? 'bg-[#F6F1E7] text-[#101418] border-[#F6F1E7]'
-          : 'bg-[#101418] text-[#F6F1E7] border-[#101418]'
-      }`}
-    >
-      <ReturnMMark className="w-5 h-5" />
-    </span>
-    <span className="flex flex-col leading-none">
-      <span
-        className={`font-extrabold text-base sm:text-lg tracking-[-0.04em] ${
-          dark ? 'text-[#F6F1E7]' : 'text-[#101418]'
-        }`}
-        style={{ fontFamily: "'Archivo', 'IBM Plex Sans', sans-serif" }}
+  className = 'h-6 sm:h-7 w-auto',
+}) => {
+  const strokeMain = dark ? '#F6F1E7' : '#101418';
+  const returnBridge = dark ? '#3B6BF2' : '#1B45D7';
+  const stopSquare = dark ? '#0B7A3B' : '#1B45D7';
+  return (
+    <span className="inline-flex flex-col leading-none">
+      <svg
+        viewBox="0 0 234 42"
+        fill="none"
+        className={className}
+        role="img"
+        aria-label="EcoMiles"
       >
-        ECOMILES
-        <span
-          className={`inline-block w-[6px] h-[6px] ml-1 align-baseline ${
-            dark ? 'bg-[#0B7A3B]' : 'bg-[#1B45D7]'
-          }`}
-          aria-hidden="true"
-        />
-      </span>
+        <g stroke={strokeMain} strokeWidth="4.2" strokeLinecap="square" strokeLinejoin="miter">
+          <path d="M21 9.5H6V30.5H21M6 20H18" />
+          <path d="M47 9.5H31V30.5H47" />
+          <path d="M58 9.5H75V30.5H58Z" />
+          <path d="M88 30.5V12.6L103 26.2L118 12.6V30.5" />
+          <path d="M132 9.5V30.5" />
+          <path d="M145 9.5V30.5H160" />
+          <path d="M186 9.5H171V30.5H186M171 20H183" />
+          <path d="M213 9.5H197V20H213V30.5H197" />
+        </g>
+        <path d="M118 30.5H88" stroke={returnBridge} strokeWidth="4.2" strokeLinecap="square" />
+        <rect x="85.8" y="28.3" width="4.4" height="4.4" fill="#0B7A3B" />
+        <rect x="221" y="25.6" width="7" height="7" fill={stopSquare} />
+      </svg>
       {showTagline && (
-        <span className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#5B5F66] mt-1">
+        <span className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#5B5F66] mt-1.5">
           Đường về không trống.
         </span>
       )}
     </span>
-  </span>
-);
+  );
+};
 
 export const BackhaulMatchIcon: React.FC<IconProps> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">

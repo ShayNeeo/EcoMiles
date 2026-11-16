@@ -59,17 +59,48 @@ export const Hero: React.FC<HeroProps> = () => {
               Nạp bảng Excel đơn hàng để ghép tuyến chiều về, né khung giờ cấm tải QĐ 23/2018 và xuất sổ kiểm toán phát thải CO₂e chuẩn ISO 14083.
             </p>
 
-            {/* Return-line visual signature */}
+            {/* Recomposed Folded Return-M Corridor visual signature */}
             <div className="border border-[#D8D2C4] bg-[#FBF8F1] p-3">
-              <svg viewBox="0 0 460 44" fill="none" className="w-full h-11" role="img" aria-label="Tuyến đứt rỗng chuyển thành tuyến liền ghép hàng về">
-                <path d="M10 28 H196" stroke="#5B5F66" strokeWidth="2.5" strokeDasharray="7 6" />
-                <path d="M196 28 H442" stroke="#1B45D7" strokeWidth="3.5" />
-                <circle cx="10" cy="28" r="4.5" fill="#101418" />
-                <circle cx="196" cy="28" r="5" fill="#0B7A3B" />
-                <rect x="436" y="22" width="12" height="12" fill="#0B7A3B" />
-                <text x="10" y="13" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#5B5F66">RỖNG 32,8%</text>
-                <text x="196" y="13" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#0B7A3B">GHÉP CHIỀU VỀ</text>
-                <text x="448" y="13" textAnchor="end" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#101418">CÒN 2,7%</text>
+              <svg viewBox="0 0 540 162" fill="none" className="w-full h-auto" role="img" aria-label="Sơ đồ tuyến khép vòng Return M tránh giờ cấm QĐ 23/2018">
+                {/* 24h QĐ 23/2018 Clock Band */}
+                <rect x="10" y="8" width="520" height="18" fill="#ECE5D7" stroke="#D8D2C4" strokeWidth="1" />
+                <rect x="10" y="8" width="124" height="18" fill="#EEF2FC" />
+                <rect x="134" y="8" width="66" height="18" fill="#FDF3E7" />
+                <rect x="134" y="8" width="66" height="2.5" fill="#A64B08" />
+                <rect x="200" y="8" width="154" height="18" fill="#EAF5EE" />
+                <rect x="200" y="8" width="154" height="2.5" fill="#0B7A3B" />
+                <rect x="354" y="8" width="88" height="18" fill="#FDF3E7" />
+                <rect x="354" y="8" width="88" height="2.5" fill="#A64B08" />
+                <rect x="442" y="8" width="88" height="18" fill="#EEF2FC" />
+                <text x="167" y="20" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#A64B08">06–09 CẤM</text>
+                <text x="277" y="20" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#0B7A3B">09–16 MỞ QĐ 23</text>
+                <text x="398" y="20" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#A64B08">16–20 CẤM</text>
+
+                {/* Enclosed Verified Backhaul Cargo Bay */}
+                <path d="M134 118 V50 L277 90 L420 50 V118 H134 Z" fill="#0B7A3B" fillOpacity="0.09" />
+
+                {/* Legacy Empty-Return Deadhead Ghost */}
+                <path d="M134 121 C205 142 349 142 420 121" stroke="#B42318" strokeWidth="2" strokeDasharray="5 4" />
+                <text x="277" y="150" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#B42318">TRƯỚC: CHẠY RỖNG 32,8% · 28 LỖI QĐ 23</text>
+
+                {/* Folded Return-M Route Path */}
+                <path d="M36 118 H134 V50 L277 90 L420 50 V118" stroke="#101418" strokeWidth="3.2" strokeLinecap="square" strokeLinejoin="miter" />
+                <path d="M420 118 H134" stroke="#1B45D7" strokeWidth="3.8" strokeLinecap="square" />
+                <path d="M420 118 H496" stroke="#0B7A3B" strokeWidth="2.8" strokeLinecap="square" />
+
+                <circle cx="36" cy="118" r="4.5" fill="#101418" />
+                <circle cx="134" cy="50" r="4.5" fill="#101418" />
+                <circle cx="277" cy="90" r="5" fill="#1B45D7" />
+                <circle cx="420" cy="50" r="4.5" fill="#101418" />
+                <rect x="129" y="113" width="10" height="10" fill="#0B7A3B" />
+                <rect x="492" y="113" width="10" height="10" fill="#0B7A3B" />
+
+                <text x="36" y="106" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#101418">CÁT LÁI</text>
+                <text x="134" y="42" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#101418">SÓNG THẦN</text>
+                <text x="277" y="79" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#1B45D7">GHÉP VỀ</text>
+                <text x="420" y="42" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#101418">TÂN BÌNH</text>
+                <text x="277" y="110" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#0B7A3B">CÒN 2,7% RỖNG · −34,9% KM</text>
+                <text x="497" y="106" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="700" fill="#0B7A3B">ISO 14083</text>
               </svg>
             </div>
 

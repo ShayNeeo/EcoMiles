@@ -41,7 +41,7 @@ import {
   Info,
   Gauge,
 } from 'lucide-react';
-import { Co2AuditIcon, IsoLedgerIcon } from '../components/EcoMilesMark';
+import { Co2AuditIcon, EcoMilesWordmark, IsoLedgerIcon } from '../components/EcoMilesMark';
 import {
   parseXlsxToRows,
   parseCsvToRows,
@@ -799,17 +799,10 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
       >
         <header className="bg-white border-b border-[#e2e8f0] px-4 sm:px-6 py-3">
           <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
-            <a href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#101418] text-white flex items-center justify-center font-black text-sm">
-                EM
-              </div>
-              <div>
-                <div className="font-extrabold text-sm text-[#101418] leading-none">
-                  EcoMiles <span className="text-[#0B7A3B]">TMS</span>
-                </div>
-                <div className="text-xs text-[#5B5F66] mt-0.5">
-                  Cổng Xác Thực Đa Doanh Nghiệp &amp; Phân Quyền Bảo Mật NĐ 13/2023
-                </div>
+            <a href="/" className="flex flex-col items-start gap-1">
+              <EcoMilesWordmark className="h-5 w-auto" />
+              <div className="text-[11px] text-[#5B5F66]">
+                TMS · Cổng Xác Thực Đa Doanh Nghiệp &amp; Phân Quyền Bảo Mật NĐ 13/2023
               </div>
             </a>
             <a
@@ -1178,23 +1171,16 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
           {/* Left: Brand Mark + Role-Isolated Workspace Context */}
           <div className="flex flex-wrap items-center gap-3.5">
-            <a href="/" className="flex items-center gap-2.5 group" title="Về trang giới thiệu EcoMiles">
-              <div className="w-8 h-8 rounded-lg bg-[#101418] text-[#d6f65a] flex items-center justify-center font-black text-sm">
-                EM
-              </div>
-              <div>
-                <div className="font-extrabold text-sm text-[#111827] leading-none">
-                  EcoMiles <span className="text-[#2f9e44]">TMS</span>
-                </div>
-                <div className="text-[11px] text-[#5f6368] mt-0.5">
-                  {activeRole === 'user'
-                    ? 'Không gian Điều phối Doanh nghiệp'
-                    : activeRole === 'tester'
-                    ? 'Buồng Kiểm thử Đối chứng EVSIM'
-                    : activeRole === 'driver'
-                    ? 'Buồng lái Tài xế Giao hàng'
-                    : 'Phòng Giám sát Hạ tầng (Zero-Knowledge)'}
-                </div>
+            <a href="/" className="flex flex-col items-start gap-0.5 group" title="Về trang giới thiệu EcoMiles">
+              <EcoMilesWordmark className="h-5 w-auto" />
+              <div className="text-[11px] text-[#5B5F66]">
+                {activeRole === 'user'
+                  ? 'TMS · Không gian Điều phối Doanh nghiệp'
+                  : activeRole === 'tester'
+                  ? 'TMS · Buồng Kiểm thử Đối chứng EVSIM'
+                  : activeRole === 'driver'
+                  ? 'TMS · Buồng lái Tài xế Giao hàng'
+                  : 'TMS · Phòng Giám sát Hạ tầng (Zero-Knowledge)'}
               </div>
             </a>
 
