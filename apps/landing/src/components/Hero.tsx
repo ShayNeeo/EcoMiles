@@ -18,6 +18,7 @@ type PilotPresetId = 'beverage' | 'grocery01' | 'grocery91';
 interface PilotPreset {
   id: PilotPresetId;
   label: string;
+  boardTitle: string;
   sublabel: string;
   deltaKm: string;
   beforeKm: string;
@@ -32,7 +33,8 @@ const PILOT_PRESETS: PilotPreset[] = [
   {
     id: 'beverage',
     label: 'Đồ uống · Xe 2,5T',
-    sublabel: '500 đơn thật / 88 ngày TP.HCM',
+    boardTitle: 'Đội xe 2,5T giao Đồ uống TP.HCM',
+    sublabel: '500 ĐƠN THẬT / 88 NGÀY · OSRM',
     deltaKm: '−30,5%',
     beforeKm: '14.178 km',
     afterKm: '9.857 km',
@@ -44,7 +46,8 @@ const PILOT_PRESETS: PilotPreset[] = [
   {
     id: 'grocery01',
     label: 'Tạp hóa #01 · Van <950kg',
-    sublabel: '2.395 đơn thật / 393 ngày',
+    boardTitle: 'Cửa hàng #01 · Xe Van <950kg',
+    sublabel: '2.395 ĐƠN THẬT / 393 NGÀY · OSRM',
     deltaKm: '−50,8%',
     beforeKm: '13.441 km',
     afterKm: '6.611 km',
@@ -56,7 +59,8 @@ const PILOT_PRESETS: PilotPreset[] = [
   {
     id: 'grocery91',
     label: 'Mạng lưới 91 Cửa hàng',
-    sublabel: '2.395 đơn thật toàn hệ thống',
+    boardTitle: 'Chuỗi 91 Cửa hàng Nội đô',
+    sublabel: '2.395 ĐƠN THẬT TOÀN MẠNG · OSRM',
     deltaKm: '−36,4%',
     beforeKm: '46.376 km',
     afterKm: '29.508 km',
@@ -173,19 +177,24 @@ export const Hero: React.FC<HeroProps> = () => {
           {/* RIGHT CANVAS (40% Cosmos Night Sculpture: Interactive Loss-to-Gain Route Metamorphosis) */}
           <div className="lg:col-span-6">
             <div className="rounded-2xl bg-[#003049] text-[#FDF0D5] border-2 border-[#003049] shadow-2xl overflow-hidden">
-              {/* Sculpture Toolbar */}
-              <div className="flex items-center justify-between gap-2 px-5 py-3.5 bg-[#002033] border-b border-[#669BBC]/25">
-                <div className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#669BBC]">
-                  {preset.sublabel}
+              {/* Prominent High-Contrast Sculpture Header */}
+              <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-[#002033] border-b-2 border-[#669BBC]/40">
+                <div>
+                  <div className="font-mono text-[11px] font-extrabold uppercase tracking-wider text-[#669BBC]">
+                    {preset.sublabel}
+                  </div>
+                  <h2 className="font-display text-lg sm:text-xl font-black text-[#FDF0D5] tracking-tight leading-snug mt-0.5">
+                    {preset.boardTitle}
+                  </h2>
                 </div>
-                <div className="inline-flex rounded-lg bg-[#003049] p-0.5 border border-[#669BBC]/30">
+                <div className="inline-flex rounded-lg bg-[#003049] p-1 border border-[#669BBC]/45 shrink-0">
                   <button
                     type="button"
                     onClick={() => setSculptureMode('before')}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-extrabold transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-md text-xs font-extrabold transition-colors cursor-pointer ${
                       sculptureMode === 'before'
                         ? 'bg-[#DC2626] text-[#FDF0D5]'
-                        : 'text-[#669BBC] hover:text-[#FDF0D5]'
+                        : 'text-[#FDF0D5]/80 hover:text-[#FDF0D5]'
                     }`}
                   >
                     Trước (GMaps)
@@ -193,10 +202,10 @@ export const Hero: React.FC<HeroProps> = () => {
                   <button
                     type="button"
                     onClick={() => setSculptureMode('after')}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-extrabold transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-md text-xs font-extrabold transition-colors cursor-pointer ${
                       sculptureMode === 'after'
                         ? 'bg-[#15803D] text-[#FDF0D5]'
-                        : 'text-[#669BBC] hover:text-[#FDF0D5]'
+                        : 'text-[#FDF0D5]/80 hover:text-[#FDF0D5]'
                     }`}
                   >
                     Sau (EcoMiles)
@@ -214,7 +223,7 @@ export const Hero: React.FC<HeroProps> = () => {
                   aria-label="Mô hình tuyến đường: Khử chạy rỗng chiều về và né tường giờ cấm"
                 >
                   {/* Subtle Night Grid */}
-                  <g stroke="#669BBC" strokeOpacity="0.12" strokeWidth="1">
+                  <g stroke="#669BBC" strokeOpacity="0.14" strokeWidth="1">
                     <line x1="0" y1="50" x2="560" y2="50" />
                     <line x1="0" y1="115" x2="560" y2="115" />
                     <line x1="0" y1="180" x2="560" y2="180" />
@@ -223,28 +232,28 @@ export const Hero: React.FC<HeroProps> = () => {
                     <line x1="420" y1="10" x2="420" y2="215" />
                   </g>
 
-                  {/* 24h Curfew Hazard Walls (Semantic Error Red & Warning Yellow) */}
-                  <rect x="176" y="18" width="150" height="22" rx="4" fill="#DC2626" fillOpacity="0.22" stroke="#F87171" strokeWidth="1.2" />
-                  <text x="251" y="33" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="700" fill="#F87171">
+                  {/* 24h Curfew Hazard Walls */}
+                  <rect x="176" y="16" width="150" height="22" rx="4" fill="#DC2626" fillOpacity="0.28" stroke="#F87171" strokeWidth="1.2" />
+                  <text x="251" y="31" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="700" fill="#FDF0D5">
                     CẤM TẢI 06-09h / 16-20h
                   </text>
 
-                  <rect x="336" y="18" width="136" height="22" rx="4" fill="#B45309" fillOpacity="0.24" stroke="#FBBF24" strokeWidth="1.2" />
-                  <text x="404" y="33" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="700" fill="#FBBF24">
+                  <rect x="336" y="16" width="136" height="22" rx="4" fill="#B45309" fillOpacity="0.32" stroke="#FBBF24" strokeWidth="1.2" />
+                  <text x="404" y="31" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="700" fill="#FEF3C7">
                     NGƯỠNG VAN &lt;950KG
                   </text>
 
-                  {/* BEFORE STATE: Error Red Chaotic Deadhead Return Loop */}
-                  <g opacity={sculptureMode === 'before' ? 1 : 0.28} className="transition-opacity duration-300">
+                  {/* BEFORE STATE */}
+                  <g opacity={sculptureMode === 'before' ? 1 : 0.25} className="transition-opacity duration-300">
                     <path
-                      d="M52 148 L156 58 L256 76 L354 54 L498 118"
+                      d="M52 146 L156 58 L256 76 L354 54 L498 118"
                       stroke="#F87171"
                       strokeWidth="2.5"
                       strokeDasharray="6 5"
                       fill="none"
                     />
                     <path
-                      d="M498 118 Q280 212 52 148"
+                      d="M498 118 Q280 202 52 146"
                       stroke="#F87171"
                       strokeWidth="3"
                       strokeDasharray="7 5"
@@ -252,49 +261,54 @@ export const Hero: React.FC<HeroProps> = () => {
                       className={sculptureMode === 'before' ? 'em-flow-line' : ''}
                     />
                     <circle cx="256" cy="76" r="6" fill="#DC2626" stroke="#FDF0D5" strokeWidth="1.5" />
-                    <text x="280" y="196" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10.5" fontWeight="700" fill="#F87171">
-                      CHIỀU VỀ CHẠY RỖNG ({preset.beforeKm}) · 235 LỖI CẤM TẢI
-                    </text>
                   </g>
 
-                  {/* AFTER STATE: Blue Marble Corridor + Semantic Green Backhaul Match */}
+                  {/* AFTER STATE */}
                   <g opacity={sculptureMode === 'after' ? 1 : 0.22} className="transition-opacity duration-300">
-                    {/* Shaded Recovered Corridor */}
                     <path
-                      d="M52 148 L170 96 L320 112 L498 118 L345 162 L180 156 Z"
+                      d="M52 146 L170 96 L320 112 L498 118 L345 160 L180 154 Z"
                       fill="#669BBC"
-                      fillOpacity="0.16"
+                      fillOpacity="0.18"
                     />
-                    {/* Outbound Marble Highway */}
                     <path
-                      d="M52 148 L170 96 L320 112 L498 118"
+                      d="M52 146 L170 96 L320 112 L498 118"
                       stroke="#669BBC"
                       strokeWidth="4"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
-                    {/* Return Matched Green Backhaul */}
                     <path
-                      d="M498 118 L345 162 L180 156 L52 148"
+                      d="M498 118 L345 160 L180 154 L52 146"
                       stroke="#4ADE80"
                       strokeWidth="4.2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       className="em-flow-line"
                     />
-                    {/* Nodes */}
                     <circle cx="170" cy="96" r="5" fill="#FDF0D5" stroke="#669BBC" strokeWidth="2.5" />
                     <circle cx="320" cy="112" r="5" fill="#FDF0D5" stroke="#669BBC" strokeWidth="2.5" />
-                    <circle cx="345" cy="162" r="6" fill="#4ADE80" stroke="#002033" strokeWidth="2" />
-                    <circle cx="180" cy="156" r="6" fill="#4ADE80" stroke="#002033" strokeWidth="2" />
-                    <text x="345" y="182" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#4ADE80">
-                      GHÉP HÀNG CHIỀU VỀ + NÉ QĐ 23 ({preset.afterKm})
-                    </text>
+                    <circle cx="345" cy="160" r="6" fill="#4ADE80" stroke="#002033" strokeWidth="2" />
+                    <circle cx="180" cy="154" r="6" fill="#4ADE80" stroke="#002033" strokeWidth="2" />
                   </g>
 
+                  {/* Single Active Mode Caption (zero text collision) */}
+                  <text
+                    x="280"
+                    y="204"
+                    textAnchor="middle"
+                    fontFamily="JetBrains Mono, monospace"
+                    fontSize="11"
+                    fontWeight="700"
+                    fill={sculptureMode === 'before' ? '#F87171' : '#4ADE80'}
+                  >
+                    {sculptureMode === 'before'
+                      ? `CHIỀU VỀ CHẠY RỖNG (${preset.beforeKm}) · VƯỚNG GIỜ CẤM`
+                      : `GHÉP HÀNG CHIỀU VỀ + NÉ QĐ 23 (${preset.afterKm})`}
+                  </text>
+
                   {/* Shared Depot & Destination Anchors */}
-                  <rect x="40" y="136" width="24" height="24" rx="5" fill="#FDF0D5" stroke="#C1121F" strokeWidth="2.5" />
-                  <text x="52" y="176" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#FDF0D5">
+                  <rect x="40" y="134" width="24" height="24" rx="5" fill="#FDF0D5" stroke="#C1121F" strokeWidth="2.5" />
+                  <text x="52" y="175" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#FDF0D5">
                     KHO DC
                   </text>
                   <circle cx="498" cy="118" r="8" fill="#C1121F" stroke="#FDF0D5" strokeWidth="2" />
@@ -303,34 +317,34 @@ export const Hero: React.FC<HeroProps> = () => {
                   </text>
                 </svg>
 
-                {/* Behavioral Visual Split Comparison (Error Red vs Success Green) */}
+                {/* Crisp High-Contrast Comparison Deck: Varden Before vs Semantic Green After */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 tabular-nums">
-                  <div className="rounded-xl bg-[#002033] border border-[#F87171]/35 p-3.5 space-y-1">
-                    <div className="flex items-center justify-between text-[11px] font-mono font-bold text-[#F87171]">
+                  <div className="rounded-xl bg-[#FDF0D5] border-2 border-[#C1121F] p-4 space-y-1 text-[#003049]">
+                    <div className="flex items-center justify-between text-[11px] font-mono font-extrabold text-[#B91C1C]">
                       <span>GOOGLE MAPS THỦ CÔNG</span>
-                      <span>CHẠY THỪA</span>
+                      <span className="px-1.5 py-0.5 rounded bg-[#FEE2E2]">CHẠY THỪA</span>
                     </div>
-                    <div className="font-display text-2xl font-extrabold text-[#FDF0D5]">{preset.beforeKm}</div>
-                    <div className="text-[11px] text-[#FDF0D5]/75">{preset.beforeIssue}</div>
+                    <div className="font-display text-2xl font-black text-[#003049]">{preset.beforeKm}</div>
+                    <div className="text-xs font-semibold text-[#003049]/85">{preset.beforeIssue}</div>
                   </div>
 
-                  <div className="rounded-xl bg-[#052E16]/75 border border-[#4ADE80]/55 p-3.5 space-y-1">
-                    <div className="flex items-center justify-between text-[11px] font-mono font-bold text-[#4ADE80]">
+                  <div className="rounded-xl bg-[#052E16] border-2 border-[#4ADE80] p-4 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] font-mono font-extrabold text-[#4ADE80]">
                       <span>ECOMILES OSRM</span>
-                      <span className="px-1.5 py-0.5 rounded bg-[#15803D] text-[#FDF0D5]">{preset.deltaKm} KM</span>
+                      <span className="px-2 py-0.5 rounded bg-[#15803D] text-[#FDF0D5]">{preset.deltaKm} KM</span>
                     </div>
-                    <div className="font-display text-2xl font-extrabold text-[#4ADE80]">{preset.afterKm}</div>
-                    <div className="text-[11px] text-[#DCFCE7]">{preset.afterProof}</div>
+                    <div className="font-display text-2xl font-black text-[#4ADE80]">{preset.afterKm}</div>
+                    <div className="text-xs font-semibold text-[#DCFCE7]">{preset.afterProof}</div>
                   </div>
                 </div>
 
-                {/* Subtle Warning Caution Bar */}
-                <div className="flex items-center justify-between gap-2 rounded-lg bg-[#FEF3C7]/10 border border-[#FBBF24]/35 px-3.5 py-2 text-xs text-[#FBBF24]">
-                  <span className="flex items-center gap-1.5 font-semibold">
-                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                {/* High-Contrast Warning Strip */}
+                <div className="flex items-center justify-between gap-2 rounded-lg bg-[#FEF3C7] border border-[#F59E0B] px-3.5 py-2 text-xs text-[#003049]">
+                  <span className="flex items-center gap-1.5 font-extrabold text-[#B45309]">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
                     <span>{preset.warningNote}</span>
                   </span>
-                  <span className="font-mono font-bold text-[11px] text-[#FDF0D5] shrink-0">{preset.co2Note}</span>
+                  <span className="font-mono font-extrabold text-[11px] text-[#003049] shrink-0">{preset.co2Note}</span>
                 </div>
               </div>
 

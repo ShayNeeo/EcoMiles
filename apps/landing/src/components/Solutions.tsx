@@ -64,8 +64,8 @@ const PILLARS: PillarItem[] = [
         <rect x="212" y="10" width="62" height="26" rx="4" fill="#DC2626" />
         <text x="243" y="27" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#FDF0D5">16-20 CẤM</text>
         <rect x="6" y="46" width="268" height="24" rx="4" fill="#FEF3C7" stroke="#B45309" />
-        <text x="140" y="62" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#B45309">
-          NĐ 168: PHẠT 4-6M · QĐ 01 HN: CẤM XE ≥2T 06-21h
+        <text x="140" y="62" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8.8" fontWeight="700" fill="#B45309">
+          NĐ 168: PHẠT 4-6M · HN QĐ 01: ≥2T 06-21h
         </text>
       </svg>
     ),
@@ -122,35 +122,41 @@ export const Solutions: React.FC = () => {
       aria-labelledby="solutions-heading"
       className="relative overflow-hidden bg-[#FDF0D5] text-[#003049]"
     >
-      {/* ACT 2A: Psychological Loss-Aversion Strip (Gochujang Red ~8% brand voltage) */}
-      <div className="bg-[#780000] text-[#FDF0D5] px-4 sm:px-6 lg:px-8 py-8 border-y-2 border-[#003049]">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-5 items-center">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 font-mono text-[11px] font-extrabold uppercase tracking-wider text-[#FBBF24]">
-              <Flame className="w-3.5 h-3.5" />
+      {/* ACT 2A: Psychological Loss-Aversion Strip (Gochujang Red + Crisp Solid Varden Cards — zero muddy overlay) */}
+      <div className="bg-[#780000] text-[#FDF0D5] px-4 sm:px-6 lg:px-8 py-9 border-y-2 border-[#003049]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-5 items-stretch">
+          <div className="flex flex-col justify-center space-y-1.5 pr-2">
+            <div className="inline-flex items-center gap-1.5 font-mono text-[11px] font-extrabold uppercase tracking-wider text-[#FEF3C7]">
+              <Flame className="w-3.5 h-3.5 shrink-0" />
               <span>ĐIỂM MÙ CHI PHÍ MỖI CA</span>
             </div>
-            <h2 className="font-display text-xl sm:text-2xl font-black text-[#FDF0D5] leading-snug">
-              3 rò rỉ âm thầm của đội xe chạy bằng Excel
+            <h2 className="font-display text-2xl font-black text-[#FDF0D5] leading-snug">
+              3 rò rỉ âm thầm khi chia tuyến bằng Excel
             </h2>
           </div>
 
-          <div className="rounded-xl bg-[#002033]/55 border border-[#F87171]/40 p-4 space-y-1">
-            <div className="font-mono text-[11px] font-bold text-[#F87171]">LỖI 01 · QUÃNG ĐƯỜNG THỪA</div>
-            <div className="font-display text-xl font-black text-[#FDF0D5]">+30,5% đến +50,8% km</div>
-            <div className="text-xs text-[#FDF0D5]/80">Tra Google Maps từng điểm gây lặp cung đường</div>
+          <div className="h-full rounded-xl bg-[#FDF0D5] text-[#003049] border-2 border-[#003049] p-4 flex flex-col justify-between gap-1.5 shadow-md">
+            <div className="inline-block w-fit px-2 py-0.5 rounded bg-[#FEE2E2] font-mono text-[11px] font-extrabold text-[#B91C1C]">
+              LỖI 01 · DƯ QUÃNG ĐƯỜNG
+            </div>
+            <div className="font-display text-xl font-black text-[#003049]">+30,5% đến +50,8% km</div>
+            <div className="text-xs font-semibold text-[#003049]/80">Tra Google Maps từng điểm gây lặp cung đường</div>
           </div>
 
-          <div className="rounded-xl bg-[#002033]/55 border border-[#FBBF24]/45 p-4 space-y-1">
-            <div className="font-mono text-[11px] font-bold text-[#FBBF24]">LỖI 02 · PHẠT GIỜ CẤM</div>
-            <div className="font-display text-xl font-black text-[#FDF0D5]">4-6 triệu đ + −2 điểm GPLX</div>
-            <div className="text-xs text-[#FDF0D5]/80">NĐ 168/2024 bắt nghiêm tải trọng &amp; biển P.106</div>
+          <div className="h-full rounded-xl bg-[#FDF0D5] text-[#003049] border-2 border-[#003049] p-4 flex flex-col justify-between gap-1.5 shadow-md">
+            <div className="inline-block w-fit px-2 py-0.5 rounded bg-[#FEF3C7] font-mono text-[11px] font-extrabold text-[#B45309]">
+              LỖI 02 · PHẠT GIỜ CẤM
+            </div>
+            <div className="font-display text-xl font-black text-[#003049]">4-6 triệu đ + −2 GPLX</div>
+            <div className="text-xs font-semibold text-[#003049]/80">NĐ 168/2024 bắt nghiêm tải trọng &amp; biển P.106</div>
           </div>
 
-          <div className="rounded-xl bg-[#002033]/55 border border-[#F87171]/40 p-4 space-y-1">
-            <div className="font-mono text-[11px] font-bold text-[#F87171]">LỖI 03 · CHẠY RỖNG CHIỀU VỀ</div>
-            <div className="font-display text-xl font-black text-[#FDF0D5]">32-38% ca không hàng</div>
-            <div className="text-xs text-[#FDF0D5]/80">Thùng trống quay đầu, đốt dầu nhưng 0 doanh thu</div>
+          <div className="h-full rounded-xl bg-[#FDF0D5] text-[#003049] border-2 border-[#003049] p-4 flex flex-col justify-between gap-1.5 shadow-md">
+            <div className="inline-block w-fit px-2 py-0.5 rounded bg-[#FEE2E2] font-mono text-[11px] font-extrabold text-[#B91C1C]">
+              LỖI 03 · CHẠY RỖNG
+            </div>
+            <div className="font-display text-xl font-black text-[#003049]">32-38% ca không hàng</div>
+            <div className="text-xs font-semibold text-[#003049]/80">Thùng trống quay đầu, đốt dầu 0 doanh thu</div>
           </div>
         </div>
       </div>

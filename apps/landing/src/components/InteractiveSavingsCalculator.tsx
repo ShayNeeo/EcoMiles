@@ -246,12 +246,21 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
             </div>
           </div>
 
-          {/* Right 5 Cols: Deep Cosmos Drafting Output with Semantic Green Savings & Red Baseline */}
-          <div className="gsap-calc-panel lg:col-span-5 bg-[#002033] text-[#FDF0D5] rounded-2xl border-2 border-[#669BBC]/55 p-6 sm:p-8 shadow-2xl flex flex-col justify-between">
+          {/* Right 5 Cols: High-Contrast Calculator Result Board */}
+          <div className="gsap-calc-panel lg:col-span-5 bg-[#002033] text-[#FDF0D5] rounded-2xl border-2 border-[#FDF0D5]/40 p-6 sm:p-8 shadow-2xl flex flex-col justify-between">
             <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-[#669BBC]/25 pb-3 font-mono text-xs font-bold uppercase tracking-wider">
-                <span className="text-[#669BBC]">Ước tính lợi ích ròng / tháng</span>
-                <span className="px-2 py-0.5 rounded bg-[#DCFCE7] text-[#15803D] font-extrabold">26 NGÀY</span>
+              <div className="flex items-center justify-between gap-2 border-b-2 border-[#669BBC]/40 pb-4">
+                <div>
+                  <div className="font-mono text-[11px] font-extrabold uppercase text-[#669BBC]">
+                    DỰ TOÁN TÀI CHÍNH ĐỘI XE
+                  </div>
+                  <h3 className="font-display text-xl font-black text-[#FDF0D5] mt-0.5">
+                    Lợi ích ròng hàng tháng
+                  </h3>
+                </div>
+                <span className="px-2.5 py-1 rounded bg-[#DCFCE7] text-[#15803D] font-mono text-xs font-extrabold shrink-0">
+                  26 NGÀY
+                </span>
               </div>
 
               <div className="pb-5 border-b border-[#669BBC]/25">

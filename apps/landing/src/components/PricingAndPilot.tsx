@@ -166,27 +166,27 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           ))}
         </div>
 
-        {/* Visual Matrix Table */}
+        {/* Visual Matrix Table synced with activeDrivers preset */}
         <div className="mb-12 rounded-2xl border-2 border-[#669BBC] bg-[#002033] p-5 sm:p-7 shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm tabular-nums">
               <thead>
                 <tr className="border-b-2 border-[#669BBC]/40 text-[#669BBC] font-mono text-xs uppercase">
-                  <th className="py-3 px-3">Tiêu chuẩn</th>
-                  <th className="py-3 px-3">Starter</th>
-                  <th className="py-3 px-3">Nhỏ</th>
-                  <th className="py-3 px-3 text-[#FDF0D5]">Vừa</th>
-                  <th className="py-3 px-3">Lớn</th>
+                  <th className="py-3 px-3 text-[#FDF0D5]">Tiêu chuẩn</th>
+                  <th className={`py-3 px-3 ${activeDrivers <= 10 ? 'text-[#4ADE80] underline underline-offset-4' : ''}`}>Starter</th>
+                  <th className={`py-3 px-3 ${activeDrivers >= 11 && activeDrivers <= 20 ? 'text-[#4ADE80] underline underline-offset-4' : ''}`}>Nhỏ</th>
+                  <th className={`py-3 px-3 ${activeDrivers >= 21 && activeDrivers <= 100 ? 'text-[#4ADE80] underline underline-offset-4' : ''}`}>Vừa</th>
+                  <th className={`py-3 px-3 ${activeDrivers > 100 ? 'text-[#4ADE80] underline underline-offset-4' : ''}`}>Lớn</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#669BBC]/20 text-[#FDF0D5]">
                 {comparisonRows.map((row, idx) => (
                   <tr key={idx} className="hover:bg-[#003049]/80 transition-colors">
-                    <td className="py-3 px-3 font-bold">{row.feature}</td>
-                    <td className="py-3 px-3 text-[#669BBC]">{row.starter}</td>
-                    <td className="py-3 px-3 text-[#669BBC]">{row.small}</td>
-                    <td className="py-3 px-3 font-black text-[#FDF0D5]">{row.medium}</td>
-                    <td className="py-3 px-3 text-[#669BBC]">{row.large}</td>
+                    <td className="py-3 px-3 font-bold text-[#FDF0D5]">{row.feature}</td>
+                    <td className={`py-3 px-3 ${activeDrivers <= 10 ? 'font-black text-[#4ADE80]' : 'text-[#FDF0D5]/80'}`}>{row.starter}</td>
+                    <td className={`py-3 px-3 ${activeDrivers >= 11 && activeDrivers <= 20 ? 'font-black text-[#4ADE80]' : 'text-[#FDF0D5]/80'}`}>{row.small}</td>
+                    <td className={`py-3 px-3 ${activeDrivers >= 21 && activeDrivers <= 100 ? 'font-black text-[#4ADE80]' : 'text-[#FDF0D5]/80'}`}>{row.medium}</td>
+                    <td className={`py-3 px-3 ${activeDrivers > 100 ? 'font-black text-[#4ADE80]' : 'text-[#FDF0D5]/80'}`}>{row.large}</td>
                   </tr>
                 ))}
               </tbody>
