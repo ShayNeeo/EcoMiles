@@ -1092,7 +1092,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                               <td className="py-2.5 px-3 text-[11px] text-[#FDF0D5]">{item.scope}</td>
                               <td className="py-2.5 px-3">
                                 {item.approved ? (
-                                  <span className="px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D] font-bold text-[11px] inline-flex items-center gap-1">
+                                  <span className="px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#166534] font-bold text-[11px] inline-flex items-center gap-1">
                                     <CheckCircle2 className="w-3 h-3" />
                                     <span>Đã duyệt</span>
                                   </span>

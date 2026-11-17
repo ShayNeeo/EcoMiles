@@ -163,20 +163,22 @@ export const WorkflowShowcase: React.FC = () => {
                   setProgress(0);
                 }}
                 aria-pressed={isSelected}
-                className={`p-4 rounded-xl text-left transition-all border-2 flex flex-col justify-between cursor-pointer ${
+                className={`p-4 rounded-xl text-left transition-all border-2 flex flex-col cursor-pointer ${
                   isSelected
                     ? 'bg-[#003049] border-[#C1121F] text-[#FDF0D5] shadow-lg'
                     : 'bg-[#F8E7C4] border-[#003049]/30 text-[#003049] hover:border-[#003049]'
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`font-mono text-base font-black ${isSelected ? 'text-[#669BBC]' : 'text-[#AE1F23]'}`}>
-                    {item.num}
-                  </span>
-                  {item.icon}
-                </div>
-                <div className="font-display text-sm sm:text-base font-extrabold leading-tight">
-                  {item.title}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex min-w-0 items-baseline gap-2.5">
+                    <span className={`w-5 shrink-0 text-right font-mono text-xs font-black ${isSelected ? 'text-[#669BBC]' : 'text-[#AE1F23]'}`}>
+                      {item.num}
+                    </span>
+                    <div className="font-display text-sm sm:text-base font-extrabold leading-tight">
+                      {item.title}
+                    </div>
+                  </div>
+                  <span className="mt-0.5 shrink-0">{item.icon}</span>
                 </div>
               </button>
             );
@@ -271,7 +273,7 @@ export const WorkflowShowcase: React.FC = () => {
         <div className="bg-[#F8E7C4] rounded-2xl p-6 sm:p-8 border-2 border-[#003049] shadow-sm">
           <h3 className="font-display text-lg sm:text-xl font-black text-[#003049] mb-4 flex flex-wrap items-center justify-between gap-2">
             <span>Đối chứng thực nghiệm trên 2.895 đơn hàng thật tại TP.HCM (642 ma trận OSRM)</span>
-            <span className="font-mono text-xs font-extrabold px-2.5 py-1 rounded-full bg-[#DCFCE7] border border-[#15803D]/35 text-[#15803D]">
+            <span className="font-mono text-xs font-extrabold px-2.5 py-1 rounded-full bg-[#DCFCE7] border border-[#166534]/35 text-[#166534]">
               0 VI PHẠM QĐ 23/2018
             </span>
           </h3>
@@ -289,17 +291,17 @@ export const WorkflowShowcase: React.FC = () => {
                 <tr>
                   <td className="py-3 px-3 font-bold">Đồ uống 2,5T (500 đơn / 88 ngày)</td>
                   <td className="py-3 px-3 text-[#B91C1C] font-semibold">14.178 km · 543 chuyến · 235 lỗi QĐ 23</td>
-                  <td className="py-3 px-3 font-black text-[#15803D]">9.857 km (−30,5% · −22,3% vs CSV) · 328 chuyến · 0 lỗi</td>
+                  <td className="py-3 px-3 font-black text-[#166534]">9.857 km (−30,5% · −22,3% vs CSV) · 328 chuyến · 0 lỗi</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-3 font-bold">Tạp hóa #01 · Van &lt;950kg (798 đơn / 161 ngày)</td>
                   <td className="py-3 px-3 text-[#B91C1C] font-semibold">13.441 km (Maps) · 8.940 km (Gom theo giờ)</td>
-                  <td className="py-3 px-3 font-black text-[#15803D]">6.611 km (−50,8% vs Maps · −26,0% vs giờ)</td>
+                  <td className="py-3 px-3 font-black text-[#166534]">6.611 km (−50,8% vs Maps · −26,0% vs giờ)</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-3 font-bold">91 Cửa hàng toàn mạng (2.395 đơn / 393 ngày)</td>
                   <td className="py-3 px-3 text-[#B91C1C] font-semibold">46.376 km đơn lẻ · 47.232 km nối giờ (+1,8%)</td>
-                  <td className="py-3 px-3 font-black text-[#15803D]">29.508 km (−36,4%) · Tiết kiệm 1.822 L dầu &amp; 4,88 tấn CO₂e</td>
+                  <td className="py-3 px-3 font-black text-[#166534]">29.508 km (−36,4%) · Tiết kiệm 1.822 L dầu &amp; 4,88 tấn CO₂e</td>
                 </tr>
               </tbody>
             </table>

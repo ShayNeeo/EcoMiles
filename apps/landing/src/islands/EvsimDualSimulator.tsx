@@ -1356,7 +1356,7 @@ export function EvsimDualSimulator({
                   className={`px-2 py-0.5 rounded font-bold text-[11px] ${
                     isBanActive
                       ? 'bg-[#FEE2E2] text-[#B91C1C] border border-[#DC2626]'
-                      : 'bg-[#DCFCE7] text-[#15803D] border border-[#15803D]'
+                      : 'bg-[#DCFCE7] text-[#166534] border border-[#166534]'
                   }`}
                 >
                   {isMorningBan
@@ -1396,7 +1396,7 @@ export function EvsimDualSimulator({
                 type="button"
                 onClick={() => setTimeSec(10.5 * 3600)}
                 style={{ width: '50%' }}
-                className="bg-[#DCFCE7] hover:bg-[#DCFCE7] text-[#15803D] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
+                className="bg-[#DCFCE7] hover:bg-[#DCFCE7] text-[#166534] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 10:30 (Khung giờ mở nội đô 09:00 - 16:00)"
               >
                 09:00 - 16:00 · Khung mở nội đô (Giao Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh)

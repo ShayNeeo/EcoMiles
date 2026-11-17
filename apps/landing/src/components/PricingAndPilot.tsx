@@ -141,7 +141,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                     <div key={fIdx} className="flex items-start gap-2 text-xs font-bold">
                       <Check
                         className={`w-4 h-4 shrink-0 mt-0.5 ${
-                          tier.highlight ? 'text-[#15803D]' : 'text-[#4ADE80]'
+                          tier.highlight ? 'text-[#166534]' : 'text-[#4ADE80]'
                         }`}
                       />
                       <span>{feature}</span>

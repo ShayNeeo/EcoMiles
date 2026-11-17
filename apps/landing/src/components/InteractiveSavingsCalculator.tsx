@@ -258,7 +258,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     Lợi ích ròng hàng tháng
                   </h3>
                 </div>
-                <span className="px-2.5 py-1 rounded bg-[#DCFCE7] text-[#15803D] font-mono text-xs font-extrabold shrink-0">
+                <span className="px-2.5 py-1 rounded bg-[#DCFCE7] text-[#166534] font-mono text-xs font-extrabold shrink-0">
                   26 NGÀY
                 </span>
               </div>
@@ -320,7 +320,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     initial={false}
                     animate={{ width: `${savingsRate}%` }}
                     transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-                    className="h-full bg-[#15803D]"
+                    className="h-full bg-[#166534]"
                     title={`Giảm ${savingsRate}% quãng đường thừa`}
                   />
                 </div>

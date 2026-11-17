@@ -35,11 +35,11 @@ const PILLARS: PillarItem[] = [
           TRƯỚC: RỖNG CHIỀU VỀ · 14.178 KM
         </text>
         <rect x="6" y="42" width="268" height="22" rx="4" fill="#DCFCE7" />
-        <rect x="6" y="42" width="166" height="22" rx="4" fill="#15803D" />
+        <rect x="6" y="42" width="166" height="22" rx="4" fill="#166534" />
         <text x="16" y="57" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#FDF0D5">
           SAU: 9.857 KM (−30,5%)
         </text>
-        <text x="180" y="57" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#15803D">
+        <text x="180" y="57" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#166534">
           543→328 CHUYẾN
         </text>
       </svg>
@@ -55,7 +55,7 @@ const PILLARS: PillarItem[] = [
     href: '/maps/?vehicle=0&mode=navigate',
     renderGraphic: () => (
       <svg viewBox="0 0 280 86" fill="none" className="w-full h-auto" aria-hidden="true">
-        <rect x="6" y="10" width="66" height="26" rx="4" fill="#15803D" />
+        <rect x="6" y="10" width="66" height="26" rx="4" fill="#166534" />
         <text x="39" y="27" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#FDF0D5">00-06 MỞ</text>
         <rect x="76" y="10" width="60" height="26" rx="4" fill="#DC2626" />
         <text x="106" y="27" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#FDF0D5">06-09 CẤM</text>
@@ -84,10 +84,10 @@ const PILLARS: PillarItem[] = [
         <text x="18" y="30" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#FBBF24">QCVN 41:2024</text>
         <text x="18" y="50" fontFamily="Be Vietnam Pro, sans-serif" fontSize="13" fontWeight="800" fill="#FDF0D5">Van &lt;950kg</text>
         <text x="18" y="63" fontFamily="JetBrains Mono, monospace" fontSize="9" fill="#669BBC">Bãi bỏ luật xe con</text>
-        <rect x="144" y="10" width="130" height="58" rx="6" fill="#DCFCE7" stroke="#15803D" />
-        <text x="156" y="30" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#15803D">TP.HCM 24/24</text>
+        <rect x="144" y="10" width="130" height="58" rx="6" fill="#DCFCE7" stroke="#166534" />
+        <text x="156" y="30" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fontWeight="700" fill="#166534">TP.HCM 24/24</text>
         <text x="156" y="50" fontFamily="JetBrains Mono, monospace" fontSize="14" fontWeight="800" fill="#003049">−50,8% km</text>
-        <text x="156" y="63" fontFamily="JetBrains Mono, monospace" fontSize="9" fill="#15803D">Trừ biển cấm P.106</text>
+        <text x="156" y="63" fontFamily="JetBrains Mono, monospace" fontSize="9" fill="#166534">Trừ biển cấm P.106</text>
       </svg>
     ),
   },
@@ -103,7 +103,7 @@ const PILLARS: PillarItem[] = [
       <svg viewBox="0 0 280 86" fill="none" className="w-full h-auto" aria-hidden="true">
         <rect x="6" y="10" width="84" height="58" rx="6" fill="#F8E7C4" stroke="#003049" />
         <text x="48" y="34" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fontWeight="800" fill="#003049">Sheet 1</text>
-        <text x="48" y="52" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fill="#15803D">KPI ESG</text>
+        <text x="48" y="52" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fill="#166534">KPI ESG</text>
         <rect x="98" y="10" width="84" height="58" rx="6" fill="#003049" />
         <text x="140" y="34" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fontWeight="800" fill="#FDF0D5">Sheet 2</text>
         <text x="140" y="52" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9.5" fill="#4ADE80">−1.822 L dầu</text>
@@ -177,7 +177,7 @@ export const Solutions: React.FC = () => {
               </h2>
             </div>
             <div className="inline-flex items-center gap-3 text-xs font-mono font-bold text-[#003049]/75">
-              <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#15803D]" />Đạt / Tiết kiệm</span>
+              <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#166534]" />Đạt / Tiết kiệm</span>
               <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#B45309]" />Cảnh báo luật</span>
               <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#DC2626]" />Đã triệt tiêu</span>
             </div>
@@ -187,7 +187,7 @@ export const Solutions: React.FC = () => {
             {PILLARS.map((item) => {
               const badgeStyle =
                 item.semanticTone === 'ok'
-                  ? 'bg-[#DCFCE7] text-[#15803D] border-[#15803D]/30'
+                  ? 'bg-[#DCFCE7] text-[#166534] border-[#166534]/30'
                   : item.semanticTone === 'warn'
                     ? 'bg-[#FEF3C7] text-[#B45309] border-[#B45309]/35'
                     : 'bg-[#FEE2E2] text-[#B91C1C] border-[#B91C1C]/30';

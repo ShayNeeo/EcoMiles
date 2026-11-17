@@ -160,7 +160,7 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
             <div className="font-mono font-extrabold uppercase">06:00-09:00 · CẤM SÁNG</div>
             <div className="font-bold mt-1">Xe ≥950 kg-2,5T giao vành đai ngoài</div>
           </div>
-          <div className="bg-[#15803D] p-4 text-[#FDF0D5] border-b lg:border-b-0 lg:border-r border-[#FDF0D5]/25">
+          <div className="bg-[#166534] p-4 text-[#FDF0D5] border-b lg:border-b-0 lg:border-r border-[#FDF0D5]/25">
             <div className="font-mono font-extrabold uppercase">09:00-16:00 · MỞ LÕI</div>
             <div className="font-bold mt-1">Đẩy toàn bộ đơn Quận 1, 3, 5, 10</div>
           </div>

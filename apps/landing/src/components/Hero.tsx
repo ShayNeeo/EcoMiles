@@ -87,7 +87,7 @@ export const Hero: React.FC<HeroProps> = () => {
           {/* LEFT GALLERY (60% Varden negative space mindset — zero card clutter) */}
           <div className="lg:col-span-6 space-y-7">
             {/* Single Semantic Trust Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#DCFCE7] border border-[#15803D]/30 text-[#15803D] text-xs font-extrabold">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#DCFCE7] border border-[#166534]/30 text-[#166534] text-xs font-extrabold">
               <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
               <span>0 vi phạm QĐ 23/2018 · QĐ 01/2026 · QCVN 41:2024</span>
             </div>
@@ -136,7 +136,7 @@ export const Hero: React.FC<HeroProps> = () => {
                       <span
                         className={`font-mono text-[11px] px-1.5 py-0.5 rounded ${
                           isActive
-                            ? 'bg-[#15803D] text-[#FDF0D5]'
+                            ? 'bg-[#166534] text-[#FDF0D5]'
                             : 'bg-[#F8E7C4] text-[#003049]'
                         }`}
                       >
@@ -169,7 +169,7 @@ export const Hero: React.FC<HeroProps> = () => {
             </div>
 
             {/* Quiet Anchoring Footer Note */}
-            <p className="text-xs font-mono font-semibold text-[#003049]/65">
+            <p className="text-xs font-mono font-semibold text-[#003049]/70">
               $0 phí Google Map API · Chuẩn sổ CO2e GLEC v3.2 · Bảo mật NĐ 13/2023
             </p>
           </div>
@@ -204,7 +204,7 @@ export const Hero: React.FC<HeroProps> = () => {
                     onClick={() => setSculptureMode('after')}
                     className={`px-3 py-1.5 rounded-md text-xs font-extrabold transition-colors cursor-pointer ${
                       sculptureMode === 'after'
-                        ? 'bg-[#15803D] text-[#FDF0D5]'
+                        ? 'bg-[#166534] text-[#FDF0D5]'
                         : 'text-[#FDF0D5]/80 hover:text-[#FDF0D5]'
                     }`}
                   >
@@ -331,7 +331,7 @@ export const Hero: React.FC<HeroProps> = () => {
                   <div className="rounded-xl bg-[#052E16] border-2 border-[#4ADE80] p-4 space-y-1">
                     <div className="flex items-center justify-between text-[11px] font-mono font-extrabold text-[#4ADE80]">
                       <span>ECOMILES OSRM</span>
-                      <span className="px-2 py-0.5 rounded bg-[#15803D] text-[#FDF0D5]">{preset.deltaKm} KM</span>
+                      <span className="px-2 py-0.5 rounded bg-[#166534] text-[#FDF0D5]">{preset.deltaKm} KM</span>
                     </div>
                     <div className="font-display text-2xl font-black text-[#4ADE80]">{preset.afterKm}</div>
                     <div className="text-xs font-semibold text-[#DCFCE7]">{preset.afterProof}</div>

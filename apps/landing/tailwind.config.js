@@ -13,7 +13,7 @@ export default {
           crimson: '#C1121F',
           varden: '#FDF0D5',
           marble: '#669BBC',
-          ok: '#15803D',
+          ok: '#166534',
           warn: '#B45309',
           err: '#B91C1C',
           ink: '#003049',

@@ -26,7 +26,7 @@ Core rule: **Graphic-first (`<= 30%` prose)**. Communicate mechanics through bes
 | `--em-crimson-ink` | Crimson Label Ink | `#AE1F23` | High-contrast small label ink on Varden (`6.16:1`) |
 | `--em-marble` | Blue Marble | `#669BBC` | Open corridor accent, Van 24/24 vector fill, secondary telemetry strokes |
 | `--em-marble-tint` | Blue Marble Wash | `#D7E6F0` | Subtle neutral-cool pill/badge surface with `#003049` ink |
-| `--em-ok` / `Bright` / `Bg` | Success Green | `#15803D` / `#4ADE80` / `#DCFCE7` (dark `#052E16`) | Semantic operational pass: `0` QĐ 23 breaches, matched backhaul, fuel & CO2e saved |
+| `--em-ok` / `Bright` / `Bg` | Success Green | `#166534` / `#4ADE80` / `#DCFCE7` (dark `#052E16`) | Semantic operational pass: `0` QĐ 23 breaches, matched backhaul, fuel & CO2e saved |
 | `--em-warn` / `Bright` / `Bg` | Warning Yellow | `#B45309` / `#FBBF24` / `#FEF3C7` (border `#F59E0B`) | Semantic caution: approaching peak cutoff, QCVN 41 &lt;950kg / QĐ 01 HN ring-road check |
 | `--em-err` / `Bright` / `Bg` | Error Red | `#B91C1C` / `#F87171` / `#FEE2E2` (fill `#DC2626` / `#FECACA`) | Semantic failure/loss: empty deadhead bleed bar, curfew violation, HTTP 401/403 |
 | `--em-grid-*` | Grid Hairlines | `rgba(0, 48, 73, 0.055)` / `rgba(102, 155, 188, 0.09)` / `rgba(253, 240, 213, 0.06)` | 36-48px subtle coordinate grids |

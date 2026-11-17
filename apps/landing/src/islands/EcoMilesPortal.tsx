@@ -2624,7 +2624,7 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                                       Đã dời sang 09:05
                                     </span>
                                   ) : (
-                                    <span className="text-[#15803D] font-semibold inline-flex items-center gap-1">
+                                    <span className="text-[#166534] font-semibold inline-flex items-center gap-1">
                                       <CheckCircle2 className="w-3.5 h-3.5" />
                                       <span>Hợp lệ</span>
                                     </span>
@@ -3592,14 +3592,14 @@ function EnterpriseWorkspace({ defaultRole }: { defaultRole: AppRole }) {
                     <div className="p-2.5 rounded-xl bg-[#FDF0D5] border border-[#EED9AF] space-y-1.5 text-[11px]">
                       <div className="flex items-center justify-between gap-2 font-bold text-[#003049]">
                         <span>Khung giờ lưu thông xe tải nội đô TP.HCM (QĐ 23/2018):</span>
-                        <span className="px-2 py-0.5 rounded bg-[#DCFCE7] text-[#15803D] font-extrabold">0 vi phạm giờ cấm</span>
+                        <span className="px-2 py-0.5 rounded bg-[#DCFCE7] text-[#166534] font-extrabold">0 vi phạm giờ cấm</span>
                       </div>
                       <div className="grid grid-cols-3 rounded-lg overflow-hidden border border-[#D4BF94] text-[10px] font-bold text-center">
                         <div className="bg-[#FEE2E2] text-[#B91C1C] py-1 px-1 border-r border-[#D4BF94]">
                           06:00 - 09:00 · Cấm sáng
                           <div className="font-normal text-[9.5px]">Giao vành đai ngoài</div>
                         </div>
-                        <div className="bg-[#DCFCE7] text-[#15803D] py-1 px-1 border-r border-[#D4BF94]">
+                        <div className="bg-[#DCFCE7] text-[#166534] py-1 px-1 border-r border-[#D4BF94]">
                           09:00 - 16:00 · Mở nội đô
                           <div className="font-normal text-[9.5px]">Giao Q.1, 3, 5, Phú Nhuận</div>
                         </div>
