@@ -246,61 +246,61 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
             </div>
           </div>
 
-          {/* Right 5 Cols: Gochujang Red + Cosmos High-Contrast Output Banner */}
-          <div className="gsap-calc-panel lg:col-span-5 bg-[#780000] text-[#FDF0D5] rounded-2xl border-2 border-[#C1121F] p-6 sm:p-8 shadow-2xl flex flex-col justify-between">
+          {/* Right 5 Cols: Deep Cosmos Drafting Output with Semantic Green Savings & Red Baseline */}
+          <div className="gsap-calc-panel lg:col-span-5 bg-[#002033] text-[#FDF0D5] rounded-2xl border-2 border-[#669BBC]/55 p-6 sm:p-8 shadow-2xl flex flex-col justify-between">
             <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-[#FDF0D5]/25 pb-3 font-mono text-xs font-bold uppercase tracking-wider">
-                <span>Ước tính hàng tháng</span>
-                <span className="px-2 py-0.5 rounded bg-[#003049] text-[#FDF0D5]">26 NGÀY</span>
+              <div className="flex items-center justify-between border-b border-[#669BBC]/25 pb-3 font-mono text-xs font-bold uppercase tracking-wider">
+                <span className="text-[#669BBC]">Ước tính lợi ích ròng / tháng</span>
+                <span className="px-2 py-0.5 rounded bg-[#DCFCE7] text-[#15803D] font-extrabold">26 NGÀY</span>
               </div>
 
-              <div className="pb-5 border-b border-[#FDF0D5]/25">
-                <div className="font-mono text-xs font-bold uppercase text-[#FDF0D5]/80 mb-1">
-                  Tiền dầu tiết kiệm
+              <div className="pb-5 border-b border-[#669BBC]/25">
+                <div className="font-mono text-xs font-bold uppercase text-[#4ADE80] mb-1">
+                  Tiền dầu giữ lại được
                 </div>
-                <div className="font-display text-3xl sm:text-5xl font-black text-[#FDF0D5] tracking-tight tabular-nums">
-                  <span ref={moneyNumRef}>{Math.round(moneySavedVND).toLocaleString('vi-VN')}</span>
-                  <span className="text-base font-bold ml-1.5">đ</span>
+                <div className="font-display text-3xl sm:text-5xl font-black text-[#4ADE80] tracking-tight tabular-nums">
+                  +<span ref={moneyNumRef}>{Math.round(moneySavedVND).toLocaleString('vi-VN')}</span>
+                  <span className="text-base font-bold ml-1.5 text-[#FDF0D5]">đ</span>
                 </div>
                 <div className="font-mono text-xs font-bold text-[#669BBC] mt-2 tabular-nums">
-                  ≈ <span ref={litersNumRef}>{Math.round(litersSaved).toLocaleString('vi-VN')}</span> LÍT DIESEL
+                  ≈ <span ref={litersNumRef}>{Math.round(litersSaved).toLocaleString('vi-VN')}</span> LÍT DIESEL KHÔNG BỊ ĐỐT VÔ ÍCH
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pb-5 border-b border-[#FDF0D5]/25">
-                <div className="rounded-lg bg-[#003049] p-3.5">
-                  <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-[#669BBC] mb-1">
+              <div className="grid grid-cols-2 gap-4 pb-5 border-b border-[#669BBC]/25">
+                <div className="rounded-lg bg-[#052E16]/75 border border-[#4ADE80]/40 p-3.5">
+                  <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-[#4ADE80] mb-1">
                     <Co2AuditIcon className="w-4 h-4" />
-                    <span>CO₂ GIẢM</span>
+                    <span>CO₂ GIẢM (GLEC)</span>
                   </div>
                   <div className="font-display text-xl sm:text-2xl font-black text-[#FDF0D5] tabular-nums">
-                    <span ref={co2NumRef}>{Math.round(co2SavedKg).toLocaleString('vi-VN')}</span> kg
+                    −<span ref={co2NumRef}>{Math.round(co2SavedKg).toLocaleString('vi-VN')}</span> kg
                   </div>
-                  <div className="font-mono text-[11px] font-bold text-[#669BBC] mt-0.5 tabular-nums">
+                  <div className="font-mono text-[11px] font-bold text-[#4ADE80] mt-0.5 tabular-nums">
                     <span ref={co2TonsNumRef}>{(co2SavedKg / 1000).toFixed(2)}</span> tấn/tháng
                   </div>
                 </div>
 
-                <div className="rounded-lg bg-[#003049] p-3.5">
+                <div className="rounded-lg bg-[#003049] border border-[#669BBC]/40 p-3.5">
                   <div className="font-mono text-[10px] font-bold uppercase text-[#669BBC] mb-1">
                     QUÃNG ĐƯỜNG CẮT
                   </div>
                   <div className="font-display text-xl sm:text-2xl font-black text-[#FDF0D5] tabular-nums">
-                    <span ref={kmNumRef}>{Math.round(kmSaved).toLocaleString('vi-VN')}</span> km
+                    −<span ref={kmNumRef}>{Math.round(kmSaved).toLocaleString('vi-VN')}</span> km
                   </div>
-                  <div className="font-mono text-[11px] font-bold text-[#669BBC] mt-0.5 tabular-nums">
-                    −{savingsRate}% tổng ca
+                  <div className="font-mono text-[11px] font-bold text-[#4ADE80] mt-0.5 tabular-nums">
+                    Giảm {savingsRate}% tổng ca
                   </div>
                 </div>
               </div>
 
-              {/* Animated Visual Ratio Strip */}
+              {/* Animated Visual Ratio Strip (Error Red baseline waste vs Success Green kept) */}
               <div className="space-y-2 font-mono text-xs">
                 <div className="flex items-center justify-between font-bold">
-                  <span>TRƯỚC: {totalMonthlyKm.toLocaleString('vi-VN')} KM</span>
-                  <span className="text-[#FDF0D5]">SAU: {Math.round(totalMonthlyKm - kmSaved).toLocaleString('vi-VN')} KM</span>
+                  <span className="text-[#F87171]">TRƯỚC: {totalMonthlyKm.toLocaleString('vi-VN')} KM</span>
+                  <span className="text-[#4ADE80]">SAU: {Math.round(totalMonthlyKm - kmSaved).toLocaleString('vi-VN')} KM</span>
                 </div>
-                <div className="h-4 w-full rounded bg-[#003049] overflow-hidden flex border border-[#FDF0D5]/25">
+                <div className="h-4 w-full rounded bg-[#003049] overflow-hidden flex border border-[#669BBC]/35">
                   <motion.div
                     initial={false}
                     animate={{ width: `${100 - savingsRate}%` }}
@@ -311,9 +311,12 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
                     initial={false}
                     animate={{ width: `${savingsRate}%` }}
                     transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-                    className="h-full bg-[#C1121F]"
-                    title={`Giảm ${savingsRate}% quãng đường`}
+                    className="h-full bg-[#15803D]"
+                    title={`Giảm ${savingsRate}% quãng đường thừa`}
                   />
+                </div>
+                <div className="text-[11px] font-bold text-[#FBBF24]">
+                  Chưa tính tiền tránh phạt giờ cấm 4-6 triệu đ/lỗi (NĐ 168/2024)
                 </div>
               </div>
             </div>
@@ -321,7 +324,7 @@ export const InteractiveSavingsCalculator: React.FC<CalculatorProps> = ({ onOpen
             <button
               type="button"
               onClick={onOpenPilotModal}
-              className="mt-6 w-full py-3.5 px-5 rounded-lg bg-[#FDF0D5] hover:bg-[#669BBC] text-[#003049] font-extrabold text-sm shadow-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              className="mt-6 w-full py-3.5 px-5 rounded-xl bg-[#C1121F] hover:bg-[#780000] text-[#FDF0D5] font-extrabold text-sm shadow-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Thử miễn phí trên Excel đội xe</span>
               <ArrowRight className="w-4 h-4" />

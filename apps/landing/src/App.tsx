@@ -42,7 +42,7 @@ export function App() {
   };
 
   return (
-    <div className="site-shell min-h-screen bg-[#003049] text-[#FDF0D5] antialiased selection:bg-[#C1121F] selection:text-[#FDF0D5]">
+    <div className="site-shell min-h-screen bg-[#FDF0D5] text-[#003049] antialiased selection:bg-[#C1121F] selection:text-[#FDF0D5]">
       <a
         href="#main-content"
         className="fixed left-4 top-3 z-[100] -translate-y-20 rounded bg-[#C1121F] px-4 py-2 text-sm font-bold text-[#FDF0D5] shadow-xl transition-transform focus:translate-y-0"

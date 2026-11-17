@@ -100,15 +100,15 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
           </div>
         </div>
 
-        {/* 4 High-Contrast Pricing Cards */}
+        {/* 4 Center-Stage Contrast Pricing Cards (3 Quiet Cosmos + 1 Elevated Varden Focal Tier) */}
         <div className="mb-12 grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-4">
           {tiers.map((tier) => (
             <div
               key={tier.name}
               className={`relative rounded-2xl p-6 flex flex-col justify-between transition-all border-2 ${
                 tier.highlight
-                  ? 'bg-[#780000] border-[#FDF0D5] text-[#FDF0D5] shadow-2xl'
-                  : 'bg-[#FDF0D5] border-[#669BBC] text-[#003049] shadow-lg'
+                  ? 'bg-[#FDF0D5] border-[#C1121F] text-[#003049] shadow-2xl xl:-translate-y-1.5'
+                  : 'bg-[#002033] border-[#669BBC]/35 text-[#FDF0D5] shadow-md'
               }`}
             >
               {tier.badge && (
@@ -122,14 +122,14 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                   <h3 className="font-display text-xl font-black">{tier.name}</h3>
                   <span
                     className={`font-mono text-xs font-bold px-2.5 py-1 rounded ${
-                      tier.highlight ? 'bg-[#003049] text-[#FDF0D5]' : 'bg-[#003049] text-[#FDF0D5]'
+                      tier.highlight ? 'bg-[#003049] text-[#FDF0D5]' : 'bg-[#003049] text-[#669BBC]'
                     }`}
                   >
                     {tier.vehicles}
                   </span>
                 </div>
 
-                <div className={`pb-4 mb-4 border-b ${tier.highlight ? 'border-[#FDF0D5]/25' : 'border-[#D4BF94]'}`}>
+                <div className={`pb-4 mb-4 border-b ${tier.highlight ? 'border-[#D4BF94]' : 'border-[#669BBC]/25'}`}>
                   <div className="flex flex-wrap items-baseline gap-1">
                     <span className="font-display text-2xl sm:text-3xl font-black tabular-nums">{tier.price}</span>
                     <span className="font-mono text-xs font-bold opacity-80">{tier.unit}</span>
@@ -141,7 +141,7 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                     <div key={fIdx} className="flex items-start gap-2 text-xs font-bold">
                       <Check
                         className={`w-4 h-4 shrink-0 mt-0.5 ${
-                          tier.highlight ? 'text-[#669BBC]' : 'text-[#AE1F23]'
+                          tier.highlight ? 'text-[#15803D]' : 'text-[#4ADE80]'
                         }`}
                       />
                       <span>{feature}</span>
@@ -155,8 +155,8 @@ export const PricingAndPilot: React.FC<PricingProps> = ({ onOpenPilotModal }) =>
                 onClick={() => onOpenPilotModal(`Đăng ký gói thuê bao - ${tier.name}`)}
                 className={`w-full py-3 rounded-lg font-extrabold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                   tier.highlight
-                    ? 'bg-[#FDF0D5] hover:bg-[#669BBC] text-[#003049]'
-                    : 'bg-[#003049] hover:bg-[#C1121F] text-[#FDF0D5]'
+                    ? 'bg-[#C1121F] hover:bg-[#780000] text-[#FDF0D5]'
+                    : 'bg-[#003049] hover:bg-[#669BBC] hover:text-[#003049] text-[#FDF0D5] border border-[#669BBC]/40'
                 }`}
               >
                 <span>Chọn {tier.name}</span>

@@ -271,7 +271,7 @@ export const WorkflowShowcase: React.FC = () => {
         <div className="bg-[#F8E7C4] rounded-2xl p-6 sm:p-8 border-2 border-[#003049] shadow-sm">
           <h3 className="font-display text-lg sm:text-xl font-black text-[#003049] mb-4 flex flex-wrap items-center justify-between gap-2">
             <span>Đối chứng thực nghiệm trên 2.895 đơn hàng thật tại TP.HCM (642 ma trận OSRM)</span>
-            <span className="font-mono text-xs px-2.5 py-1 rounded bg-[#780000] text-[#FDF0D5]">
+            <span className="font-mono text-xs font-extrabold px-2.5 py-1 rounded-full bg-[#DCFCE7] border border-[#15803D]/35 text-[#15803D]">
               0 VI PHẠM QĐ 23/2018
             </span>
           </h3>
@@ -288,18 +288,18 @@ export const WorkflowShowcase: React.FC = () => {
               <tbody className="divide-y divide-[#D4BF94] text-[#003049]">
                 <tr>
                   <td className="py-3 px-3 font-bold">Đồ uống 2,5T (500 đơn / 88 ngày)</td>
-                  <td className="py-3 px-3">14.178 km · 543 chuyến · 235 lỗi QĐ 23</td>
-                  <td className="py-3 px-3 font-black text-[#AE1F23]">9.857 km (−30,5% · −22,3% vs CSV) · 328 chuyến · 0 lỗi</td>
+                  <td className="py-3 px-3 text-[#B91C1C] font-semibold">14.178 km · 543 chuyến · 235 lỗi QĐ 23</td>
+                  <td className="py-3 px-3 font-black text-[#15803D]">9.857 km (−30,5% · −22,3% vs CSV) · 328 chuyến · 0 lỗi</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-3 font-bold">Tạp hóa #01 · Van &lt;950kg (798 đơn / 161 ngày)</td>
-                  <td className="py-3 px-3">13.441 km (Maps) · 8.940 km (Gom theo giờ)</td>
-                  <td className="py-3 px-3 font-black text-[#AE1F23]">6.611 km (−50,8% vs Maps · −26,0% vs giờ)</td>
+                  <td className="py-3 px-3 text-[#B91C1C] font-semibold">13.441 km (Maps) · 8.940 km (Gom theo giờ)</td>
+                  <td className="py-3 px-3 font-black text-[#15803D]">6.611 km (−50,8% vs Maps · −26,0% vs giờ)</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-3 font-bold">91 Cửa hàng toàn mạng (2.395 đơn / 393 ngày)</td>
-                  <td className="py-3 px-3">46.376 km đơn lẻ · 47.232 km nối giờ (+1,8%)</td>
-                  <td className="py-3 px-3 font-black text-[#AE1F23]">29.508 km (−36,4%) · Tiết kiệm 1.822 L dầu &amp; 4,88 tấn CO₂e</td>
+                  <td className="py-3 px-3 text-[#B91C1C] font-semibold">46.376 km đơn lẻ · 47.232 km nối giờ (+1,8%)</td>
+                  <td className="py-3 px-3 font-black text-[#15803D]">29.508 km (−36,4%) · Tiết kiệm 1.822 L dầu &amp; 4,88 tấn CO₂e</td>
                 </tr>
               </tbody>
             </table>

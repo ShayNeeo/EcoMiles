@@ -8,25 +8,28 @@
 
 Core rule: **Graphic-first (`<= 30%` prose)**. Communicate mechanics through bespoke geometric vector icons, proportional comparison bars, 24h legal ban strips, interactive telemetry decks, and sharp pill buttons rather than walls of text. Zero generic SaaS emerald greens, zero cobalt neon gradients, zero emoji icons, zero em/en dashes in UI copy.
 
-## Palette (Pure 5-Color Core + Computed Structural Steps)
+## Palette (Pure 5-Color Main Theme Architecture + Dedicated Semantic Signal Trio)
+
+**Architectural Rule (`60 / 30 / 10`):** Use the 5 main palette colors strictly for page architecture, canvas polarity, and focal CTAs — reserving **Gochujang Red `#780000`** & **Crimson Blaze `#C1121F`** cleanly for ~10% high-voltage focal triggers/loss-agitation hooks rather than flooding whole sections. Use **Success Green**, **Warning Yellow**, and **Error Red** exclusively for operational telemetry, legal curfews, and savings deltas.
 
 | Token | Name | Hex | Role |
 |---|---|---|---|
-| `--em-cosmos` | Cosmos Blue | `#003049` | Primary dark surface (Hero, Calculator, Pricing, Telemetry Cards), primary ink on light Varden/Blue Marble |
-| `--em-cosmos-deep` | Cosmos Deep | `#002033` | Recessed well / dark table head / dialog backdrop inside Cosmos |
-| `--em-cosmos-soft` | Cosmos Soft | `#004366` | Elevated Cosmos borders, focus depth & crisp divider ink |
-| `--em-gochujang` | Gochujang Red | `#780000` | High-stakes alert & urgency bands (QĐ 23/2018 Ban Matrix, Highlighted Growth Tier) |
-| `--em-crimson` | Crimson Blaze | `#C1121F` | Primary action CTA fill on light surfaces, curfew ban highlight, urgent badge fill |
-| `--em-crimson-ink` | Crimson Label Ink | `#AE1F23` | High-contrast small red label ink on Varden (`6.16:1`) |
-| `--em-varden` | Varden Cream | `#FDF0D5` | Primary warm light surface & high-contrast ink on dark Cosmos/Gochujang (`12.25:1` / `10.34:1`) |
+| `--em-varden` | Varden Cream | `#FDF0D5` | Primary warm daylight canvas (`60%` breathing space: Hero Left, Solutions Plates, Workflow, Team) & high-contrast ink on dark |
 | `--em-varden-card` | Varden Card | `#F8E7C4` | Elevated card tint within Varden sections |
 | `--em-varden-deep` | Varden Deep | `#EED9AF` | Meter tracks, subtle inset fills on Varden |
 | `--em-varden-line` | Varden Rule | `#D4BF94` | Crisp architectural borders & rules on Varden |
-| `--em-marble` | Blue Marble | `#669BBC` | Open corridor accent, legal-pass fill, interactive telemetry highlight & button hover fill |
-| `--em-marble-pale` | Blue Marble Wash | `#D7E6F0` | Subtle neutral-cool pill/badge surface with `#003049` ink |
-| `--em-grid-cosmos` | Cosmos Grid Hairline | `rgba(253, 240, 213, 0.06)` | 48px architectural coordinate grid on Cosmos bands |
-| `--em-grid-varden` | Varden Grid Hairline | `rgba(0, 48, 73, 0.055)` | 48px architectural coordinate grid on Varden bands |
-| `--em-grid-marble` | Marble Focus Stroke | `rgba(102, 155, 188, 0.09)` | Subtle cyan overlay stroke inside dark grids |
+| `--em-cosmos` | Cosmos Blue | `#003049` | Sovereign dark ground (`30%`: Hero Right Kinetic Sculpture, Calculator, Curfew Matrix, Pricing) & AAA ink on Varden/Marble |
+| `--em-cosmos-deep` | Cosmos Deep | `#002033` | Recessed dark well / quiet inactive cards / dialog backdrop inside Cosmos |
+| `--em-cosmos-soft` | Cosmos Soft | `#004366` | Elevated Cosmos borders, focus depth & divider ink |
+| `--em-gochujang` | Gochujang Red | `#780000` | Loss-agitation urgency banner & hover depth (~`10%` peak voltage) |
+| `--em-crimson` | Crimson Blaze | `#C1121F` | Primary action CTA magnet, typographic stop dot, elevated focal badge |
+| `--em-crimson-ink` | Crimson Label Ink | `#AE1F23` | High-contrast small label ink on Varden (`6.16:1`) |
+| `--em-marble` | Blue Marble | `#669BBC` | Open corridor accent, Van 24/24 vector fill, secondary telemetry strokes |
+| `--em-marble-tint` | Blue Marble Wash | `#D7E6F0` | Subtle neutral-cool pill/badge surface with `#003049` ink |
+| `--em-ok` / `Bright` / `Bg` | Success Green | `#15803D` / `#4ADE80` / `#DCFCE7` (dark `#052E16`) | Semantic operational pass: `0` QĐ 23 breaches, matched backhaul, fuel & CO2e saved |
+| `--em-warn` / `Bright` / `Bg` | Warning Yellow | `#B45309` / `#FBBF24` / `#FEF3C7` (border `#F59E0B`) | Semantic caution: approaching peak cutoff, QCVN 41 &lt;950kg / QĐ 01 HN ring-road check |
+| `--em-err` / `Bright` / `Bg` | Error Red | `#B91C1C` / `#F87171` / `#FEE2E2` (fill `#DC2626` / `#FECACA`) | Semantic failure/loss: empty deadhead bleed bar, curfew violation, HTTP 401/403 |
+| `--em-grid-*` | Grid Hairlines | `rgba(0, 48, 73, 0.055)` / `rgba(102, 155, 188, 0.09)` / `rgba(253, 240, 213, 0.06)` | 36-48px subtle coordinate grids |
 
 ### Strict WCAG AA/AAA Contrast Matrix
 - **On Cosmos `#003049`**: use `#FDF0D5` (`12.25:1`) or `#669BBC` (`4.59:1`). Never place `#C1121F` text directly on Cosmos (`2.22:1` fail).

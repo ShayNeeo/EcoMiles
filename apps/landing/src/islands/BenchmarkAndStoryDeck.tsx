@@ -535,7 +535,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
               <div className="p-3.5 rounded-2xl bg-[#002033] border border-[#669BBC]">
                 <div className="text-[11px] text-[#669BBC] font-bold">Tổng quãng đường</div>
                 <div className="text-2xl font-black text-white mt-0.5">{alnsSt.km_total.toFixed(1)} km</div>
-                <div className="text-xs font-extrabold text-[#669BBC] mt-1 flex items-center gap-1">
+                <div className="text-xs font-extrabold text-[#4ADE80] mt-1 flex items-center gap-1">
                   <TrendingDown className="w-3.5 h-3.5 shrink-0" />
                   <span>Giảm {kmSaved} km (-{kmSavedPct}%)</span>
                 </div>
@@ -547,7 +547,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                 <div className="text-2xl font-black text-[#FDF0D5] mt-0.5">
                   {alnsSt.empty_running_pct.toFixed(1)}%
                 </div>
-                <div className="text-xs font-extrabold text-[#669BBC] mt-1 flex items-center gap-1">
+                <div className="text-xs font-extrabold text-[#4ADE80] mt-1 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                   <span>Ghép +{alnsSt.backhaul_orders_matched} đơn chiều về</span>
                 </div>
@@ -557,7 +557,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
               <div className="p-3.5 rounded-2xl bg-[#002033] border border-[#669BBC]">
                 <div className="text-[11px] text-[#669BBC] font-bold">Nhiên liệu &amp; Chi phí</div>
                 <div className="text-2xl font-black text-white mt-0.5">{alnsSt.litres_total.toFixed(1)} Lít</div>
-                <div className="text-xs font-extrabold text-[#669BBC] mt-1 flex items-center gap-1">
+                <div className="text-xs font-extrabold text-[#4ADE80] mt-1 flex items-center gap-1">
                   <TrendingDown className="w-3.5 h-3.5 shrink-0" />
                   <span>Tiết kiệm {vndSaved.toLocaleString('vi-VN')} ₫</span>
                 </div>
@@ -567,7 +567,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
               <div className="p-3.5 rounded-2xl bg-[#002033] border border-[#669BBC]">
                 <div className="text-[11px] text-[#669BBC] font-bold">Phát thải &amp; Giờ cấm</div>
                 <div className="text-2xl font-black text-white mt-0.5">{alnsSt.kg_co2_ttw.toFixed(1)} kg CO₂</div>
-                <div className="text-xs font-extrabold text-[#669BBC] mt-1 flex items-center gap-1">
+                <div className="text-xs font-extrabold text-[#4ADE80] mt-1 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                   <span>0 vi phạm · Giảm {co2SavedPct}% CO₂</span>
                 </div>
@@ -575,7 +575,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
             </div>
 
             {/* Net Impact Strip */}
-            <div className="p-3.5 rounded-2xl bg-[#780000]/40 border border-[#C1121F]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div className="p-3.5 rounded-2xl bg-[#052E16]/80 border border-[#4ADE80]/45 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
               <div className="text-white font-bold">
                 <strong className="text-[#FDF0D5]">Hiệu quả ròng đạt được ngay trên file này:</strong> Cắt giảm{' '}
                 <strong>{kmSaved} km</strong> di chuyển (trong đó giảm <strong>{emptyKmSaved} km</strong> chạy xe rỗng), tiết kiệm{' '}
@@ -950,7 +950,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                       <p className="text-[11px] text-[#FDF0D5]">
                         <strong>Nguyên nhân:</strong> {anom.root_cause}
                       </p>
-                      <p className="text-[11px] text-[#669BBC] font-semibold">
+                      <p className="text-[11px] text-[#4ADE80] font-semibold">
                         <strong>Tự động xử lý:</strong> {anom.recommended_fix}
                       </p>
                     </div>
@@ -994,7 +994,7 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                                   <td className="py-2 px-3 font-mono text-[#FDF0D5]">
                                     {o.window_start} đến {o.window_end}
                                   </td>
-                                  <td className="py-2 px-3 font-mono text-[#669BBC] font-bold">
+                                  <td className="py-2 px-3 font-mono text-[#4ADE80] font-bold">
                                     <span className="inline-flex items-center gap-1">
                                       <CheckCircle2 className="w-3.5 h-3.5" />
                                       <span>{fixedWindow}</span>
@@ -1092,12 +1092,12 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                               <td className="py-2.5 px-3 text-[11px] text-[#FDF0D5]">{item.scope}</td>
                               <td className="py-2.5 px-3">
                                 {item.approved ? (
-                                  <span className="px-2 py-0.5 rounded-full bg-[#669BBC] text-[#003049] font-bold text-[11px] inline-flex items-center gap-1">
+                                  <span className="px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D] font-bold text-[11px] inline-flex items-center gap-1">
                                     <CheckCircle2 className="w-3 h-3" />
                                     <span>Đã duyệt</span>
                                   </span>
                                 ) : (
-                                  <span className="px-2 py-0.5 rounded-full bg-[#780000]/30 text-[#FDF0D5] font-bold text-[11px]">
+                                  <span className="px-2 py-0.5 rounded-full bg-[#FEE2E2] text-[#B91C1C] font-bold text-[11px]">
                                     Đang khóa
                                   </span>
                                 )}
@@ -1177,9 +1177,9 @@ export function BenchmarkAndStoryDeck({ initialAct = 'act1_executive' }: { initi
                             </td>
                             <td className="py-2.5 px-3 text-right font-bold">
                               {st.ban_violations === 0 ? (
-                                <span className="text-[#669BBC]">0 vi phạm</span>
+                                <span className="text-[#4ADE80]">0 vi phạm</span>
                               ) : (
-                                <span className="text-[#FDF0D5]">{st.ban_violations} vi phạm</span>
+                                <span className="text-[#F87171]">{st.ban_violations} vi phạm</span>
                               )}
                             </td>
                           </tr>

@@ -141,40 +141,40 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
     <section
       id="showcase"
       ref={sectionRef}
-      className="relative py-20 sm:py-24 px-4 sm:px-6 lg:px-8 em-grid-gochujang text-[#FDF0D5] border-b-4 border-[#003049] scroll-mt-20 overflow-hidden"
+      className="relative py-20 sm:py-24 px-4 sm:px-6 lg:px-8 em-grid-cosmos text-[#FDF0D5] border-b-4 border-[#003049] scroll-mt-20 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10 space-y-8">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-[#FDF0D5]/25 pb-6">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-[#669BBC]/30 pb-6">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-[#FDF0D5] tracking-tight leading-tight max-w-3xl">
-            Kiểm soát vùng cấm tải &amp; 3 màn hình tác nghiệp
+            Ma trận giờ cấm tải &amp; 3 màn hình tác nghiệp
           </h2>
-          <span className="inline-flex items-center gap-2 rounded-md bg-[#FDF0D5] px-3 py-1.5 font-mono text-xs font-extrabold text-[#780000] shrink-0">
+          <span className="inline-flex items-center gap-2 rounded-md bg-[#FEF3C7] border border-[#F59E0B] px-3 py-1.5 font-mono text-xs font-extrabold text-[#B45309] shrink-0">
             <Qd23WindowIcon className="w-4 h-4" />
             <span>NĐ 168/2024: TRÁNH PHẠT 4-6 TRIỆU ĐỒNG</span>
           </span>
         </div>
 
-        {/* Visual 24h Statutory Matrix Banner */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-xl overflow-hidden border-2 border-[#FDF0D5] text-xs shadow-xl">
-          <div className="bg-[#C1121F] p-4 text-[#FDF0D5] border-b lg:border-b-0 sm:border-r border-[#FDF0D5]/30">
+        {/* Visual 24h Traffic-Light Statutory Matrix Banner */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-xl overflow-hidden border-2 border-[#FDF0D5]/80 text-xs shadow-xl">
+          <div className="bg-[#B91C1C] p-4 text-[#FDF0D5] border-b lg:border-b-0 sm:border-r border-[#FDF0D5]/25">
             <div className="font-mono font-extrabold uppercase">06:00-09:00 · CẤM SÁNG</div>
             <div className="font-bold mt-1">Xe ≥950 kg-2,5T giao vành đai ngoài</div>
           </div>
-          <div className="bg-[#669BBC] p-4 text-[#003049] border-b lg:border-b-0 lg:border-r border-[#003049]/25">
+          <div className="bg-[#15803D] p-4 text-[#FDF0D5] border-b lg:border-b-0 lg:border-r border-[#FDF0D5]/25">
             <div className="font-mono font-extrabold uppercase">09:00-16:00 · MỞ LÕI</div>
             <div className="font-bold mt-1">Đẩy toàn bộ đơn Quận 1, 3, 5, 10</div>
           </div>
-          <div className="bg-[#003049] p-4 text-[#FDF0D5] border-b sm:border-b-0 sm:border-r border-[#FDF0D5]/30">
-            <div className="font-mono font-extrabold uppercase flex items-center gap-1.5 text-[#669BBC]">
+          <div className="bg-[#669BBC] p-4 text-[#003049] border-b sm:border-b-0 sm:border-r border-[#003049]/25">
+            <div className="font-mono font-extrabold uppercase flex items-center gap-1.5 text-[#003049]">
               <VanExemptIcon className="w-4 h-4" />
               <span>VAN &lt;950 KG · 24/24</span>
             </div>
             <div className="font-bold mt-1">Chạy nội đô TP.HCM trừ tuyến biển P.106</div>
           </div>
-          <div className="bg-[#FDF0D5] p-4 text-[#003049]">
-            <div className="font-mono font-extrabold uppercase flex items-center gap-1.5 text-[#AE1F23]">
+          <div className="bg-[#FEF3C7] p-4 text-[#003049]">
+            <div className="font-mono font-extrabold uppercase flex items-center gap-1.5 text-[#B45309]">
               <HanoiRingIcon className="w-4 h-4" />
-              <span>HÀ NỘI · QĐ 01/2026</span>
+              <span>CẢNH BÁO HN · QĐ 01/2026</span>
             </div>
             <div className="font-bold mt-1">Kiểm tổng tải ≥2T Vành đai 3 (06-21h)</div>
           </div>
@@ -250,8 +250,8 @@ export const DriverAndDispatcherShowcase: React.FC = () => {
                           <tr key={pkg.orderCode}>
                             <td className="py-2 pr-3 font-mono font-bold text-[#FDF0D5]">{pkg.orderCode}</td>
                             <td className="py-2 pr-3">{pkg.area}</td>
-                            <td className="py-2 pr-3 text-[#669BBC] font-semibold">{pkg.restrictionNote}</td>
-                            <td className="py-2 font-extrabold text-[#FDF0D5]">{pkg.plannedArrival}</td>
+                            <td className="py-2 pr-3 text-[#FBBF24] font-semibold">{pkg.restrictionNote}</td>
+                            <td className="py-2 font-extrabold text-[#4ADE80]">{pkg.plannedArrival}</td>
                           </tr>
                         ))}
                       </tbody>

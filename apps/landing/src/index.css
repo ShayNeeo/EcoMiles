@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  /* Pure 5-Color Structural Brand Palette */
   --em-cosmos: #003049;
   --em-cosmos-deep: #002033;
   --em-cosmos-soft: #004366;
@@ -15,6 +16,17 @@
   --em-varden-line: #D4BF94;
   --em-marble: #669BBC;
   --em-marble-tint: #D7E6F0;
+
+  /* Dedicated Semantic Signal Trio (Operational status, legal curfews & verified deltas only) */
+  --em-ok: #15803D;
+  --em-ok-bright: #4ADE80;
+  --em-ok-bg: #DCFCE7;
+  --em-warn: #B45309;
+  --em-warn-bright: #FBBF24;
+  --em-warn-bg: #FEF3C7;
+  --em-err: #B91C1C;
+  --em-err-bright: #F87171;
+  --em-err-bg: #FEE2E2;
 
   /* Semantic aliases mapped strictly to the 5-color palette */
   --em-paper: var(--em-varden);
@@ -43,8 +55,8 @@
 
 html {
   scroll-behavior: auto;
-  background-color: var(--em-cosmos);
-  color: var(--em-varden);
+  background-color: var(--em-varden);
+  color: var(--em-cosmos);
   color-scheme: light dark;
 }
 
@@ -52,8 +64,8 @@ body {
   font-family: var(--em-font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--em-cosmos);
-  color: var(--em-varden);
+  background-color: var(--em-varden);
+  color: var(--em-cosmos);
   overflow-x: hidden;
   font-variant-numeric: tabular-nums;
 }
@@ -69,8 +81,19 @@ h1, h2, h3, .font-display {
 .site-shell {
   position: relative;
   isolation: isolate;
-  background-color: var(--em-cosmos);
-  color: var(--em-varden);
+  background-color: var(--em-varden);
+  color: var(--em-cosmos);
+}
+
+@keyframes emFlowDash {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+.em-flow-line {
+  stroke-dasharray: 10 8;
+  animation: emFlowDash 1.4s linear infinite;
 }
 
 /* Subtle architectural coordinate grid overlay */

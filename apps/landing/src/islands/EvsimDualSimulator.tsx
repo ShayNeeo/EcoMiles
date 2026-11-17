@@ -1355,8 +1355,8 @@ export function EvsimDualSimulator({
                 <span
                   className={`px-2 py-0.5 rounded font-bold text-[11px] ${
                     isBanActive
-                      ? 'bg-[#F8E7C4] text-[#C1121F] border border-[#C1121F]'
-                      : 'bg-[#D7E6F0] text-[#003049] border border-[#669BBC]'
+                      ? 'bg-[#FEE2E2] text-[#B91C1C] border border-[#DC2626]'
+                      : 'bg-[#DCFCE7] text-[#15803D] border border-[#15803D]'
                   }`}
                 >
                   {isMorningBan
@@ -1387,7 +1387,7 @@ export function EvsimDualSimulator({
                 type="button"
                 onClick={() => setTimeSec(7.5 * 3600)}
                 style={{ width: '21.43%' }}
-                className="bg-[#F8E7C4] hover:bg-[#F8E7C4] text-[#C1121F] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
+                className="bg-[#FEE2E2] hover:bg-[#FECACA] text-[#B91C1C] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 07:30 (Cao điểm cấm tải sáng 06:00 - 09:00)"
               >
                 06:00 - 09:00 · Cấm tải sáng (Giao vành đai)
@@ -1396,7 +1396,7 @@ export function EvsimDualSimulator({
                 type="button"
                 onClick={() => setTimeSec(10.5 * 3600)}
                 style={{ width: '50%' }}
-                className="bg-[#D7E6F0] hover:bg-[#D7E6F0] text-[#003049] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
+                className="bg-[#DCFCE7] hover:bg-[#DCFCE7] text-[#15803D] flex items-center justify-center border-r border-[#D4BF94] cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 10:30 (Khung giờ mở nội đô 09:00 - 16:00)"
               >
                 09:00 - 16:00 · Khung mở nội đô (Giao Quận 1, 3, 5, 10, Phú Nhuận, Bình Thạnh)
@@ -1405,7 +1405,7 @@ export function EvsimDualSimulator({
                 type="button"
                 onClick={() => setTimeSec(17 * 3600)}
                 style={{ width: '28.57%' }}
-                className="bg-[#F8E7C4] hover:bg-[#F8E7C4] text-[#C1121F] flex items-center justify-center cursor-pointer truncate px-1"
+                className="bg-[#FEE2E2] hover:bg-[#FECACA] text-[#B91C1C] flex items-center justify-center cursor-pointer truncate px-1"
                 title="Bấm để xem lúc 17:00 (Cao điểm cấm tải chiều 16:00 - 20:00)"
               >
                 16:00 - 20:00 · Cấm tải chiều (Ghép đơn về kho)
